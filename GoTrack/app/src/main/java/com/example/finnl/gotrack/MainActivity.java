@@ -1,5 +1,7 @@
 package com.example.finnl.gotrack;
 
+import android.location.Location;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -8,14 +10,47 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
 
+    private KmCounter kmCounter;
+
+    private Timer timer;
+    private Timer rideTimer;
+    private KmhAverager kmhAverager;
+
+
+    public static Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //------------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------handler
+        // recieves messages from another thread
+
+        // handler recieves data from Timer Thread
+        handler = new Handler() {
+            @Override
+            public void handleMessage(android.os.Message msg) {
+                if (msg.what == 0) {
+                    //setTime((String) msg.obj);
+                } else if (msg.what == 1) {
+                    //setRideTime((String) msg.obj);
+                }
+            }
+        };
+        //##########################################################################################
+
+
+
+
+
+        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------layout
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -67,9 +102,30 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+        //##########################################################################################
+        //------------------------------------------------------------------------------------------
 
+
+
+
+
+        // start Locator
+        new Locator(this);
+
+        kmCounter = new KmCounter(this);
+
+        // timer
+        timer = new Timer(this, 0);
+
+        // ride Time if kmh > 0
+        rideTimer = new Timer(this, 1);
+
+        // average Kmh
+        kmhAverager = new KmhAverager(this, kmCounter, timer, 1);
 
     }
+    //##############################################################################################
+    //----------------------------------------------------------------------------------------layout
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -79,4 +135,37 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    //##############################################################################################
+
+
+
+
+    // get Location Update in this class
+    //----------------------------------------------------------------------------------------------
+
+    public void updateLocation(Location location) {
+        // test View
+        TextView text = findViewById(R.id.textView);
+        text.setText(location.toString());
+
+        // add Distance
+        kmCounter.addKm(location);
+
+        // count ridetime
+        if (!rideTimer.getActive() && location.getSpeed() > 0) {
+            rideTimer.startTimer();
+        } else if (rideTimer.getActive() && location.getSpeed() == 0) {
+            rideTimer.killTimer();
+        }
+
+        kmhAverager.calcAvgSpeed();
+
+        
+
+
+
+    }
+    //##############################################################################################
+
+
 }
