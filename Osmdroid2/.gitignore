@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 *.iml
+=======
+>>>>>>> testing
 .gradle
 /local.properties
 /.idea/workspace.xml
