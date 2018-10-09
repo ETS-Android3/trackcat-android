@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 *.iml
-=======
->>>>>>> testing
 .gradle
 /local.properties
 /.idea/workspace.xml
@@ -10,8 +7,3 @@
 /build
 /captures
 .externalNativeBuild
-<<<<<<< HEAD
-.gradle
-.idea
-=======
->>>>>>> testing
