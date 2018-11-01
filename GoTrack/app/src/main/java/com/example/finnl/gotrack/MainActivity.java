@@ -10,8 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toolbar;
+
+import com.example.finnl.gotrack.Recording.Locator;
+import com.example.finnl.gotrack.Recording.Timer;
+import com.example.finnl.gotrack.Statistics.KmCounter;
+import com.example.finnl.gotrack.Statistics.KmhAverager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -145,8 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateLocation(Location location) {
         // test View
-        TextView text = findViewById(R.id.textView);
-        text.setText(location.toString());
+
 
         // add Distance
         kmCounter.addKm(location);

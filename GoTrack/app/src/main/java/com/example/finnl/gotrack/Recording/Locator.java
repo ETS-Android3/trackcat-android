@@ -1,4 +1,4 @@
-package com.example.finnl.gotrack;
+package com.example.finnl.gotrack.Recording;
 
 import android.Manifest;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+
+import com.example.finnl.gotrack.MainActivity;
 
 public class Locator {
 

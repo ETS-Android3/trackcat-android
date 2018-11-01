@@ -1,5 +1,9 @@
-package com.example.finnl.gotrack;
+package com.example.finnl.gotrack.Statistics;
 
+
+import com.example.finnl.gotrack.MainActivity;
+import com.example.finnl.gotrack.Recording.Timer;
+import com.example.finnl.gotrack.Statistics.KmCounter;
 
 public class KmhAverager {
     private MainActivity creator;

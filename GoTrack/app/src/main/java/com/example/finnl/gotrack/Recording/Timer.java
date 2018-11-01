@@ -1,7 +1,9 @@
-package com.example.finnl.gotrack;
+package com.example.finnl.gotrack.Recording;
 
 import android.os.Message;
 import android.widget.TextView;
+
+import com.example.finnl.gotrack.MainActivity;
 
 import java.util.TimerTask;
 

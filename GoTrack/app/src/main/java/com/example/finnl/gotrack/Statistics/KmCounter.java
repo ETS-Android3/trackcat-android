@@ -1,6 +1,8 @@
-package com.example.finnl.gotrack;
+package com.example.finnl.gotrack.Statistics;
 
 import android.location.Location;
+
+import com.example.finnl.gotrack.MainActivity;
 
 public class KmCounter {
     private float mAmount;
