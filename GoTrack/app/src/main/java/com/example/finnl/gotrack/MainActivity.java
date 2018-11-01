@@ -1,5 +1,6 @@
 package com.example.finnl.gotrack;
 
+import android.app.FragmentTransaction;
 import android.location.Location;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -11,7 +12,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.finnl.gotrack.Recording.Locator;
+import com.example.finnl.gotrack.Recording.RecordFragment;
 import com.example.finnl.gotrack.Recording.Timer;
 import com.example.finnl.gotrack.Statistics.KmCounter;
 import com.example.finnl.gotrack.Statistics.KmhAverager;
@@ -26,8 +27,12 @@ public class MainActivity extends AppCompatActivity {
     private Timer rideTimer;
     private KmhAverager kmhAverager;
 
-
+    private static MainActivity instance;
     public static Handler handler;
+
+    public static MainActivity getInstance() {
+        return instance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +54,12 @@ public class MainActivity extends AppCompatActivity {
         //##########################################################################################
 
 
-
-
-
         //------------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------layout
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        instance = this;
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
@@ -71,6 +75,23 @@ public class MainActivity extends AppCompatActivity {
 
                         // Add code here to update the UI based on the item selected
                         // For example, swap UI fragments here
+
+                        switch (menuItem.getItemId()) {
+                            case R.id.record:
+
+                                if (getFragmentManager().findFragmentByTag("RECORD") == null) {
+                                    FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+
+
+                                    fragTransaction.replace(R.id.mainFrame, new RecordFragment(), "RECORD");
+                                    fragTransaction.commit();
+                                    return true;
+
+                                }
+                                break;
+
+
+                        }
 
                         return true;
                     }
@@ -111,22 +132,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-        // start Locator
-        new Locator(this);
-
-        kmCounter = new KmCounter(this);
-
-        // timer
-        timer = new Timer(this, 0);
-
-        // ride Time if kmh > 0
-        rideTimer = new Timer(this, 1);
-
-        // average Kmh
-        kmhAverager = new KmhAverager(this, kmCounter, timer, 1);
-
     }
+
     //##############################################################################################
     //----------------------------------------------------------------------------------------layout
     @Override
@@ -135,12 +142,14 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
+
+
         }
         return super.onOptionsItemSelected(item);
     }
+
+
     //##############################################################################################
-
-
 
 
     // get Location Update in this class
@@ -161,9 +170,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         kmhAverager.calcAvgSpeed();
-
-        
-
 
 
     }

@@ -14,12 +14,14 @@ import com.example.finnl.gotrack.MainActivity;
 public class Locator {
 
     private MainActivity creator;
+    private RecordFragment parent;
 
     // gps Listener
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    public Locator(MainActivity creator) {
+    public Locator(MainActivity creator, RecordFragment parent) {
+        this.parent = parent;
         this.creator = creator;
         locate();
     }
@@ -34,7 +36,7 @@ public class Locator {
             public void onLocationChanged(Location location) {
                 // Called when a new location is found by the network location provider.
 
-                creator.updateLocation(location);
+                parent.updateLocation(location);
             }
 
 

@@ -6,8 +6,8 @@
             android:title="test1"
           />
         <item
-            android:id="@+id/nav_gallery"
-            android:title="test2"
+            android:id="@+id/record"
+            android:title="Aufnehmen"
 
             />
      <item
