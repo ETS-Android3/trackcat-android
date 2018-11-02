@@ -15,30 +15,30 @@ public class Locator {
 
     private MainActivity creator;
     private RecordFragment parent;
+    private Locator instance;
 
-    // gps Listener
     private LocationManager locationManager;
     private LocationListener locationListener;
 
+    /*
+     * initialize Locator and start Tracking
+     * */
     public Locator(MainActivity creator, RecordFragment parent) {
         this.parent = parent;
         this.creator = creator;
-        locate();
-    }
+        this.instance = this;
 
-
-    protected void locate() {
-
+        /*
+         * initialize Locationlistener
+         * */
         locationManager = (LocationManager) creator.getSystemService(Context.LOCATION_SERVICE);
 
-        // Define a listener that responds to location updates
-        locationListener = new LocationListener() {  // Objekt einer anonymen Klasse
+        locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 // Called when a new location is found by the network location provider.
 
-                parent.updateLocation(location);
+                instance.parent.updateLocation(location);
             }
-
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
 
@@ -55,8 +55,22 @@ public class Locator {
 
         };
 
+        /* start Locating */
+        startTracking();
+    }
+
+
+    /*
+     * starts GPS Tracking
+     * */
+    protected void startTracking() {
+
         // check Permission
-        if (ActivityCompat.checkSelfPermission(creator, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(creator, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        if (ActivityCompat.checkSelfPermission(creator,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(creator,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED)
 
         {
             // TODO: Consider calling
@@ -69,13 +83,14 @@ public class Locator {
             return;
         }
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener); // via GPS
-
-
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+                0, locationListener); // via GPS
     }
 
-    // kill Class
-    public void kill() {
+    /*
+     * stops GPS Tracking
+     * */
+    public void stopTracking() {
         locationManager.removeUpdates(locationListener);
     }
 }

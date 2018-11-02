@@ -7,16 +7,20 @@ import com.example.finnl.gotrack.MainActivity;
 
 import java.util.TimerTask;
 
+/*
+ * Timer counts the secsonds.
+ * */
 public class Timer {
     private double time = 0;
 
-    private MainActivity creator;
     private java.util.Timer timer;
     int type;
     private boolean isRunning;
 
 
-    // Timer definition
+    /*
+     * Define Timer to add up Time and create String in HH:MM:SS format
+     * */
     private class RideTimerTask extends TimerTask {
 
         @Override
@@ -46,18 +50,19 @@ public class Timer {
             Message msg = new Message();
             msg.what = type;
             msg.obj = hours + ":" + minutesStr + ":" + seconds;
-            MainActivity.handler.sendMessage(msg);
+            RecordFragment.handler.sendMessage(msg);
         }
     }
 
-    ;
 
-
-    public Timer(MainActivity creator, int typeSet) {
-        this.creator = creator;
+    /*
+     * create new Instance and set type
+     * 0 = Total Timer
+     * 1 = Timer counts while speed > 0
+     * */
+    public Timer(int typeSet) {
         type = typeSet;
 
-        //timer.cancel();
         if (type != 1) {
             startTimer();
         }
@@ -68,7 +73,11 @@ public class Timer {
         return time;
     }
 
-    public void killTimer() {
+
+    /*
+     * stops Timer
+     * */
+    public void stopTimer() {
         if (isRunning) {
             timer.cancel();
             timer = null;
@@ -76,9 +85,14 @@ public class Timer {
         }
     }
 
+    /*
+     * starts Timer
+     * */
     public void startTimer() {
         if (!isRunning) {
+            /* initialise Timer */
             timer = new java.util.Timer();
+            /* start Timer on 1 sec */
             timer.scheduleAtFixedRate(new RideTimerTask(), 1000, 1000);
             isRunning = true;
         }
