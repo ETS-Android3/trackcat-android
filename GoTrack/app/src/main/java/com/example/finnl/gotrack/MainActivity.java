@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.finnl.gotrack.Recording.RecordFragment;
 
@@ -43,6 +45,13 @@ public class MainActivity extends AppCompatActivity {
          * set Listener on all Items of the Menu via @id/
          * */
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        View hView =  navigationView.inflateHeaderView(R.layout.nav_header);
+        ImageView imgvw = hView.findViewById(R.id.nav_imgView);
+        TextView tv = hView.findViewById(R.id.nav_txtView);
+        imgvw.setImageResource(R.drawable.ic_launcher_background);
+        tv.setText("Max Mustermann");
+
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
