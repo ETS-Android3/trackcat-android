@@ -3,6 +3,7 @@
 <!-- Layout for RecordFragmet with Map -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -20,21 +21,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:background="#B428FF"
-        android:orientation="vertical">
+        android:background="@color/darkBackground"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="0dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="15dp">
+
+        <LinearLayout
+            android:id="@+id/activity_call"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/activity_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                app:srcCompat="@drawable/activity_running_white" />
+
+            <TextView
+                android:id="@+id/activity_type"
+                android:layout_width="63dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:gravity="center"
+                android:text="Laufen"
+                android:textColor="@color/lightTxt" />
+        </LinearLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_weight="0">
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="TextView" />
 
         </android.support.v4.view.ViewPager>
 
@@ -50,15 +73,34 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
-            <TextView
-                android:id="@+id/textView2"
+            <LinearLayout
+                android:id="@+id/average_speed"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="TextView" />
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/average_speed_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    app:srcCompat="@drawable/record_average_speed_white" />
+
+                <TextView
+                    android:id="@+id/average_speed_unit"
+                    android:layout_width="63dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:gravity="center"
+                    android:text="7,56 km/h"
+                    android:textColor="@color/lightTxt" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textView3"
@@ -66,13 +108,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textColor="@color/lightTxt" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/textView4"
@@ -80,7 +124,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textColor="@color/lightTxt" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -88,7 +133,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textColor="@color/lightTxt" />
         </LinearLayout>
     </LinearLayout>
 

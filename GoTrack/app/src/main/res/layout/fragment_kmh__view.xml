@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical|center_horizontal"
         android:text="KMH"
+        android:textColor="@color/lightTxt"
         android:textSize="35sp" />
 
 </FrameLayout>
