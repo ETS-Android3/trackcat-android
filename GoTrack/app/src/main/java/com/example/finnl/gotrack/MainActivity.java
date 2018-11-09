@@ -1,6 +1,7 @@
 package com.example.finnl.gotrack;
 
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -70,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
                             * */
                             case R.id.record:
 
-                                if (getFragmentManager().findFragmentByTag("RECORD") == null) {
-                                    FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+                                if (getSupportFragmentManager().findFragmentByTag("RECORD") == null) {
+                                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+                                            //getFragmentManager().beginTransaction();
 
                                     fragTransaction.replace(R.id.mainFrame, new RecordFragment(), "RECORD");
                                     fragTransaction.commit();
