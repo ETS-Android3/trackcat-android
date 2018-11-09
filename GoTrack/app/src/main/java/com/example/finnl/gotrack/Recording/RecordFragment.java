@@ -61,12 +61,18 @@ public class RecordFragment extends Fragment {
     private List<android.support.v4.app.Fragment> listFragments = new ArrayList<>();
 
 
-    TextView kmh_TextView;
-    TextView time_TextView;
+    private TextView kmh_TextView;
+    private TextView time_TextView;
+    private TextView distance_TextView;
+    private TextView average_speed_TextView;
+    private TextView altimeter_TextView;
+
+    private boolean isTracking = false;
 
     CurrentPageIndicator mIndicator;
 
     private View view;
+
     @SuppressLint("HandlerLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,10 +87,18 @@ public class RecordFragment extends Fragment {
             public void handleMessage(android.os.Message msg) {
                 if (msg.what == 0) {
                     /*
-                    * set Time in TextView
-                    * */
-                    time_TextView = view.findViewById(R.id.time_TextView);
-                    time_TextView.setText(msg.obj+"");
+                     * set Time in TextView
+                     * */
+                    try {
+                        time_TextView = view.findViewById(R.id.time_TextView);
+                        time_TextView.setText(msg.obj + "");
+                    } catch (NullPointerException e) {
+                    }
+                    try {
+                        average_speed_TextView = view.findViewById(R.id.average_speed_TextView);
+                        average_speed_TextView.setText(Math.round((kmhAverager.getAvgSpeed() * 60 * 60) / 100) / 10.0 + " km/h");
+                    } catch (NullPointerException e) {
+                    }
                 } else if (msg.what == 1) {
                     //setRideTime((String) msg.obj);
                 }
@@ -99,7 +113,7 @@ public class RecordFragment extends Fragment {
          *Inflate the layout for this fragment
          *
          * */
-        view = inflater.inflate(R.layout.record_fragment, container, false);
+        view = inflater.inflate(R.layout.record_fragment_main, container, false);
 
         mMapView = (MapView) view.findViewById(R.id.mapview);
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
@@ -124,8 +138,8 @@ public class RecordFragment extends Fragment {
         listFragments.add(timeFrag);
 
         /*
-        * Swipe view of kmh/Time
-        * */
+         * Swipe view of kmh/Time
+         * */
         ViewPager mPager;
         PagerAdapter mPagerAdapter;
 
@@ -135,8 +149,8 @@ public class RecordFragment extends Fragment {
         mPager.setAdapter(mPagerAdapter);
 
         /*
-        * indicatior (little dots)
-        * */
+         * indicatior (little dots)
+         * */
         LinearLayout mLinearLayout = view.findViewById(R.id.indicator);
 
         mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle);
@@ -145,12 +159,12 @@ public class RecordFragment extends Fragment {
 
 
         /*start Tracking*/// TODO: 02.11.2018
-        startTracking();
+        //startTracking();
         return view;
     }
 
     /* starts GPS Tracker and recording Objects */
-    private void startTracking() {
+    public void startTracking() {
         // start Locator
         new Locator(MainActivity.getInstance(), this);
 
@@ -164,6 +178,12 @@ public class RecordFragment extends Fragment {
 
         // average Kmh
         kmhAverager = new SpeedAverager(MainActivity.getInstance(), kmCounter, timer, 1);
+
+        isTracking = true;
+    }
+
+    public boolean isTracking(){
+        return isTracking;
     }
 
     //##############################################################################################
@@ -223,18 +243,36 @@ public class RecordFragment extends Fragment {
 
         kmhAverager.calcAvgSpeed();
 
+
+        /*
+         *
+         * Set Values in Satistics
+         *
+         *
+         * */
+
         /* set Speed value in TextView */
-        kmh_TextView = view.findViewById(R.id.kmh_TextView);
-        kmh_TextView.setText(location.getSpeed()*60*60/1000 + " km/h");
+        try {
+            kmh_TextView = view.findViewById(R.id.kmh_TextView);
+            kmh_TextView.setText((Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h");
+        } catch (NullPointerException e) {
+        }
+        try {
+            distance_TextView = view.findViewById(R.id.distance_TextView);
+            distance_TextView.setText(Math.round(kmCounter.getAmount()) / 1000.0 + " km");
+        } catch (NullPointerException e) {
+        }
+        try {
+            altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
+            altimeter_TextView.setText(location.getAltitude() + " m");
+        } catch (NullPointerException e) {
+        }
 
 
     }
     /*
      *##############################################################################################
      */
-
-
-
 
 
     /**

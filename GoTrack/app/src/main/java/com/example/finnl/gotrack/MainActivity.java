@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static MainActivity instance;
 
+    private RecordFragment recordFragment;
 
     public static MainActivity getInstance() {
         return instance;
@@ -40,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
         /* save Instance for further Objects*/
         instance = this;
 
+        recordFragment = new RecordFragment();
+
+
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         /*
@@ -47,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
          * */
         NavigationView navigationView = findViewById(R.id.nav_view);
 
-        View hView =  navigationView.inflateHeaderView(R.layout.nav_header);
+        View hView = navigationView.inflateHeaderView(R.layout.nav_header);
         ImageView imgvw = hView.findViewById(R.id.nav_imgView);
         TextView tv = hView.findViewById(R.id.nav_txtView);
         imgvw.setImageResource(R.drawable.ic_launcher_background);
@@ -67,13 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (menuItem.getItemId()) {
                             /*
-                            * Open Record Fragment and track the User
-                            * */
+                             * Open Record Fragment and track the User
+                             * */
                             case R.id.record:
 
                                 if (getSupportFragmentManager().findFragmentByTag("RECORD") == null) {
                                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-                                            //getFragmentManager().beginTransaction();
+                                    //getFragmentManager().beginTransaction();
 
                                     fragTransaction.replace(R.id.mainFrame, new RecordFragment(), "RECORD");
                                     fragTransaction.commit();
@@ -90,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         /*
-        * Menu stuff
-        * */
+         * Menu stuff
+         * */
 
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -126,6 +130,29 @@ public class MainActivity extends AppCompatActivity {
         /*
         ###########################################################################################
         */
+
+        /*
+         * Play Button
+         * */
+
+        final ImageView playPause = (ImageView) findViewById(R.id.play_imageView);
+        playPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (recordFragment.isTracking()) {
+                } else {
+                    if (getSupportFragmentManager().findFragmentByTag("RECORD") == null) {
+                        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+                        //getFragmentManager().beginTransaction();
+
+                        fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
+                        fragTransaction.commit();
+                    }
+                    recordFragment.startTracking();
+                    playPause.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
+                }
+            }
+        });
 
     }
 

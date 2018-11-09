@@ -45,4 +45,8 @@ public class SpeedAverager {
     public int getType() {
         return type;
     }
+
+    public double getAvgSpeed(){
+        return avgSpeed;
+    }
 }

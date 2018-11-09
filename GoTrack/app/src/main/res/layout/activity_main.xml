@@ -15,6 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,7 +37,13 @@
 
             </FrameLayout>
 
+
+
+
+
+
             <!-- Button Bar at Bottom -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,6 +78,25 @@
 
 
         </LinearLayout>
+
+        <Button
+            android:visibility="gone"
+            android:id="@+id/button4"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@drawable/round_button"
+            android:hapticFeedbackEnabled="true"
+            android:text="Button" />
+
+        <ImageView
+            android:id="@+id/play_imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="bottom|center_horizontal"
+            app:srcCompat="@drawable/ic_play_circle_filled_black_24dp" />
+
+
     </FrameLayout>
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
     <android.support.design.widget.NavigationView
