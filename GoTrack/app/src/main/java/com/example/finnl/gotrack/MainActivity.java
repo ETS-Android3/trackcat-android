@@ -36,8 +36,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = getIntent();
         String action = intent.getStringExtra("action");
-        if (action!=null&&action.equalsIgnoreCase("pause")) {
-            recordFragment.stopTracking();
+        if (action!=null&&action.equalsIgnoreCase("RECORD")) {
+            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+            //getFragmentManager().beginTransaction();
+
+            fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
+            fragTransaction.commit();
         }
     }
 
@@ -170,6 +174,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void stopTracking() {
+        recordFragment.stopTracking();
+        startActivity(getIntent());
     }
 
 

@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.finnl.gotrack.MainActivity;
+import com.example.finnl.gotrack.NotificationActionReciever;
 import com.example.finnl.gotrack.R;
 import com.example.finnl.gotrack.Recording.Recording_UI.KMH_View_Fragment;
 import com.example.finnl.gotrack.Recording.Recording_UI.CurrentPageIndicator;
@@ -92,7 +93,7 @@ public class RecordFragment extends Fragment {
     private NotificationCompat.Builder mBuilder;
     private NotificationManagerCompat notificationManager;
     private ImageView playPause = null;
-
+    private Vibrator vibe;
     @SuppressLint("HandlerLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -180,7 +181,7 @@ public class RecordFragment extends Fragment {
         mIndicator.show();
 
 
-        final Vibrator vibe = (Vibrator) MainActivity.getInstance().getSystemService(Context.VIBRATOR_SERVICE);
+        vibe = (Vibrator) MainActivity.getInstance().getSystemService(Context.VIBRATOR_SERVICE);
         /*
          * Play Button
          * */
@@ -189,13 +190,10 @@ public class RecordFragment extends Fragment {
         playPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                vibe.vibrate(10);
                 if (isTracking) {
                     stopTracking();
-                    playPause.setImageResource(R.drawable.record_playbtn_white);
                 } else {
                     startTracking();
-                    playPause.setImageResource(R.drawable.record_pausebtn_white);
                 }
             }
         });
@@ -234,35 +232,42 @@ public class RecordFragment extends Fragment {
 
             isTracking = true;
         }
+        vibe.vibrate(10);
 
         playPause.setImageResource(R.drawable.record_pausebtn_white);
 
 
         Intent notificationIntent = MainActivity.getInstance().getIntent();// new Intent(MainActivity.getInstance().getApplicationContext(), MainActivity.class);
-       notificationIntent.putExtra("action", "none");
+       notificationIntent.putExtra("action", "RECORD");
         PendingIntent intent = PendingIntent.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
                 notificationIntent, 0);
 
 
-        Intent pauseTrackingIntent = MainActivity.getInstance().getIntent();
-        pauseTrackingIntent.putExtra("action", "pause");
+        //Intent pauseTrackingIntent = MainActivity.getInstance().getIntent();
+        //pauseTrackingIntent.putExtra("action", "pause");
 
-        PendingIntent intentPause = PendingIntent.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
+        Intent pauseTrackingIntent = new Intent(MainActivity.getInstance(), NotificationActionReciever.class);
+        pauseTrackingIntent.setAction("ACTION_PAUSE");
+        //pauseTrackingIntent.putExtra("action", "pause");
+
+        PendingIntent intentPause = PendingIntent.getBroadcast(MainActivity.getInstance().getApplicationContext(), 0,
+                pauseTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                /*.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
                 pauseTrackingIntent, 0);
-
+*/
         mBuilder = new NotificationCompat.Builder(MainActivity.getInstance(), CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_icon)
                 /* .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getApplicationContext().getResources(),
                          R.drawable.ic_launcher))*/
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
-                .setContentTitle("testTitel")
+                .setContentTitle("Laufende Aufzeichnung")
                 .setContentText("TestContent")
                 .setSound(null)
                 .setOngoing(true)
                 .setContentIntent(intent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .addAction(R.drawable.record_pausebtn_white, "pause",
-                        intentPause) ;
+                .addAction(R.drawable.ic_pause_circle_filled_white_24dp, "Pause",
+                        intentPause);
 
 
         // notificationId is a unique int for each notification that you must define
@@ -381,6 +386,9 @@ public class RecordFragment extends Fragment {
         locatorGPS.stopTracking();
         isTracking = false;
 
+        kmh_TextView.setText("0.0 km/h");
+
+        vibe.vibrate(10);
         playPause.setImageResource(R.drawable.record_playbtn_white);
 
         notificationManager.cancel(00);
