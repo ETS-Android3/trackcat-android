@@ -89,12 +89,7 @@
             android:hapticFeedbackEnabled="true"
             android:text="Button" />
 
-        <ImageView
-            android:id="@+id/play_imageView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="bottom|center_horizontal"
-            app:srcCompat="@drawable/ic_play_circle_filled_black_24dp" />
+
 
 
     </FrameLayout>

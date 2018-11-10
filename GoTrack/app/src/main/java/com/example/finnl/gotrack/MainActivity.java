@@ -1,6 +1,5 @@
 package com.example.finnl.gotrack;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -131,28 +130,7 @@ public class MainActivity extends AppCompatActivity {
         ###########################################################################################
         */
 
-        /*
-         * Play Button
-         * */
 
-        final ImageView playPause = (ImageView) findViewById(R.id.play_imageView);
-        playPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (recordFragment.isTracking()) {
-                } else {
-                    if (getSupportFragmentManager().findFragmentByTag("RECORD") == null) {
-                        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-                        //getFragmentManager().beginTransaction();
-
-                        fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
-                        fragTransaction.commit();
-                    }
-                    recordFragment.startTracking();
-                    playPause.setImageResource(R.drawable.ic_pause_circle_filled_black_24dp);
-                }
-            }
-        });
 
     }
 

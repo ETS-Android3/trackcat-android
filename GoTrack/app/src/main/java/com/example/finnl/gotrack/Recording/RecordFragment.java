@@ -1,6 +1,8 @@
 package com.example.finnl.gotrack.Recording;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.graphics.Color;
 import android.location.Location;
@@ -8,11 +10,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -72,6 +76,7 @@ public class RecordFragment extends Fragment {
     CurrentPageIndicator mIndicator;
 
     private View view;
+    private Locator locatorGPS;
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -158,6 +163,29 @@ public class RecordFragment extends Fragment {
         mIndicator.show();
 
 
+        final Vibrator vibe = (Vibrator) MainActivity.getInstance().getSystemService(Context.VIBRATOR_SERVICE);
+        /*
+         * Play Button
+         * */
+
+        final ImageView playPause = (ImageView) view.findViewById(R.id.play_imageView);
+        playPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vibe.vibrate(10);
+                if (isTracking) {
+                    stopTracking();
+                    playPause.setImageResource(R.drawable.ic_play_circle_filled_white_24dp);
+                } else {
+
+                    startTracking();
+                    playPause.setImageResource(R.drawable.ic_pause_circle_filled_white_24dp);
+                }
+            }
+        });
+
+
+
         /*start Tracking*/// TODO: 02.11.2018
         //startTracking();
         return view;
@@ -165,24 +193,34 @@ public class RecordFragment extends Fragment {
 
     /* starts GPS Tracker and recording Objects */
     public void startTracking() {
-        // start Locator
-        new Locator(MainActivity.getInstance(), this);
 
-        kmCounter = new mCounter();
+        if (locatorGPS == null) {
 
-        // timer
-        timer = new Timer(0);
+            // start Locator
+            locatorGPS = new Locator(MainActivity.getInstance(), this);
 
-        // ride Time if kmh > 0
-        rideTimer = new Timer(1);
+            kmCounter = new mCounter();
 
-        // average Kmh
-        kmhAverager = new SpeedAverager(MainActivity.getInstance(), kmCounter, timer, 1);
+            // timer
+            timer = new Timer(0);
 
-        isTracking = true;
+            // ride Time if kmh > 0
+            rideTimer = new Timer(1);
+
+            // average Kmh
+            kmhAverager = new SpeedAverager(MainActivity.getInstance(), kmCounter, timer, 1);
+
+            isTracking = true;
+        } else {
+            timer.startTimer();
+            rideTimer.startTimer();
+            locatorGPS.startTracking();
+
+            isTracking = true;
+        }
     }
 
-    public boolean isTracking(){
+    public boolean isTracking() {
         return isTracking;
     }
 
@@ -269,6 +307,13 @@ public class RecordFragment extends Fragment {
         }
 
 
+    }
+
+    public void stopTracking() {
+        timer.stopTimer();
+        rideTimer.stopTimer();
+        locatorGPS.stopTracking();
+        isTracking = false;
     }
     /*
      *##############################################################################################
