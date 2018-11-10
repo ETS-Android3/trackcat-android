@@ -235,7 +235,7 @@ public class RecordFragment extends Fragment {
             isTracking = true;
         }
 
-        playPause.setImageResource(R.drawable.ic_pause_circle_filled_white_24dp);
+        playPause.setImageResource(R.drawable.record_pausebtn_white);
 
 
         Intent notificationIntent = MainActivity.getInstance().getIntent();// new Intent(MainActivity.getInstance().getApplicationContext(), MainActivity.class);
@@ -261,7 +261,7 @@ public class RecordFragment extends Fragment {
                 .setOngoing(true)
                 .setContentIntent(intent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .addAction(R.drawable.ic_pause_circle_filled_white_24dp, "pause",
+                .addAction(R.drawable.record_pausebtn_white, "pause",
                         intentPause) ;
 
 
@@ -381,7 +381,7 @@ public class RecordFragment extends Fragment {
         locatorGPS.stopTracking();
         isTracking = false;
 
-        playPause.setImageResource(R.drawable.ic_play_circle_filled_white_24dp);
+        playPause.setImageResource(R.drawable.record_playbtn_white);
 
         notificationManager.cancel(00);
 
