@@ -175,11 +175,10 @@ public class RecordFragment extends Fragment {
                 vibe.vibrate(10);
                 if (isTracking) {
                     stopTracking();
-                    playPause.setImageResource(R.drawable.ic_play_circle_filled_white_24dp);
+                    playPause.setImageResource(R.drawable.record_playbtn_white);
                 } else {
-
                     startTracking();
-                    playPause.setImageResource(R.drawable.ic_pause_circle_filled_white_24dp);
+                    playPause.setImageResource(R.drawable.record_pausebtn_white);
                 }
             }
         });
