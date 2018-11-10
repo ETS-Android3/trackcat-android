@@ -1,7 +1,9 @@
 package com.example.finnl.gotrack;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -22,9 +24,21 @@ public class MainActivity extends AppCompatActivity {
     private static MainActivity instance;
 
     private RecordFragment recordFragment;
+    private NotificationManagerCompat notificationManager;
+
 
     public static MainActivity getInstance() {
         return instance;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        String action = intent.getStringExtra("action");
+        if (action!=null&&action.equalsIgnoreCase("pause")) {
+            recordFragment.stopTracking();
+        }
     }
 
     @Override
@@ -35,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         --------------------------------------------------------------------------------------layout
         */
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         /* save Instance for further Objects*/
@@ -78,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
                                     //getFragmentManager().beginTransaction();
 
-                                    fragTransaction.replace(R.id.mainFrame, new RecordFragment(), "RECORD");
+                                    fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
                                     fragTransaction.commit();
                                     return true;
 
@@ -129,7 +144,15 @@ public class MainActivity extends AppCompatActivity {
         /*
         ###########################################################################################
         */
+        notificationManager = NotificationManagerCompat.from(this);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        notificationManager.cancel(00);
+        super.onDestroy();
 
 
     }
