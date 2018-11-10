@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.graphics.Color;
@@ -21,12 +22,17 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finnl.gotrack.MainActivity;
 import com.example.finnl.gotrack.NotificationActionReciever;
@@ -94,6 +100,11 @@ public class RecordFragment extends Fragment {
     private NotificationManagerCompat notificationManager;
     private ImageView playPause = null;
     private Vibrator vibe;
+    private long startTime;
+    private CountDownTimer countdownTimer;
+
+    private ProgressBar progressBar;
+
     @SuppressLint("HandlerLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -180,6 +191,7 @@ public class RecordFragment extends Fragment {
         mIndicator.setPageCount(listFragments.size());
         mIndicator.show();
 
+        progressBar = view.findViewById(R.id.progressBar);
 
         vibe = (Vibrator) MainActivity.getInstance().getSystemService(Context.VIBRATOR_SERVICE);
         /*
@@ -187,7 +199,40 @@ public class RecordFragment extends Fragment {
          * */
 
         playPause = (ImageView) view.findViewById(R.id.play_imageView);
-        playPause.setOnClickListener(new View.OnClickListener() {
+
+        startTime = 0;
+
+        playPause.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (isTracking) {
+                        stopTracking();
+                    } else {
+                        startTracking();
+                    }
+                    startTime = event.getEventTime();
+                    startTimer();
+                    Toast toast = Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Halten für speichern", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.BOTTOM,0,400);
+                    toast.show();
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getEventTime() - startTime > 2000) {
+                        Log.v("huhuh", "testetstetst");
+
+
+                    } else {
+                        killTimer();
+                        progressBar.setProgress(0);
+                    }
+                }
+                return true;
+            }
+        });
+
+
+
+       /* playPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isTracking) {
@@ -196,13 +241,48 @@ public class RecordFragment extends Fragment {
                     startTracking();
                 }
             }
-        });
+        });*/
 
 
 
         /*start Tracking*/// TODO: 02.11.2018
         //startTracking();
         return view;
+    }
+
+    private void startTimer() {
+        countdownTimer = new CountDownTimer(2000, 10) {
+            @Override
+            public void onTick(long toGo) {
+                updateProgress(toGo);
+            }
+
+            @Override
+            public void onFinish() {
+                killTimer();
+                progressBar.setProgress(0);
+                vibe.vibrate(20);
+
+                // todo start show statistics
+            }
+        };
+        countdownTimer.start();
+    }
+
+    private void updateProgress(long toGo) {
+        if (toGo > 0) {
+            double hunderedst = (double) 2000 / 100;
+            double percentage = (double) (2000 - toGo) / hunderedst;
+
+            progressBar.setProgress((int) percentage);
+        } else {
+            progressBar.setProgress(100);
+        }
+    }
+
+    private void killTimer() {
+        countdownTimer.cancel();
+        countdownTimer = null;
     }
 
     /* starts GPS Tracker and recording Objects */
@@ -238,7 +318,7 @@ public class RecordFragment extends Fragment {
 
 
         Intent notificationIntent = MainActivity.getInstance().getIntent();// new Intent(MainActivity.getInstance().getApplicationContext(), MainActivity.class);
-       notificationIntent.putExtra("action", "RECORD");
+        notificationIntent.putExtra("action", "RECORD");
         PendingIntent intent = PendingIntent.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
                 notificationIntent, 0);
 
@@ -386,7 +466,11 @@ public class RecordFragment extends Fragment {
         locatorGPS.stopTracking();
         isTracking = false;
 
-        kmh_TextView.setText("0.0 km/h");
+        try {
+            kmh_TextView.setText("0.0 km/h");
+        } catch (NullPointerException e) {
+
+        }
 
         vibe.vibrate(10);
         playPause.setImageResource(R.drawable.record_playbtn_white);

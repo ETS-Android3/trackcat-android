@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical|center_horizontal"
-        android:text="Time"
+        android:text="0:00:00"
         android:textColor="@color/lightTxt"
         android:textSize="35sp" />
 
