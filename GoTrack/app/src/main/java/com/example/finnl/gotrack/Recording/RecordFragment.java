@@ -1,7 +1,13 @@
 package com.example.finnl.gotrack.Recording;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.graphics.Color;
@@ -11,6 +17,8 @@ import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -38,12 +46,15 @@ import org.osmdroid.views.overlay.Polyline;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Notification.EXTRA_NOTIFICATION_ID;
+
 /*
  * Fragment for Track recording. includes GPS Locator and Statistics
  * Results displayed in this Fragment view
  * */
 
 public class RecordFragment extends Fragment {
+    private static final String CHANNEL_ID = "GoTrack_Notification_Channel_ID";
     private mCounter kmCounter;
 
     private Timer timer;
@@ -77,6 +88,10 @@ public class RecordFragment extends Fragment {
 
     private View view;
     private Locator locatorGPS;
+
+    private NotificationCompat.Builder mBuilder;
+    private NotificationManagerCompat notificationManager;
+    private ImageView playPause = null;
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -112,6 +127,8 @@ public class RecordFragment extends Fragment {
         /*
          * #########################################################################################
          */
+        createNotificationChannel();
+        notificationManager = NotificationManagerCompat.from(MainActivity.getInstance());
 
         /*
          *------------------------------------------------------------------------------------------
@@ -168,7 +185,7 @@ public class RecordFragment extends Fragment {
          * Play Button
          * */
 
-        final ImageView playPause = (ImageView) view.findViewById(R.id.play_imageView);
+        playPause = (ImageView) view.findViewById(R.id.play_imageView);
         playPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -216,6 +233,56 @@ public class RecordFragment extends Fragment {
             locatorGPS.startTracking();
 
             isTracking = true;
+        }
+
+        playPause.setImageResource(R.drawable.ic_pause_circle_filled_white_24dp);
+
+
+        Intent notificationIntent = MainActivity.getInstance().getIntent();// new Intent(MainActivity.getInstance().getApplicationContext(), MainActivity.class);
+       notificationIntent.putExtra("action", "none");
+        PendingIntent intent = PendingIntent.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
+                notificationIntent, 0);
+
+
+        Intent pauseTrackingIntent = MainActivity.getInstance().getIntent();
+        pauseTrackingIntent.putExtra("action", "pause");
+
+        PendingIntent intentPause = PendingIntent.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
+                pauseTrackingIntent, 0);
+
+        mBuilder = new NotificationCompat.Builder(MainActivity.getInstance(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_icon)
+                /* .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getApplicationContext().getResources(),
+                         R.drawable.ic_launcher))*/
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setContentTitle("testTitel")
+                .setContentText("TestContent")
+                .setSound(null)
+                .setOngoing(true)
+                .setContentIntent(intent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .addAction(R.drawable.ic_pause_circle_filled_white_24dp, "pause",
+                        intentPause) ;
+
+
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(00, mBuilder.build());
+
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "GoTrack";
+            String description = "Shows Tracking";
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = MainActivity.getInstance().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 
@@ -313,6 +380,11 @@ public class RecordFragment extends Fragment {
         rideTimer.stopTimer();
         locatorGPS.stopTracking();
         isTracking = false;
+
+        playPause.setImageResource(R.drawable.ic_play_circle_filled_white_24dp);
+
+        notificationManager.cancel(00);
+
     }
     /*
      *##############################################################################################
