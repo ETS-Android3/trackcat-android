@@ -87,7 +87,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center_vertical"
+                    android:gravity="right|center_vertical"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -143,8 +143,8 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/record_playbtn_white" />
 
@@ -152,7 +152,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center_vertical"
+                    android:gravity="left|center_vertical"
                     android:orientation="vertical">
 
                     <LinearLayout

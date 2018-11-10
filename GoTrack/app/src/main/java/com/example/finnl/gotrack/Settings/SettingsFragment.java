@@ -1,10 +1,12 @@
-package com.example.finnl.gotrack;
+package com.example.finnl.gotrack.Settings;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.finnl.gotrack.R;
 
 public class SettingsFragment extends Fragment {
     @Override

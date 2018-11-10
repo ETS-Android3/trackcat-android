@@ -13,8 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.finnl.gotrack.Recording.RecordFragment;
+import com.example.finnl.gotrack.Settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
