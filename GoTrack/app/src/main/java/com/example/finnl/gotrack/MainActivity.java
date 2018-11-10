@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.finnl.gotrack.Recording.RecordFragment;
+import com.example.finnl.gotrack.Recording.Recording_UI.PageViewer;
 import com.example.finnl.gotrack.Settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -85,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
 
                                     fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
                                     fragTransaction.commit();
+
+                                  /*  FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+                                    //getFragmentManager().beginTransaction();
+
+                                    fragTransaction.replace(R.id.mainFrame, new PageViewer(), "PageViewer");
+                                    fragTransaction.commit();*/
+
                                     return true;
                                 }
                                 break;

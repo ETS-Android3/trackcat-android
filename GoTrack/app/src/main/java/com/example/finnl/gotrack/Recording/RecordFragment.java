@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.PagerAdapter;
@@ -38,6 +39,7 @@ import com.example.finnl.gotrack.NotificationActionReciever;
 import com.example.finnl.gotrack.R;
 import com.example.finnl.gotrack.Recording.Recording_UI.KMH_View_Fragment;
 import com.example.finnl.gotrack.Recording.Recording_UI.CurrentPageIndicator;
+import com.example.finnl.gotrack.Recording.Recording_UI.PageViewer;
 import com.example.finnl.gotrack.Recording.Recording_UI.TimeTotal_View_Fragment;
 import com.example.finnl.gotrack.Statistics.mCounter;
 import com.example.finnl.gotrack.Statistics.SpeedAverager;
@@ -49,6 +51,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,8 +77,8 @@ public class RecordFragment extends Fragment {
 
     private ArrayList<GeoPoint> GPSData = new ArrayList<>();
 
-    private KMH_View_Fragment kmhFrag;
-    private TimeTotal_View_Fragment timeFrag;
+    private static KMH_View_Fragment kmhFrag;
+    private static TimeTotal_View_Fragment timeFrag;
 
     private List<android.support.v4.app.Fragment> listFragments = new ArrayList<>();
 
@@ -102,8 +105,25 @@ public class RecordFragment extends Fragment {
 
     private ProgressBar progressBar;
     private int progressTime = 1000;
+    private static ViewPager mPager;
+    private static PagerAdapter mPagerAdapter;
 
-    
+    private static RecordFragment instance;
+
+    public RecordFragment() {
+
+        kmhFrag = new KMH_View_Fragment();
+        timeFrag = new TimeTotal_View_Fragment();
+
+        listFragments = new ArrayList<>();
+        listFragments.add(kmhFrag);
+        listFragments.add(timeFrag);
+
+        instance = this;
+
+
+    }
+
     @SuppressLint("HandlerLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -164,31 +184,33 @@ public class RecordFragment extends Fragment {
         mMapView.getOverlays().add(startMarker);
 
 
-        kmhFrag = new KMH_View_Fragment();
-        timeFrag = new TimeTotal_View_Fragment();
-
-        listFragments.add(kmhFrag);
-        listFragments.add(timeFrag);
-
         /*
          * Swipe view of kmh/Time
          * */
-        ViewPager mPager;
-        PagerAdapter mPagerAdapter;
 
-        // Instantiate a ViewPager and a PagerAdapter.
+
+        /*// Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) view.findViewById(R.id.pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(MainActivity.getInstance().getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
+        if (mPagerAdapter == null) {
+            mPagerAdapter = new ScreenSlidePagerAdapter(MainActivity.getInstance().getSupportFragmentManager());
+                    // instance.getChildFragmentManager());//MainActivity.getInstance().getSupportFragmentManager());
+        }
+        mPager.setAdapter(mPagerAdapter);*/
+
+       /* listFragments = new ArrayList<>();
+        listFragments.add(kmhFrag);
+        listFragments.add(timeFrag);*/
 
         /*
          * indicatior (little dots)
          * */
         LinearLayout mLinearLayout = view.findViewById(R.id.indicator);
 
-        mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle);
+        //view.findViewById(R.id.pager);
+
+       /* mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle);
         mIndicator.setPageCount(listFragments.size());
-        mIndicator.show();
+        mIndicator.show();*/
 
         progressBar = view.findViewById(R.id.progressBar);
 
@@ -230,6 +252,11 @@ public class RecordFragment extends Fragment {
                 return true;
             }
         });
+        FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
+        //getFragmentManager().beginTransaction();
+
+        fragTransaction.replace(R.id.pageViewerContainer, new PageViewer(), "PageViewer");
+        fragTransaction.commit();
 
 
 
@@ -243,6 +270,7 @@ public class RecordFragment extends Fragment {
                 }
             }
         });*/
+        time_TextView = view.findViewById(R.id.time_TextView);
 
 
 
@@ -398,13 +426,15 @@ public class RecordFragment extends Fragment {
         mMapController.setZoom(18);
         mMapController.setCenter(gPt);
 
-        /*
-         * set Polyline
-         * */
-        mPath.setPoints(GPSData);
-        mPath.setColor(Color.RED);
-        mPath.setWidth(4);
-
+        try {
+            /*
+             * set Polyline
+             * */
+            mPath.setPoints(GPSData);
+            mPath.setColor(Color.RED);
+            mPath.setWidth(4);
+        } catch (NullPointerException e) {
+        }
         /*
          * set Marker for current Position
          * */
@@ -443,7 +473,14 @@ public class RecordFragment extends Fragment {
 
         /* set Speed value in TextView */
         try {
+            listFragments.get(0);
             kmh_TextView = view.findViewById(R.id.kmh_TextView);
+
+            ViewPager pager = view.findViewById(R.id.pager);
+
+
+            int count = pager.getChildCount();
+
             kmh_TextView.setText((Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h");
         } catch (NullPointerException e) {
         }
