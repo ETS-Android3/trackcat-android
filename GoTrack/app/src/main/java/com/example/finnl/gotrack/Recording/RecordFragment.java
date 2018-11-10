@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.PagerAdapter;
@@ -27,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.example.finnl.gotrack.MainActivity;
 import com.example.finnl.gotrack.NotificationActionReciever;
 import com.example.finnl.gotrack.R;
@@ -36,18 +34,14 @@ import com.example.finnl.gotrack.Recording.Recording_UI.CurrentPageIndicator;
 import com.example.finnl.gotrack.Recording.Recording_UI.TimeTotal_View_Fragment;
 import com.example.finnl.gotrack.Statistics.mCounter;
 import com.example.finnl.gotrack.Statistics.SpeedAverager;
-
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 
 /*
  * Fragment for Track recording. includes GPS Locator and Statistics
@@ -136,7 +130,7 @@ public class RecordFragment extends Fragment {
          *Inflate the layout for this fragment
          *
          * */
-        view = inflater.inflate(R.layout.record_fragment_main, container, false);
+        view = inflater.inflate(R.layout.fragment_record_main, container, false);
 
         mMapView = (MapView) view.findViewById(R.id.mapview);
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
