@@ -6,19 +6,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_dashboard"
             android:title="Dashboard"
             android:icon="@drawable/menu_dashboard" />
         <item
-            android:id="@+id/record"
+            android:id="@+id/nav_record"
             android:title="Aufnahme"
             android:icon="@drawable/menu_record" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_recordlist"
             android:title="Gespeicherte Aufzeichnungen"
             android:icon="@drawable/menu_recordlist"/>
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_settings"
             android:title="Einstellungen"
             android:icon="@drawable/menu_settings"/>
     </group>

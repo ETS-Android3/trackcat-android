@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = getIntent();
         String action = intent.getStringExtra("action");
-        if (action!=null&&action.equalsIgnoreCase("RECORD")) {
+        if (action != null && action.equalsIgnoreCase("RECORD")) {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             //getFragmentManager().beginTransaction();
 
@@ -47,28 +47,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       /*
-        --------------------------------------------------------------------------------------------
-
-        --------------------------------------------------------------------------------------layout
-        */
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
-        /* save Instance for further Objects*/
+        // Instanz für spätere Objekte speichern
         instance = this;
-
         recordFragment = new RecordFragment();
-
-
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        /*
-         * set Listener on all Items of the Menu via @id/
-         * */
+        // Nav-Menu Listener
         NavigationView navigationView = findViewById(R.id.nav_view);
-
         View hView = navigationView.inflateHeaderView(R.layout.nav_header);
         ImageView imgvw = hView.findViewById(R.id.nav_imgView);
         TextView tv = hView.findViewById(R.id.nav_txtView);
@@ -91,22 +79,25 @@ public class MainActivity extends AppCompatActivity {
                             /*
                              * Open Record Fragment and track the User
                              * */
-                            case R.id.record:
-
+                            case R.id.nav_record:
                                 if (getSupportFragmentManager().findFragmentByTag("RECORD") == null) {
                                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-                                    //getFragmentManager().beginTransaction();
 
                                     fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
                                     fragTransaction.commit();
                                     return true;
-
                                 }
                                 break;
+                            case R.id.nav_settings:
+                                if (getSupportFragmentManager().findFragmentByTag("SETTINGS") == null) {
+                                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
-
+                                    fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), "SETTINGS");
+                                    fragTransaction.commit();
+                                    return true;
+                                }
+                                break;
                         }
-
                         return true;
                     }
                 });
