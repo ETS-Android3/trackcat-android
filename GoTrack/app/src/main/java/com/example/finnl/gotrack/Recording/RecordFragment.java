@@ -32,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.finnl.gotrack.MainActivity;
 import com.example.finnl.gotrack.NotificationActionReciever;
 import com.example.finnl.gotrack.R;
@@ -40,12 +41,14 @@ import com.example.finnl.gotrack.Recording.Recording_UI.CurrentPageIndicator;
 import com.example.finnl.gotrack.Recording.Recording_UI.TimeTotal_View_Fragment;
 import com.example.finnl.gotrack.Statistics.mCounter;
 import com.example.finnl.gotrack.Statistics.SpeedAverager;
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +101,9 @@ public class RecordFragment extends Fragment {
     private CountDownTimer countdownTimer;
 
     private ProgressBar progressBar;
+    private int progressTime = 1000;
 
+    
     @SuppressLint("HandlerLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -205,13 +210,15 @@ public class RecordFragment extends Fragment {
                     } else {
                         startTracking();
                     }
-                    startTime = event.getEventTime();
-                    startTimer();
-                    Toast toast = Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Halten für speichern", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.BOTTOM,0,400);
-                    toast.show();
+                    if (timer.getTime() > 0) {
+                        startTime = event.getEventTime();
+                        startTimer();
+                        Toast toast = Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Halten für speichern", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP, 0, 0);
+                        toast.show();
+                    }
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getEventTime() - startTime > 2000) {
+                    if (event.getEventTime() - startTime > progressTime) {
                         Log.v("huhuh", "testetstetst");
 
 
@@ -245,7 +252,7 @@ public class RecordFragment extends Fragment {
     }
 
     private void startTimer() {
-        countdownTimer = new CountDownTimer(2000, 10) {
+        countdownTimer = new CountDownTimer(progressTime, 10) {
             @Override
             public void onTick(long toGo) {
                 updateProgress(toGo);
@@ -265,8 +272,8 @@ public class RecordFragment extends Fragment {
 
     private void updateProgress(long toGo) {
         if (toGo > 0) {
-            double hunderedst = (double) 2000 / 100;
-            double percentage = (double) (2000 - toGo) / hunderedst;
+            double hunderedst = (double) progressTime / 100;
+            double percentage = (double) (progressTime - toGo) / hunderedst;
 
             progressBar.setProgress((int) percentage);
         } else {
