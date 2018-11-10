@@ -110,7 +110,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="0"
                             android:gravity="center"
-                            android:text="7,56 km/h"
+                            android:text="0.0 km/h"
                             android:textColor="@color/lightTxt" />
                     </LinearLayout>
 
@@ -133,26 +133,45 @@
                             android:layout_height="match_parent"
                             android:layout_weight="0"
                             android:gravity="center"
-                            android:text="0 km"
+                            android:text="0.0 km"
                             android:textColor="@color/lightTxt" />
                     </LinearLayout>
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/play_imageView"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/record_playbtn_white" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/play_imageView"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/record_playbtn_white" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:progressBarStyleHorizontal"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/progress_bar"
+                        android:rotation="270" />
+                </FrameLayout>
+
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="left|center_vertical"
+                    android:gravity="center_vertical"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -174,7 +193,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="0 m"
+                            android:text="0.0 m"
                             android:textColor="@color/lightTxt" />
                     </LinearLayout>
 
