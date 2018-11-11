@@ -1,8 +1,5 @@
 package com.example.finnl.gotrack.Recording.Recording_UI;
 
-import android.content.Context;
-import android.graphics.pdf.PdfDocument;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +13,6 @@ import android.widget.LinearLayout;
 
 import com.example.finnl.gotrack.MainActivity;
 import com.example.finnl.gotrack.R;
-import com.example.finnl.gotrack.Recording.RecordFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +28,9 @@ public class PageViewer extends Fragment {
     }
 
 
-    public static PageViewer newInstance(String param1, String param2) {
-        PageViewer fragment = new PageViewer();
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -49,27 +39,22 @@ public class PageViewer extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_page_viewer, container, false);
 
+        /* create Fragments for ViewPager */
         KMH_View_Fragment kmhFrag = new KMH_View_Fragment();
         TimeTotal_View_Fragment timeFrag = new TimeTotal_View_Fragment();
 
-        //listFragments = new ArrayList<>();
         listFragments.add(kmhFrag);
         listFragments.add(timeFrag);
 
         // Instantiate a ViewPager and a PagerAdapter.
-        ViewPager mPager = (ViewPager) view.findViewById(R.id.pager);
-
+        ViewPager mPager = view.findViewById(R.id.pager);
         PagerAdapter mPagerAdapter = new PageViewer.ScreenSlidePagerAdapter(MainActivity.getInstance().getSupportFragmentManager());
-        // instance.getChildFragmentManager());//MainActivity.getInstance().getSupportFragmentManager());
 
         mPager.setAdapter(mPagerAdapter);
 
-
-
-
-
         LinearLayout mLinearLayout = view.findViewById(R.id.indicator);
 
+        /* create Indicator (little buttons) */
         CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle);
         mIndicator.setPageCount(listFragments.size());
         mIndicator.show();
@@ -77,26 +62,20 @@ public class PageViewer extends Fragment {
         return view;
     }
 
-    /**
-     * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
-     * sequence.
-     */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
+        private ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
+        /* called on Swipe */
         @Override
         public android.support.v4.app.Fragment getItem(int position) {
-
             return listFragments.get(position);
         }
 
         @Override
         public int getCount() {
-
             return listFragments.size();
         }
     }
-
 }

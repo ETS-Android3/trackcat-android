@@ -10,18 +10,15 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,7 +26,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,10 +33,7 @@ import android.widget.Toast;
 import com.example.finnl.gotrack.MainActivity;
 import com.example.finnl.gotrack.NotificationActionReciever;
 import com.example.finnl.gotrack.R;
-import com.example.finnl.gotrack.Recording.Recording_UI.KMH_View_Fragment;
-import com.example.finnl.gotrack.Recording.Recording_UI.CurrentPageIndicator;
 import com.example.finnl.gotrack.Recording.Recording_UI.PageViewer;
-import com.example.finnl.gotrack.Recording.Recording_UI.TimeTotal_View_Fragment;
 import com.example.finnl.gotrack.Statistics.mCounter;
 import com.example.finnl.gotrack.Statistics.SpeedAverager;
 
@@ -51,9 +44,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
 
 /*
  * Fragment for Track recording. includes GPS Locator and Statistics
@@ -61,72 +52,66 @@ import java.util.List;
  * */
 
 public class RecordFragment extends Fragment {
-    private static final String CHANNEL_ID = "GoTrack_Notification_Channel_ID";
-    private mCounter kmCounter;
 
+    /*
+     * Statistics
+     * */
+    private Locator locatorGPS;
+    private mCounter kmCounter;
     private Timer timer;
     private Timer rideTimer;
     private SpeedAverager kmhAverager;
 
+    /*
+     * Maps Attributes
+     * */
     private MapView mMapView;
     private MapController mMapController;
     private Marker startMarker;
-
     private Polyline mPath;
-    public static Handler handler;
 
+    /*
+     * All recorded GeoPoints
+     * */
     private ArrayList<GeoPoint> GPSData = new ArrayList<>();
 
-    private static KMH_View_Fragment kmhFrag;
-    private static TimeTotal_View_Fragment timeFrag;
+    /*
+     * Message Handler
+     * */
+    public static Handler handler;
 
-    private List<android.support.v4.app.Fragment> listFragments = new ArrayList<>();
 
-
+    /*
+     * Statistics TextViews
+     * */
     private TextView kmh_TextView;
     private TextView time_TextView;
-    private TextView distance_TextView;
     private TextView average_speed_TextView;
-    private TextView altimeter_TextView;
 
     private boolean isTracking = false;
 
-    CurrentPageIndicator mIndicator;
-
     private View view;
-    private Locator locatorGPS;
 
-    private NotificationCompat.Builder mBuilder;
+    /*
+     * Notification stuff
+     * */
     private NotificationManagerCompat notificationManager;
-    private ImageView playPause = null;
-    private Vibrator vibe;
-    private long startTime;
-    private CountDownTimer countdownTimer;
+    private static final String CHANNEL_ID = "GoTrack_Notification_Channel_ID";
 
+    /*
+     * Play/Pause Button + ProgressBar on hold
+     * */
+    private ImageView playPause;
+    private Vibrator vibe;
+    private CountDownTimer countdownTimer;
     private ProgressBar progressBar;
     private int progressTime = 1000;
-    private static ViewPager mPager;
-    private static PagerAdapter mPagerAdapter;
-
-    private static RecordFragment instance;
-
-    public RecordFragment() {
-
-        kmhFrag = new KMH_View_Fragment();
-        timeFrag = new TimeTotal_View_Fragment();
-
-        listFragments = new ArrayList<>();
-        listFragments.add(kmhFrag);
-        listFragments.add(timeFrag);
-
-        instance = this;
+    private long startTime;
 
 
-    }
-
-    @SuppressLint("HandlerLeak")
+    @SuppressLint({"HandlerLeak", "ClickableViewAccessibility"})
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         /* ----------------------------------------------------------------------------------handler
          * recieves messages from another thread
@@ -142,25 +127,35 @@ public class RecordFragment extends Fragment {
                      * */
                     try {
                         time_TextView = view.findViewById(R.id.time_TextView);
-                        time_TextView.setText(msg.obj + "");
+                        String toSet = msg.obj + "";
+                        time_TextView.setText(toSet);
+
+                        TextView distance_TextView = view.findViewById(R.id.distance_TextView);
+                        toSet = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
+                        distance_TextView.setText(toSet);
                     } catch (NullPointerException e) {
+                        Log.v("GOREACK", e.toString());
                     }
+                    /*
+                     * recalculate average Speed
+                     * */
                     try {
                         average_speed_TextView = view.findViewById(R.id.average_speed_TextView);
-                        average_speed_TextView.setText(Math.round((kmhAverager.getAvgSpeed() * 60 * 60) / 100) / 10.0 + " km/h");
+                        String toSet = Math.round((kmhAverager.getAvgSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
+                        average_speed_TextView.setText(toSet);
                     } catch (NullPointerException e) {
+                        Log.v("GOREACK", e.toString());
+
                     }
                 } else if (msg.what == 1) {
-                    //setRideTime((String) msg.obj);
+
+                    /*
+                    TODO
+                    setRideTime((String) msg.obj);
+                    */
                 }
             }
         };
-        /*
-         * #########################################################################################
-         */
-        createNotificationChannel();
-        notificationManager = NotificationManagerCompat.from(MainActivity.getInstance());
-
         /*
          *------------------------------------------------------------------------------------------
          *Inflate the layout for this fragment
@@ -168,83 +163,83 @@ public class RecordFragment extends Fragment {
          * */
         view = inflater.inflate(R.layout.fragment_record_main, container, false);
 
-        mMapView = (MapView) view.findViewById(R.id.mapview);
+        /*
+         * set Map Attributes
+         */
+        mMapView = view.findViewById(R.id.mapview);
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 
-        // kackhässliche ZoomControls--> für abgabe AUS!!!!!!todo
+        // kackhässliche ZoomControls----------------------------------------------------------------> für abgabe AUS!!!!!!todo
         mMapView.setBuiltInZoomControls(true);
 
         mMapView.setMultiTouchControls(true);
         mMapController = (MapController) mMapView.getController();
+
+        /*
+         * add Marker and Polyline
+         * */
         startMarker = new Marker(mMapView);
         mPath = new Polyline(mMapView);
-
 
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
 
-
         /*
-         * Swipe view of kmh/Time
-         * */
+         * Initialize for Notification
+         */
+        createNotificationChannel();
+        notificationManager = NotificationManagerCompat.from(MainActivity.getInstance());
 
-
-        /*// Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ViewPager) view.findViewById(R.id.pager);
-        if (mPagerAdapter == null) {
-            mPagerAdapter = new ScreenSlidePagerAdapter(MainActivity.getInstance().getSupportFragmentManager());
-                    // instance.getChildFragmentManager());//MainActivity.getInstance().getSupportFragmentManager());
-        }
-        mPager.setAdapter(mPagerAdapter);*/
-
-       /* listFragments = new ArrayList<>();
-        listFragments.add(kmhFrag);
-        listFragments.add(timeFrag);*/
-
-        /*
-         * indicatior (little dots)
-         * */
-        LinearLayout mLinearLayout = view.findViewById(R.id.indicator);
-
-        //view.findViewById(R.id.pager);
-
-       /* mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle);
-        mIndicator.setPageCount(listFragments.size());
-        mIndicator.show();*/
-
-        progressBar = view.findViewById(R.id.progressBar);
-
-        vibe = (Vibrator) MainActivity.getInstance().getSystemService(Context.VIBRATOR_SERVICE);
         /*
          * Play Button
          * */
+        playPause = view.findViewById(R.id.play_imageView);
 
-        playPause = (ImageView) view.findViewById(R.id.play_imageView);
-
+        // for haptic feedback
+        vibe = (Vibrator) MainActivity.getInstance().getSystemService(Context.VIBRATOR_SERVICE);
+        progressBar = view.findViewById(R.id.progressBar);
         startTime = 0;
 
+        /*
+         * onTouchListener makes hold down possible for ending Tracking
+         * */
         playPause.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                /*
+                 * when Button is pushed
+                 * */
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    vibe.vibrate(10);
+                    /* change state of Tracking */
                     if (isTracking) {
                         stopTracking();
                     } else {
                         startTracking();
                     }
+                    /* if there is any data collectet Tracked Route is saveable */
                     if (timer.getTime() > 0) {
+                        /* store starttime for holdDown */
                         startTime = event.getEventTime();
+                        /* timer for Progressbar */
                         startTimer();
+
+                        /*
+                         * todo
+                         * Toast for user help
+                         * */
                         Toast toast = Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Halten für speichern", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP, 0, 0);
                         toast.show();
                     }
+                    /*
+                     * when Button is released
+                     * */
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getEventTime() - startTime > progressTime) {
-                        Log.v("huhuh", "testetstetst");
-
-
-                    } else {
+                    if (event.getEventTime() - startTime < progressTime) {
+                        /*
+                         * stops hold down Progress if holding down was too short
+                         * */
                         killTimer();
                         progressBar.setProgress(0);
                     }
@@ -252,33 +247,46 @@ public class RecordFragment extends Fragment {
                 return true;
             }
         });
-        FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
-        //getFragmentManager().beginTransaction();
 
+        /*
+         * recreate status of Play/Pause Button
+         * */
+        if (isTracking) {
+            playPause.setImageResource(R.drawable.record_pausebtn_white);
+        } else {
+            playPause.setImageResource(R.drawable.record_playbtn_white);
+        }
+
+
+        /*
+         * set ViewPager(km/h<->Time Swiper)
+         * */
+        FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.pageViewerContainer, new PageViewer(), "PageViewer");
         fragTransaction.commit();
 
 
-
-       /* playPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isTracking) {
-                    stopTracking();
-                } else {
-                    startTracking();
-                }
-            }
-        });*/
-        time_TextView = view.findViewById(R.id.time_TextView);
-
-
-
         /*start Tracking*/// TODO: 02.11.2018
         //startTracking();
+        if (timer != null)
+
+        {
+            timer.sendTime();
+        }
         return view;
     }
 
+
+ /*   public String setTime() {
+        *//* rectrate status of Timer *//*
+        if (timer != null) {
+            return timer.getTime();
+        }
+    }*/
+
+    /*
+     * start Timer for stop/save Tracking Progressbar
+     * */
     private void startTimer() {
         countdownTimer = new CountDownTimer(progressTime, 10) {
             @Override
@@ -298,17 +306,22 @@ public class RecordFragment extends Fragment {
         countdownTimer.start();
     }
 
+    /*
+     * update Timer progress in progressbar
+     * */
     private void updateProgress(long toGo) {
         if (toGo > 0) {
             double hunderedst = (double) progressTime / 100;
             double percentage = (double) (progressTime - toGo) / hunderedst;
-
             progressBar.setProgress((int) percentage);
         } else {
             progressBar.setProgress(100);
         }
     }
 
+    /*
+     * stop/kill Timer progress
+     * */
     private void killTimer() {
         countdownTimer.cancel();
         countdownTimer = null;
@@ -316,12 +329,13 @@ public class RecordFragment extends Fragment {
 
     /* starts GPS Tracker and recording Objects */
     public void startTracking() {
-
+        /* instantiate if null */
         if (locatorGPS == null) {
 
             // start Locator
             locatorGPS = new Locator(MainActivity.getInstance(), this);
 
+            // counts Distance
             kmCounter = new mCounter();
 
             // timer
@@ -335,42 +349,36 @@ public class RecordFragment extends Fragment {
 
             isTracking = true;
         } else {
+            /* restart if already instantiated */
             timer.startTimer();
             rideTimer.startTimer();
             locatorGPS.startTracking();
 
             isTracking = true;
         }
-        vibe.vibrate(10);
 
         playPause.setImageResource(R.drawable.record_pausebtn_white);
 
-
+        /* returns to Record Page when Notification is clicked */
         Intent notificationIntent = MainActivity.getInstance().getIntent();// new Intent(MainActivity.getInstance().getApplicationContext(), MainActivity.class);
         notificationIntent.putExtra("action", "RECORD");
         PendingIntent intent = PendingIntent.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
                 notificationIntent, 0);
 
-
-        //Intent pauseTrackingIntent = MainActivity.getInstance().getIntent();
-        //pauseTrackingIntent.putExtra("action", "pause");
-
+        /* calls Broadcastreciever when Button "pause" is clicked and pauses Tracking + opens Record page */
         Intent pauseTrackingIntent = new Intent(MainActivity.getInstance(), NotificationActionReciever.class);
         pauseTrackingIntent.setAction("ACTION_PAUSE");
-        //pauseTrackingIntent.putExtra("action", "pause");
-
         PendingIntent intentPause = PendingIntent.getBroadcast(MainActivity.getInstance().getApplicationContext(), 0,
                 pauseTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                /*.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
-                pauseTrackingIntent, 0);
-*/
-        mBuilder = new NotificationCompat.Builder(MainActivity.getInstance(), CHANNEL_ID)
+
+        /*
+         * create Notification
+         * */
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MainActivity.getInstance(), CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_icon)
-                /* .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getApplicationContext().getResources(),
-                         R.drawable.ic_launcher))*/
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setContentTitle("Laufende Aufzeichnung")
-                .setContentText("TestContent")
+                .setContentText("Jetzt anzeigen")
                 .setSound(null)
                 .setOngoing(true)
                 .setContentIntent(intent)
@@ -378,34 +386,29 @@ public class RecordFragment extends Fragment {
                 .addAction(R.drawable.ic_pause_circle_filled_white_24dp, "Pause",
                         intentPause);
 
-
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(00, mBuilder.build());
-
+        // start Notification
+        notificationManager.notify(MainActivity.getInstance().getNOTIFICATION_ID(), mBuilder.build());
     }
 
+    /*
+     * create Channel for Notification
+     * */
     private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
+        // create Notification Channel. needed from API 26
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "GoTrack";
             String description = "Shows Tracking";
             int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
+
+            // Register Channel to System
             NotificationManager notificationManager = MainActivity.getInstance().getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
     }
-
-    public boolean isTracking() {
-        return isTracking;
-    }
-
-    //##############################################################################################
-
 
     /*
      * get Location Update in this class
@@ -434,6 +437,7 @@ public class RecordFragment extends Fragment {
             mPath.setColor(Color.RED);
             mPath.setWidth(4);
         } catch (NullPointerException e) {
+            Log.v("GOREACK", e.toString());
         }
         /*
          * set Marker for current Position
@@ -445,7 +449,6 @@ public class RecordFragment extends Fragment {
          * updatde OSM Map
          * */
         mMapView.invalidate();
-
 
         /*
          * add Location to Statistics
@@ -463,7 +466,6 @@ public class RecordFragment extends Fragment {
 
         kmhAverager.calcAvgSpeed();
 
-
         /*
          *
          * Set Values in Satistics
@@ -473,31 +475,34 @@ public class RecordFragment extends Fragment {
 
         /* set Speed value in TextView */
         try {
-            listFragments.get(0);
             kmh_TextView = view.findViewById(R.id.kmh_TextView);
-
-            ViewPager pager = view.findViewById(R.id.pager);
-
-
-            int count = pager.getChildCount();
-
-            kmh_TextView.setText((Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h");
+            String toSet = (Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
+            kmh_TextView.setText(toSet);
         } catch (NullPointerException e) {
+            Log.v("GOREACK", e.toString());
+
         }
         try {
-            distance_TextView = view.findViewById(R.id.distance_TextView);
-            distance_TextView.setText(Math.round(kmCounter.getAmount()) / 1000.0 + " km");
+            TextView distance_TextView = view.findViewById(R.id.distance_TextView);
+            String toSet = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
+            distance_TextView.setText(toSet);
         } catch (NullPointerException e) {
+            Log.v("GOREACK", e.toString());
+
         }
         try {
-            altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
-            altimeter_TextView.setText(location.getAltitude() + " m");
+            TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
+            String toSet = location.getAltitude() + " m";
+            altimeter_TextView.setText(toSet);
         } catch (NullPointerException e) {
+            Log.v("GOREACK", e.toString());
+
         }
-
-
     }
 
+    /*
+     * Stop/Pause Tracking
+     * */
     public void stopTracking() {
         timer.stopTimer();
         rideTimer.stopTimer();
@@ -505,42 +510,14 @@ public class RecordFragment extends Fragment {
         isTracking = false;
 
         try {
-            kmh_TextView.setText("0.0 km/h");
+            String toSet = "0.0 km/h";
+            kmh_TextView.setText(toSet);
         } catch (NullPointerException e) {
-
+            Log.v("GOREACK", e.toString());
         }
 
-        vibe.vibrate(10);
         playPause.setImageResource(R.drawable.record_playbtn_white);
 
-        notificationManager.cancel(00);
-
+        notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
     }
-    /*
-     *##############################################################################################
-     */
-
-
-    /**
-     * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
-     * sequence.
-     */
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public android.support.v4.app.Fragment getItem(int position) {
-
-            return listFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-
-            return listFragments.size();
-        }
-    }
-
 }

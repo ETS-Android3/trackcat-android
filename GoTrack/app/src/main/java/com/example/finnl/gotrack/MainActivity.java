@@ -13,11 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.example.finnl.gotrack.Recording.RecordFragment;
 import com.example.finnl.gotrack.Recording.Recording_UI.PageViewer;
 import com.example.finnl.gotrack.Settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
+
+    final int NOTIFICATION_ID = 100;
 
     private DrawerLayout mDrawerLayout;
 
@@ -35,15 +38,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        /*
+         * used when Notification is clicked to switch to RecordFragment
+         * */
         Intent intent = getIntent();
         String action = intent.getStringExtra("action");
         if (action != null && action.equalsIgnoreCase("RECORD")) {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            //getFragmentManager().beginTransaction();
-
             fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
             fragTransaction.commit();
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        /*
+         * cancel Notification if App is closed
+         * */
+        notificationManager.cancel(getNOTIFICATION_ID());
+        super.onDestroy();
     }
 
     @Override
@@ -151,14 +166,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onDestroy() {
-
-        notificationManager.cancel(00);
-        super.onDestroy();
-
-
-    }
 
     /*
         ############################################################################################
@@ -175,10 +182,26 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+     * stops/pauses Tracking opens App and switch to RecordFragment
+     * */
     public void stopTracking() {
         recordFragment.stopTracking();
         startActivity(getIntent());
+         try {
+            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
+            fragTransaction.commit();
+        } catch (RuntimeException e) {
+
+        }
     }
+
+    public int getNOTIFICATION_ID() {
+        return NOTIFICATION_ID;
+    }
+
+
 
 
     /*############################################################################################*/

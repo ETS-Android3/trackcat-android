@@ -27,31 +27,40 @@ public class Timer {
         public void run() {
             // add up Time
             time += 1;
+            sendTime();
 
-            // create readable String
-            int hours = (int) Math.floor((time / 60) / 60);
-
-            double timeCalc = time - hours * 60 * 60;
-
-            int minutes = (int) Math.floor(timeCalc / 60);
-            String seconds = (timeCalc - minutes * 60) / 100 + "";
-            if (seconds.length() < 4) {
-                seconds += 0;
-            }
-
-            seconds = seconds.substring(2);
-
-            String minutesStr = minutes + "";
-            if (minutesStr.length() < 2) {
-                minutesStr = 0 + minutesStr;
-            }
-
-            // send message to View
-            Message msg = new Message();
-            msg.what = type;
-            msg.obj = hours + ":" + minutesStr + ":" + seconds;
-            RecordFragment.handler.sendMessage(msg);
         }
+    }
+
+    /*
+     * create and Send readable Message String
+     * */
+    public void sendTime()
+
+    {
+        // create readable String
+        int hours = (int) Math.floor((time / 60) / 60);
+
+        double timeCalc = time - hours * 60 * 60;
+
+        int minutes = (int) Math.floor(timeCalc / 60);
+        String seconds = (timeCalc - minutes * 60) / 100 + "";
+        if (seconds.length() < 4) {
+            seconds += 0;
+        }
+
+        seconds = seconds.substring(2);
+
+        String minutesStr = minutes + "";
+        if (minutesStr.length() < 2) {
+            minutesStr = 0 + minutesStr;
+        }
+
+        // send message to View
+        Message msg = new Message();
+        msg.what = type;
+        msg.obj = hours + ":" + minutesStr + ":" + seconds;
+        RecordFragment.handler.sendMessage(msg);
     }
 
 
