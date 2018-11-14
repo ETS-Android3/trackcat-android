@@ -16,10 +16,10 @@ public class DashboardFragment extends Fragment {
                              Bundle savedInstanceState) {
         FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
 
-        // LineChart dem Dashboar hinzufügen
+        // LineChart dem Dashboard hinzufügen
         fragTransaction.replace(R.id.summaryContainer, new SummaryFragment(), "SUMMARY");
 
-        // LineChart dem Dashboar hinzufügen
+        // LineChart dem Dashboard hinzufügen
         fragTransaction.replace(R.id.chartContainer, new LineChartFragment(), "LINE_CHART");
 
         // Änderungen zusammenfassen + Dashboard aufbauen
