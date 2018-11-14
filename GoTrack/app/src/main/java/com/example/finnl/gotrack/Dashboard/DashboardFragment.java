@@ -7,12 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.finnl.gotrack.Charts.BarChartFragment;
 import com.example.finnl.gotrack.Charts.LineChartFragment;
 import com.example.finnl.gotrack.R;
 import com.example.finnl.gotrack.Recording.Recording_UI.PageViewer;
 
 public class DashboardFragment extends Fragment {
-
+    private FragmentTransaction fragTransaction;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -24,8 +25,12 @@ public class DashboardFragment extends Fragment {
         // Inflate the layout for this fragment
 
 
-        FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
+        fragTransaction = getChildFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.chartContainer, new LineChartFragment(), "LineChart");
+        fragTransaction.commit();
+
+        fragTransaction = getChildFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.summaryContainer, new BarChartFragment(), "BarChart");
         fragTransaction.commit();
 
         return inflater.inflate(R.layout.fragment_dashboard, container, false);

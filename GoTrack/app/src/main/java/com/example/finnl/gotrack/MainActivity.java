@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         imgvw.setImageResource(R.drawable.ic_launcher_background);
         tv.setText("Max Mustermann");
 
+
+
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
