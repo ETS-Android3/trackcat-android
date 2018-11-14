@@ -16,4 +16,7 @@
         <item name="30">30</item>
         <item name="0">0</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hallo ich bin ein leeres Fragment</string>
 </resources>

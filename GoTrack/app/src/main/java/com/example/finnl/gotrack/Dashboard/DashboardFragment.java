@@ -10,29 +10,25 @@ import android.view.ViewGroup;
 import com.example.finnl.gotrack.Charts.BarChartFragment;
 import com.example.finnl.gotrack.Charts.LineChartFragment;
 import com.example.finnl.gotrack.R;
-import com.example.finnl.gotrack.Recording.Recording_UI.PageViewer;
 
 public class DashboardFragment extends Fragment {
     private FragmentTransaction fragTransaction;
 
-    public DashboardFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
 
+        // BarChart dem Dashboard hinzufügen
+        fragTransaction.replace(R.id.summaryContainer, new BarChartFragment(), "BAR_CHART");
 
-        fragTransaction = getChildFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.chartContainer, new LineChartFragment(), "LineChart");
+        // LineChart dem Dashboar hinzufügen
+        fragTransaction.replace(R.id.chartContainer, new LineChartFragment(), "LINE_CHART");
+
         fragTransaction.commit();
-
-        fragTransaction = getChildFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.summaryContainer, new BarChartFragment(), "BarChart");
+        
+        // Änderungen zusammenfassen + Dashboard aufbauen
         fragTransaction.commit();
-
         return inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
 }
