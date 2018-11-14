@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
             fragTransaction.commit();
+        } else if (action != null && action.equalsIgnoreCase("SETTINGS")) {
+            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), "SETTINGS");
+            fragTransaction.commit();
         }
     }
 

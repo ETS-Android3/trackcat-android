@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.*;
 import android.util.Log;
+
+import com.example.finnl.gotrack.MainActivity;
 import com.example.finnl.gotrack.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -33,6 +35,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         if (preference instanceof SwitchPreference) {
             getActivity().finish();
             final Intent intent = getActivity().getIntent();
+            intent.putExtra("action", "SETTINGS");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             getActivity().startActivity(intent);
 
