@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
 
-    private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
 
     public static MainActivity getInstance() {
@@ -64,10 +63,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Aktuelles Themes aus Einstellungen laden
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_DARK_THEME, false)) {
             setTheme(R.style.AppTheme_Dark);
         }
 
+        // Startseite definieren
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

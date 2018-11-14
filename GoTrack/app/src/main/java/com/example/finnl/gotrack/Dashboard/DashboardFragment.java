@@ -17,15 +17,13 @@ public class DashboardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
+        fragTransaction = getChildFragmentManager().beginTransaction();
 
-        // BarChart dem Dashboard hinzufügen
+        // Summary dem Dashboard hinzufügen
         fragTransaction.replace(R.id.summaryContainer, new BarChartFragment(), "BAR_CHART");
 
         // LineChart dem Dashboard hinzufügen
         fragTransaction.replace(R.id.chartContainer, new LineChartFragment(), "LINE_CHART");
-
-        fragTransaction.commit();
         
         // Änderungen zusammenfassen + Dashboard aufbauen
         fragTransaction.commit();
