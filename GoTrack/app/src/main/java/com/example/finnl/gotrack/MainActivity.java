@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Startseite festlegen - Erster Aufruf
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
         fragTransaction.commit();
@@ -83,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
         imgvw.setImageResource(R.drawable.ic_launcher_background);
         tv.setText("Max Mustermann");
 
-
-
+        // Listener Menü-Item
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -94,13 +95,8 @@ public class MainActivity extends AppCompatActivity {
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
-
+                        // Aktion je nach Auswahl des Items
                         switch (menuItem.getItemId()) {
-                            /*
-                             * Open Record Fragment and track the User
-                             * */
                             case R.id.nav_record:
                                 if (getSupportFragmentManager().findFragmentByTag("RECORD") == null) {
                                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
@@ -127,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 break;
                             case R.id.nav_dashboard:
-                                if(getSupportFragmentManager().findFragmentByTag("DASHBOARD") == null){
+                                if (getSupportFragmentManager().findFragmentByTag("DASHBOARD") == null) {
                                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
                                     fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
@@ -203,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
     public void stopTracking() {
         recordFragment.stopTracking();
         startActivity(getIntent());
-         try {
+        try {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
             fragTransaction.commit();

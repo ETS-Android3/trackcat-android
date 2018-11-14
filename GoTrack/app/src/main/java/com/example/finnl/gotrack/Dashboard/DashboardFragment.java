@@ -22,7 +22,7 @@ public class DashboardFragment extends Fragment {
         // BarChart dem Dashboard hinzufügen
         fragTransaction.replace(R.id.summaryContainer, new BarChartFragment(), "BAR_CHART");
 
-        // LineChart dem Dashboar hinzufügen
+        // LineChart dem Dashboard hinzufügen
         fragTransaction.replace(R.id.chartContainer, new LineChartFragment(), "LINE_CHART");
 
         fragTransaction.commit();
