@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.finnl.gotrack.Dashboard.DashboardFragment;
 import com.example.finnl.gotrack.Recording.RecordFragment;
 import com.example.finnl.gotrack.Recording.Recording_UI.PageViewer;
 import com.example.finnl.gotrack.Settings.SettingsFragment;
@@ -116,6 +117,15 @@ public class MainActivity extends AppCompatActivity {
                                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
                                     fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), "SETTINGS");
+                                    fragTransaction.commit();
+                                    return true;
+                                }
+                                break;
+                            case R.id.nav_dashboard:
+                                if(getSupportFragmentManager().findFragmentByTag("DASHBOARD") == null){
+                                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+
+                                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
                                     fragTransaction.commit();
                                     return true;
                                 }
