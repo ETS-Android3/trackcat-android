@@ -1,6 +1,8 @@
 package com.example.finnl.gotrack;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.NotificationManagerCompat;
@@ -22,15 +24,13 @@ import com.example.finnl.gotrack.Settings.SettingsFragment;
 public class MainActivity extends AppCompatActivity {
 
     final int NOTIFICATION_ID = 100;
-
     private DrawerLayout mDrawerLayout;
-
-
     private static MainActivity instance;
-
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
 
+    private static final String PREFS_NAME = "prefs";
+    private static final String PREF_DARK_THEME = "dark_theme";
 
     public static MainActivity getInstance() {
         return instance;
@@ -64,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_DARK_THEME, false)) {
+            setTheme(R.style.AppTheme_Dark);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -211,11 +215,4 @@ public class MainActivity extends AppCompatActivity {
     public int getNOTIFICATION_ID() {
         return NOTIFICATION_ID;
     }
-
-
-
-
-    /*############################################################################################*/
-
-
 }
