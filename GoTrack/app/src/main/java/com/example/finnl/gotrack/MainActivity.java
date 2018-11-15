@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.example.finnl.gotrack.Dashboard.DashboardFragment;
 import com.example.finnl.gotrack.Recording.RecordFragment;
-import com.example.finnl.gotrack.Recording.Recording_UI.PageViewer;
 import com.example.finnl.gotrack.Settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        /*
-         * used when Notification is clicked to switch to RecordFragment
-         * */
         Intent intent = getIntent();
         String action = intent.getStringExtra("action");
         if (action != null && action.equalsIgnoreCase("RECORD")) {
@@ -68,9 +64,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Aktuelles Themes aus Einstellungen laden
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_DARK_THEME, false)) {
-            setTheme(R.style.AppTheme_Dark);
-        }
+        setTheme(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_DARK_THEME, false) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
         // Startseite definieren
         super.onCreate(savedInstanceState);

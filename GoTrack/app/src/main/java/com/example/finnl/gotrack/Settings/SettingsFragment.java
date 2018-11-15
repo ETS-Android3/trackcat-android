@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.*;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.example.finnl.gotrack.MainActivity;
 import com.example.finnl.gotrack.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -33,13 +33,21 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         Preference preference = findPreference(key);
         // Wechsel des Themes
         if (preference instanceof SwitchPreference) {
-            getActivity().finish();
+            Log.d("PREFERENCES", "Wechsel des Themes!");
+            /* getActivity().finish();
             final Intent intent = getActivity().getIntent();
             intent.putExtra("action", "SETTINGS");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            getActivity().startActivity(intent);
+            getActivity().startActivity(intent); */
 
-            Log.d("PREFERENCES", "Modus gewechselt!");
+            getActivity().recreate();
+            if (preference.isEnabled()) {
+                Toast.makeText(getActivity(), "DarkTheme aktiviert!", Toast.LENGTH_LONG).show();
+                Log.d("PREFERENCES", "DarkTheme aktiviert!");
+            } else {
+                Toast.makeText(getActivity(), "LightTheme aktiviert!", Toast.LENGTH_LONG).show();
+                Log.d("PREFERENCES", "LightTheme aktiviert!");
+            }
         } else {
             Log.d("PREFERENCES", "Unbekannte Aktion ausgeführt!");
         }
