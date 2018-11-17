@@ -109,6 +109,15 @@ public class RecordFragment extends Fragment {
     private long startTime;
 
 
+    @Override
+    public void onPause() {
+        if (!isTracking) {
+            locatorGPS.stopTracking();
+        }
+        super.onPause();
+    }
+
+
     @SuppressLint({"HandlerLeak", "ClickableViewAccessibility"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -275,12 +284,20 @@ public class RecordFragment extends Fragment {
         {
             timer.sendTime();
         }
+
+        if (locatorGPS == null) {
+            // start Locator
+            locatorGPS = new Locator(MainActivity.getInstance(), this);
+        }
+
+        locatorGPS.startTracking();
+
         return view;
     }
 
 
- /*   public String setTime() {
-        *//* rectrate status of Timer *//*
+    /*   public String setTime() {
+     *//* rectrate status of Timer *//*
         if (timer != null) {
             return timer.getTime();
         }
@@ -332,10 +349,10 @@ public class RecordFragment extends Fragment {
     /* starts GPS Tracker and recording Objects */
     public void startTracking() {
         /* instantiate if null */
-        if (locatorGPS == null) {
+        if (kmCounter == null) {
 
             // start Locator
-            locatorGPS = new Locator(MainActivity.getInstance(), this);
+            //locatorGPS = new Locator(MainActivity.getInstance(), this);
 
             // counts Distance
             kmCounter = new mCounter();
@@ -354,7 +371,7 @@ public class RecordFragment extends Fragment {
             /* restart if already instantiated */
             timer.startTimer();
             rideTimer.startTimer();
-            locatorGPS.startTracking();
+            //locatorGPS.startTracking();
 
             isTracking = true;
         }
@@ -422,82 +439,86 @@ public class RecordFragment extends Fragment {
     public void updateLocation(Location location) {
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
 
-        // add to List
-        GPSData.add(gPt);
-
         /*
          * move Map
          * */
         mMapController.setCenter(gPt);
 
-        try {
-            /*
-             * set Polyline
-             * */
-            mPath.setPoints(GPSData);
-            mPath.setColor(Color.RED);
-            mPath.setWidth(4);
-        } catch (NullPointerException e) {
-            Log.v("GOREACK", e.toString());
-        }
+
         /*
          * set Marker for current Position
          * */
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-        /*
-         * updatde OSM Map
-         * */
-        mMapView.invalidate();
+        if (isTracking) {
+            // add to List
+            GPSData.add(gPt);
 
-        /*
-         * add Location to Statistics
-         * */
+            try {
+                /*
+                 * set Polyline
+                 * */
+                mPath.setPoints(GPSData);
+                mPath.setColor(Color.RED);
+                mPath.setWidth(4);
+            } catch (NullPointerException e) {
+                Log.v("GOREACK", e.toString());
+            }
 
-        // add Distance
-        kmCounter.addKm(location);
+            /*
+             * updatde OSM Map
+             * */
+            mMapView.invalidate();
 
-        // count ridetime
-        if (!rideTimer.getActive() && location.getSpeed() > 0) {
-            rideTimer.startTimer();
-        } else if (rideTimer.getActive() && location.getSpeed() == 0) {
-            rideTimer.stopTimer();
-        }
+            /*
+             * add Location to Statistics
+             * */
 
-        kmhAverager.calcAvgSpeed();
+            // add Distance
+            kmCounter.addKm(location);
 
-        /*
-         *
-         * Set Values in Satistics
-         *
-         *
-         * */
+            // count ridetime
+            if (!rideTimer.getActive() && location.getSpeed() > 0) {
+                rideTimer.startTimer();
+            } else if (rideTimer.getActive() && location.getSpeed() == 0) {
+                rideTimer.stopTimer();
+            }
 
-        /* set Speed value in TextView */
-        try {
-            kmh_TextView = view.findViewById(R.id.kmh_TextView);
-            String toSet = (Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
-            kmh_TextView.setText(toSet);
-        } catch (NullPointerException e) {
-            Log.v("GOREACK", e.toString());
+            kmhAverager.calcAvgSpeed();
 
-        }
-        try {
-            TextView distance_TextView = view.findViewById(R.id.distance_TextView);
-            String toSet = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
-            distance_TextView.setText(toSet);
-        } catch (NullPointerException e) {
-            Log.v("GOREACK", e.toString());
+            /*
+             *
+             * Set Values in Satistics
+             *
+             *
+             * */
 
-        }
-        try {
-            TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
-            String toSet = location.getAltitude() + " m";
-            altimeter_TextView.setText(toSet);
-        } catch (NullPointerException e) {
-            Log.v("GOREACK", e.toString());
+            /* set Speed value in TextView */
+            try {
+                kmh_TextView = view.findViewById(R.id.kmh_TextView);
+                String toSet = (Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
+                kmh_TextView.setText(toSet);
+            } catch (NullPointerException e) {
+                Log.v("GOREACK", e.toString());
 
+            }
+            try {
+                TextView distance_TextView = view.findViewById(R.id.distance_TextView);
+                String toSet = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
+                distance_TextView.setText(toSet);
+            } catch (NullPointerException e) {
+                Log.v("GOREACK", e.toString());
+
+            }
+            try {
+                TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
+                String toSet = location.getAltitude() + " m";
+                altimeter_TextView.setText(toSet);
+            } catch (NullPointerException e) {
+                Log.v("GOREACK", e.toString());
+
+            }
         }
     }
 
@@ -507,7 +528,7 @@ public class RecordFragment extends Fragment {
     public void stopTracking() {
         timer.stopTimer();
         rideTimer.stopTimer();
-        locatorGPS.stopTracking();
+        //locatorGPS.stopTracking();
         isTracking = false;
 
         try {
