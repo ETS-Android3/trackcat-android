@@ -174,6 +174,8 @@ public class RecordFragment extends Fragment {
 
         mMapView.setMultiTouchControls(true);
         mMapController = (MapController) mMapView.getController();
+        mMapController.setZoom(18);
+
 
         /*
          * add Marker and Polyline
@@ -424,9 +426,8 @@ public class RecordFragment extends Fragment {
         GPSData.add(gPt);
 
         /*
-         * move Map and Zoom
+         * move Map
          * */
-        mMapController.setZoom(18);
         mMapController.setCenter(gPt);
 
         try {
