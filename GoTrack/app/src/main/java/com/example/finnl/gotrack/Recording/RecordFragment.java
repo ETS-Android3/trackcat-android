@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
@@ -307,16 +308,16 @@ public class RecordFragment extends Fragment {
     }
 
     /*
-    * end Tracking ans switch to Statistics for dismisss or save
-    * */
+     * end Tracking ans switch to Statistics for dismisss or save
+     * */
     private void endTracking() {
 
         stopTracking();
         notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
 
         /*
-        * kill this instance and create new Fragment in Main
-        * */
+         * kill this instance and create new Fragment in Main
+         * */
         MainActivity.getInstance().endTracking();
         /*
          * TODO open statistics page from here
@@ -498,6 +499,30 @@ public class RecordFragment extends Fragment {
          * */
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+
+        try {
+            TextView acc_TextView = view.findViewById(R.id.accuracy_TextView);
+            String toSet = location.getAccuracy() + "m";
+            acc_TextView.setText(toSet);
+
+            ImageView iconAcc = view.findViewById(R.id.accuracy_icon);
+            if (location.getAccuracy() < 5) {
+                iconAcc.setImageResource(R.drawable.ic_signal_cellular_4_bar_black_24dp);
+            } else if (location.getAccuracy() < 10) {
+                iconAcc.setImageResource(R.drawable.ic_signal_cellular_3_bar_black_24dp);
+
+            } else if (location.getAccuracy() < 20) {
+                iconAcc.setImageResource(R.drawable.ic_signal_cellular_2_bar_black_24dp);
+            } else if (location.getAccuracy() > 30) {
+                iconAcc.setImageResource(R.drawable.ic_signal_cellular_1_bar_black_24dp);
+            }
+
+        } catch (NullPointerException e) {
+            Log.v("GOREACK", e.toString());
+
+        }
+
 
         if (isTracking) {
             // add to List
