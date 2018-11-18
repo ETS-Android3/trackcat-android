@@ -12,8 +12,12 @@ public class NotificationActionReciever extends BroadcastReceiver {
          * Recieves Message when pause Button in Notification is clicked
          * */
         String msg = intent.getAction();
-        if (msg != null && msg.equalsIgnoreCase("ACTION_PAUSE")) {
-            MainActivity.getInstance().stopTracking();
+        if (msg != null) {
+            if (msg.equalsIgnoreCase("ACTION_PAUSE")) {
+                MainActivity.getInstance().stopTracking();
+            } else if (msg.equalsIgnoreCase("ACTION_PLAY")) {
+                MainActivity.getInstance().startTracking();
+            }
         }
     }
 }

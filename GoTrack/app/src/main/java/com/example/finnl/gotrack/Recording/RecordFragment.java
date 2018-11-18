@@ -108,6 +108,7 @@ public class RecordFragment extends Fragment {
     private int progressTime = 1000;
     private long startTime;
 
+    private String notificationContent = "";
 
     @Override
     public void onPause() {
@@ -143,9 +144,10 @@ public class RecordFragment extends Fragment {
                         String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
                         distance_TextView.setText(toSetDistance);
 
+                        notificationContent = toSetTime + "   " + toSetDistance;
 
                         // todo Noftification Time/Distance String editable
-                        issueNotification(toSetTime + "   " + toSetDistance);
+                        issueNotification(notificationContent);
 
                     } catch (NullPointerException e) {
                         Log.v("GOREACK", e.toString());
@@ -258,6 +260,10 @@ public class RecordFragment extends Fragment {
                          * */
                         killTimer();
                         progressBar.setProgress(0);
+                    } else if (startTime != 0) {
+
+                        endTracking();
+
                     }
                 }
                 return true;
@@ -298,6 +304,24 @@ public class RecordFragment extends Fragment {
         locatorGPS.startTracking();
 
         return view;
+    }
+
+    /*
+    * end Tracking ans switch to Statistics for dismisss or save
+    * */
+    private void endTracking() {
+
+        stopTracking();
+        notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
+
+        /*
+        * kill this instance and create new Fragment in Main
+        * */
+        MainActivity.getInstance().endTracking();
+        /*
+         * TODO open statistics page from here
+         * */
+
     }
 
 
@@ -383,7 +407,7 @@ public class RecordFragment extends Fragment {
 
         playPause.setImageResource(R.drawable.record_pausebtn_white);
 
-        issueNotification("");
+        issueNotification(notificationContent);
     }
 
     /*
@@ -402,6 +426,12 @@ public class RecordFragment extends Fragment {
         PendingIntent intentPause = PendingIntent.getBroadcast(MainActivity.getInstance().getApplicationContext(), 0,
                 pauseTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        /* calls Broadcastreciever when Button "play" is clicked and starts Tracking + opens Record page */
+        Intent playTrackingIntent = new Intent(MainActivity.getInstance(), NotificationActionReciever.class);
+        playTrackingIntent.setAction("ACTION_PLAY");
+        PendingIntent intentPlay = PendingIntent.getBroadcast(MainActivity.getInstance().getApplicationContext(), 0,
+                playTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         /*
          * create Notification
          * */
@@ -413,10 +443,15 @@ public class RecordFragment extends Fragment {
                 .setSound(null)
                 .setOngoing(true)
                 .setContentIntent(intent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .addAction(R.drawable.ic_pause_circle_filled_white_24dp, "Pause",
-                        intentPause);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
+        if (isTracking) {
+            mBuilder.addAction(R.drawable.ic_pause_circle_filled_white_24dp, "Pause",
+                    intentPause);
+        } else {
+            mBuilder.addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play",
+                    intentPlay);
+        }
         // start Notification
         notificationManager.notify(MainActivity.getInstance().getNOTIFICATION_ID(), mBuilder.build());
     }
@@ -552,7 +587,8 @@ public class RecordFragment extends Fragment {
         }
 
         playPause.setImageResource(R.drawable.record_playbtn_white);
+        issueNotification(notificationContent);
 
-        notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
     }
+
 }

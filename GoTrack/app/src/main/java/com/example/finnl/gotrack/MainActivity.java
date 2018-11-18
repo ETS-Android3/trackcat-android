@@ -214,4 +214,25 @@ public class MainActivity extends AppCompatActivity {
     public int getNOTIFICATION_ID() {
         return NOTIFICATION_ID;
     }
+
+    public void startTracking() {
+        recordFragment.startTracking();
+        startActivity(getIntent());
+        try {
+            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
+            fragTransaction.commit();
+        } catch (RuntimeException e) {
+
+        }
+    }
+
+    /*
+    * restart Record Fragment after Tracking is ended
+    * */
+    public void endTracking() {
+        // TODO switch to Statisitcs page
+
+        recordFragment = new RecordFragment();
+    }
 }
