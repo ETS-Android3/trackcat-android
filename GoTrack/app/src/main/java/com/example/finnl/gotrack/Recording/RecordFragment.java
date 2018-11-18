@@ -6,8 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Icon;
+import android.hardware.GeomagneticField;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
@@ -21,11 +22,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,15 +41,20 @@ import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
+import org.osmdroid.views.overlay.compass.IOrientationConsumer;
+import org.osmdroid.views.overlay.compass.IOrientationProvider;
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /*
  * Fragment for Track recording. includes GPS Locator and Statistics
  * Results displayed in this Fragment view
  * */
 
-public class RecordFragment extends Fragment {
+public class RecordFragment extends Fragment implements IOrientationConsumer {
 
     /*
      * Statistics
@@ -79,7 +81,7 @@ public class RecordFragment extends Fragment {
     /*
      * Message Handler
      * */
-    public static Handler handler;
+    static Handler handler;
 
 
     /*
@@ -111,12 +113,33 @@ public class RecordFragment extends Fragment {
 
     private String notificationContent = "";
 
+    /*
+     * necessary variables for mapOrientation
+     */
+
+    private int deviceOrientation = 0;
+    private CompassOverlay mCompassOverlay;
+    private float gpsSpeed = 0f;
+    private float lat = 0f;
+    private float lon = 0f;
+    private float alt = 0f;
+    private long timeOfFix = 0;
+
     @Override
     public void onPause() {
         if (!isTracking) {
             locatorGPS.stopTracking();
         }
         super.onPause();
+        mCompassOverlay.disableCompass();
+        mCompassOverlay.getOrientationProvider().stopOrientationProvider();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCompassOverlay.enableCompass();
+        mCompassOverlay.getOrientationProvider().startOrientationProvider(mCompassOverlay);
     }
 
 
@@ -202,6 +225,48 @@ public class RecordFragment extends Fragment {
 
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
+
+        /*
+         + add compass element
+         + toDo: figure out if compass orientation works on real device <- not sure if it works on AVD
+         + !!! needs a device with the compass-functionality to work properly !!!
+         */
+        if (!"Android-x86".equalsIgnoreCase(Build.BRAND)) {
+            //Lock the device in current screen orientation
+            int orientation = Objects.requireNonNull(getActivity()).getRequestedOrientation();
+            int rotation = ((WindowManager) Objects.requireNonNull(Objects.requireNonNull(getActivity()).getSystemService(
+                    Context.WINDOW_SERVICE))).getDefaultDisplay().getRotation();
+            switch (rotation) {
+                case Surface.ROTATION_0:
+                    orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+                    deviceOrientation = 0;
+                    break;
+                case Surface.ROTATION_90:
+                    deviceOrientation =90;
+                    orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+                    break;
+                case Surface.ROTATION_180:
+                    deviceOrientation =180;
+                    orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+                    break;
+                case Surface.ROTATION_270:
+                    deviceOrientation =270;
+                    orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+                    break;
+            }
+
+            getActivity().setRequestedOrientation(orientation);
+        }
+
+        mCompassOverlay = new CompassOverlay(Objects.requireNonNull(getContext()),
+                new InternalCompassOrientationProvider(Objects.requireNonNull(getActivity())), mMapView);
+        /*
+         + Option to switch between pointer and compass mode. Default is compass mode.
+         + To switch on pointer mode uncomment statement below.
+         */
+        //mCompassOverlay.setPointerMode(true);
+
+        mMapView.getOverlays().add(mCompassOverlay);
 
         /*
          * Initialize for Notification
@@ -409,6 +474,7 @@ public class RecordFragment extends Fragment {
         playPause.setImageResource(R.drawable.record_pausebtn_white);
 
         issueNotification(notificationContent);
+
     }
 
     /*
@@ -485,8 +551,18 @@ public class RecordFragment extends Fragment {
      * Calculate Statistics
      *----------------------------------------------------------------------------------------------
      */
-    public void updateLocation(Location location) {
+    void updateLocation(Location location) {
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
+
+        /*
+         + declare necessary variables for map orientation
+         */
+        float gpsbearing = location.getBearing();
+        gpsSpeed = location.getSpeed();
+        lat = (float) location.getLatitude();
+        lon = (float) location.getLongitude();
+        alt = (float) location.getAltitude();
+        timeOfFix = location.getTime();
 
         /*
          * move Map
@@ -537,6 +613,25 @@ public class RecordFragment extends Fragment {
                 mPath.setWidth(4);
             } catch (NullPointerException e) {
                 Log.v("GOREACK", e.toString());
+            }
+
+            // calculate mapOrientation
+            float t = (360 - gpsbearing - this.deviceOrientation);
+            if (t < 0) {
+                t += 360;
+            }
+            if (t > 360) {
+                t -= 360;
+            }
+            //help smooth calculation out
+            t = (int) t;
+            t = t / 5;
+            t = (int) t;
+            t = t * 5;
+
+            // uses the gps based orientation if there is movement, otherwise the compass orientation will be used
+            if (gpsSpeed >= 0.01) {
+                mMapView.setMapOrientation(t);
             }
 
             /*
@@ -614,6 +709,39 @@ public class RecordFragment extends Fragment {
         playPause.setImageResource(R.drawable.record_playbtn_white);
         issueNotification(notificationContent);
 
+    }
+
+    /*
+     + method to provide map orientation without movement activity
+     + !!! needs a device with the compass-functionality to work properly !!!
+     */
+    @Override
+    public void onOrientationChanged(final float orientationToMagneticNorth, IOrientationProvider source) {
+
+        if (gpsSpeed < 0.01) {
+            GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
+            Float trueNorth = orientationToMagneticNorth + gf.getDeclination();
+            gf = null;
+            synchronized (trueNorth) {
+                if (trueNorth > 360.0f) {
+                    trueNorth = trueNorth - 360.0f;
+                }
+
+                //this part adjusts the desired map rotation based on device orientation and compass heading
+                float t = (360 - trueNorth - this.deviceOrientation);
+                if (t < 0) {
+                    t += 360;
+                }
+                if (t > 360) {
+                    t -= 360;
+                }
+                t = (int) t;
+                t = t / 5;
+                t = (int) t;
+                t = t * 5;
+                mMapView.setMapOrientation(t);
+            }
+        }
     }
 
 }
