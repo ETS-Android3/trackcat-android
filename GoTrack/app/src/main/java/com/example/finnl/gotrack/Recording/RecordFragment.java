@@ -136,12 +136,17 @@ public class RecordFragment extends Fragment {
                      * */
                     try {
                         time_TextView = view.findViewById(R.id.time_TextView);
-                        String toSet = msg.obj + "";
-                        time_TextView.setText(toSet);
+                        String toSetTime = msg.obj + "";
+                        time_TextView.setText(toSetTime);
 
                         TextView distance_TextView = view.findViewById(R.id.distance_TextView);
-                        toSet = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
-                        distance_TextView.setText(toSet);
+                        String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
+                        distance_TextView.setText(toSetDistance);
+
+
+                        // todo Noftification Time/Distance String editable
+                        issueNotification(toSetTime + "   " + toSetDistance);
+
                     } catch (NullPointerException e) {
                         Log.v("GOREACK", e.toString());
                     }
@@ -378,6 +383,13 @@ public class RecordFragment extends Fragment {
 
         playPause.setImageResource(R.drawable.record_pausebtn_white);
 
+        issueNotification("");
+    }
+
+    /*
+     * creates or updates Notification
+     * */
+    private void issueNotification(String content) {
         /* returns to Record Page when Notification is clicked */
         Intent notificationIntent = MainActivity.getInstance().getIntent();// new Intent(MainActivity.getInstance().getApplicationContext(), MainActivity.class);
         notificationIntent.putExtra("action", "RECORD");
@@ -397,7 +409,7 @@ public class RecordFragment extends Fragment {
                 .setSmallIcon(R.drawable.ic_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
                 .setContentTitle("Laufende Aufzeichnung")
-                .setContentText("Jetzt anzeigen")
+                .setContentText(content)
                 .setSound(null)
                 .setOngoing(true)
                 .setContentIntent(intent)
@@ -408,6 +420,7 @@ public class RecordFragment extends Fragment {
         // start Notification
         notificationManager.notify(MainActivity.getInstance().getNOTIFICATION_ID(), mBuilder.build());
     }
+
 
     /*
      * create Channel for Notification
