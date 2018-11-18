@@ -442,7 +442,7 @@ public class RecordFragment extends Fragment {
                 .setContentTitle("Laufende Aufzeichnung")
                 .setContentText(content)
                 .setSound(null)
-                .setOngoing(true)
+                .setOngoing(false) // TODO vielleich komisch weil Notification kann gelöscht werden
                 .setContentIntent(intent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
