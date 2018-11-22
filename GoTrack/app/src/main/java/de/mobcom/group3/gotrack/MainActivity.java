@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         // Nav-Menu Listener
-        NavigationView navigationView = findViewById(R.id.nav_view);
+   /*     NavigationView navigationView = findViewById(R.id.nav_view);
         View hView = navigationView.inflateHeaderView(R.layout.nav_header);
         ImageView imgvw = hView.findViewById(R.id.nav_imgView);
         TextView tv = hView.findViewById(R.id.nav_txtView);
@@ -105,11 +105,7 @@ public class MainActivity extends AppCompatActivity {
                                     fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
                                     fragTransaction.commit();
 
-                                  /*  FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-                                    //getFragmentManager().beginTransaction();
 
-                                    fragTransaction.replace(R.id.mainFrame, new PageViewer(), "PageViewer");
-                                    fragTransaction.commit();*/
 
                                     return true;
                                 }
@@ -135,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
                     }
-                });
+                }); */
 
         /*
          * Menu stuff
