@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="@string/category1" >
+        <SwitchPreference
+            android:key="dark_theme"
+            android:title="Dunkler Modus"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="help_messages"
+            android:summary="Zeige hilfreiche Nachrichten an"
+            android:title="Hilfestellungen" >
+        </CheckBoxPreference>
+        <ListPreference
+            android:key="list"
+            android:entries="@array/list"
+            android:summary="Aus Liste auswählen"
+            android:entryValues="@array/listValues"
+            android:title="Listenansicht" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category2" >
+        <EditTextPreference
+            android:key="text"
+            android:title="Text Editor"
+            android:summary="Hier kann ein String bearbeitet werden" />
+    </PreferenceCategory>
+</PreferenceScreen>
