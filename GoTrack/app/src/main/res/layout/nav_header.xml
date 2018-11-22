@@ -50,5 +50,9 @@
         android:layout_alignLeft="@+id/username"
         android:layout_alignStart="@+id/username" />
 
+    <Spinner
+        android:id="@+id/profile_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>
