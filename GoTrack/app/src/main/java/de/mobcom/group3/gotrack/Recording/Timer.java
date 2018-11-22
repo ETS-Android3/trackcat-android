@@ -1,7 +1,6 @@
 package de.mobcom.group3.gotrack.Recording;
 
 import android.os.Message;
-
 import java.util.TimerTask;
 
 /*

@@ -10,17 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
 import de.mobcom.group3.gotrack.MainActivity;
-import com.example.finnl.gotrack.R;
-
+import de.mobcom.group3.gotrack.R;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class PageViewer extends Fragment {
-
-
     private List<Fragment> listFragments = new ArrayList<>();
 
     public PageViewer() {

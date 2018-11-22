@@ -1,6 +1,5 @@
 package de.mobcom.group3.gotrack.Statistics;
 
-
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.Recording.Timer;
 

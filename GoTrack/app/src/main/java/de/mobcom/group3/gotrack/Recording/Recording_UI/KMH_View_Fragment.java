@@ -1,13 +1,11 @@
 package de.mobcom.group3.gotrack.Recording.Recording_UI;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.example.finnl.gotrack.R;
-
+import de.mobcom.group3.gotrack.R;
 
 public class KMH_View_Fragment extends Fragment {
 

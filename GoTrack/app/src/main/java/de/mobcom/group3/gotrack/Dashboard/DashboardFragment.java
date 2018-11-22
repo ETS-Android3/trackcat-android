@@ -6,8 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.example.finnl.gotrack.R;
+import de.mobcom.group3.gotrack.R;
 
 public class DashboardFragment extends Fragment {
     private FragmentTransaction fragTransaction;

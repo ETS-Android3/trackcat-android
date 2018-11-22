@@ -6,8 +6,7 @@ import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.*;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.example.finnl.gotrack.R;
+import de.mobcom.group3.gotrack.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     SharedPreferences sharedPreferences;
