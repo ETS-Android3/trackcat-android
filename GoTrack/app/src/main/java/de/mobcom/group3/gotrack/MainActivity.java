@@ -12,8 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
@@ -52,9 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        /*
-         * cancel Notification if App is closed
-         * */
+        // Entferne die Benachrichtigung, wenn App läuft
         notificationManager.cancel(getNOTIFICATION_ID());
         super.onDestroy();
     }
@@ -79,12 +75,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         // Nav-Menu Listener
-   /*     NavigationView navigationView = findViewById(R.id.nav_view);
-        View hView = navigationView.inflateHeaderView(R.layout.nav_header);
-        ImageView imgvw = hView.findViewById(R.id.nav_imgView);
-        TextView tv = hView.findViewById(R.id.nav_txtView);
-        imgvw.setImageResource(R.drawable.ic_launcher_background);
-        tv.setText("Max Mustermann");
+        NavigationView navigationView = findViewById(R.id.nav_view);
 
         // Listener Menü-Item
         navigationView.setNavigationItemSelectedListener(
@@ -104,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
 
                                     fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
                                     fragTransaction.commit();
-
 
 
                                     return true;
@@ -131,12 +121,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return true;
                     }
-                }); */
+                });
 
-        /*
-         * Menu stuff
-         * */
-
+        // Menu Stuff
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -167,19 +154,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        /*
-        ###########################################################################################
-        */
         notificationManager = NotificationManagerCompat.from(this);
 
     }
 
-
-    /*
-        ############################################################################################
-
-        ----------------------------------------------------------------------------------layoutMenu
-    */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -190,9 +168,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*
-     * stops/pauses Tracking opens App and switch to RecordFragment
-     * */
+    // Stops/pauses Tracking opens App and switch to RecordFragment
     public void stopTracking() {
         recordFragment.stopTracking();
         startActivity(getIntent());
@@ -221,9 +197,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    * restart Record Fragment after Tracking is ended
-    * */
+    // Startet RecordFragment nach Ende der Aufzeichnung
     public void endTracking() {
         // TODO switch to Statisitcs page
 
