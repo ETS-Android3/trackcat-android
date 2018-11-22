@@ -27,14 +27,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
-import com.example.finnl.gotrack.R;
+import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.PageViewer;
 import de.mobcom.group3.gotrack.Statistics.mCounter;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
-
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -45,7 +43,6 @@ import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.IOrientationConsumer;
 import org.osmdroid.views.overlay.compass.IOrientationProvider;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
-
 import java.util.ArrayList;
 import java.util.Objects;
 

@@ -6,7 +6,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.LinearLayout;
 
-
 public class CurrentPageIndicator implements ViewPager.OnPageChangeListener {
     private Context mContext;
     private LinearLayout mContainer;
