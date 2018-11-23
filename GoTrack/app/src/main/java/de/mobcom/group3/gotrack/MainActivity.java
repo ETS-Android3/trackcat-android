@@ -7,22 +7,21 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     final int NOTIFICATION_ID = 100;
-    private DrawerLayout mDrawerLayout;
+    private DrawerLayout mainDrawer;
     private static MainActivity instance;
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
@@ -78,95 +77,27 @@ public class MainActivity extends AppCompatActivity {
         // Instanz für spätere Objekte speichern
         instance = this;
         recordFragment = new RecordFragment();
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mainDrawer = findViewById(R.id.drawer_layout);
 
-        // Nav-Menu Listener
-        NavigationView navigationView = findViewById(R.id.nav_view);
-
-        // Listener Menü-Item
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        // close drawer when item is tapped
-                        mDrawerLayout.closeDrawers();
-
-                        // Aktion je nach Auswahl des Items
-                        switch (menuItem.getItemId()) {
-                            case R.id.nav_record:
-                                if (getSupportFragmentManager().findFragmentByTag("RECORD") == null) {
-                                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-
-                                    fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
-                                    fragTransaction.commit();
-
-
-                                    return true;
-                                }
-                                break;
-                            case R.id.nav_settings:
-                                if (getSupportFragmentManager().findFragmentByTag("SETTINGS") == null) {
-                                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-
-                                    fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), "SETTINGS");
-                                    fragTransaction.commit();
-                                    return true;
-                                }
-                                break;
-                            case R.id.nav_dashboard:
-                                if (getSupportFragmentManager().findFragmentByTag("DASHBOARD") == null) {
-                                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-
-                                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
-                                    fragTransaction.commit();
-                                    return true;
-                                }
-                                break;
-                        }
-                        return true;
-                    }
-                });
-
-        // Menu Stuff
-        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        // Actionbar definieren und MenuListener festlegen
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
-        ActionBar actionbar = getSupportActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.menu_burger);
+        // Menu Toggle
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mainDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mainDrawer.addDrawerListener(toggle);
+        toggle.syncState();
 
-        mDrawerLayout.addDrawerListener(
-                new DrawerLayout.DrawerListener() {
-                    @Override
-                    public void onDrawerSlide(View drawerView, float slideOffset) {
-                        // Respond when the drawer's position changes
-                    }
-
-                    @Override
-                    public void onDrawerOpened(View drawerView) {
-                        // Respond when the drawer is opened
-                    }
-
-                    @Override
-                    public void onDrawerClosed(View drawerView) {
-                        // Respond when the drawer is closed
-                    }
-
-                    @Override
-                    public void onDrawerStateChanged(int newState) {
-                        // Respond when the drawer motion state changes
-                    }
-                }
-        );
         notificationManager = NotificationManagerCompat.from(this);
 
         // TODO Profilwechsel
-        spinner = findViewById(R.id.profile_spinner);
+        /* spinner = findViewById(R.id.profile_spinner);
         adapter = ArrayAdapter.createFromResource(this, R.array.profile_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        /* spinner.setAdapter(adapter);
+        spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -181,13 +112,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        // Aktion je nach Auswahl des Items
+        switch (menuItem.getItemId()) {
+            case R.id.nav_record:
+                if (getSupportFragmentManager().findFragmentByTag("RECORD") == null) {
+                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+
+                    fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
+                    fragTransaction.commit();
+                }
+                break;
+            case R.id.nav_settings:
+                if (getSupportFragmentManager().findFragmentByTag("SETTINGS") == null) {
+                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+
+                    fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), "SETTINGS");
+                    fragTransaction.commit();
+                }
+                break;
+            case R.id.nav_dashboard:
+                if (getSupportFragmentManager().findFragmentByTag("DASHBOARD") == null) {
+                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+
+                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
+                    fragTransaction.commit();
+                }
+                break;
         }
-        return super.onOptionsItemSelected(item);
+
+        menuItem.setChecked(true);
+        mainDrawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     // Stops/pauses Tracking opens App and switch to RecordFragment
