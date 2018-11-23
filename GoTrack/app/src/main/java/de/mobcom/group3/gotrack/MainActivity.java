@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
@@ -49,13 +50,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), "SETTINGS");
             fragTransaction.commit();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.drawer_view, menu);
-        return true;
     }
 
 
@@ -100,11 +94,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         notificationManager = NotificationManagerCompat.from(this);
 
         // TODO Profilwechsel
-        Spinner spinner = findViewById(R.id.profile_spinner);
+        /* Spinner spinner = findViewById(R.id.profile_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.profile_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        /* spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
