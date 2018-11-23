@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         notificationManager = NotificationManagerCompat.from(this);
 
         // TODO Profilwechsel
-        /* Spinner spinner = findViewById(R.id.profile_spinner);
+        Spinner spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.profile_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        }); */
+        });
     }
 
     @Override
