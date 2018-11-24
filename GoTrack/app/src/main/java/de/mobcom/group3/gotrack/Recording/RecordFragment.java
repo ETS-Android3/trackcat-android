@@ -8,17 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.hardware.GeomagneticField;
-import android.os.Build;
-import android.os.CountDownTimer;
-import android.os.Vibrator;
+import android.location.Location;
+import android.os.*;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.graphics.Color;
-import android.location.Location;
-import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -34,8 +30,8 @@ import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.PageViewer;
-import de.mobcom.group3.gotrack.Statistics.mCounter;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
+import de.mobcom.group3.gotrack.Statistics.mCounter;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -46,6 +42,7 @@ import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.IOrientationConsumer;
 import org.osmdroid.views.overlay.compass.IOrientationProvider;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -392,7 +389,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
          * */
         RouteDAO routeDAO = new RouteDAO(this.getContext());
         routeDAO.create(new Route(
-                0,
                 54321,
                 "myRoute",
                 rideTimer.getTime(),
