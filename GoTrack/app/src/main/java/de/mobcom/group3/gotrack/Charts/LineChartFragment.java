@@ -3,13 +3,13 @@ package de.mobcom.group3.gotrack.Charts;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.*;
-import de.mobcom.group3.gotrack.R;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import de.mobcom.group3.gotrack.R;
 
 import java.util.Arrays;
 
