@@ -1,6 +1,8 @@
 package de.mobcom.group3.gotrack;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
@@ -107,48 +109,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // add items into spinner dynamically
     public void addItemsToSpinner() {
 
-        /*Erstellen der Listen*/
-        ArrayList<String> spinnerAccountInformation = new ArrayList<String>();
-        spinnerAccountInformation.add("mikepenz@gmail.com");
-        spinnerAccountInformation.add("alorma@github.com");
-        spinnerAccountInformation.add("max.mustermann@web.de");
-        spinnerAccountInformation.add("Add Account");
-        spinnerAccountInformation.add("Manage Account");
-
-        ArrayList<String> spinnerAccountIcons = new ArrayList<String>();
-        spinnerAccountIcons.add("Bild 1");
-        spinnerAccountIcons.add("Bild 2");
-        spinnerAccountIcons.add("Bild 3");
-        spinnerAccountIcons.add("+");
-        spinnerAccountIcons.add("Zahnrad");
+        /* Erstellen der Listen */
+        ArrayList<Integer> spinnerAccountIcons = new ArrayList<Integer>();
+        spinnerAccountIcons.add(R.raw.default_profile);
+        spinnerAccountIcons.add(R.raw.default_profile);
+        spinnerAccountIcons.add(R.raw.default_nav_background);
 
         ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
         spinnerAccountEmail.add("mikepenz@gmail.com");
         spinnerAccountEmail.add("alorma@github.com");
         spinnerAccountEmail.add("max.mustermann@web.de");
-        spinnerAccountEmail.add("t");
-        spinnerAccountEmail.add("t");
 
         ArrayList<String> spinnerAccountNames = new ArrayList<String>();
         spinnerAccountNames.add("Mike Penz");
         spinnerAccountNames.add("Alorma Netz");
         spinnerAccountNames.add("Max Mustermann");
-        spinnerAccountNames.add("f");
-        spinnerAccountNames.add("f");
 
 
-        /*Erstellen des Custom Spinners*/
+        /* Erstellen des Custom Spinners */
         final CustomSpinnerAdapter spinAdapter = new CustomSpinnerAdapter(
-                getApplicationContext(), spinnerAccountInformation, spinnerAccountIcons, spinnerAccountEmail, spinnerAccountNames);
+                getApplicationContext(), spinnerAccountIcons, spinnerAccountNames, spinnerAccountEmail);
 
-        /*
-         * ArrayAdapter<String> spinAdapter = new ArrayAdapter<String>(this,
-         * android.R.layout.simple_spinner_item, list);
-         * spinAdapter.setDropDownViewResource
-         * (android.R.layout.simple_spinner_dropdown_item);
-         */
-
-        /*Setzen des Adapters*/
+        /* Setzen des Adapters */
         spinner.setAdapter(spinAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
