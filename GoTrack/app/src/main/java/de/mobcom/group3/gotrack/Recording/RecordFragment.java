@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.graphics.Color;
 import android.location.Location;
@@ -27,6 +28,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
+import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
 import de.mobcom.group3.gotrack.R;
@@ -121,6 +124,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     private float lon = 0f;
     private float alt = 0f;
     private long timeOfFix = 0;
+    private ArrayList<Location> locations = new ArrayList<>();
 
     @Override
     public void onPause() {
@@ -140,6 +144,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint({"HandlerLeak", "ClickableViewAccessibility"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -372,6 +377,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     /*
      * end Tracking ans switch to Statistics for dismisss or save
      * */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void endTracking() {
 
         stopTracking();
@@ -384,7 +390,15 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         /*
          * TODO open statistics page from here
          * */
-
+        RouteDAO routeDAO = new RouteDAO(this.getContext());
+        routeDAO.create(new Route(
+                0,
+                54321,
+                "myRoute",
+                rideTimer.getTime(),
+                kmCounter.getAmount(),
+                locations
+        ));
     }
 
 
@@ -544,17 +558,18 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     /*
      * get Location Update in this class
      * Draw Position and Track in OSM
-     * Store data in Arraylist
+     * Store data in ArrayList
      * Calculate Statistics
      *----------------------------------------------------------------------------------------------
      */
     void updateLocation(Location location) {
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
+        locations.add(location);
 
         /*
          + declare necessary variables for map orientation
          */
-        float gpsbearing = location.getBearing();
+        float gpsBearing = location.getBearing();
         gpsSpeed = location.getSpeed();
         lat = (float) location.getLatitude();
         lon = (float) location.getLongitude();
@@ -613,7 +628,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             }
 
             // calculate mapOrientation
-            float t = (360 - gpsbearing - this.deviceOrientation);
+            float t = (360 - gpsBearing - this.deviceOrientation);
             if (t < 0) {
                 t += 360;
             }
@@ -627,9 +642,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             t = t * 5;
 
             // uses the gps based orientation if there is movement, otherwise the compass orientation will be used
-            if (gpsSpeed >= 0.01) {
+            //if (gpsSpeed >= 0.01) {
                 mMapView.setMapOrientation(t);
-            }
+                mCompassOverlay.setAzimuthOffset(-mMapView.getMapOrientation());
+            //}
 
             /*
              * updatde OSM Map
@@ -715,7 +731,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     @Override
     public void onOrientationChanged(final float orientationToMagneticNorth, IOrientationProvider source) {
 
-        if (gpsSpeed < 0.01) {
+        //if (gpsSpeed < 0.01) {
             GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
             Float trueNorth = orientationToMagneticNorth + gf.getDeclination();
             gf = null;
@@ -737,8 +753,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                 t = (int) t;
                 t = t * 5;
                 mMapView.setMapOrientation(t);
+                mCompassOverlay.setAzimuthOffset(-mMapView.getMapOrientation());
+
             }
-        }
+        //}
     }
 
 }
