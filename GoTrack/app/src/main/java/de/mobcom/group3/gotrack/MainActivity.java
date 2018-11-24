@@ -144,9 +144,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String item = adapter.getItemAtPosition(position).toString();
 
                 /*Wechseln des Profilbildes*/
-                int u = spinnerAccountIcons.get(position);
-                de.hdodenhof.circleimageview.CircleImageView t = findViewById(R.id.profile_image);
-                t.setImageResource(u);
+                int imgResource = spinnerAccountIcons.get(position);
+                de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
+                circleImageView.setImageResource(imgResource);
 
                 /*Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten*/
                 if (position>=spinnerAccountNames.size()){
@@ -161,11 +161,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
             }
         });
-
     }
 
     @Override
