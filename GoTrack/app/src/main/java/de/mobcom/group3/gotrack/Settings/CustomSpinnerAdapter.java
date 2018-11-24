@@ -75,4 +75,5 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         profileEmail.setText(listEmails.get(position));
         return view;
     }
+
 }

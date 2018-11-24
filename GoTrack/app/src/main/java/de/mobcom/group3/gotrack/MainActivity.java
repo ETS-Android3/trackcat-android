@@ -13,11 +13,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -110,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void addItemsToSpinner() {
 
         /* Erstellen der Listen */
-        ArrayList<Integer> spinnerAccountIcons = new ArrayList<Integer>();
+        final ArrayList<Integer> spinnerAccountIcons = new ArrayList<Integer>();
         spinnerAccountIcons.add(R.raw.default_profile);
         spinnerAccountIcons.add(R.raw.default_profile);
         spinnerAccountIcons.add(R.raw.default_nav_background);
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         spinnerAccountEmail.add("alorma@github.com");
         spinnerAccountEmail.add("max.mustermann@web.de");
 
-        ArrayList<String> spinnerAccountNames = new ArrayList<String>();
+        final ArrayList<String> spinnerAccountNames = new ArrayList<String>();
         spinnerAccountNames.add("Mike Penz");
         spinnerAccountNames.add("Alorma Netz");
         spinnerAccountNames.add("Max Mustermann");
@@ -138,12 +140,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onItemSelected(AdapterView<?> adapter, View v,
                                        int position, long id) {
 
-                // On selecting a spinner item
+                /*Auslesen des angeklickten Items*/
                 String item = adapter.getItemAtPosition(position).toString();
 
-                // Showing selected spinner item
-                Toast.makeText(getApplicationContext(), "Selected  : " + item,
-                        Toast.LENGTH_LONG).show();
+                /*Wechseln des Profilbildes*/
+                int u = spinnerAccountIcons.get(position);
+                de.hdodenhof.circleimageview.CircleImageView t = findViewById(R.id.profile_image);
+                t.setImageResource(u);
+
+                /*Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten*/
+                if (position>=spinnerAccountNames.size()){
+                    Toast.makeText(getApplicationContext(), item+ " ausgewählt",
+                            Toast.LENGTH_LONG).show();
+
+                }else{
+                    Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item,
+                            Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
