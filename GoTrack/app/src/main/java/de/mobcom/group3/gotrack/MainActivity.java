@@ -17,8 +17,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
+import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static MainActivity instance;
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
+    private Spinner spinner;
 
     private static final String PREF_DARK_THEME = "dark_theme";
 
@@ -94,21 +100,77 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         notificationManager = NotificationManagerCompat.from(this);
 
         // TODO Profilwechsel
-        Spinner spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.profile_options, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
+        addItemsToSpinner();
+    }
 
+    // add items into spinner dynamically
+    public void addItemsToSpinner() {
+
+        /*Erstellen der Listen*/
+        ArrayList<String> spinnerAccountInformation = new ArrayList<String>();
+        spinnerAccountInformation.add("mikepenz@gmail.com");
+        spinnerAccountInformation.add("alorma@github.com");
+        spinnerAccountInformation.add("max.mustermann@web.de");
+        spinnerAccountInformation.add("Add Account");
+        spinnerAccountInformation.add("Manage Account");
+
+        ArrayList<String> spinnerAccountIcons = new ArrayList<String>();
+        spinnerAccountIcons.add("Bild 1");
+        spinnerAccountIcons.add("Bild 2");
+        spinnerAccountIcons.add("Bild 3");
+        spinnerAccountIcons.add("+");
+        spinnerAccountIcons.add("Zahnrad");
+
+        ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
+        spinnerAccountEmail.add("mikepenz@gmail.com");
+        spinnerAccountEmail.add("alorma@github.com");
+        spinnerAccountEmail.add("max.mustermann@web.de");
+        spinnerAccountEmail.add("t");
+        spinnerAccountEmail.add("t");
+
+        ArrayList<String> spinnerAccountNames = new ArrayList<String>();
+        spinnerAccountNames.add("Mike Penz");
+        spinnerAccountNames.add("Alorma Netz");
+        spinnerAccountNames.add("Max Mustermann");
+        spinnerAccountNames.add("f");
+        spinnerAccountNames.add("f");
+
+
+        /*Erstellen des Custom Spinners*/
+        final CustomSpinnerAdapter spinAdapter = new CustomSpinnerAdapter(
+                getApplicationContext(), spinnerAccountInformation, spinnerAccountIcons, spinnerAccountEmail, spinnerAccountNames);
+
+        /*
+         * ArrayAdapter<String> spinAdapter = new ArrayAdapter<String>(this,
+         * android.R.layout.simple_spinner_item, list);
+         * spinAdapter.setDropDownViewResource
+         * (android.R.layout.simple_spinner_dropdown_item);
+         */
+
+        /*Setzen des Adapters*/
+        spinner.setAdapter(spinAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapter, View v,
+                                       int position, long id) {
+
+                // On selecting a spinner item
+                String item = adapter.getItemAtPosition(position).toString();
+
+                // Showing selected spinner item
+                Toast.makeText(getApplicationContext(), "Selected  : " + item,
+                        Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
 
             }
         });
+
     }
 
     @Override
