@@ -3,7 +3,7 @@ package de.mobcom.group3.gotrack.Charts;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.*;
-import com.example.finnl.gotrack.R;
+import de.mobcom.group3.gotrack.R;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

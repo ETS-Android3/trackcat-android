@@ -17,7 +17,7 @@ import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 import de.mobcom.group3.gotrack.Charts.Formats.XLabelFormat;
-import com.example.finnl.gotrack.R;
+import de.mobcom.group3.gotrack.R;
 
 import java.util.Arrays;
 
