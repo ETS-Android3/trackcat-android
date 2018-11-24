@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
     @Override
     protected void onDestroy() {
         // Entferne die Benachrichtigung, wenn App läuft

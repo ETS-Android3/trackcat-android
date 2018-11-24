@@ -1,6 +1,7 @@
 package de.mobcom.group3.gotrack.Settings;
 
 import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
 // Custom Adapter for Spinner
@@ -50,6 +52,10 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
     public View getProfileList(int position, ViewGroup parent) {
         View view = inflater.inflate(R.layout.spinner_profile_list, parent, false);
 
+        if (position == listNames.size() - 1) {
+            view = inflater.inflate(R.layout.spinner_footer, parent, false);
+        }
+
         LinearLayout profileList = view.findViewById(R.id.profile_layout_list);
         ImageView profileImage = profileList.findViewById(R.id.profile_image);
         profileImage.setImageResource(listImages.get(position));
@@ -68,10 +74,10 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         View view = inflater.inflate(R.layout.spinner_profile_selected, parent, false);
 
         LinearLayout selectedProfile = view.findViewById(R.id.profile_layout_selected);
-        TextView profileName = selectedProfile.findViewById(R.id.profile_name_selected);
+        TextView profileName = selectedProfile.findViewById(R.id.profile_name);
         profileName.setText(listNames.get(position));
 
-        TextView profileEmail = selectedProfile.findViewById(R.id.profile_email_selected);
+        TextView profileEmail = selectedProfile.findViewById(R.id.profile_email);
         profileEmail.setText(listEmails.get(position));
         return view;
     }
