@@ -48,7 +48,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         return getSelectedProfile(position, parent);
     }
 
-    // This funtion called for each row ( Called data.size() times )
+    // Fügt für jedes Listenelement dem Spinner einen Eintrag hinzu
     public View getProfileList(int position, ViewGroup parent) {
         View view = inflater.inflate(R.layout.spinner_profile_list, parent, false);
 
@@ -69,7 +69,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         return view;
     }
 
-    // This funtion called for each row ( Called data.size() times )
+    // Anzeige
     public View getSelectedProfile(int position, ViewGroup parent) {
         View view = inflater.inflate(R.layout.spinner_profile_selected, parent, false);
 
@@ -79,6 +79,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
         TextView profileEmail = selectedProfile.findViewById(R.id.profile_email);
         profileEmail.setText(listEmails.get(position));
+
         return view;
     }
 

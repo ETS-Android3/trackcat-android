@@ -138,29 +138,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemSelected(AdapterView<?> adapter, View v,
                                        int position, long id) {
-
-                /*Auslesen des angeklickten Items*/
+                /* Auslesen des angeklickten Items */
                 String item = adapter.getItemAtPosition(position).toString();
 
-                /*Wechseln des Profilbildes*/
+                /* Wechseln des Profilbildes */
                 int imgResource = spinnerAccountIcons.get(position);
                 de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
                 circleImageView.setImageResource(imgResource);
 
-                /*Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten*/
-                if (position>=spinnerAccountNames.size()){
-                    Toast.makeText(getApplicationContext(), item+ " ausgewählt",
+                /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
+                if (position >= spinnerAccountNames.size()) {
+                    Toast.makeText(getApplicationContext(), item + " ausgewählt",
                             Toast.LENGTH_LONG).show();
 
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item,
                             Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
+            public void onNothingSelected(AdapterView<?> arg0) { }
         });
     }
 
