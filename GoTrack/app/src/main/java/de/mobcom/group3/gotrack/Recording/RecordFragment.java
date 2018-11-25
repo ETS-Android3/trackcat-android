@@ -120,6 +120,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     private float lon = 0f;
     private float alt = 0f;
     private long timeOfFix = 0;
+    private float trueNorth;
 
     @Override
     public void onPause() {
@@ -270,9 +271,14 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
          + Option to switch between pointer and compass mode. Default is compass mode.
          + To switch on pointer mode uncomment statement below.
          */
-        //mCompassOverlay.setPointerMode(true);
+        mCompassOverlay.setPointerMode(true);
 
         mMapView.getOverlays().add(mCompassOverlay);
+
+        view.findViewById(R.id.compBtn).setOnClickListener(v -> {
+            mMapView.setMapOrientation(trueNorth);
+            mCompassOverlay.setAzimuthOffset(0);
+        });
 
         /*
          * Initialize for Notification
@@ -711,14 +717,12 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     public void onOrientationChanged(final float orientationToMagneticNorth, IOrientationProvider source) {
         if (gpsSpeed < 0.01) {
             GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
-            Float trueNorth = orientationToMagneticNorth + gf.getDeclination();
+            trueNorth = orientationToMagneticNorth + gf.getDeclination();
             gf = null;
-            synchronized (trueNorth) {
-                if (trueNorth > 360.0f)
-                    trueNorth = trueNorth - 360.0f;
-                //this part adjusts the desired map and compass rotation based on device orientation and compass heading
-                setOrientation(trueNorth);
-            }
+            if (trueNorth > 360.0f)
+                trueNorth = trueNorth - 360.0f;
+            //this part adjusts the desired map and compass rotation based on device orientation and compass heading
+            setOrientation(trueNorth);
         }
     }
 
