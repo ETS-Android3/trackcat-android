@@ -144,25 +144,23 @@ public class RouteDAO implements IDAO<Route> {
     }
 
     public void importRouteFromJSON(String jsonString) {
-        create(gson.fromJson(jsonString, exImportType));
+        this.create(gson.fromJson(jsonString, exImportType));
     }
 
     public void importRoutesFromJson(List<String> jsonStrings) {
         for (String jsonString : jsonStrings) {
-            create(gson.fromJson(jsonString, exImportType));
+            this.importRouteFromJSON(jsonString);
         }
     }
 
     public String exportRouteToJson(int id) {
-        Route route = read(id);
-        return gson.toJson(route);
+        return gson.toJson(this.read(id));
     }
 
     public List<String> exportRoutesToJson(int userId) {
-        List<Route> routes = readAll(userId);
         List<String> result = new ArrayList<>();
-        for (Route route : routes) {
-            result.add(exportRouteToJson(route.getId()));
+        for (Route route : readAll(userId)) {
+            result.add(gson.toJson(route));
         }
         return result;
     }

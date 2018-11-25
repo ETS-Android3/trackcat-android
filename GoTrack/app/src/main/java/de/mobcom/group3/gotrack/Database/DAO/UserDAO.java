@@ -6,8 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import com.google.gson.Gson;
 import de.mobcom.group3.gotrack.Database.Models.User;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,8 @@ import static de.mobcom.group3.gotrack.Database.DAO.DbContract.UserEntry.*;
 public class UserDAO implements IDAO<User> {
     private SQLiteDatabase writableDb;
     private SQLiteDatabase readableDb;
+    private Gson gson = new Gson();
+    private Type imExportType = User.class;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public UserDAO(Context context) {
@@ -118,5 +122,27 @@ public class UserDAO implements IDAO<User> {
         String selection = COL_ID + " LIKE ?";
         String[] selectionArgs = {String.valueOf(user.getId())};
         writableDb.delete(TABLE_NAME, selection, selectionArgs);
+    }
+
+    public void importUserFromJson(String jsonString) {
+        this.create(gson.fromJson(jsonString, imExportType));
+    }
+
+    public void importUsersFromJson(ArrayList<String> jsonStrings) {
+        for (String jsonString : jsonStrings) {
+            this.importUserFromJson(jsonString);
+        }
+    }
+
+    public String exportUserToJson(int id) {
+        return gson.toJson(this.read(id));
+    }
+
+    public ArrayList<String> exportUsersToJson() {
+        ArrayList<String> result = new ArrayList<>();
+        for (User user : this.readAll()) {
+            result.add(gson.toJson(user));
+        }
+        return result;
     }
 }
