@@ -1,11 +1,12 @@
 package de.mobcom.group3.gotrack.Database.Models;
 
 import android.location.Location;
+
 import java.util.ArrayList;
 
 public class Route {
-    private long id;
-    private long userId;
+    private int id;
+    private int userId;
     private String name;
     private double time;
     private double distance;
@@ -13,7 +14,7 @@ public class Route {
 
     public Route() {}
 
-    public Route(long id, long userId, String name, double time, double distance, ArrayList<Location> locations) {
+    public Route(int id, int userId, String name, double time, double distance, ArrayList<Location> locations) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -22,17 +23,27 @@ public class Route {
         this.locations =locations;
     }
 
-    public long getId() {
+    public Route(int userId, String name, double time, double distance, ArrayList<Location> locations) {
+        this.userId = userId;
+        this.name = name;
+        this.time = time;
+        this.distance = distance;
+        this.locations = locations;
+    }
+
+    public int getId() {
         return this.id;
     }
-    public void setId(long id) {
+
+    public void setId(int id) {
         this.id = id;
     }
 
-    public long getUserId() {
+    public int getUserId() {
         return this.userId;
     }
-    public void setUserID(long userId) {
+
+    public void setUserID(int userId) {
         this.userId = userId;
     }
 

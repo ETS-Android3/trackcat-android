@@ -1,6 +1,7 @@
 package de.mobcom.group3.gotrack.Recording;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -24,8 +25,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
-import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
 import de.mobcom.group3.gotrack.R;
@@ -111,7 +110,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     private String notificationContent = "";
 
     /*
-     * necessary variables for mapOrientation
+     + necessary variables for mapOrientation
      */
 
     private int deviceOrientation = 0;
@@ -121,7 +120,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     private float lon = 0f;
     private float alt = 0f;
     private long timeOfFix = 0;
-    private ArrayList<Location> locations = new ArrayList<>();
 
     @Override
     public void onPause() {
@@ -140,8 +138,15 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         mCompassOverlay.getOrientationProvider().startOrientationProvider(mCompassOverlay);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mCompassOverlay.onDetach(mMapView);
+    }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
+    @TargetApi(Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint({"HandlerLeak", "ClickableViewAccessibility"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -195,6 +200,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                 }
             }
         };
+
         /*
          *------------------------------------------------------------------------------------------
          *Inflate the layout for this fragment
@@ -215,12 +221,12 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         mMapController = (MapController) mMapView.getController();
         mMapController.setZoom(18);
 
-
         /*
          * add Marker and Polyline
          * */
         startMarker = new Marker(mMapView);
         mPath = new Polyline(mMapView);
+
 
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
@@ -259,6 +265,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
 
         mCompassOverlay = new CompassOverlay(Objects.requireNonNull(getContext()),
                 new InternalCompassOrientationProvider(Objects.requireNonNull(getActivity())), mMapView);
+
         /*
          + Option to switch between pointer and compass mode. Default is compass mode.
          + To switch on pointer mode uncomment statement below.
@@ -387,14 +394,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         /*
          * TODO open statistics page from here
          * */
-        RouteDAO routeDAO = new RouteDAO(this.getContext());
-        routeDAO.create(new Route(
-                54321,
-                "myRoute",
-                rideTimer.getTime(),
-                kmCounter.getAmount(),
-                locations
-        ));
+
     }
 
 
@@ -560,7 +560,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
      */
     void updateLocation(Location location) {
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
-        locations.add(location);
 
         /*
          + declare necessary variables for map orientation
@@ -623,25 +622,9 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                 Log.v("GOREACK", e.toString());
             }
 
-            // calculate mapOrientation
-            float t = (360 - gpsBearing - this.deviceOrientation);
-            if (t < 0) {
-                t += 360;
-            }
-            if (t > 360) {
-                t -= 360;
-            }
-            //help smooth calculation out
-            t = (int) t;
-            t = t / 5;
-            t = (int) t;
-            t = t * 5;
-
-            // uses the gps based orientation if there is movement, otherwise the compass orientation will be used
-            //if (gpsSpeed >= 0.01) {
-                mMapView.setMapOrientation(t);
-                mCompassOverlay.setAzimuthOffset(-mMapView.getMapOrientation());
-            //}
+            //this part adjusts the desired map and compass rotation based on device orientation and location heading
+            if (gpsSpeed >= 0.01)
+                setOrientation(gpsBearing);
 
             /*
              * updatde OSM Map
@@ -726,33 +709,32 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
      */
     @Override
     public void onOrientationChanged(final float orientationToMagneticNorth, IOrientationProvider source) {
-
-        //if (gpsSpeed < 0.01) {
+        if (gpsSpeed < 0.01) {
             GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
             Float trueNorth = orientationToMagneticNorth + gf.getDeclination();
             gf = null;
             synchronized (trueNorth) {
-                if (trueNorth > 360.0f) {
+                if (trueNorth > 360.0f)
                     trueNorth = trueNorth - 360.0f;
-                }
-
-                //this part adjusts the desired map rotation based on device orientation and compass heading
-                float t = (360 - trueNorth - this.deviceOrientation);
-                if (t < 0) {
-                    t += 360;
-                }
-                if (t > 360) {
-                    t -= 360;
-                }
-                t = (int) t;
-                t = t / 5;
-                t = (int) t;
-                t = t * 5;
-                mMapView.setMapOrientation(t);
-                mCompassOverlay.setAzimuthOffset(-mMapView.getMapOrientation());
-
+                //this part adjusts the desired map and compass rotation based on device orientation and compass heading
+                setOrientation(trueNorth);
             }
-        //}
+        }
+    }
+
+    private void setOrientation(Float orientation) {
+        float t = (360 - orientation - this.deviceOrientation);
+        if (t < 0)
+            t += 360;
+        if (t > 360)
+            t -= 360;
+        t = (int) t;
+        t /= 5;
+        t = (int) t;
+        t = t * 5;
+
+        mMapView.setMapOrientation(t);
+        mCompassOverlay.setAzimuthOffset(-t);
     }
 
 }

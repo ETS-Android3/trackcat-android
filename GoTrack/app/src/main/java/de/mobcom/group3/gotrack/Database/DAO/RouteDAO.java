@@ -9,15 +9,14 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import de.mobcom.group3.gotrack.Database.Models.Route;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.mobcom.group3.gotrack.Database.Models.Route;
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
 
-// toDo: implement onPause, onResume, onDestroy
 // toDo: write javaDoc and comments
 
 
@@ -37,16 +36,21 @@ public class RouteDAO implements IDAO<Route> {
 
     @Override
     public void create(Route route) {
+        route.setId((int) writableDb.insert(TABLE_NAME, null, valueGenerator(route)));
+    }
+
+    private ContentValues valueGenerator(Route route) {
         ContentValues values = new ContentValues();
         values.put(COL_USER, route.getUserId());
         values.put(COL_NAME, route.getName());
         values.put(COL_TIME, route.getTime());
         values.put(COL_DISTANCE, route.getDistance());
         values.put(COL_LOCATIONS, gson.toJson(route.getLocations())); // alternative toJsonTree().getAsString()
-        route.setId(writableDb.insert(TABLE_NAME, null, values));
+        return values;
     }
+
     @Override
-    public Route read(long id) {
+    public Route read(int id) {
         Route result = new Route();
         String selection = COL_ID + " = ?";
         String[] selectionArgs = { String.valueOf(id) };
@@ -67,13 +71,13 @@ public class RouteDAO implements IDAO<Route> {
                 null,
                 null
         );
-        while(cursor.moveToFirst()) {
-            result.setId(cursor.getLong(cursor.getColumnIndexOrThrow(COL_ID)));
-            result.setUserID(cursor.getLong(cursor.getColumnIndexOrThrow(COL_USER)));
+        if (cursor.moveToFirst()) {
+            result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
+            result.setUserID(cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)));
             result.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
             result.setTime(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TIME)));
             result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
-            result.setLocations((ArrayList<Location>) gson.fromJson(cursor.getString(
+            result.setLocations(gson.fromJson(cursor.getString(
                     cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType));
         }
         cursor.close();
@@ -81,11 +85,11 @@ public class RouteDAO implements IDAO<Route> {
     }
 
     @Override
-    public List<Route> readAll(long userId) {
+    public List<Route> readAll(int userId) {
         return this.readAll(userId, new String[]{"id", "DESC"});
     }
 
-    public List<Route> readAll(long userId, String[] orderArgs) {
+    public List<Route> readAll(int userId, String[] orderArgs) {
         String selection = COL_USER + " = ?";
         String[] selectionArgs = { String.valueOf(userId) };
         String[] projection = {
@@ -109,12 +113,12 @@ public class RouteDAO implements IDAO<Route> {
         if(cursor.moveToFirst())
             do {
                 result.add(new Route(
-                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_ID)),
-                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_USER)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TIME)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
-                        (ArrayList<Location>) gson.fromJson(cursor.getString(
+                        gson.fromJson(cursor.getString(
                                 cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
             } while (cursor.moveToNext());
         cursor.close();
@@ -122,19 +126,13 @@ public class RouteDAO implements IDAO<Route> {
     }
 
     @Override
-    public void update(Route route) {
+    public void update(int id, Route route) {
         String selection = COL_ID + " = ?";
         String[] selectionArgs = { String.valueOf(route.getUserId()) };
-        ContentValues values = new ContentValues();
-        values.put(COL_USER, route.getUserId());
-        values.put(COL_NAME, route.getName());
-        values.put(COL_TIME, route.getTime());
-        values.put(COL_DISTANCE, route.getDistance());
-        values.put(COL_LOCATIONS, gson.toJson(route.getLocations()));
-        writableDb.update(TABLE_NAME, values, selection, selectionArgs);
+        writableDb.update(TABLE_NAME, valueGenerator(route), selection, selectionArgs);
     }
 
-    private void delete(long id) {
+    private void delete(int id) {
         String selection = COL_ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(id) };
         writableDb.delete(TABLE_NAME, selection, selectionArgs);
@@ -146,21 +144,21 @@ public class RouteDAO implements IDAO<Route> {
     }
 
     public void importRouteFromJSON(String jsonString) {
-        create((Route) gson.fromJson(jsonString, exImportType));
+        create(gson.fromJson(jsonString, exImportType));
     }
 
     public void importRoutesFromJson(List<String> jsonStrings) {
         for (String jsonString : jsonStrings) {
-            create((Route) gson.fromJson(jsonString, exImportType));
+            create(gson.fromJson(jsonString, exImportType));
         }
     }
 
-    public String exportRouteToJson(long id) {
+    public String exportRouteToJson(int id) {
         Route route = read(id);
         return gson.toJson(route);
     }
 
-    public List<String> exportRoutesToJson(long userId) {
+    public List<String> exportRoutesToJson(int userId) {
         List<Route> routes = readAll(userId);
         List<String> result = new ArrayList<>();
         for (Route route : routes) {
