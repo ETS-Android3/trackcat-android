@@ -25,12 +25,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.PageViewer;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 import de.mobcom.group3.gotrack.Statistics.mCounter;
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -248,15 +250,15 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                     deviceOrientation = 0;
                     break;
                 case Surface.ROTATION_90:
-                    deviceOrientation =90;
+                    deviceOrientation = 90;
                     orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
                     break;
                 case Surface.ROTATION_180:
-                    deviceOrientation =180;
+                    deviceOrientation = 180;
                     orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
                     break;
                 case Surface.ROTATION_270:
-                    deviceOrientation =270;
+                    deviceOrientation = 270;
                     orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
                     break;
             }
@@ -275,10 +277,15 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
 
         mMapView.getOverlays().add(mCompassOverlay);
 
-        view.findViewById(R.id.compBtn).setOnClickListener(v -> {
-            mMapView.setMapOrientation(trueNorth);
-            mCompassOverlay.setAzimuthOffset(0);
-        });
+        view.findViewById(R.id.compBtn).setOnClickListener(new View.OnClickListener() {
+                                                               @Override
+                                                               public void onClick(View view) {
+                                                                   mMapView.setMapOrientation(trueNorth);
+                                                                   mCompassOverlay.setAzimuthOffset(0);
+                                                               }
+                                                           }
+
+        );
 
         /*
          * Initialize for Notification
