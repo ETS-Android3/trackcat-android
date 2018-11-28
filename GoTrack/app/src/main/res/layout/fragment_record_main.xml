@@ -29,7 +29,7 @@
             android:paddingTop="15dp"
             android:paddingRight="15dp"
             android:paddingBottom="20dp"
-            android:background="@color/darkBackground">
+            style="@style/Main">
 
             <LinearLayout
                 android:id="@+id/activity_call"
@@ -51,8 +51,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0"
                     android:gravity="center"
-                    android:text="Laufen"
-                    android:textColor="?android:attr/textColor" />
+                    android:text="Laufen" />
             </LinearLayout>
 
 
@@ -98,8 +97,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="0"
                             android:gravity="center"
-                            android:text="0.0 km/h"
-                            android:textColor="?android:attr/textColor" />
+                            android:text="0.0 km/h" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -121,8 +119,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="0"
                             android:gravity="center"
-                            android:text="0.0 km"
-                            android:textColor="?android:attr/textColor" />
+                            android:text="0.0 km" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -181,8 +178,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="0.0 m"
-                            android:textColor="?android:attr/textColor" />
+                            android:text="0.0 m" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -204,8 +200,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="--"
-                            android:textColor="?android:attr/textColor" />
+                            android:text="--" />
                     </LinearLayout>
                 </LinearLayout>
 

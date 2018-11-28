@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- GLOBAL COLORS -->
-    <color name="colorToolbar">#FFFFFF</color>
+    <color name="colorBlack">#2d2d30</color>
+    <color name="colorWhite">#FFFFFF</color>
 
     <!-- LIGHT THEME COLORS -->
-    <color name="colorPrimary">#005b52</color>
-    <color name="colorSecondary">#009688</color>
-    <color name="colorAccent">#E91E63</color>
-
-    <color name="darkBackground">#AC1DFF</color>
-    <color name="colorDefaultText">#000000</color>
+    <color name="colorGreenLight">#009688</color>
+    <color name="colorGreenDark">#005b52</color>
+    <color name="colorGreenAccent">#E91E63</color>
 
     <!-- DARK THEME COLORS -->
-    <color name="colorPrimaryDark">#323c41</color>
-    <color name="colorSecondaryDark">#283135</color>
-    <color name="colorAccentDark">#F9AA33</color>
-
-    <color name="colorDefaultTextDark">#FFFFFF</color>
+    <color name="colorGreyLight">#2c3a41</color>
+    <color name="colorGreyDark">#232F34</color>
+    <color name="colorGreyAccent">#F9AA33</color>
 </resources>
