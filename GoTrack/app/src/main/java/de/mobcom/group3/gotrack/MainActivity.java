@@ -118,13 +118,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         spinnerAccountIcons.add(R.raw.default_nav_background);
 
         ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
-        spinnerAccountEmail.add("mikepenz@gmail.com");
-        spinnerAccountEmail.add("alorma@github.com");
+        spinnerAccountEmail.add("alorma@github.com ");
+        spinnerAccountEmail.add("mikapenz@gmail.com");
         spinnerAccountEmail.add("max.mustermann@web.de");
 
         final ArrayList<String> spinnerAccountNames = new ArrayList<String>();
-        spinnerAccountNames.add("Mike Penz");
         spinnerAccountNames.add("Alorma Netz");
+        spinnerAccountNames.add("Mika Penz");
         spinnerAccountNames.add("Max Mustermann");
 
 
