@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         notificationManager = NotificationManagerCompat.from(this);
-        
+
         // TODO Profilwechsel
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         addItemsToSpinner();
