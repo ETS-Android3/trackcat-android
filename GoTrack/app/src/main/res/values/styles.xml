@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorGreenLight</item>
         <item name="colorSecondary">@color/colorGreenDark</item>
         <item name="colorAccent">@color/colorGreenAccent</item>
+        <item name="colorButtonNormal">@color/colorWhite</item>
 
         <item name="android:textColor">@color/colorBlack</item>
     </style>
@@ -15,6 +16,8 @@
         <item name="colorPrimary">@color/colorGreyLight</item>
         <item name="colorSecondary">@color/colorGreyDark</item>
         <item name="colorAccent">@color/colorGreyAccent</item>
+        <item name="colorPrimaryDark">@color/colorBlack</item>
+        <item name="colorButtonNormal">@color/colorBlack</item>
 
         <item name="android:textColor">@color/colorWhite</item>
     </style>
