@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <org.osmdroid.views.MapView xmlns:android="http://schemas.android.com/apk/res/android"
+        <org.osmdroid.views.MapView
             android:id="@+id/mapview"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
@@ -21,15 +21,17 @@
         </org.osmdroid.views.MapView>
 
         <LinearLayout
+            style="@style/Main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-15dp"
             android:layout_weight="0"
+            android:background="@drawable/shape"
             android:orientation="vertical"
             android:paddingLeft="15dp"
             android:paddingTop="15dp"
             android:paddingRight="15dp"
-            android:paddingBottom="20dp"
-            style="@style/Main">
+            android:paddingBottom="20dp">
 
             <LinearLayout
                 android:id="@+id/activity_call"

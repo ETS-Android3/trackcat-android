@@ -21,6 +21,7 @@
 
     <style name="Main" parent="">
         <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:layout_marginTop">@dimen/roundCornersRecord</item>
     </style>
 
     <style name="Toolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
