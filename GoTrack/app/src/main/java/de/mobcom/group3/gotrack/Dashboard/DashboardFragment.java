@@ -1,12 +1,18 @@
 package de.mobcom.group3.gotrack.Dashboard;
 
+
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+
 import de.mobcom.group3.gotrack.R;
+import de.mobcom.group3.gotrack.Recording.RecordFragment;
 
 public class DashboardFragment extends Fragment {
     private FragmentTransaction fragTransaction;
@@ -26,6 +32,17 @@ public class DashboardFragment extends Fragment {
  */
         // Änderungen zusammenfassen + Dashboard aufbauen
         fragTransaction.commit();
+
+        /*Floating ActionButton
+        View view;
+        view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        FrameLayout item = view.findViewById(R.id.chartContainer);
+        FloatingActionButton btn = item.findViewById(R.id.fabButton);
+        btn.setOnClickListener(view1 -> {
+            FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, new RecordFragment(), "RECORD");
+            fragTransaction.commit();
+        });*/
 
         return inflater.inflate(R.layout.fragment_dashboard, container, false);
     }

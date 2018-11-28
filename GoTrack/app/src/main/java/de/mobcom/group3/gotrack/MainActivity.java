@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.NotificationManagerCompat;
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         notificationManager = NotificationManagerCompat.from(this);
-
+        
         // TODO Profilwechsel
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         addItemsToSpinner();
