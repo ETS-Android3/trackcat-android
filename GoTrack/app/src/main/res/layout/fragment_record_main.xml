@@ -29,32 +29,9 @@
             android:background="@drawable/shape"
             android:orientation="vertical"
             android:paddingLeft="15dp"
-            android:paddingTop="15dp"
+            android:paddingTop="35dp"
             android:paddingRight="15dp"
             android:paddingBottom="20dp">
-
-            <LinearLayout
-                android:id="@+id/activity_call"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/activity_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    app:srcCompat="@drawable/activity_running_white" />
-
-                <TextView
-                    android:id="@+id/activity_type"
-                    android:layout_width="63dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:text="Laufen" />
-            </LinearLayout>
 
 
             <FrameLayout
@@ -212,6 +189,17 @@
 
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|center"
+        app:fabSize="normal"
+        app:layout_anchorGravity="center"
+        app:srcCompat="@drawable/activity_running_white"
+        android:translationY="@dimen/roundCornersRecord"/>
+
     <Button
             android:id="@+id/compBtn"
             android:text=""
