@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    // Light Mode
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorGreenLight</item>
         <item name="colorSecondary">@color/colorGreenDark</item>
@@ -9,9 +8,10 @@
         <item name="colorButtonNormal">@color/colorWhite</item>
 
         <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:statusBarColor">@color/colorGreenDark</item>
+        <item name="android:navigationBarColor">@color/colorGreenDark</item>
     </style>
 
-    // Dark Mode
     <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorGreyLight</item>
         <item name="colorSecondary">@color/colorGreyDark</item>
@@ -20,20 +20,7 @@
         <item name="colorButtonNormal">@color/colorBlack</item>
 
         <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:statusBarColor">@color/colorGreyDark</item>
+        <item name="android:navigationBarColor">@color/colorGreyDark</item>
     </style>
-
-    <style name="Main" parent="">
-        <item name="android:background">?attr/colorPrimary</item>
-        <item name="android:layout_marginTop">@dimen/roundCornersRecord</item>
-    </style>
-
-    <style name="Toolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <item name="android:background">?attr/colorPrimary</item>
-        <item name="android:textColorPrimary">@color/colorWhite</item>
-    </style>
-
-    <style name="TextAppearance.AppCompat" parent="android:Widget.TextView">
-        <item name="android:textColor">@color/colorWhite</item>
-    </style>
-
 </resources>

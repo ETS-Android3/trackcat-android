@@ -43,8 +43,8 @@ public class PageViewerCharts extends Fragment {
         BarChartFragment barFrag = new BarChartFragment();
         LineChartFragment lineFrag = new LineChartFragment();
 
-        listFragments.add(barFrag);
         listFragments.add(lineFrag);
+        listFragments.add(barFrag);
 
         // Instantiate a ViewPager and a PagerAdapter.
         ViewPager mPager = view.findViewById(R.id.pager);

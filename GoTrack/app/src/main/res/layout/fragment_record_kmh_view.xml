@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical|center_horizontal"
         android:text="0.0 km/h"
-        android:textColor="@color/lightTxt"
+        android:textColor="?android:attr/textColor"
         android:textSize="35sp" />
 
 </FrameLayout>
