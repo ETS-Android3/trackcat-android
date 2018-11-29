@@ -12,6 +12,10 @@ import de.mobcom.group3.gotrack.MainActivity;
 
 public class Locator {
 
+    // Standardwerte für die Abfrage der Berechtigungen
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+
     private MainActivity creator;
     private RecordFragment parent;
     private Locator instance;
@@ -30,7 +34,11 @@ public class Locator {
         /*
          * initialize Locationlistener
          * */
+        int minTime = 1;
+        int minDistance = 5;
+
         locationManager = (LocationManager) creator.getSystemService(Context.LOCATION_SERVICE);
+
 
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
@@ -64,26 +72,27 @@ public class Locator {
      * */
     protected void startTracking() {
 
-        // check Permission
-        if (ActivityCompat.checkSelfPermission(creator,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(creator,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
-                        PackageManager.PERMISSION_GRANTED)
-
-        {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        /*
+         + Check if permissions granted for GPS service and storage access
+         + toDo: verify why location and storage permissions aren't requested simultaneously
+         */
+        // For GPS:
+        if (ActivityCompat.checkSelfPermission(creator, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(creator, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+                    0, locationListener); // via GPS
         }
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-                0, locationListener); // via GPS
+        // For writable storage access
+        if (ActivityCompat.checkSelfPermission(creator, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(creator,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
     }
 
     /*
