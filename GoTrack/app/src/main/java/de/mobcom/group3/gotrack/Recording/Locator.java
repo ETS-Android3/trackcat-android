@@ -78,20 +78,14 @@ public class Locator {
          */
         // For GPS:
         if (ActivityCompat.checkSelfPermission(creator, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(creator, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(creator,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(creator, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
                     0, locationListener); // via GPS
-        }
-
-        // For writable storage access
-        if (ActivityCompat.checkSelfPermission(creator, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(creator,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         }
     }
 
