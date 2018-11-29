@@ -2,212 +2,208 @@
 
 <!-- Layout for RecordFragmet with Map -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <org.osmdroid.views.MapView
-            android:id="@+id/mapview"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clickable="true">
-
-        </org.osmdroid.views.MapView>
+        android:layout_weight="1">
 
         <LinearLayout
-            style="@style/Main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-15dp"
-            android:layout_weight="0"
-            android:background="@drawable/shape"
-            android:orientation="vertical"
-            android:paddingLeft="15dp"
-            android:paddingTop="35dp"
-            android:paddingRight="15dp"
-            android:paddingBottom="20dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-
-            <FrameLayout
-                android:id="@+id/pageViewerContainer"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"></FrameLayout>
-
-
-            // Other Data Row
+            <org.osmdroid.views.MapView
+                android:id="@+id/mapview"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"></org.osmdroid.views.MapView>
 
             <LinearLayout
+                android:id="@+id/main"
+                style="@style/Main"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginTop="25dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="right|center_vertical"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/average_speed_Layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/average_speed_icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="0"
-                            app:srcCompat="@drawable/record_average_speed_white" />
-
-                        <TextView
-                            android:id="@+id/average_speed_TextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0"
-                            android:gravity="center"
-                            android:text="0.0 km/h" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/distance_Layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/distance_Icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            app:srcCompat="@drawable/record_distance_white" />
-
-                        <TextView
-                            android:id="@+id/distance_TextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0"
-                            android:gravity="center"
-                            android:text="0.0 km" />
-                    </LinearLayout>
-                </LinearLayout>
-
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-15dp"
+                android:layout_weight="0"
+                android:background="@drawable/shape"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingTop="35dp"
+                android:paddingRight="15dp"
+                android:paddingBottom="20dp">
 
                 <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/play_imageView"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/record_playbtn_white" />
-
-                    <ProgressBar
-                        android:id="@+id/progressBar"
-                        style="?android:progressBarStyleHorizontal"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="1"
-                        android:progress="0"
-                        android:progressDrawable="@drawable/progress_bar"
-                        android:rotation="270" />
-                </FrameLayout>
-
+                    android:id="@+id/pageViewerContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"></FrameLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
+                    android:layout_gravity="center"
+                    android:layout_marginTop="25dp"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:id="@+id/altimeter_Layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="right|center_vertical"
+                        android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/altimeter_icon"
+                        <LinearLayout
+                            android:id="@+id/average_speed_Layout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="0"
-                            app:srcCompat="@drawable/record_altimeter_white" />
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/altimeter_TextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="0.0 m" />
+                            <ImageView
+                                android:id="@+id/average_speed_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0"
+                                app:srcCompat="@drawable/record_average_speed_white" />
+
+                            <TextView
+                                android:id="@+id/average_speed_TextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:gravity="center"
+                                android:text="0.0 km/h" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/distance_Layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/distance_Icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                app:srcCompat="@drawable/record_distance_white" />
+
+                            <TextView
+                                android:id="@+id/distance_TextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:gravity="center"
+                                android:text="0.0 km" />
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/other_Layout"
+                    <FrameLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content">
 
                         <ImageView
-                            android:id="@+id/accuracy_icon"
+                            android:id="@+id/play_imageView"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center_vertical|center_horizontal"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/record_playbtn_white" />
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            style="?android:progressBarStyleHorizontal"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:progress="0"
+                            android:progressDrawable="@drawable/progress_bar"
+                            android:rotation="270" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/altimeter_Layout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="0"
-                            app:srcCompat="@drawable/ic_signal_cellular_0_bar_black_24dp" />
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/accuracy_TextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="--" />
+                            <ImageView
+                                android:id="@+id/altimeter_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0"
+                                app:srcCompat="@drawable/record_altimeter_white" />
+
+                            <TextView
+                                android:id="@+id/altimeter_TextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="0.0 m" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/other_Layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/accuracy_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0"
+                                app:srcCompat="@drawable/ic_signal_cellular_0_bar_black_24dp" />
+
+                            <TextView
+                                android:id="@+id/accuracy_TextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="--" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
-
         </LinearLayout>
 
-
-    </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|center"
-        app:fabSize="normal"
-        app:layout_anchorGravity="center"
-        app:srcCompat="@drawable/activity_running_white"
-        android:translationY="@dimen/roundCornersRecord"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:translationY="-15dp"
+            app:fabSize="normal"
+            app:layout_anchor="@id/mapview"
+            app:layout_anchorGravity="bottom|center"
+            app:srcCompat="@drawable/activity_running_white" />
+    </android.support.design.widget.CoordinatorLayout>
 
     <Button
-            android:id="@+id/compBtn"
-            android:text=""
-            android:layout_width="48dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="9dp"
-            android:alpha="0"
-            tools:ignore="RtlCompat"/>
-
+        android:id="@+id/compBtn"
+        android:layout_width="48dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="9dp"
+        android:alpha="0"
+        android:text=""
+        tools:ignore="RtlCompat" />
 </FrameLayout>
