@@ -52,4 +52,7 @@ dependencies {
 
     // JSON Tool from Google
     implementation 'com.google.code.gson:gson:2.8.2'
+
+    // Add PermissionManager Libary
+    implementation 'com.github.karanchuri:PermissionManager:0.1.0'
 }
