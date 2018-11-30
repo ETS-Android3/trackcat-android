@@ -324,7 +324,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                         startTracking();
                     }
                     /* if there is any data collectet Tracked Route is saveable */
-                    if (timer.getTime() > 0) {
+                    if (timer.getTime() > 0 && model.getLocations() != null && model.getLocations().size() > 2) {
                         /* store starttime for holdDown */
                         startTime = event.getEventTime();
                         /* timer for Progressbar */
