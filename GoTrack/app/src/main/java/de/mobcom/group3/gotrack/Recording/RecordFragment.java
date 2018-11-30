@@ -236,6 +236,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
          * add Marker and Polyline
          * */
         startMarker = new Marker(mMapView);
+        startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_maps_location_flag));
         mPath = new Polyline(mMapView);
 
 
