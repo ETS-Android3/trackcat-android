@@ -17,6 +17,7 @@
     <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorGreyLight</item>
         <item name="colorSecondary">@color/colorGreyDark</item>
+        <item name="android:colorBackground">@color/colorGreySuperLight</item>
         <item name="colorAccent">@color/colorGreyAccent</item>
         <item name="colorPrimaryDark">@color/colorBlack</item>
         <item name="colorButtonNormal">@color/colorBlack</item>
@@ -36,8 +37,9 @@
         <item name="android:textColorPrimary">@color/colorWhite</item>
     </style>
 
-    <style name="TextAppearance.AppCompat" parent="android:Widget.TextView">
-        <item name="android:textColor">@color/colorWhite</item>
+    <style name="TextAppearance.AppCompat.Headline" parent="android:Widget.TextView">
+        <item name="android:textColor">?android:attr/textColor</item>
+        <item name="android:textSize">24sp</item>
     </style>
 
     <style name="VerticalThemeLayoutInputs">
