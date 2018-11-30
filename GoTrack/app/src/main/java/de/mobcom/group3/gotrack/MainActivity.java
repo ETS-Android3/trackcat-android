@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.GravityCompat;
@@ -241,5 +242,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void endTracking() {
         // TODO switch to Statisitcs page
         recordFragment = new RecordFragment();
+    }
+
+    public RecordFragment getRecordFragment() {
+        return recordFragment;
     }
 }

@@ -74,4 +74,11 @@ public class Route {
     public void setLocations(ArrayList<Location> locations) {
         this.locations = locations;
     }
+
+    public void addLocation(Location location) {
+        if(this.locations == null){
+            this.locations = new ArrayList<Location>();
+        }
+        this.locations.add(location);
+    }
 }

@@ -25,12 +25,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
 import de.mobcom.group3.gotrack.R;
+import de.mobcom.group3.gotrack.RecordListOneItemFragment;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.PageViewer;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 import de.mobcom.group3.gotrack.Statistics.mCounter;
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -121,6 +125,12 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     private float alt = 0f;
     private long timeOfFix = 0;
     private float trueNorth;
+
+    /*
+     * Model of Route
+     * */
+    private Route model;
+
 
     @Override
     public void onPause() {
@@ -393,13 +403,23 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         stopTracking();
         notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
 
+        model.setTime(timer.getTime());
+        model.setDistance(kmCounter.getAmount());
+
+        /*
+         * TODO open statistics page from here
+         * */
+        RecordListOneItemFragment statistics = new RecordListOneItemFragment();
+        statistics.setModel(model);
+
+        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, statistics, "RECORDONEITEM");
+        fragTransaction.commit();
+
         /*
          * kill this instance and create new Fragment in Main
          * */
         MainActivity.getInstance().endTracking();
-        /*
-         * TODO open statistics page from here
-         * */
 
     }
 
@@ -458,6 +478,9 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     public void startTracking() {
         /* instantiate if null */
         if (kmCounter == null) {
+
+            // instatiate new ModelRoute
+            model = new Route();
 
             // start Locator
             //locatorGPS = new Locator(MainActivity.getInstance(), this);
@@ -614,6 +637,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
 
 
         if (isTracking) {
+
+            // add Location to Model
+            model.addLocation(location);
+
             // add to List
             GPSData.add(gPt);
 
@@ -726,11 +753,11 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     @Override
     public void onOrientationChanged(final float orientationToMagneticNorth, IOrientationProvider source) {
         //if (gpsSpeed < 0.01) {
-            GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
-            trueNorth = orientationToMagneticNorth + gf.getDeclination();
-            if (trueNorth > 360.0f)
-                trueNorth = trueNorth - 360.0f;
-            //this part adjusts the desired map and compass rotation based on device orientation and compass heading
+        GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
+        trueNorth = orientationToMagneticNorth + gf.getDeclination();
+        if (trueNorth > 360.0f)
+            trueNorth = trueNorth - 360.0f;
+        //this part adjusts the desired map and compass rotation based on device orientation and compass heading
         float t = (360 - trueNorth - this.deviceOrientation);
         if (t < 0)
             t += 360;
