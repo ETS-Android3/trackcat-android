@@ -164,6 +164,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         // Aktion je nach Auswahl des Items
         switch (menuItem.getItemId()) {
+            case R.id.nav_dashboard:
+                if (getSupportFragmentManager().findFragmentByTag("DASHBOARD") == null) {
+                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+
+                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
+                    fragTransaction.commit();
+                }
+                break;
+            case R.id.nav_recordlist:
+                /*if (getSupportFragmentManager().findFragmentByTag("RECORDLIST") == null) {
+                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+
+                    fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), "RECORDLIST");
+                    fragTransaction.commit();
+                }*/
+                if (getSupportFragmentManager().findFragmentByTag("ONE_RECORD") == null) {
+                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+
+                    fragTransaction.replace(R.id.mainFrame, new RecordListOneItemFragment(), "ONE_RECORDLIST");
+                    fragTransaction.commit();
+                }
+                break;
             case R.id.nav_record:
                 if (getSupportFragmentManager().findFragmentByTag("RECORD") == null) {
                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
@@ -177,14 +199,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
                     fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), "SETTINGS");
-                    fragTransaction.commit();
-                }
-                break;
-            case R.id.nav_dashboard:
-                if (getSupportFragmentManager().findFragmentByTag("DASHBOARD") == null) {
-                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-
-                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
                     fragTransaction.commit();
                 }
                 break;
