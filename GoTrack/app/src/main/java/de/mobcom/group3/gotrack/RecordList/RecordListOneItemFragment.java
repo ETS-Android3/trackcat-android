@@ -1,4 +1,4 @@
-package de.mobcom.group3.gotrack;
+package de.mobcom.group3.gotrack.RecordList;
 
 import android.graphics.Color;
 import android.location.Location;
@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
+import de.mobcom.group3.gotrack.MainActivity;
+import de.mobcom.group3.gotrack.R;
 
 
 public class RecordListOneItemFragment extends Fragment {
