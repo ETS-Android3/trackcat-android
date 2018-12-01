@@ -6,9 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-        layout="@layout/spinner_profile_list"
-        android:visibility="gone" />
+    <include layout="@layout/spinner_profile_list" />
 
     <View
         android:id="@+id/divider"
