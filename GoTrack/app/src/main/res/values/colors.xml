@@ -2,6 +2,7 @@
 <resources>
     <!-- GLOBAL COLORS -->
     <color name="colorBlack">#2d2d30</color>
+    <color name="colorLightGrey">#83838b</color>
     <color name="colorWhite">#FFFFFF</color>
 
     <!-- LIGHT THEME COLORS -->

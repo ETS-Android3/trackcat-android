@@ -36,13 +36,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Akash Bangad"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                android:textAppearance="@style/TextAppearanceTitle" />
 
             <TextView
                 android:id="@+id/profile_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="akash.bangad96@gmail.com" />
+                android:text="akash.bangad96@gmail.com"
+                android:textAppearance="@style/TextAppearanceSubtitle" />
 
         </LinearLayout>
     </LinearLayout>

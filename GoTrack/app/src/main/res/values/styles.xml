@@ -57,4 +57,13 @@
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
+    <style name="TextAppearanceTitle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="TextAppearanceSubtitle" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/colorLightGrey</item>
+        <item name="android:textSize">@dimen/profileSpinnerSubtitleSize</item>
+    </style>
+
 </resources>
