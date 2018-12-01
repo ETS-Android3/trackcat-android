@@ -174,16 +174,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
             case R.id.nav_recordlist:
-                /*if (getSupportFragmentManager().findFragmentByTag("RECORDLIST") == null) {
+                if (getSupportFragmentManager().findFragmentByTag("RECORDLIST") == null) {
                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
                     fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), "RECORDLIST");
-                    fragTransaction.commit();
-                }*/
-                if (getSupportFragmentManager().findFragmentByTag("ONE_RECORD") == null) {
-                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-
-                    fragTransaction.replace(R.id.mainFrame, new RecordListOneItemFragment(), "ONE_RECORDLIST");
                     fragTransaction.commit();
                 }
                 break;
