@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
@@ -34,7 +33,6 @@ import de.mobcom.group3.gotrack.RecordList.RecordListOneItemFragment;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.PageViewer;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 import de.mobcom.group3.gotrack.Statistics.mCounter;
-
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -283,10 +281,11 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             @Override
             public void onClick(View v) {
                 if (!northUp) {
-                    mMapView.setMapOrientation(trueNorth);
                     northUp = true;
+                    mMapView.setVerticalMapRepetitionEnabled(northUp);
                 } else {
                     northUp = false;
+                    mMapView.setVerticalMapRepetitionEnabled(northUp);
                 }
             }
         });
