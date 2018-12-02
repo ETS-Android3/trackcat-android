@@ -65,14 +65,10 @@ public class UserDAO implements IDAO<User> {
 
     @Override
     public List<User> readAll(int id) {
-        return this.readAll(new String[]{"id", "DESC"});
+        return this.readAll();
     }
 
     public List<User> readAll() {
-        return this.readAll(new String[]{"id", "DESC"});
-    }
-
-    public List<User> readAll(String[] orderArgs) {
         ArrayList<User> result = new ArrayList<>();
         String selection = " * ";
         String[] projection = {COL_ID, COL_NAME, COL_MAIL, COL_THEME, COL_IMAGE};
@@ -84,7 +80,7 @@ public class UserDAO implements IDAO<User> {
                 null,
                 null,
                 null,
-                orderArgs[0] + " " + orderArgs[1]
+                null
         );
         if (cursor.moveToFirst())
             do {

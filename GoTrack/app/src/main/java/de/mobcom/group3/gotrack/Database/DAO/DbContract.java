@@ -32,9 +32,9 @@ final class DbContract {
             "DROP TABLE IF EXISTS " + UserEntry.TABLE_NAME;
 
     static final class RouteEntry implements BaseColumns {
-        static final String TABLE_NAME = "routes_table";
+        static final String TABLE_NAME = "route_table";
         static final String COL_ID = "id";
-        static final String COL_USER = "user_id";
+        static final String COL_USER = "fk_user_id";
         static final String COL_NAME = "name";
         static final String COL_TIME = "time";
         static final String COL_DISTANCE = "distance";
