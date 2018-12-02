@@ -29,7 +29,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
 
         // Umwandlung in einzelne Listen
         for (int i = 0; i < records.size(); i++) {
-            this.listIds.add(records.get(i).getId());
+            this.listIds.add(i+1);
             this.listNames.add(records.get(i).getName());
             this.listDistances.add(records.get(i).getDistance());
             this.listTimes.add(records.get(i).getTime());
@@ -45,6 +45,9 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = inflater.inflate(R.layout.record_list_one_item, parent, false);
         LinearLayout recordItem = view.findViewById(R.id.record_one_item);
+
+        TextView recordId = recordItem.findViewById(R.id.record_id);
+        recordId.setText("" + listIds.get(position));
 
         TextView recordName = recordItem.findViewById(R.id.record_name);
         recordName.setText(listNames.get(position));
