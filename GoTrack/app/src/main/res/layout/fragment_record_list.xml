@@ -24,5 +24,34 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="?android:attr/listDivider" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/recordName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name" />
+
+            <TextView
+                android:id="@+id/recordDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distanz" />
+
+            <TextView
+                android:id="@+id/recordTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zeit" />
+        </LinearLayout>
+
+
     </LinearLayout>
 </FrameLayout>
