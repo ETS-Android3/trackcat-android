@@ -56,14 +56,14 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             view = inflater.inflate(R.layout.spinner_footer, parent, false);
         }
 
-        LinearLayout profileList = view.findViewById(R.id.profile_layout_list);
-        ImageView profileImage = profileList.findViewById(R.id.profile_image);
+        LinearLayout profileItem = view.findViewById(R.id.profile_layout_list);
+        ImageView profileImage = profileItem.findViewById(R.id.profile_image);
         profileImage.setImageResource(listImages.get(position));
 
-        TextView profileName = profileList.findViewById(R.id.profile_name);
+        TextView profileName = profileItem.findViewById(R.id.profile_name);
         profileName.setText(listNames.get(position));
 
-        TextView profileEmail = profileList.findViewById(R.id.profile_email);
+        TextView profileEmail = profileItem.findViewById(R.id.profile_email);
         profileEmail.setText(listEmails.get(position));
 
         return view;
