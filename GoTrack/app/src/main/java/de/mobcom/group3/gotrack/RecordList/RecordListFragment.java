@@ -33,7 +33,7 @@ public class RecordListFragment extends Fragment {
         // TODO Dynamische Umsetzung anhand der UserID
         List<Route> records = dao.readAll(1);
 
-        CustomRecordListAdapter adapter = new CustomRecordListAdapter(getContext(), records);
+        CustomRecordListAdapter adapter = new CustomRecordListAdapter(MainActivity.getInstance(), records);
         ListView recordList = (ListView) view.findViewById(R.id.record_list);
         recordList.setAdapter(adapter);
         return view;
