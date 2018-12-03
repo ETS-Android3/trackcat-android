@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/record_one_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/record_one_item">
+        android:layout_marginBottom="10dp">
 
         <TextView
             android:id="@+id/record_id"
@@ -24,8 +24,8 @@
             android:id="@+id/activity_type"
             android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:padding="10dp"
-            android:gravity="center" />
+            android:gravity="center"
+            android:padding="10dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,8 +36,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/record_name"
@@ -50,8 +50,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/record_distance"
@@ -71,5 +71,5 @@
 
         </LinearLayout>
 
-    </TableRow>
+    </LinearLayout>
 </TableLayout>
