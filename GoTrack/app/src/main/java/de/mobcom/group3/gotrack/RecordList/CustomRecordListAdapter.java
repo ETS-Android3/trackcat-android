@@ -2,12 +2,16 @@ package de.mobcom.group3.gotrack.RecordList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.osmdroid.views.MapView;
+
 import java.util.ArrayList;
 import java.util.List;
 import de.mobcom.group3.gotrack.Database.Models.Route;
@@ -48,6 +52,9 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
 
         TextView recordId = recordItem.findViewById(R.id.record_id);
         recordId.setText("" + listIds.get(position));
+
+        MapView map = recordItem.findViewById(R.id.record_map);
+        map.setBuiltInZoomControls(false);
 
         TextView recordName = recordItem.findViewById(R.id.record_name);
         recordName.setText(listNames.get(position));

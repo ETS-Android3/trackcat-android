@@ -240,6 +240,8 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
 
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
+        mMapView.setBuiltInZoomControls(false);
+
 
         /*
          + add compass element

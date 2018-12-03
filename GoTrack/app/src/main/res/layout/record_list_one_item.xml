@@ -21,11 +21,10 @@
             android:textStyle="bold" />
 
         <org.osmdroid.views.MapView
-            android:id="@+id/mapview"
+            android:id="@+id/record_map"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:clickable="false">
-
         </org.osmdroid.views.MapView>
 
         <LinearLayout
