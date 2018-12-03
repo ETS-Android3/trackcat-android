@@ -35,7 +35,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         LinearLayout recordItem = view.findViewById(R.id.record_one_item);
 
         TextView recordId = recordItem.findViewById(R.id.record_id);
-        recordId.setText("" + records.get(position).getId());
+        recordId.setText("" + (position+1));
 
         MapView map = recordItem.findViewById(R.id.record_map);
         map.setBuiltInZoomControls(false);
