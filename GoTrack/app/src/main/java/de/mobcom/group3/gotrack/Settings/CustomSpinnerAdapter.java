@@ -1,16 +1,21 @@
 package de.mobcom.group3.gotrack.Settings;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.zip.Inflater;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import de.mobcom.group3.gotrack.MainActivity;
@@ -54,6 +59,27 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
         if (position == listNames.size() - 1) {
             view = inflater.inflate(R.layout.spinner_footer, parent, false);
+
+            /*Anzeigen des Profilbearbeitungsfragment*/
+            LinearLayout addUserLayout = (LinearLayout )view.findViewById(R.id.profile_add_user);
+            addUserLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+
+                    fragTransaction.replace(R.id.mainFrame, new NewUserFragment(), "NEWUSER");
+                    fragTransaction.commit();
+
+                    DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
+                    mainDrawer.closeDrawer(GravityCompat.START);
+                    try {
+                        Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
+                        method.setAccessible(true);
+                        method.invoke(MainActivity.getInstance().getSpinner());
+                    }catch(Exception e){
+                    }
+                }
+            });
         }
 
         LinearLayout profileItem = view.findViewById(R.id.profile_layout_list);

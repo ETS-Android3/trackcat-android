@@ -3,8 +3,11 @@ package de.mobcom.group3.gotrack.Settings;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.*;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import de.mobcom.group3.gotrack.R;
 

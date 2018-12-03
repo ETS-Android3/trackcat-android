@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.karan.churi.PermissionManager.PermissionManager;
@@ -21,11 +22,13 @@ import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
+import de.mobcom.group3.gotrack.Settings.NewUserFragment;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
 
     private PermissionManager permissionManager = new PermissionManager() {};
     final int NOTIFICATION_ID = 100;
@@ -33,12 +36,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static MainActivity instance;
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
-    private Spinner spinner;
+    private static Spinner spinner;
 
     private static final String PREF_DARK_THEME = "dark_theme";
 
     public static MainActivity getInstance() {
         return instance;
+    }
+    public static Spinner getSpinner() {
+        return spinner;
     }
 
     @Override
@@ -104,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // TODO Profilwechsel
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         addItemsToSpinner();
+
+
     }
 
     // add items into spinner dynamically
@@ -158,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) { }
+
         });
     }
 
