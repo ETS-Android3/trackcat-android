@@ -12,11 +12,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Aufnahmen"
+            android:text="@string/recordListTitle"
             style="@style/TextAppearance.AppCompat.Headline" />
 
         <View
-            android:id="@+id/divider2"
+            android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="15dp"
@@ -24,8 +24,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:stretchColumns="*">
+            android:layout_height="match_parent">
 
             <ListView
                 android:id="@+id/record_list"

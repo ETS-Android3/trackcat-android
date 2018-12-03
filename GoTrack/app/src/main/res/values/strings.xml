@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">GoTrack</string>
+    <string name="recordListTitle">Aufnahmen</string>
 
     <!-- TODO: Preferences Page "SettingsFragment" -->
     <string name="category1">Allgemeines</string>
@@ -28,9 +29,13 @@
         <item>Neptune</item>
     </string-array>
 
-    // Menu Toggle
+    <!-- Menu Toggle -->
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
+
+    <!-- User Verwaltung -->
+    <string name="newUserTitle">Neues Profil</string>
+    <string name="editUserTitle">Profil bearbeiten</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hallo ich bin ein leeres Fragment</string>
