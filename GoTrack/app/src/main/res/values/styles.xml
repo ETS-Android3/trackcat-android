@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    // Light Mode
+    <!-- Light Mode -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorGreenLight</item>
         <item name="colorSecondary">@color/colorGreenDark</item>
@@ -13,7 +13,7 @@
         <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorGreenDark</item>
     </style>
 
-    // Dark Mode
+    <!-- Dark Mode -->
     <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorGreyLight</item>
         <item name="colorSecondary">@color/colorGreyDark</item>
@@ -27,21 +27,30 @@
         <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorGreyDark</item>
     </style>
 
+    <!-- Hauptfenster: Geteilte Ansicht (oben Karte unten Main-Fenster) -->
     <style name="Main" parent="">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:layout_marginTop">@dimen/roundCornersRecord</item>
     </style>
 
+    <!-- Standard-Textfarbe im Main-Fenster -->
+    <style name="TextAppearanceRecord" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/colorWhite</item>
+    </style>
+
+    <!-- Toolbar Style -->
     <style name="Toolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:textColorPrimary">@color/colorWhite</item>
     </style>
 
+    <!-- Überschrift TextAppearance -->
     <style name="TextAppearance.AppCompat.Headline" parent="android:Widget.TextView">
         <item name="android:textColor">?android:attr/textColor</item>
         <item name="android:textSize">24sp</item>
     </style>
 
+    <!-- Lineares Standard Layout -->
     <style name="VerticalThemeLayoutInputs">
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:layout_marginLeft">20dp</item>
@@ -50,6 +59,7 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <!-- Profile Spinner Iconstyles der Zusatzoptionen -->
     <style name="TitleBarImage">
         <item name="android:layout_width">20dp</item>
         <item name="android:layout_height">20dp</item>
@@ -57,10 +67,12 @@
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
+    <!-- Profile Spinner Benutzername -->
     <style name="TextAppearanceTitle" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textColor">@color/colorBlack</item>
     </style>
 
+    <!-- Profile Spinner Email-Adresse -->
     <style name="TextAppearanceSubtitle" parent="android:Widget.TextView">
         <item name="android:textColor">@color/colorLightGrey</item>
         <item name="android:textSize">@dimen/profileSpinnerSubtitleSize</item>

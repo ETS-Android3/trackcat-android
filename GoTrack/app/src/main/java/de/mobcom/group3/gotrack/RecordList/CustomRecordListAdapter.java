@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import org.osmdroid.views.MapView;
 import java.util.List;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.R;
@@ -37,8 +37,8 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         TextView recordId = recordItem.findViewById(R.id.record_id);
         recordId.setText("" + (position+1));
 
-        MapView map = recordItem.findViewById(R.id.record_map);
-        map.setBuiltInZoomControls(false);
+        ImageView recordType = recordItem.findViewById(R.id.activity_type);
+        recordType.setImageResource(R.drawable.activity_running_record_list);
 
         TextView recordName = recordItem.findViewById(R.id.record_name);
         recordName.setText(records.get(position).getName());
