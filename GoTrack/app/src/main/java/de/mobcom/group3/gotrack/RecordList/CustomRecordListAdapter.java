@@ -53,10 +53,10 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         recordName.setText(listNames.get(position));
 
         TextView recordDistance = recordItem.findViewById(R.id.record_distance);
-        recordDistance.setText("" + listDistances.get(position));
+        recordDistance.setText(listDistances.get(position) + " km |");
 
         TextView recordTime = recordItem.findViewById(R.id.record_time);
-        recordTime.setText("" + listTimes.get(position));
+        recordTime.setText(listTimes.get(position) + " Minuten");
 
         return view;
     }
