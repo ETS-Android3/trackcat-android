@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -61,6 +62,10 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         if (position == listNames.size() - 1) {
             view = inflater.inflate(R.layout.spinner_footer, parent, false);
 
+           // View viewE = inflater.inflate(R.layout.fragment_new_user, parent, false);
+            LinearLayout editUserLayout2 =  viewE.findViewById(R.id.newFragmentLayout);
+            title = editUserLayout2.findViewById(R.id.textView2);
+
             /*Anzeigen des Profilbearbeitungsfragment*/
             LinearLayout editUserLayout = (LinearLayout )view.findViewById(R.id.profile_edit_user);
             editUserLayout.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +74,9 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                     fragTransaction.replace(R.id.mainFrame, new NewUserFragment(), "EDITUSER");
                     fragTransaction.commit();
+
+
+                    title.setText("Nutzer bearbeiten");
 
                     DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
                     mainDrawer.closeDrawer(GravityCompat.START);
@@ -90,6 +98,8 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
                     fragTransaction.replace(R.id.mainFrame, new NewUserFragment(), "NEWUSER");
                     fragTransaction.commit();
+
+                    title.setText("Nutzer erstellen");
 
                     DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
                     mainDrawer.closeDrawer(GravityCompat.START);
