@@ -30,6 +30,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
     private ArrayList<String> listEmails;
     public Resources res;
     LayoutInflater inflater;
+    TextView title;
 
     public CustomSpinnerAdapter(Context context, ArrayList<Integer> profileImages, ArrayList<String> profileNames, ArrayList<String> profileEmails) {
         super(context, R.layout.spinner_profile_selected, profileNames);
@@ -61,6 +62,26 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             view = inflater.inflate(R.layout.spinner_footer, parent, false);
 
             /*Anzeigen des Profilbearbeitungsfragment*/
+            LinearLayout editUserLayout = (LinearLayout )view.findViewById(R.id.profile_edit_user);
+            editUserLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                    fragTransaction.replace(R.id.mainFrame, new NewUserFragment(), "EDITUSER");
+                    fragTransaction.commit();
+
+                    DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
+                    mainDrawer.closeDrawer(GravityCompat.START);
+                    try {
+                        Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
+                        method.setAccessible(true);
+                        method.invoke(MainActivity.getInstance().getSpinner());
+                    }catch(Exception e){
+                    }
+                }
+            });
+
+            /*Anzeigen des Profilerstellungssfragment*/
             LinearLayout addUserLayout = (LinearLayout )view.findViewById(R.id.profile_add_user);
             addUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
