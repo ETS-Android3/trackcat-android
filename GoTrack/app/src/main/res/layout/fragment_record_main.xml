@@ -78,7 +78,8 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0"
                                 android:gravity="center"
-                                android:text="0.0 km/h" />
+                                android:text="0.0 km/h"
+                                style="@style/TextAppearanceRecord"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -100,7 +101,8 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0"
                                 android:gravity="center"
-                                android:text="0.0 km" />
+                                android:text="0.0 km"
+                                style="@style/TextAppearanceRecord"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -157,7 +159,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
-                                android:text="0.0 m" />
+                                android:text="0.0 m"
+                                style="@style/TextAppearanceRecord" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -179,7 +182,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
-                                android:text="--" />
+                                android:text="--"
+                                style="@style/TextAppearanceRecord" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -194,7 +198,7 @@
             app:fabSize="normal"
             app:layout_anchor="@id/mapview"
             app:layout_anchorGravity="bottom|center"
-            app:srcCompat="@drawable/activity_running_white" />
+            app:srcCompat="@drawable/activity_running_record" />
     </android.support.design.widget.CoordinatorLayout>
 
     <Button
