@@ -13,6 +13,9 @@ public class Timer {
     int type;
     private boolean isRunning;
 
+    public Timer() {
+
+    }
 
     /*
      * Define Timer to add up Time and create String in HH:MM:SS format
@@ -34,10 +37,25 @@ public class Timer {
     public void sendTime()
 
     {
-        // create readable String
-        int hours = (int) Math.floor((time / 60) / 60);
 
-        double timeCalc = time - hours * 60 * 60;
+
+        // send message to View
+        Message msg = new Message();
+        msg.what = type;
+        msg.obj = secToString(time);
+        RecordFragment.handler.sendMessage(msg);
+    }
+
+    /*
+    * build Readable String from Seconds
+    * */
+
+
+    public String secToString(double secs) {
+        // create readable String
+        int hours = (int) Math.floor((secs / 60) / 60);
+
+        double timeCalc = secs - hours * 60 * 60;
 
         int minutes = (int) Math.floor(timeCalc / 60);
         String seconds = (timeCalc - minutes * 60) / 100 + "";
@@ -52,13 +70,8 @@ public class Timer {
             minutesStr = 0 + minutesStr;
         }
 
-        // send message to View
-        Message msg = new Message();
-        msg.what = type;
-        msg.obj = hours + ":" + minutesStr + ":" + seconds;
-        RecordFragment.handler.sendMessage(msg);
+        return hours + ":" + minutesStr + ":" + seconds;
     }
-
 
     /*
      * create new Instance and set type

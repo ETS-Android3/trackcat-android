@@ -9,17 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
+
 import java.util.ArrayList;
+
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
+import de.mobcom.group3.gotrack.Recording.Timer;
 
 
 public class RecordListOneItemFragment extends Fragment {
@@ -29,6 +34,9 @@ public class RecordListOneItemFragment extends Fragment {
 
     // view Element
     private View fragmentView;
+
+    private double height = 0;
+    private double maxSpeed = 0;
 
     private ArrayList<GeoPoint> GPSData = new ArrayList<>();
 
@@ -54,9 +62,82 @@ public class RecordListOneItemFragment extends Fragment {
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
             GPSData.add(gPt);
 
+            if (i > 1) {
+                double distance = model.getLocations().get(i - 1).getAltitude() - location.getAltitude();
+                if (distance < 0) {
+                    distance = distance * -1;
+                }
+                height = height + distance;
+
+                if(location.getSpeed()>maxSpeed){
+                    maxSpeed = location.getSpeed();
+                }
+            }
+
         }
         drawRoute();
+
+        setData();
+
         return fragmentView;
+    }
+
+    private void setData() {
+
+        /*
+         * Set Average Speed
+         * */
+        TextView average_speed_TextView = fragmentView.findViewById(R.id.average_speed_TextView);
+        String toSet = Math.round(((model.getDistance() / model.getTime()) * 60 * 60) / 100) / 10.0 + " km/h";
+        average_speed_TextView.setText(toSet);
+
+        /*
+         * Set real Average Speed
+         * */
+        TextView real_average_speed_TextView = fragmentView.findViewById(R.id.real_average_speed_TextView);
+        // TODO change to rideTimer
+        toSet = Math.round(((model.getDistance() / model.getTime()) * 60 * 60) / 100) / 10.0 + " km/h";
+        real_average_speed_TextView.setText(toSet);
+
+
+        /*
+         * Set Distance
+         * */
+        TextView distance_TextView = fragmentView.findViewById(R.id.distance_TextView);
+        toSet = Math.round(model.getDistance()) / 1000.0 + " km";
+        distance_TextView.setText(toSet);
+
+        /*
+         * Set altimeter
+         * */
+        TextView altimeter_TextView = fragmentView.findViewById(R.id.altimeter_TextView);
+        toSet = "± " + Math.round(height) + " m";
+        altimeter_TextView.setText(toSet);
+
+        /*
+         * Set total Time
+         * */
+        TextView total_time_TextView = fragmentView.findViewById(R.id.total_time_TextView);
+        Timer timerForCalc = new Timer();
+        toSet = timerForCalc.secToString(model.getTime());
+        total_time_TextView.setText(toSet);
+
+        /*
+         * Set ride Time
+         * */
+        TextView real_time_TextView = fragmentView.findViewById(R.id.real_time_TextView);
+        // TODO change to rideTimer
+        toSet = timerForCalc.secToString(model.getTime());
+        real_time_TextView.setText(toSet);
+
+        /*
+         * Set Max Speed
+         * */
+        TextView max_speed_TextView = fragmentView.findViewById(R.id.max_speed_TextView);
+        toSet = (Math.round(maxSpeed * 60 * 60) / 100) / 10.0 + " km/h";
+        max_speed_TextView.setText(toSet);
+
+
     }
 
     private void setButtons() {

@@ -407,10 +407,9 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
 
         model.setTime(timer.getTime());
         model.setDistance(kmCounter.getAmount());
+        // TODO add Ride time
 
-        /*
-         * TODO open statistics page from here
-         * */
+    
         RecordListOneItemFragment statistics = new RecordListOneItemFragment();
         statistics.setModel(model);
 
@@ -497,7 +496,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             rideTimer = new Timer(1);
 
             // average Kmh
-            kmhAverager = new SpeedAverager(MainActivity.getInstance(), kmCounter, timer, 1);
+            kmhAverager = new SpeedAverager(MainActivity.getInstance(), kmCounter, rideTimer, 1);
 
             isTracking = true;
         } else {
@@ -716,7 +715,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             }
             try {
                 TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
-                String toSet = location.getAltitude() + " m";
+                String toSet =   Math.round(location.getAltitude()) + " m";
                 altimeter_TextView.setText(toSet);
             } catch (NullPointerException e) {
                 Log.v("GOREACK", e.toString());
