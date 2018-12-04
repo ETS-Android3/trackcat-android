@@ -12,6 +12,9 @@ import de.mobcom.group3.gotrack.MainActivity;
 
 public class Locator {
 
+    // TODO set on 5
+    final private int MIN_DISTANCE = 5;
+
     // Standardwerte für die Abfrage der Berechtigungen
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
@@ -45,6 +48,7 @@ public class Locator {
                 // Called when a new location is found by the network location provider.
 
                 instance.parent.updateLocation(location);
+                //MainActivity.getInstance().updateLocation(location);
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -87,7 +91,7 @@ public class Locator {
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-                    0, locationListener); // via GPS
+                    MIN_DISTANCE, locationListener); // via GPS
         }
     }
 

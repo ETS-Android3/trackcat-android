@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
@@ -33,6 +34,7 @@ import de.mobcom.group3.gotrack.RecordList.RecordListOneItemFragment;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.PageViewer;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 import de.mobcom.group3.gotrack.Statistics.mCounter;
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -172,23 +174,31 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                     /*
                      * set Time in TextView
                      * */
+                    String toSetTime = msg.obj + "";
+                    String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
+
                     try {
                         time_TextView = view.findViewById(R.id.time_TextView);
-                        String toSetTime = msg.obj + "";
                         time_TextView.setText(toSetTime);
 
                         TextView distance_TextView = view.findViewById(R.id.distance_TextView);
-                        String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
                         distance_TextView.setText(toSetDistance);
 
-                        notificationContent = toSetTime + "   " + toSetDistance;
-
-                        // todo Noftification Time/Distance String editable
-                        issueNotification(notificationContent);
 
                     } catch (NullPointerException e) {
                         Log.v("GOREACK", e.toString());
                     }
+
+                    try {
+                        notificationContent = toSetTime + "   " + toSetDistance;
+
+                        // todo Noftification Time/Distance String editable
+                        issueNotification(notificationContent);
+                    } catch (Exception e) {
+                        Log.v("TEST", e.toString());
+                    }
+
+
                     /*
                      * recalculate average Speed
                      * */
@@ -400,7 +410,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
      * end Tracking ans switch to Statistics for dismisss or save
      * */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private void endTracking() {
+    public void endTracking() {
 
         stopTracking();
         notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
@@ -409,14 +419,16 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         model.setDistance(kmCounter.getAmount());
         // TODO add Ride time
 
-    
+
         RecordListOneItemFragment statistics = new RecordListOneItemFragment();
         statistics.setModel(model);
 
-        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, statistics, "RECORDONEITEM");
-        fragTransaction.commit();
-
+        try {
+            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, statistics, "RECORDONEITEM");
+            fragTransaction.commit();
+        } catch (Exception e) {
+        }
         /*
          * kill this instance and create new Fragment in Main
          * */
@@ -536,12 +548,18 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         PendingIntent intentPlay = PendingIntent.getBroadcast(MainActivity.getInstance().getApplicationContext(), 0,
                 playTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        /* calls Broadcastreciever when Button "Stop" is clicked and ends Tracking */
+        Intent endTrackingIntent = new Intent(MainActivity.getInstance(), NotificationActionReciever.class);
+        endTrackingIntent.setAction("ACTION_END");
+        PendingIntent intentEnd = PendingIntent.getBroadcast(MainActivity.getInstance().getApplicationContext(), 0,
+                endTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         /*
          * create Notification
          * */
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MainActivity.getInstance(), CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_icon)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.drawable.ic_launcher))
                 .setContentTitle("Laufende Aufzeichnung")
                 .setContentText(content)
                 .setSound(null)
@@ -556,6 +574,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             mBuilder.addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play",
                     intentPlay);
         }
+        if (timer.getTime() > 0 && model.getLocations() != null && model.getLocations().size() > 2) {
+            mBuilder.addAction(R.drawable.ic_icon, "Stop", intentEnd);
+        }
+
         // start Notification
         notificationManager.notify(MainActivity.getInstance().getNOTIFICATION_ID(), mBuilder.build());
     }
@@ -588,7 +610,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
      * Calculate Statistics
      *----------------------------------------------------------------------------------------------
      */
-    void updateLocation(Location location) {
+    public void updateLocation(Location location) {
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
 
         /*
@@ -645,6 +667,9 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             // add to List
             GPSData.add(gPt);
 
+            // add Distance
+            kmCounter.addKm(location);
+
             try {
                 /*
                  * set Polyline
@@ -676,9 +701,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             /*
              * add Location to Statistics
              * */
-
-            // add Distance
-            kmCounter.addKm(location);
 
             // count ridetime
             if (!rideTimer.getActive() && location.getSpeed() > 0) {
@@ -715,7 +737,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             }
             try {
                 TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
-                String toSet =   Math.round(location.getAltitude()) + " m";
+                String toSet = Math.round(location.getAltitude()) + " m";
                 altimeter_TextView.setText(toSet);
             } catch (NullPointerException e) {
                 Log.v("GOREACK", e.toString());

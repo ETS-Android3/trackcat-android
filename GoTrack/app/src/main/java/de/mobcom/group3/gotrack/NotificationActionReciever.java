@@ -17,6 +17,8 @@ public class NotificationActionReciever extends BroadcastReceiver {
                 MainActivity.getInstance().stopTracking();
             } else if (msg.equalsIgnoreCase("ACTION_PLAY")) {
                 MainActivity.getInstance().startTracking();
+            }else if (msg.equalsIgnoreCase("ACTION_END")){
+                MainActivity.getInstance().endTrackingNotification();
             }
         }
     }

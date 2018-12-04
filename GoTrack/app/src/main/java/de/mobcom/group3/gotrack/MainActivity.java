@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -214,15 +215,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Stops/pauses Tracking opens App and switch to RecordFragment
     public void stopTracking() {
-        recordFragment.stopTracking();
         startActivity(getIntent());
         try {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
             fragTransaction.commit();
         } catch (RuntimeException e) {
-
+            Log.v("TEST", e.toString());
         }
+        recordFragment.stopTracking();
+
     }
 
     public int getNOTIFICATION_ID() {
@@ -249,5 +251,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public RecordFragment getRecordFragment() {
         return recordFragment;
+    }
+
+    public void endTrackingNotification() {
+        startActivity(getIntent());
+        recordFragment.endTracking();
     }
 }
