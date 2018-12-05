@@ -131,6 +131,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
      * */
     private Route model;
 
+    private RecordListOneItemFragment statistics;
 
     @Override
     public void onPause() {
@@ -420,19 +421,21 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         // TODO add Ride time
 
 
-        RecordListOneItemFragment statistics = new RecordListOneItemFragment();
+        statistics = new RecordListOneItemFragment();
         statistics.setModel(model);
 
         try {
             FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, statistics, "RECORDONEITEM");
             fragTransaction.commit();
+
+            /*
+             * kill this instance and create new Fragment in Main
+             * */
+            MainActivity.getInstance().endTracking();
         } catch (Exception e) {
         }
-        /*
-         * kill this instance and create new Fragment in Main
-         * */
-        MainActivity.getInstance().endTracking();
+
 
     }
 
@@ -795,6 +798,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         mCompassOverlay.setAzimuthOffset(t);
         mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
         //}
+    }
+
+    public RecordListOneItemFragment getStatistics() {
+        return statistics;
     }
 
 //    private void setOrientation(Float orientation) {

@@ -18,7 +18,9 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.karan.churi.PermissionManager.PermissionManager;
+
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
@@ -31,7 +33,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    private PermissionManager permissionManager = new PermissionManager() {};
+    private PermissionManager permissionManager = new PermissionManager() {
+    };
     final int NOTIFICATION_ID = 100;
     private DrawerLayout mainDrawer;
     private static MainActivity instance;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static MainActivity getInstance() {
         return instance;
     }
+
     public static Spinner getSpinner() {
         return spinner;
     }
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         // Fragt nach noch nicht erteilten Permissions
         permissionManager.checkAndRequestPermissions(this);
-        
+
         // Aktuelles Themes aus Einstellungen laden
         setTheme(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_DARK_THEME, false) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
@@ -166,7 +170,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) { }
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
 
         });
     }
@@ -256,5 +261,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void endTrackingNotification() {
         startActivity(getIntent());
         recordFragment.endTracking();
+        try {
+            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, recordFragment.getStatistics(), "RECORDONEITEM");
+            fragTransaction.commit();
+        } catch (Exception e) {
+            Log.v("TEST", e.toString());
+        }
     }
 }
