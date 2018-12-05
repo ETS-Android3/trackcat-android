@@ -610,7 +610,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
      * Calculate Statistics
      *----------------------------------------------------------------------------------------------
      */
+
+
     public void updateLocation(Location location) {
+
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
 
         /*
@@ -623,6 +626,8 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         alt = (float) location.getAltitude();
         timeOfFix = location.getTime();
         Log.v("GPS-Location: ", location.toString());
+
+
         /*
          * move Map
          * */
@@ -681,18 +686,19 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                 Log.v("GOREACK", e.toString());
             }
 
+            if(location.getSpeed()>0) {
             /*
              + this part adjusts the desired values for map rotation based on compass heading,
              + location heading and gps speed
              */
-            if (gpsBearing > 0.01 && !northUp) {
-                mMapView.setMapOrientation(-gpsBearing);
-            } else if ((gpsBearing < 0.01) && (gpsSpeed < 0.01) && !northUp) {
-                mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
+                if (gpsBearing > 0.01 && !northUp) {
+                    mMapView.setMapOrientation(-gpsBearing);
+                } else if ((gpsBearing < 0.01) && (gpsSpeed < 0.01) && !northUp) {
+                    mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
+                }
+                Log.v("GPS-Bearing: ", String.valueOf(gpsBearing));
+                Log.v("GPS-Speed", String.valueOf(gpsSpeed));
             }
-            Log.v("GPS-Bearing: ", String.valueOf(gpsBearing));
-            Log.v("GPS-Speed", String.valueOf(gpsSpeed));
-
             /*
              * updatde OSM Map
              * */
