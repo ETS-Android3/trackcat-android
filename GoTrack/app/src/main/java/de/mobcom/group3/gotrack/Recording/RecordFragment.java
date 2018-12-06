@@ -15,6 +15,7 @@ import android.location.Location;
 import android.os.*;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
@@ -434,6 +435,8 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
              * */
             MainActivity.getInstance().endTracking();
         } catch (Exception e) {
+            Log.v("TEST", e.toString());
+
         }
 
 
@@ -551,12 +554,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         PendingIntent intentPlay = PendingIntent.getBroadcast(MainActivity.getInstance().getApplicationContext(), 0,
                 playTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        /* calls Broadcastreciever when Button "Stop" is clicked and ends Tracking */
-        Intent endTrackingIntent = new Intent(MainActivity.getInstance(), NotificationActionReciever.class);
-        endTrackingIntent.setAction("ACTION_END");
-        PendingIntent intentEnd = PendingIntent.getBroadcast(MainActivity.getInstance().getApplicationContext(), 0,
-                endTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         /*
          * create Notification
          * */
@@ -577,9 +574,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             mBuilder.addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play",
                     intentPlay);
         }
-        if (timer.getTime() > 0 && model.getLocations() != null && model.getLocations().size() > 2) {
-            mBuilder.addAction(R.drawable.ic_icon, "Stop", intentEnd);
-        }
+
 
         // start Notification
         notificationManager.notify(MainActivity.getInstance().getNOTIFICATION_ID(), mBuilder.build());
@@ -643,6 +638,25 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
+        try {
+            FloatingActionButton fab = view.findViewById(R.id.fabButton);
+
+            // change Icon TODO add images
+            switch (kmhAverager.getRouteType()) {
+                case 1:
+                    fab.setImageResource(R.drawable.activity_running_record);
+                    break;
+                case 2:
+                    fab.setImageResource(R.drawable.activity_biking_record);
+                    break;
+                case 3:
+                    fab.setImageResource(R.drawable.activity_caring_record);
+                    break;
+            }
+        } catch (Exception e) {
+            Log.v("GOTRACK", e.toString());
+        }
+
 
         try {
             TextView acc_TextView = view.findViewById(R.id.accuracy_TextView);
@@ -689,7 +703,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                 Log.v("GOREACK", e.toString());
             }
 
-            if(location.getSpeed()>0) {
+            if (location.getSpeed() > 0) {
             /*
              + this part adjusts the desired values for map rotation based on compass heading,
              + location heading and gps speed

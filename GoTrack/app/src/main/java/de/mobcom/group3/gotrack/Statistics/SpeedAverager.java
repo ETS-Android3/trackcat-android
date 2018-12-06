@@ -7,6 +7,10 @@ import de.mobcom.group3.gotrack.Recording.Timer;
  * This class calculates the average Speed in M/S via the selected Timer
  * */
 public class SpeedAverager {
+
+    final private int WALKER_MAX_SPEED = 14;
+    final private int BIKE_MAX_SPEED = 25;
+
     private MainActivity creator;
 
     private mCounter mCounter;
@@ -45,7 +49,21 @@ public class SpeedAverager {
         return type;
     }
 
-    public double getAvgSpeed(){
+    public double getAvgSpeed() {
         return avgSpeed;
+    }
+
+
+    public int getRouteType() {
+        if (avgSpeed * 60 * 60 / 1000 < WALKER_MAX_SPEED) {
+            // Walker
+            return 1;
+        } else if (avgSpeed * 60 * 60 / 1000 < BIKE_MAX_SPEED) {
+            //Bike
+            return 2;
+        } else {
+            //Car
+            return 3;
+        }
     }
 }

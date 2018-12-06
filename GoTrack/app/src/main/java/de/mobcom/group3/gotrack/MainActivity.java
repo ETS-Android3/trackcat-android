@@ -23,6 +23,7 @@ import com.karan.churi.PermissionManager.PermissionManager;
 
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
+import de.mobcom.group3.gotrack.RecordList.RecordListOneItemFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
 import de.mobcom.group3.gotrack.Settings.NewUserFragment;
@@ -258,15 +259,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return recordFragment;
     }
 
-    public void endTrackingNotification() {
-        startActivity(getIntent());
-        recordFragment.endTracking();
-        try {
-            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, recordFragment.getStatistics(), "RECORDONEITEM");
-            fragTransaction.commit();
-        } catch (Exception e) {
-            Log.v("TEST", e.toString());
-        }
-    }
 }
