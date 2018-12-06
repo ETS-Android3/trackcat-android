@@ -1,6 +1,7 @@
 package de.mobcom.group3.gotrack.Statistics;
 
 import de.mobcom.group3.gotrack.MainActivity;
+import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Timer;
 
 /*
@@ -54,16 +55,16 @@ public class SpeedAverager {
     }
 
 
-    public int getRouteType() {
-        if (avgSpeed * 60 * 60 / 1000 < WALKER_MAX_SPEED) {
+    public int getRouteType(double avg) {
+        if (avg * 60 * 60 / 1000 < WALKER_MAX_SPEED) {
             // Walker
-            return 1;
-        } else if (avgSpeed * 60 * 60 / 1000 < BIKE_MAX_SPEED) {
+            return R.drawable.activity_running_record;
+        } else if (avg * 60 * 60 / 1000 < BIKE_MAX_SPEED) {
             //Bike
-            return 2;
+            return R.drawable.activity_biking_record;
         } else {
             //Car
-            return 3;
+            return R.drawable.activity_caring_record;
         }
     }
 }

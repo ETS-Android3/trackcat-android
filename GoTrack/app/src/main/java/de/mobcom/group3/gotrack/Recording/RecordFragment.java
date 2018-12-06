@@ -638,7 +638,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-        try {
+      /*  try {
             FloatingActionButton fab = view.findViewById(R.id.fabButton);
 
             // change Icon TODO add images
@@ -655,8 +655,15 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             }
         } catch (Exception e) {
             Log.v("GOTRACK", e.toString());
-        }
+        }*/
+        //TODO in progress.....
+        try {
+            FloatingActionButton fab = view.findViewById(R.id.fabButton);
 
+            fab.setImageResource(kmhAverager.getRouteType(kmhAverager.getAvgSpeed()));
+        } catch (Exception e) {
+            Log.v("GOTRACK", e.toString());
+        }
 
         try {
             TextView acc_TextView = view.findViewById(R.id.accuracy_TextView);
