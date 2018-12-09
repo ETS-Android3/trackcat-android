@@ -87,7 +87,7 @@ public class Timer {
     }
 
     // return counted Time
-    public double getTime() {
+    public long getTime() {
         return time;
     }
 
