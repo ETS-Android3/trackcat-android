@@ -416,8 +416,8 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
 
         model.setTime(timer.getTime());
+        model.setRideTime(rideTimer.getTime());
         model.setDistance(kmCounter.getAmount());
-        // TODO add Ride time
 
 
         statistics = new RecordListOneItemFragment();
