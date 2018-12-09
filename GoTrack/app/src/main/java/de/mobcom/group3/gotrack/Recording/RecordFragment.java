@@ -123,7 +123,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     private float lon = 0f;
     private float alt = 0f;
     private long timeOfFix = 0;
-    private float trueNorth;
 
     /*
      * Model of Route
@@ -234,7 +233,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 
         // kackhässliche ZoomControls----------------------------------------------------------------> für abgabe AUS!!!!!!todo
-        mMapView.setBuiltInZoomControls(true);
+        mMapView.setBuiltInZoomControls(false);
 
         mMapView.setMultiTouchControls(true);
         mMapController = (MapController) mMapView.getController();
@@ -250,7 +249,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
 
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
-        mMapView.setBuiltInZoomControls(false);
 
 
         /*
@@ -289,15 +287,18 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
 
         mMapView.getOverlays().add(mCompassOverlay);
 
+        /*
+         + Button for aligning the map to north
+         */
         view.findViewById(R.id.compBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!northUp) {
                     northUp = true;
-                    mMapView.setVerticalMapRepetitionEnabled(northUp);
+                    mMapView.setVerticalMapRepetitionEnabled(true);
                 } else {
                     northUp = false;
-                    mMapView.setVerticalMapRepetitionEnabled(northUp);
+                    mMapView.setVerticalMapRepetitionEnabled(false);
                 }
             }
         });
@@ -410,7 +411,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
      * end Tracking ans switch to Statistics for dismisss or save
      * */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void endTracking() {
+    private void endTracking() {
 
         stopTracking();
         notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
@@ -608,7 +609,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
      */
 
 
-    public void updateLocation(Location location) {
+    void updateLocation(Location location) {
 
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
 
@@ -708,19 +709,19 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                 Log.v("GOREACK", e.toString());
             }
 
-            if (location.getSpeed() > 0) {
+
             /*
              + this part adjusts the desired values for map rotation based on compass heading,
              + location heading and gps speed
              */
-                if (gpsBearing > 0.01 && !northUp) {
-                    mMapView.setMapOrientation(-gpsBearing);
-                } else if ((gpsBearing < 0.01) && (gpsSpeed < 0.01) && !northUp) {
-                    mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
-                }
-                Log.v("GPS-Bearing: ", String.valueOf(gpsBearing));
-                Log.v("GPS-Speed", String.valueOf(gpsSpeed));
+            if ((gpsBearing > 0.01) &&!northUp) {
+                mMapView.setMapOrientation(-gpsBearing);
+            } else if ((gpsSpeed < 0.5) && !northUp) {
+                mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
             }
+            Log.v("GPS-Bearing: ", String.valueOf(gpsBearing));
+            Log.v("GPS-Speed", String.valueOf(gpsSpeed));
+
             /*
              * updatde OSM Map
              * */
@@ -802,7 +803,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     @Override
     public void onOrientationChanged(final float orientationToMagneticNorth, IOrientationProvider source) {
         GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
-        trueNorth = orientationToMagneticNorth + gf.getDeclination();
+        float trueNorth = orientationToMagneticNorth + gf.getDeclination();
         if (trueNorth > 360.0f)
             trueNorth = trueNorth - 360.0f;
         //this part adjusts the desired map and compass rotation based on device orientation and compass heading
@@ -812,7 +813,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         if (t > 360)
             t -= 360;
         mCompassOverlay.setAzimuthOffset(t);
-        mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
     }
 
     public RecordListOneItemFragment getStatistics() {
