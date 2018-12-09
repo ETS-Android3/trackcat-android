@@ -13,7 +13,7 @@ final class DbContract {
                     RouteEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     RouteEntry.COL_USER + " INTEGER, " + //toDo: implement foreign key constraint for user.id
                     RouteEntry.COL_NAME + " TEXT, " +
-                    RouteEntry.COL_TIME + " DOUBLE, " +
+                    RouteEntry.COL_TIME + " LONG, " +
                     RouteEntry.COL_RIDETIME + " LONG, " +
                     RouteEntry.COL_DISTANCE + " DOUBLE, " +
                     RouteEntry.COL_LOCATIONS + " TEXT) ";

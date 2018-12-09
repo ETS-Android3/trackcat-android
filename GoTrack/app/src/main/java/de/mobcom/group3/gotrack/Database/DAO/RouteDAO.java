@@ -77,7 +77,7 @@ public class RouteDAO implements IDAO<Route> {
             result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
             result.setUserID(cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)));
             result.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
-            result.setTime(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TIME)));
+            result.setTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
             result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
             result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
             result.setLocations(gson.fromJson(cursor.getString(
@@ -130,7 +130,7 @@ public class RouteDAO implements IDAO<Route> {
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TIME)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
                         cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                         gson.fromJson(cursor.getString(
