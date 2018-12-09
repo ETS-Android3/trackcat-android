@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
@@ -35,7 +34,6 @@ import de.mobcom.group3.gotrack.RecordList.RecordListOneItemFragment;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.PageViewer;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 import de.mobcom.group3.gotrack.Statistics.mCounter;
-
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -798,14 +796,11 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     }
 
     /*
-     + method to provide map orientation without movement activity
      + !!! needs a device with the compass-functionality (magnetometer sensor) to work properly !!!
      + ToDo: verify if method will be called on event <- does not seem this way
-     + ToDo: find out if setOrientation is really needed as independent method
      */
     @Override
     public void onOrientationChanged(final float orientationToMagneticNorth, IOrientationProvider source) {
-        //if (gpsSpeed < 0.01) {
         GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
         trueNorth = orientationToMagneticNorth + gf.getDeclination();
         if (trueNorth > 360.0f)
@@ -818,21 +813,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             t -= 360;
         mCompassOverlay.setAzimuthOffset(t);
         mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
-        //}
     }
 
     public RecordListOneItemFragment getStatistics() {
         return statistics;
     }
-
-//    private void setOrientation(Float orientation) {
-//        float t = (360 - trueNorth - this.deviceOrientation);
-//            if (t < 0)
-//                t += 360;
-//            if (t > 360)
-//                t -= 360;
-//            mCompassOverlay.setAzimuthOffset(t);
-//            mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
-//    }
 
 }

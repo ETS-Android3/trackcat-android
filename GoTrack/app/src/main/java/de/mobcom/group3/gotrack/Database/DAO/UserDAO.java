@@ -65,22 +65,25 @@ public class UserDAO implements IDAO<User> {
 
     @Override
     public List<User> readAll(int id) {
-        return this.readAll();
+        return this.readAll(new String[]{COL_ID, "DESC"});
     }
 
-    public List<User> readAll() {
+    /**
+     * @param orderArgs String[] { column to sort, ASC / DESC } use COL_ID or COL_NAME as columns
+     * @return List of all users in database
+     */
+    public List<User> readAll(String[] orderArgs) {
         ArrayList<User> result = new ArrayList<>();
-        String selection = " * ";
         String[] projection = {COL_ID, COL_NAME, COL_MAIL, COL_THEME, COL_IMAGE};
 
         Cursor cursor = readableDb.query(
                 TABLE_NAME,
                 projection,
-                selection,
                 null,
                 null,
                 null,
-                null
+                null,
+                orderArgs[0] + " " + orderArgs[1]
         );
         if (cursor.moveToFirst())
             do {
@@ -136,7 +139,7 @@ public class UserDAO implements IDAO<User> {
 
     public ArrayList<String> exportUsersToJson() {
         ArrayList<String> result = new ArrayList<>();
-        for (User user : this.readAll()) {
+        for (User user : this.readAll(new String[]{COL_ID, "DESC"})) {
             result.add(gson.toJson(user));
         }
         return result;

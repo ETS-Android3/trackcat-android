@@ -84,11 +84,21 @@ public class RouteDAO implements IDAO<Route> {
         return result;
     }
 
+    /**
+     * @param userId id of specific user of whom routes have to be selected
+     * @return List of all routes belong to specific user in database sorted descending after id
+     */
     @Override
     public List<Route> readAll(int userId) {
         return this.readAll(userId, new String[]{"id", "DESC"});
     }
 
+    /**
+     * @param userId    id of specific user of whom routes have to be selected
+     * @param orderArgs String[] { column to sort, ASC / DESC }
+     *                  use COL_ID, COL_NAME, COL_TIME or COL_DISTANCE as columns
+     * @return List of all users in database
+     */
     public List<Route> readAll(int userId, String[] orderArgs) {
         String selection = COL_USER + " = ?";
         String[] selectionArgs = { String.valueOf(userId) };
