@@ -44,6 +44,7 @@ public class RouteDAO implements IDAO<Route> {
         values.put(COL_USER, route.getUserId());
         values.put(COL_NAME, route.getName());
         values.put(COL_TIME, route.getTime());
+        values.put(COL_RIDETIME, route.getRideTime());
         values.put(COL_DISTANCE, route.getDistance());
         values.put(COL_LOCATIONS, gson.toJson(route.getLocations())); // alternative toJsonTree().getAsString()
         return values;
@@ -59,6 +60,7 @@ public class RouteDAO implements IDAO<Route> {
                 COL_USER,
                 COL_NAME,
                 COL_TIME,
+                COL_RIDETIME,
                 COL_DISTANCE,
                 COL_LOCATIONS
         };
@@ -76,6 +78,7 @@ public class RouteDAO implements IDAO<Route> {
             result.setUserID(cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)));
             result.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
             result.setTime(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TIME)));
+            result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
             result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
             result.setLocations(gson.fromJson(cursor.getString(
                     cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType));
@@ -107,6 +110,7 @@ public class RouteDAO implements IDAO<Route> {
                 COL_USER,
                 COL_NAME,
                 COL_TIME,
+                COL_RIDETIME,
                 COL_DISTANCE,
                 COL_LOCATIONS
         };
@@ -127,6 +131,7 @@ public class RouteDAO implements IDAO<Route> {
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TIME)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                         gson.fromJson(cursor.getString(
                                 cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
