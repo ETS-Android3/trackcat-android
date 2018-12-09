@@ -95,8 +95,7 @@ public class RecordListOneItemFragment extends Fragment {
          * Set real Average Speed
          * */
         TextView real_average_speed_TextView = fragmentView.findViewById(R.id.real_average_speed_TextView);
-        // TODO change to rideTimer
-        toSet = Math.round(((model.getDistance() / model.getTime()) * 60 * 60) / 100) / 10.0 + " km/h";
+        toSet = Math.round(((model.getDistance() / model.getRideTime()) * 60 * 60) / 100) / 10.0 + " km/h";
         real_average_speed_TextView.setText(toSet);
 
 
@@ -126,8 +125,7 @@ public class RecordListOneItemFragment extends Fragment {
          * Set ride Time
          * */
         TextView real_time_TextView = fragmentView.findViewById(R.id.real_time_TextView);
-        // TODO change to rideTimer
-        toSet = timerForCalc.secToString(model.getTime());
+        toSet = timerForCalc.secToString(model.getRideTime());
         real_time_TextView.setText(toSet);
 
         /*

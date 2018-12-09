@@ -7,7 +7,7 @@ import java.util.TimerTask;
  * Timer counts the secsonds.
  * */
 public class Timer {
-    private double time = 0;
+    private long time = 0;
 
     private java.util.Timer timer;
     int type;
