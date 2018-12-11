@@ -2,6 +2,7 @@ package de.mobcom.group3.gotrack.Settings;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Inflater;
 
 import android.content.Context;
@@ -20,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
+import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
@@ -72,7 +75,16 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     /*Titel und BtnText bearbeiten*/
                     Bundle bundle = new Bundle();
                     bundle.putString("title", "Profil bearbeiten");
-                    bundle.putString("btnText", "bearbeiten");
+                    bundle.putString("btnText", "speichern");
+
+                    // TODO Splitten des Ersten und Zweiten Namens
+                    /*Aktiven Nutzer ermitteln und Text ausgeben*/
+                    UserDAO dao = new UserDAO(MainActivity.getInstance());
+                    User user = dao.read(MainActivity.getActiveUser());
+                    bundle.putString("etitFistName", user.getName());
+                    bundle.putString("etitLastName", user.getName());
+                    bundle.putString("etitEmail", user.getMail());
+
                     NewUserFragment newUserFragment=new NewUserFragment();
                     newUserFragment.setArguments(bundle);
 

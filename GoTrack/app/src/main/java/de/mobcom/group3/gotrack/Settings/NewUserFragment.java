@@ -38,6 +38,12 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
         fieldLastName = view.findViewById(R.id.user_last_name);
         fieldEmail = view.findViewById(R.id.user_email);
 
+        if(btnText=="speichern"){
+            fieldFirstName.setText(getArguments().getString("etitFistName"));
+            fieldLastName.setText(getArguments().getString("etitLastName"));
+            fieldEmail.setText(getArguments().getString("etitEmail"));
+        }
+
         Button actionBtn = view.findViewById(R.id.create_new_user);
         actionBtn.setText(""+btnText);
         actionBtn.setOnClickListener(this);
