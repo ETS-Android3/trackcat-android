@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NotificationManagerCompat notificationManager;
     private static Spinner spinner;
     private static int activeUser;
-    private boolean firstRun;
+    UserDAO userDAO;
 
     private static final String PREF_DARK_THEME = "dark_theme";
 
@@ -121,6 +121,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         notificationManager = NotificationManagerCompat.from(this);
 
+        /*Initiale Usererstellung*/
+        userDAO = new UserDAO(this);
+        List<User> userList= userDAO.readAll();
+        if (userList.size()==0) {
+            User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
+                    null);
+            initialUser.setActive(1);
+            userDAO.create(initialUser);
+        }
+
         // TODO Profilwechsel
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         addItemsToSpinner();
@@ -133,8 +143,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final ArrayList<byte[]> spinnerAccountIcons = new ArrayList<byte[]>();
         ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
         final ArrayList<String> spinnerAccountNames = new ArrayList<String>();
-        UserDAO dao = new UserDAO(this);
-        List<User> users = dao.readAll();
+        List<User> users = userDAO.readAll();
         int selectedID = 0;
 
         for (int i = 0; i < users.size(); i++) {
@@ -182,12 +191,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         user.setMail(users.get(i).getMail());
                         user.setImage(users.get(i).getImage());
                         user.setActive(1);
-                        dao.update(users.get(i).getId(), user);
+                        userDAO.update(users.get(i).getId(), user);
 
                         /*Alten Nutzer deaktivieren*/
-                        User oldUser = dao.read(activeUser);
+                        User oldUser = userDAO.read(activeUser);
                         oldUser.setActive(0);
-                        dao.update(activeUser, oldUser);
+                        userDAO.update(activeUser, oldUser);
 
                         /*Nutzerwechsel in globaler Variable*/
                         activeUser = users.get(i).getId();
