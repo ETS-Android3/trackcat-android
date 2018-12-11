@@ -6,6 +6,7 @@ import java.util.zip.Inflater;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -62,22 +63,24 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         if (position == listNames.size() - 1) {
             view = inflater.inflate(R.layout.spinner_footer, parent, false);
 
-           // View viewE = inflater.inflate(R.layout.fragment_new_user, parent, false);
-            LinearLayout editUserLayout2 =  viewE.findViewById(R.id.newFragmentLayout);
-            title = editUserLayout2.findViewById(R.id.textView2);
-
             /*Anzeigen des Profilbearbeitungsfragment*/
             LinearLayout editUserLayout = (LinearLayout )view.findViewById(R.id.profile_edit_user);
             editUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    /*Titel und BtnText bearbeiten*/
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", "Profil bearbeiten");
+                    bundle.putString("btnText", "bearbeiten");
+                    NewUserFragment newUserFragment=new NewUserFragment();
+                    newUserFragment.setArguments(bundle);
+
                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, new NewUserFragment(), "EDITUSER");
+                    fragTransaction.replace(R.id.mainFrame, newUserFragment, "EDITUSER");
                     fragTransaction.commit();
 
-
-                    title.setText("Nutzer bearbeiten");
-
+                    /*Ausblenden des Spinners*/
                     DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
                     mainDrawer.closeDrawer(GravityCompat.START);
                     try {
@@ -94,13 +97,19 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             addUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
 
-                    fragTransaction.replace(R.id.mainFrame, new NewUserFragment(), "NEWUSER");
+                    /*Titel und BtnText bearbeiten*/
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", "Profil erstellen");
+                    bundle.putString("btnText", "erstellen");
+                    NewUserFragment newUserFragment=new NewUserFragment();
+                    newUserFragment.setArguments(bundle);
+
+                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                    fragTransaction.replace(R.id.mainFrame, newUserFragment, "NEWUSER");
                     fragTransaction.commit();
 
-                    title.setText("Nutzer erstellen");
-
+                    /*Ausblenden des Spinners*/
                     DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
                     mainDrawer.closeDrawer(GravityCompat.START);
                     try {
