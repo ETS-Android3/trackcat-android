@@ -97,6 +97,8 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
 
                         Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde bearbeitet!", Toast.LENGTH_LONG).show();
                     }
+
+                    MainActivity.getInstance().addItemsToSpinner();
                 } else {
                     Toast.makeText(getContext(), "Bitte alle Felder ausfüllen", Toast.LENGTH_LONG).show();
                 }
