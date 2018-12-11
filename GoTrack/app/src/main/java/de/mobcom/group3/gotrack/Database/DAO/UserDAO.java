@@ -109,7 +109,7 @@ public class UserDAO {
         values.put(COL_FORENAME, user.getFirstName());
         values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_MAIL, user.getMail());
-        values.put(COL_ISACTIVE, user.isActive());
+        values.put(COL_ISACTIVE, user.isActiveForDB());
         values.put(COL_IMAGE, user.getImage());
         return values;
     }
