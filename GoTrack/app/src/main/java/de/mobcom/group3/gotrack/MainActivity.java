@@ -15,21 +15,21 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.karan.churi.PermissionManager.PermissionManager;
 
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
+import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
+import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
-import de.mobcom.group3.gotrack.RecordList.RecordListOneItemFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
-import de.mobcom.group3.gotrack.Settings.NewUserFragment;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -42,15 +42,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
     private static Spinner spinner;
+    private static int activeUser;
 
     private static final String PREF_DARK_THEME = "dark_theme";
 
     public static MainActivity getInstance() {
         return instance;
     }
-
     public static Spinner getSpinner() {
         return spinner;
+    }
+    public static int getActiveUser() {
+        return activeUser;
     }
 
     @Override
@@ -125,20 +128,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* Erstellen der Listen */
         final ArrayList<Integer> spinnerAccountIcons = new ArrayList<Integer>();
-        spinnerAccountIcons.add(R.raw.default_profile);
-        spinnerAccountIcons.add(R.raw.default_profile);
-        spinnerAccountIcons.add(R.raw.default_nav_background);
-
         ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
-        spinnerAccountEmail.add("alorma@github.com ");
-        spinnerAccountEmail.add("mikapenz@gmail.com");
-        spinnerAccountEmail.add("max.mustermann@web.de");
-
         final ArrayList<String> spinnerAccountNames = new ArrayList<String>();
-        spinnerAccountNames.add("Alorma Netz");
-        spinnerAccountNames.add("Mika Penz");
-        spinnerAccountNames.add("Max Mustermann");
 
+        UserDAO dao = new UserDAO(this);
+        List<User> users = dao.readAll(1);
+
+        for (int i = 0; i < users.size(); i++) {
+            spinnerAccountEmail.add(users.get(i).getMail());
+            spinnerAccountNames.add(users.get(i).getName());
+            spinnerAccountIcons.add(R.raw.default_profile);
+        }
+
+        // TODO dynamisches Auslesne nach Feld in der DB
+        activeUser=1;
 
         /* Erstellen des Custom Spinners */
         final CustomSpinnerAdapter spinAdapter = new CustomSpinnerAdapter(

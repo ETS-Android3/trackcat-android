@@ -2,10 +2,12 @@ package de.mobcom.group3.gotrack.Settings;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Inflater;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,11 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
+import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
@@ -66,10 +71,28 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             editUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    /*Titel und BtnText bearbeiten*/
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", "Profil bearbeiten");
+                    bundle.putString("btnText", "speichern");
+
+                    // TODO Splitten des Ersten und Zweiten Namens
+                    /*Aktiven Nutzer ermitteln und Text ausgeben*/
+                    UserDAO dao = new UserDAO(MainActivity.getInstance());
+                    User user = dao.read(MainActivity.getActiveUser());
+                    bundle.putString("etitFistName", user.getName());
+                    bundle.putString("etitLastName", user.getName());
+                    bundle.putString("etitEmail", user.getMail());
+
+                    NewUserFragment newUserFragment=new NewUserFragment();
+                    newUserFragment.setArguments(bundle);
+
                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, new NewUserFragment(), "EDITUSER");
+                    fragTransaction.replace(R.id.mainFrame, newUserFragment, "EDITUSER");
                     fragTransaction.commit();
 
+                    /*Ausblenden des Spinners*/
                     DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
                     mainDrawer.closeDrawer(GravityCompat.START);
                     try {
@@ -86,11 +109,19 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             addUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
 
-                    fragTransaction.replace(R.id.mainFrame, new NewUserFragment(), "NEWUSER");
+                    /*Titel und BtnText bearbeiten*/
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", "Profil erstellen");
+                    bundle.putString("btnText", "erstellen");
+                    NewUserFragment newUserFragment=new NewUserFragment();
+                    newUserFragment.setArguments(bundle);
+
+                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                    fragTransaction.replace(R.id.mainFrame, newUserFragment, "NEWUSER");
                     fragTransaction.commit();
 
+                    /*Ausblenden des Spinners*/
                     DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
                     mainDrawer.closeDrawer(GravityCompat.START);
                     try {
