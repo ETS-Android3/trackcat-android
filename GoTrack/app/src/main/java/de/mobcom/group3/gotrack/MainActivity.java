@@ -19,9 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.karan.churi.PermissionManager.PermissionManager;
-
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
@@ -29,15 +27,13 @@ import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    private PermissionManager permissionManager = new PermissionManager() {
-    };
+    private PermissionManager permissionManager = new PermissionManager() {};
     final int NOTIFICATION_ID = 100;
     private DrawerLayout mainDrawer;
     private static MainActivity instance;
@@ -80,40 +76,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-        // Entferne die Benachrichtigung, wenn App läuft
+        //* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
         super.onDestroy();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Fragt nach noch nicht erteilten Permissions
+        /* Fragt nach noch nicht erteilten Permissions */
         permissionManager.checkAndRequestPermissions(this);
 
-        // Aktuelles Themes aus Einstellungen laden
+        /* Aktuelles Themes aus Einstellungen laden */
         setTheme(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_DARK_THEME, false) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
-        // Startseite definieren
+        /* Startseite definieren */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Startseite festlegen - Erster Aufruf
+        /* Startseite festlegen - Erster Aufruf */
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
         fragTransaction.commit();
 
-        // Instanz für spätere Objekte speichern
+        /* Instanz für spätere Objekte speichern */
         instance = this;
         recordFragment = new RecordFragment();
         mainDrawer = findViewById(R.id.drawer_layout);
 
-        // Actionbar definieren und MenuListener festlegen
+        /* Actionbar definieren und MenuListener festlegen */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Menu Toggle
+        /* Menu Toggle */
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mainDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mainDrawer.addDrawerListener(toggle);
@@ -121,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         notificationManager = NotificationManagerCompat.from(this);
 
-        /*Initiale Usererstellung*/
+        /* Initiale Usererstellung */
         userDAO = new UserDAO(this);
         List<User> userList= userDAO.readAll();
         if (userList.size()==0) {
@@ -136,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         addItemsToSpinner();
     }
 
-    // add items into spinner dynamically
+    /* Dynamisches Hinzufügen von Spinner-Items */
     public void addItemsToSpinner() {
 
         /* Erstellen der Listen */
@@ -217,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        // Aktion je nach Auswahl des Items
+        /* Aktion je nach Auswahl des Items */
         switch (menuItem.getItemId()) {
             case R.id.nav_dashboard:
                 if (getSupportFragmentManager().findFragmentByTag("DASHBOARD") == null) {
@@ -257,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    // Stops/pauses Tracking opens App and switch to RecordFragment
+    /* Stops/pauses Tracking opens App and switch to RecordFragment */
     public void stopTracking() {
         startActivity(getIntent());
         try {
@@ -287,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    // Startet RecordFragment nach Ende der Aufzeichnung
+    /* Startet RecordFragment nach Ende der Aufzeichnung */
     public void endTracking() {
         // TODO switch to Statisitcs page
         recordFragment = new RecordFragment();

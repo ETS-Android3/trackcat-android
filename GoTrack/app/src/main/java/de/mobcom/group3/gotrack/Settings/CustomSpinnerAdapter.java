@@ -2,9 +2,6 @@ package de.mobcom.group3.gotrack.Settings;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.Inflater;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -17,18 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
-// Custom Adapter for Spinner
+/* Custom Adapter for Spinner */
 public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
     private Context context1;
@@ -60,7 +55,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         return getSelectedProfile(position, parent);
     }
 
-    // Fügt für jedes Listenelement dem Spinner einen Eintrag hinzu
+    /* Fügt für jedes Listenelement dem Spinner einen Eintrag hinzu */
     public View getProfileList(int position, ViewGroup parent) {
         View view = inflater.inflate(R.layout.spinner_profile_list, parent, false);
 
@@ -72,14 +67,13 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             editUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    /*Titel und BtnText bearbeiten*/
+                    /* Titel und BtnText bearbeiten */
                     Bundle bundle = new Bundle();
                     bundle.putString("title", "Profil bearbeiten");
-                    bundle.putString("btnText", "speichern");
+                    bundle.putString("btnText", "Speichern");
 
                     // TODO Splitten des Ersten und Zweiten Namens
-                    /*Aktiven Nutzer ermitteln und Text ausgeben*/
+                    /* Aktiven Nutzer ermitteln und Text ausgeben */
                     UserDAO dao = new UserDAO(MainActivity.getInstance());
                     User user = dao.read(MainActivity.getActiveUser());
                     bundle.putString("etitFistName", user.getFirstName());
@@ -94,7 +88,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     fragTransaction.replace(R.id.mainFrame, newUserFragment, "EDITUSER");
                     fragTransaction.commit();
 
-                    /*Ausblenden des Spinners*/
+                    /* Ausblenden des Spinners */
                     DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
                     mainDrawer.closeDrawer(GravityCompat.START);
                     try {
@@ -111,11 +105,10 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             addUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     /* Titel und BtnText bearbeiten */
                     Bundle bundle = new Bundle();
                     bundle.putString("title", "Profil erstellen");
-                    bundle.putString("btnText", "erstellen");
+                    bundle.putString("btnText", "Erstellen");
                     NewUserFragment newUserFragment = new NewUserFragment();
                     newUserFragment.setArguments(bundle);
 
@@ -123,7 +116,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     fragTransaction.replace(R.id.mainFrame, newUserFragment, "NEWUSER");
                     fragTransaction.commit();
 
-                    /*Ausblenden des Spinners*/
+                    /* Ausblenden des Spinners */
                     DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
                     mainDrawer.closeDrawer(GravityCompat.START);
                     try {
@@ -137,6 +130,8 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         }
 
         LinearLayout profileItem = view.findViewById(R.id.profile_layout_list);
+
+        /* Profilbilder anzeigen */
         ImageView profileImage = profileItem.findViewById(R.id.profile_image);
         byte[] imgRessource = listImages.get(position);
         Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.raw.default_profile);
@@ -145,16 +140,18 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         }
         profileImage.setImageBitmap(bitmap);
 
+        /* Name des Profils */
         TextView profileName = profileItem.findViewById(R.id.profile_name);
         profileName.setText(listNames.get(position));
 
+        /* Email-Adresse des Profils */
         TextView profileEmail = profileItem.findViewById(R.id.profile_email);
         profileEmail.setText(listEmails.get(position));
 
         return view;
     }
 
-    // Anzeige des ausgewählten Profils
+    /* Anzeige des ausgewählten Profils (hier ohne Profilbild) */
     public View getSelectedProfile(int position, ViewGroup parent) {
         View view = inflater.inflate(R.layout.spinner_profile_selected, parent, false);
 
