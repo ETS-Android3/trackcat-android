@@ -64,7 +64,7 @@ class DbHelper extends SQLiteOpenHelper {
 
     // toDo: remove before contribution
     // creates initial user for testing purposes
-    private void createInitialUser(){
+    public void createInitialUser(){
         User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
                 null);
         initialUser.setActive(1);
