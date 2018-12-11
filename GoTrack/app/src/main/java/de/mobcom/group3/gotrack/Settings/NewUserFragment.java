@@ -81,7 +81,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                     user.setLastName(lastName);
                     user.setMail(email);
                     user.setActive(1);
-                    UserDAO dao = new UserDAO(getContext());
+                    UserDAO dao = new UserDAO(MainActivity.getInstance());
 
                     String fullName = user.getFirstName() + " " + user.getLastName();
                     if (actionBtn.getText().equals("erstellen")) {
