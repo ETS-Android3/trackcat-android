@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
+import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
 public class NewUserFragment extends Fragment implements View.OnClickListener {
@@ -22,6 +23,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
     EditText fieldLastName;
     EditText fieldEmail;
     TextView fieldTitle;
+    Button actionBtn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,7 +46,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
             fieldEmail.setText(getArguments().getString("etitEmail"));
         }
 
-        Button actionBtn = view.findViewById(R.id.create_new_user);
+        actionBtn = view.findViewById(R.id.create_new_user);
         actionBtn.setText(""+btnText);
         actionBtn.setOnClickListener(this);
 
@@ -68,15 +70,21 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                     User user = new User();
                     user.setName(firstName + " " + lastName);
                     user.setMail(email);
-
-                    // An Datenbank senden
                     UserDAO dao = new UserDAO(getContext());
-                    dao.create(user);
+                    if (actionBtn.getText().equals("erstellen")) {
+                        // An Datenbank senden
+                        dao.create(user);
 
-                    Toast.makeText(getContext(), "Benutzer \"" + user.getName() + "\" wurde erstellt!", Toast.LENGTH_LONG).show();
-                    fieldFirstName.setText("");
-                    fieldLastName.setText("");
-                    fieldEmail.setText("");
+                        Toast.makeText(getContext(), "Benutzer \"" + user.getName() + "\" wurde erstellt!", Toast.LENGTH_LONG).show();
+                        fieldFirstName.setText("");
+                        fieldLastName.setText("");
+                        fieldEmail.setText("");
+                    }else{
+                        // An Datenbank senden
+                        dao.update(MainActivity.getActiveUser(),user);
+
+                        Toast.makeText(getContext(), "Benutzer \"" + user.getName() + "\" wurde bearbeitet!", Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     Toast.makeText(getContext(), "Bitte alle Felder ausfüllen", Toast.LENGTH_LONG).show();
                 }
