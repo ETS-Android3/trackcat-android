@@ -85,6 +85,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     bundle.putString("etitFistName", user.getFirstName());
                     bundle.putString("etitLastName", user.getLastName());
                     bundle.putString("etitEmail", user.getMail());
+                    bundle.putByteArray("currentImage", user.getImage());
 
                     NewUserFragment newUserFragment = new NewUserFragment();
                     newUserFragment.setArguments(bundle);
@@ -137,9 +138,12 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
         LinearLayout profileItem = view.findViewById(R.id.profile_layout_list);
         ImageView profileImage = profileItem.findViewById(R.id.profile_image);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(listImages.get(position), 0, listImages.get(position).length);
+        byte[] imgRessource = listImages.get(position);
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.raw.default_profile);
+        if (imgRessource != null && imgRessource.length > 0){
+            bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
+        }
         profileImage.setImageBitmap(bitmap);
-        //profileImage.setImageResource(listImages.get(position));
 
         TextView profileName = profileItem.findViewById(R.id.profile_name);
         profileName.setText(listNames.get(position));

@@ -1,14 +1,11 @@
 package de.mobcom.group3.gotrack.Settings;
 
 import android.app.Activity;
-import android.content.ContentProvider;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,8 +20,6 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
 
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
@@ -37,7 +32,9 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
     EditText fieldFirstName;
     EditText fieldLastName;
     EditText fieldEmail;
-    TextView fieldTitle;
+    EditText imageView;
+
+    TextView pageTitle;
     Button actionBtn;
 
     View view = null;
@@ -50,12 +47,13 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
         /*je nach Seite Title und Buttontext ändern*/
         String title = getArguments().getString("title");
         String btnText = getArguments().getString("btnText");
-        fieldTitle = view.findViewById(R.id.user_settings_title);
-        fieldTitle.setText("" + title);
+        pageTitle = view.findViewById(R.id.user_settings_title);
+        pageTitle.setText("" + title);
 
         fieldFirstName = view.findViewById(R.id.user_first_name);
         fieldLastName = view.findViewById(R.id.user_last_name);
         fieldEmail = view.findViewById(R.id.user_email);
+        imageView = view.findViewById(R.id.user_email);
 
         if (btnText == "speichern") {
             fieldFirstName.setText(getArguments().getString("etitFistName"));
@@ -117,6 +115,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                         fieldFirstName.setText("");
                         fieldLastName.setText("");
                         fieldEmail.setText("");
+                        imageView.setImageResource(R.raw.no_image);
                     } else {
                         // An Datenbank senden
                         dao.update(MainActivity.getActiveUser(), user);

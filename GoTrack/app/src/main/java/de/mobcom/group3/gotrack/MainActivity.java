@@ -175,9 +175,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String item = adapter.getItemAtPosition(position).toString();
 
                 /* Wechseln des Profilbildes */
-                byte[] imgResource = spinnerAccountIcons.get(position);
+                byte[] imgRessource = spinnerAccountIcons.get(position);
                 de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(imgResource, 0, imgResource.length);
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.raw.default_profile);
+                if (imgRessource != null && imgRessource.length > 0){
+                    bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
+                }
                 circleImageView.setImageBitmap(bitmap);
 
                 /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
