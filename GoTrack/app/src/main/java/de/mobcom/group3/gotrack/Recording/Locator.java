@@ -12,6 +12,10 @@ import de.mobcom.group3.gotrack.MainActivity;
 
 public class Locator {
 
+    // TODO set on 5
+    final private int MIN_DISTANCE = 1;
+    final private int MIN_TIME = 10;
+
     // Standardwerte für die Abfrage der Berechtigungen
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
@@ -86,8 +90,8 @@ public class Locator {
             ActivityCompat.requestPermissions(creator, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-                    0, locationListener); // via GPS
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME,
+                    MIN_DISTANCE, locationListener); // via GPS
         }
     }
 

@@ -15,6 +15,7 @@ import android.location.Location;
 import android.os.*;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
@@ -122,13 +123,13 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     private float lon = 0f;
     private float alt = 0f;
     private long timeOfFix = 0;
-    private float trueNorth;
 
     /*
      * Model of Route
      * */
     private Route model;
 
+    private RecordListOneItemFragment statistics;
 
     @Override
     public void onPause() {
@@ -172,23 +173,31 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                     /*
                      * set Time in TextView
                      * */
+                    String toSetTime = msg.obj + "";
+                    String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
+
                     try {
                         time_TextView = view.findViewById(R.id.time_TextView);
-                        String toSetTime = msg.obj + "";
                         time_TextView.setText(toSetTime);
 
                         TextView distance_TextView = view.findViewById(R.id.distance_TextView);
-                        String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
                         distance_TextView.setText(toSetDistance);
 
-                        notificationContent = toSetTime + "   " + toSetDistance;
-
-                        // todo Noftification Time/Distance String editable
-                        issueNotification(notificationContent);
 
                     } catch (NullPointerException e) {
                         Log.v("GOREACK", e.toString());
                     }
+
+                    try {
+                        notificationContent = toSetTime + "   " + toSetDistance;
+
+                        // todo Noftification Time/Distance String editable
+                        issueNotification(notificationContent);
+                    } catch (Exception e) {
+                        Log.v("TEST", e.toString());
+                    }
+
+
                     /*
                      * recalculate average Speed
                      * */
@@ -224,7 +233,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 
         // kackhässliche ZoomControls----------------------------------------------------------------> für abgabe AUS!!!!!!todo
-        mMapView.setBuiltInZoomControls(true);
+        mMapView.setBuiltInZoomControls(false);
 
         mMapView.setMultiTouchControls(true);
         mMapController = (MapController) mMapView.getController();
@@ -240,7 +249,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
 
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
-        mMapView.setBuiltInZoomControls(false);
 
 
         /*
@@ -279,15 +287,18 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
 
         mMapView.getOverlays().add(mCompassOverlay);
 
+        /*
+         + Button for aligning the map to north
+         */
         view.findViewById(R.id.compBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!northUp) {
                     northUp = true;
-                    mMapView.setVerticalMapRepetitionEnabled(northUp);
+                    mMapView.setVerticalMapRepetitionEnabled(true);
                 } else {
                     northUp = false;
-                    mMapView.setVerticalMapRepetitionEnabled(northUp);
+                    mMapView.setVerticalMapRepetitionEnabled(false);
                 }
             }
         });
@@ -406,22 +417,27 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
 
         model.setTime(timer.getTime());
+        model.setRideTime(rideTimer.getTime());
         model.setDistance(kmCounter.getAmount());
 
-        /*
-         * TODO open statistics page from here
-         * */
-        RecordListOneItemFragment statistics = new RecordListOneItemFragment();
+
+        statistics = new RecordListOneItemFragment();
         statistics.setModel(model);
 
-        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, statistics, "RECORDONEITEM");
-        fragTransaction.commit();
+        try {
+            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, statistics, "RECORDONEITEM");
+            fragTransaction.commit();
 
-        /*
-         * kill this instance and create new Fragment in Main
-         * */
-        MainActivity.getInstance().endTracking();
+            /*
+             * kill this instance and create new Fragment in Main
+             * */
+            MainActivity.getInstance().endTracking();
+        } catch (Exception e) {
+            Log.v("TEST", e.toString());
+
+        }
+
 
     }
 
@@ -497,7 +513,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             rideTimer = new Timer(1);
 
             // average Kmh
-            kmhAverager = new SpeedAverager(MainActivity.getInstance(), kmCounter, timer, 1);
+            kmhAverager = new SpeedAverager(MainActivity.getInstance(), kmCounter, rideTimer, 1);
 
             isTracking = true;
         } else {
@@ -542,7 +558,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
          * */
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MainActivity.getInstance(), CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_icon)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.drawable.ic_launcher))
                 .setContentTitle("Laufende Aufzeichnung")
                 .setContentText(content)
                 .setSound(null)
@@ -557,6 +573,8 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             mBuilder.addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play",
                     intentPlay);
         }
+
+
         // start Notification
         notificationManager.notify(MainActivity.getInstance().getNOTIFICATION_ID(), mBuilder.build());
     }
@@ -589,7 +607,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
      * Calculate Statistics
      *----------------------------------------------------------------------------------------------
      */
+
+
     void updateLocation(Location location) {
+
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
 
         /*
@@ -602,6 +623,8 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         alt = (float) location.getAltitude();
         timeOfFix = location.getTime();
         Log.v("GPS-Location: ", location.toString());
+
+
         /*
          * move Map
          * */
@@ -614,6 +637,32 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
+      /*  try {
+            FloatingActionButton fab = view.findViewById(R.id.fabButton);
+
+            // change Icon TODO add images
+            switch (kmhAverager.getRouteType()) {
+                case 1:
+                    fab.setImageResource(R.drawable.activity_running_record);
+                    break;
+                case 2:
+                    fab.setImageResource(R.drawable.activity_biking_record);
+                    break;
+                case 3:
+                    fab.setImageResource(R.drawable.activity_caring_record);
+                    break;
+            }
+        } catch (Exception e) {
+            Log.v("GOTRACK", e.toString());
+        }*/
+        //TODO in progress.....
+        try {
+            FloatingActionButton fab = view.findViewById(R.id.fabButton);
+
+            fab.setImageResource(kmhAverager.getRouteType(kmhAverager.getAvgSpeed()));
+        } catch (Exception e) {
+            Log.v("GOTRACK", e.toString());
+        }
 
         try {
             TextView acc_TextView = view.findViewById(R.id.accuracy_TextView);
@@ -646,6 +695,9 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             // add to List
             GPSData.add(gPt);
 
+            // add Distance
+            kmCounter.addKm(location);
+
             try {
                 /*
                  * set Polyline
@@ -657,13 +709,14 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                 Log.v("GOREACK", e.toString());
             }
 
+
             /*
              + this part adjusts the desired values for map rotation based on compass heading,
              + location heading and gps speed
              */
-            if (gpsBearing > 0.01 && !northUp) {
+            if ((gpsBearing > 0.01) &&!northUp) {
                 mMapView.setMapOrientation(-gpsBearing);
-            } else if ((gpsBearing < 0.01) && (gpsSpeed < 0.01) && !northUp) {
+            } else if ((gpsSpeed < 0.5) && !northUp) {
                 mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
             }
             Log.v("GPS-Bearing: ", String.valueOf(gpsBearing));
@@ -677,9 +730,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             /*
              * add Location to Statistics
              * */
-
-            // add Distance
-            kmCounter.addKm(location);
 
             // count ridetime
             if (!rideTimer.getActive() && location.getSpeed() > 0) {
@@ -716,7 +766,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
             }
             try {
                 TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
-                String toSet = location.getAltitude() + " m";
+                String toSet = Math.round(location.getAltitude()) + " m";
                 altimeter_TextView.setText(toSet);
             } catch (NullPointerException e) {
                 Log.v("GOREACK", e.toString());
@@ -747,16 +797,13 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     }
 
     /*
-     + method to provide map orientation without movement activity
      + !!! needs a device with the compass-functionality (magnetometer sensor) to work properly !!!
      + ToDo: verify if method will be called on event <- does not seem this way
-     + ToDo: find out if setOrientation is really needed as independent method
      */
     @Override
     public void onOrientationChanged(final float orientationToMagneticNorth, IOrientationProvider source) {
-        //if (gpsSpeed < 0.01) {
         GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
-        trueNorth = orientationToMagneticNorth + gf.getDeclination();
+        float trueNorth = orientationToMagneticNorth + gf.getDeclination();
         if (trueNorth > 360.0f)
             trueNorth = trueNorth - 360.0f;
         //this part adjusts the desired map and compass rotation based on device orientation and compass heading
@@ -766,18 +813,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         if (t > 360)
             t -= 360;
         mCompassOverlay.setAzimuthOffset(t);
-        mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
-        //}
     }
 
-//    private void setOrientation(Float orientation) {
-//        float t = (360 - trueNorth - this.deviceOrientation);
-//            if (t < 0)
-//                t += 360;
-//            if (t > 360)
-//                t -= 360;
-//            mCompassOverlay.setAzimuthOffset(t);
-//            mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
-//    }
+    public RecordListOneItemFragment getStatistics() {
+        return statistics;
+    }
 
 }

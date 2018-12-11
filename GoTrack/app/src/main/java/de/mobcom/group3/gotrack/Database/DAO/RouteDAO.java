@@ -44,6 +44,7 @@ public class RouteDAO implements IDAO<Route> {
         values.put(COL_USER, route.getUserId());
         values.put(COL_NAME, route.getName());
         values.put(COL_TIME, route.getTime());
+        values.put(COL_RIDETIME, route.getRideTime());
         values.put(COL_DISTANCE, route.getDistance());
         values.put(COL_LOCATIONS, gson.toJson(route.getLocations())); // alternative toJsonTree().getAsString()
         return values;
@@ -59,6 +60,7 @@ public class RouteDAO implements IDAO<Route> {
                 COL_USER,
                 COL_NAME,
                 COL_TIME,
+                COL_RIDETIME,
                 COL_DISTANCE,
                 COL_LOCATIONS
         };
@@ -75,7 +77,8 @@ public class RouteDAO implements IDAO<Route> {
             result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
             result.setUserID(cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)));
             result.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
-            result.setTime(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TIME)));
+            result.setTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
+            result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
             result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
             result.setLocations(gson.fromJson(cursor.getString(
                     cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType));
@@ -84,11 +87,21 @@ public class RouteDAO implements IDAO<Route> {
         return result;
     }
 
+    /**
+     * @param userId id of specific user of whom routes have to be selected
+     * @return List of all routes belong to specific user in database sorted descending after id
+     */
     @Override
     public List<Route> readAll(int userId) {
         return this.readAll(userId, new String[]{"id", "DESC"});
     }
 
+    /**
+     * @param userId    id of specific user of whom routes have to be selected
+     * @param orderArgs String[] { column to sort, ASC / DESC }
+     *                  use COL_ID, COL_NAME, COL_TIME or COL_DISTANCE as columns
+     * @return List of all users in database
+     */
     public List<Route> readAll(int userId, String[] orderArgs) {
         String selection = COL_USER + " = ?";
         String[] selectionArgs = { String.valueOf(userId) };
@@ -97,6 +110,7 @@ public class RouteDAO implements IDAO<Route> {
                 COL_USER,
                 COL_NAME,
                 COL_TIME,
+                COL_RIDETIME,
                 COL_DISTANCE,
                 COL_LOCATIONS
         };
@@ -116,7 +130,8 @@ public class RouteDAO implements IDAO<Route> {
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_TIME)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                         gson.fromJson(cursor.getString(
                                 cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));

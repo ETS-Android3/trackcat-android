@@ -11,15 +11,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.karan.churi.PermissionManager.PermissionManager;
+
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
+import de.mobcom.group3.gotrack.RecordList.RecordListOneItemFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
 import de.mobcom.group3.gotrack.Settings.NewUserFragment;
@@ -30,7 +34,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    private PermissionManager permissionManager = new PermissionManager() {};
+    private PermissionManager permissionManager = new PermissionManager() {
+    };
     final int NOTIFICATION_ID = 100;
     private DrawerLayout mainDrawer;
     private static MainActivity instance;
@@ -43,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static MainActivity getInstance() {
         return instance;
     }
+
     public static Spinner getSpinner() {
         return spinner;
     }
@@ -75,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         // Fragt nach noch nicht erteilten Permissions
         permissionManager.checkAndRequestPermissions(this);
-        
+
         // Aktuelles Themes aus Einstellungen laden
         setTheme(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_DARK_THEME, false) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
@@ -165,7 +171,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) { }
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
 
         });
     }
@@ -214,15 +221,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Stops/pauses Tracking opens App and switch to RecordFragment
     public void stopTracking() {
-        recordFragment.stopTracking();
         startActivity(getIntent());
         try {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
             fragTransaction.commit();
         } catch (RuntimeException e) {
-
+            Log.v("TEST", e.toString());
         }
+        recordFragment.stopTracking();
+
     }
 
     public int getNOTIFICATION_ID() {
@@ -250,4 +258,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public RecordFragment getRecordFragment() {
         return recordFragment;
     }
+
 }

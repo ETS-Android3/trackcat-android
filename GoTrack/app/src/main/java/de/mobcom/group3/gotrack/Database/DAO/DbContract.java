@@ -13,7 +13,8 @@ final class DbContract {
                     RouteEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     RouteEntry.COL_USER + " INTEGER, " + //toDo: implement foreign key constraint for user.id
                     RouteEntry.COL_NAME + " TEXT, " +
-                    RouteEntry.COL_TIME + " DOUBLE, " +
+                    RouteEntry.COL_TIME + " LONG, " +
+                    RouteEntry.COL_RIDETIME + " LONG, " +
                     RouteEntry.COL_DISTANCE + " DOUBLE, " +
                     RouteEntry.COL_LOCATIONS + " TEXT) ";
 
@@ -37,6 +38,7 @@ final class DbContract {
         static final String COL_USER = "fk_user_id";
         static final String COL_NAME = "name";
         static final String COL_TIME = "time";
+        static final String COL_RIDETIME = "rideTime";
         static final String COL_DISTANCE = "distance";
         static final String COL_LOCATIONS = "locations";
     }
