@@ -132,11 +132,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final ArrayList<String> spinnerAccountNames = new ArrayList<String>();
 
         UserDAO dao = new UserDAO(this);
-        List<User> users = dao.readAll(1);
+        List<User> users = dao.readAll();
 
         for (int i = 0; i < users.size(); i++) {
             spinnerAccountEmail.add(users.get(i).getMail());
-            spinnerAccountNames.add(users.get(i).getName());
+            spinnerAccountNames.add(users.get(i).getFirstName() + " " + users.get(i).getLastName());
             spinnerAccountIcons.add(R.raw.default_profile);
         }
 

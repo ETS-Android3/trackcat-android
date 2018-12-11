@@ -48,7 +48,7 @@ public final class DbContract {
         static final String TABLE_NAME = "user_table";
         static final String COL_ID = "id";
         static final String COL_LASTNAME = "lastname";
-        static final String COL_FORENAME = "forename";
+        static final String COL_FORENAME = "firstname";
         static final String COL_ISACTIVE = "active";
         static final String COL_MAIL = "mail";
         static final String COL_IMAGE = "image";

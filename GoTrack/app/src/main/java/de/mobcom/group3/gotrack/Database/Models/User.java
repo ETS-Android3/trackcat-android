@@ -1,7 +1,7 @@
 package de.mobcom.group3.gotrack.Database.Models;
 
 public class User {
-    private String forename;
+    private String firstName;
     private String lastName;
     private boolean isActive;
     private int id;
@@ -11,27 +11,27 @@ public class User {
     public User() {
     }
 
-    public User(int id, String forename, String lastName, String eMail, byte[] image) {
+    public User(int id, String firstName, String lastName, String eMail, byte[] image) {
         this.id = id;
-        this.forename = forename;
+        this.firstName = firstName;
         this.lastName = lastName;
         this.eMail = eMail;
         this.image = image;
     }
 
-    public User(String forename, String lastName, String eMail, byte[] image) {
-        this.forename = forename;
+    public User(String firstName, String lastName, String eMail, byte[] image) {
+        this.firstName = firstName;
         this.lastName = lastName;
         this.eMail = eMail;
         this.image = image;
     }
 
-    public String getForename() {
-        return forename;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setForename(String forename) {
-        this.forename = forename;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() { return lastName; }

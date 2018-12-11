@@ -81,8 +81,8 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     /*Aktiven Nutzer ermitteln und Text ausgeben*/
                     UserDAO dao = new UserDAO(MainActivity.getInstance());
                     User user = dao.read(MainActivity.getActiveUser());
-                    bundle.putString("etitFistName", user.getName());
-                    bundle.putString("etitLastName", user.getName());
+                    bundle.putString("etitFistName", user.getFirstName());
+                    bundle.putString("etitLastName", user.getLastName());
                     bundle.putString("etitEmail", user.getMail());
 
                     NewUserFragment newUserFragment=new NewUserFragment();

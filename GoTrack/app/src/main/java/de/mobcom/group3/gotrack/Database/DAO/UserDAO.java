@@ -51,7 +51,7 @@ public class UserDAO {
 
         if (cursor.moveToFirst()) {
             result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
-            result.setForename(cursor.getString(cursor.getColumnIndexOrThrow(COL_FORENAME)));
+            result.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(COL_FORENAME)));
             result.setLastName(cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)));
             result.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)));
             result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));
@@ -106,7 +106,7 @@ public class UserDAO {
 
     private ContentValues valueGenerator(User user) {
         ContentValues values = new ContentValues();
-        values.put(COL_FORENAME, user.getForename());
+        values.put(COL_FORENAME, user.getFirstName());
         values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_MAIL, user.getMail());
         values.put(COL_ISACTIVE, user.isActive());
