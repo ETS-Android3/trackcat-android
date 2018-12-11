@@ -1,37 +1,42 @@
 package de.mobcom.group3.gotrack.Database.Models;
 
 public class User {
-    private String name;
+    private String forename;
+    private String lastName;
+    private boolean isActive;
     private int id;
     private String eMail;
-    private String theme;
     private byte[] image;
 
     public User() {
     }
 
-    public User(int id, String name, String eMail, String theme, byte[] image) {
+    public User(int id, String forename, String lastName, String eMail, byte[] image) {
         this.id = id;
-        this.name = name;
+        this.forename = forename;
+        this.lastName = lastName;
         this.eMail = eMail;
-        this.theme = theme;
         this.image = image;
     }
 
-    public User(String name, String eMail, String theme, byte[] image) {
-        this.name = name;
+    public User(String forename, String lastName, String eMail, byte[] image) {
+        this.forename = forename;
+        this.lastName = lastName;
         this.eMail = eMail;
-        this.theme = theme;
         this.image = image;
     }
 
-    public String getName() {
-        return name;
+    public String getForename() {
+        return forename;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setForename(String forename) {
+        this.forename = forename;
     }
+
+    public String getLastName() { return lastName; }
+
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
     public int getId() {
         return id;
@@ -49,20 +54,19 @@ public class User {
         this.eMail = eMail;
     }
 
-
-    public String getTheme() {
-        return theme;
-    }
-
-    public void setTheme(String theme) {
-        this.theme = theme;
-    }
-
     public byte[] getImage() {
         return image;
     }
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(int active) {
+        isActive = active == 1;
     }
 }

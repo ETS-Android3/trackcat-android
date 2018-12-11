@@ -17,7 +17,7 @@ import static de.mobcom.group3.gotrack.Database.DAO.DbContract.UserEntry.*;
 
 // toDo: write javaDoc and comments
 
-public class UserDAO implements IDAO<User> {
+public class UserDAO {
     private SQLiteDatabase writableDb;
     private SQLiteDatabase readableDb;
     private Gson gson = new Gson();
@@ -30,17 +30,15 @@ public class UserDAO implements IDAO<User> {
         readableDb = dbHelper.getInstance(false);
     }
 
-    @Override
     public void create(User user) {
         user.setId((int) writableDb.insert(TABLE_NAME, null, valueGenerator(user)));
     }
 
-    @Override
     public User read(int id) {
         User result = new User();
         String selection = COL_ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
-        String[] projection = {COL_ID, COL_NAME, COL_MAIL, COL_THEME, COL_IMAGE};
+        String[] projection = {COL_ID, COL_FORENAME, COL_LASTNAME, COL_MAIL, COL_ISACTIVE, COL_IMAGE};
         Cursor cursor = readableDb.query(
                 TABLE_NAME,
                 projection,
@@ -53,9 +51,10 @@ public class UserDAO implements IDAO<User> {
 
         if (cursor.moveToFirst()) {
             result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
-            result.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
+            result.setForename(cursor.getString(cursor.getColumnIndexOrThrow(COL_FORENAME)));
+            result.setLastName(cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)));
+            result.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)));
             result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));
-            result.setTheme(cursor.getString(cursor.getColumnIndexOrThrow(COL_THEME)));
             result.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)));
         }
         cursor.close();
@@ -63,8 +62,7 @@ public class UserDAO implements IDAO<User> {
         return result;
     }
 
-    @Override
-    public List<User> readAll(int id) {
+    public List<User> readAll() {
         return this.readAll(new String[]{COL_ID, "DESC"});
     }
 
@@ -74,7 +72,7 @@ public class UserDAO implements IDAO<User> {
      */
     public List<User> readAll(String[] orderArgs) {
         ArrayList<User> result = new ArrayList<>();
-        String[] projection = {COL_ID, COL_NAME, COL_MAIL, COL_THEME, COL_IMAGE};
+        String[] projection = {COL_ID, COL_FORENAME, COL_LASTNAME, COL_MAIL, COL_ISACTIVE, COL_IMAGE};
 
         Cursor cursor = readableDb.query(
                 TABLE_NAME,
@@ -89,9 +87,9 @@ public class UserDAO implements IDAO<User> {
             do {
                 result.add(new User(
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COL_FORENAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COL_THEME)),
                         cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE))));
             } while (cursor.moveToNext());
         cursor.close();
@@ -99,7 +97,6 @@ public class UserDAO implements IDAO<User> {
         return result;
     }
 
-    @Override
     public void update(int id, User user) {
         String selection = COL_ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
@@ -109,14 +106,14 @@ public class UserDAO implements IDAO<User> {
 
     private ContentValues valueGenerator(User user) {
         ContentValues values = new ContentValues();
-        values.put(COL_NAME, user.getName());
+        values.put(COL_FORENAME, user.getForename());
+        values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_MAIL, user.getMail());
-        values.put(COL_THEME, user.getTheme());
+        values.put(COL_ISACTIVE, user.isActive());
         values.put(COL_IMAGE, user.getImage());
         return values;
     }
 
-    @Override
     public void delete(User user) {
         String selection = COL_ID + " LIKE ?";
         String[] selectionArgs = {String.valueOf(user.getId())};

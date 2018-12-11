@@ -2,7 +2,7 @@ package de.mobcom.group3.gotrack.Database.DAO;
 
 import android.provider.BaseColumns;
 
-final class DbContract {
+public final class DbContract {
     private DbContract() {}
 
     static final int DATABASE_VERSION = 1;
@@ -24,15 +24,16 @@ final class DbContract {
     static final String SQL_CREATE_USER_TABLE =
             "CREATE TABLE IF NOT EXISTS " + UserEntry.TABLE_NAME + " ( " +
                     UserEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    UserEntry.COL_NAME + " TEXT, " +
+                    UserEntry.COL_FORENAME + " TEXT, " +
+                    UserEntry.COL_LASTNAME + " TEXT, " +
+                    UserEntry.COL_ISACTIVE + " BOOLEAN, " +
                     UserEntry.COL_MAIL + " TEXT, " +
-                    UserEntry.COL_THEME + " TEXT, " +
                     UserEntry.COL_IMAGE + " BLOB) ";
 
     static final String SQL_DELETE_USER_TABLE =
             "DROP TABLE IF EXISTS " + UserEntry.TABLE_NAME;
 
-    static final class RouteEntry implements BaseColumns {
+    public static final class RouteEntry implements BaseColumns {
         static final String TABLE_NAME = "route_table";
         static final String COL_ID = "id";
         static final String COL_USER = "fk_user_id";
@@ -43,12 +44,13 @@ final class DbContract {
         static final String COL_LOCATIONS = "locations";
     }
 
-    static final class UserEntry implements BaseColumns {
+    public static final class UserEntry implements BaseColumns {
         static final String TABLE_NAME = "user_table";
         static final String COL_ID = "id";
-        static final String COL_NAME = "name";
+        static final String COL_LASTNAME = "lastname";
+        static final String COL_FORENAME = "forename";
+        static final String COL_ISACTIVE = "active";
         static final String COL_MAIL = "mail";
-        static final String COL_THEME = "theme";
         static final String COL_IMAGE = "image";
     }
 

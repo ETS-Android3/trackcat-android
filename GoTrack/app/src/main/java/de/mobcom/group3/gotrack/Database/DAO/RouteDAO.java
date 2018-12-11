@@ -21,7 +21,7 @@ import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
 
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-public class RouteDAO implements IDAO<Route> {
+public class RouteDAO {
     private SQLiteDatabase writableDb;
     private SQLiteDatabase readableDb;
     private Gson gson = new Gson();
@@ -34,7 +34,6 @@ public class RouteDAO implements IDAO<Route> {
         readableDb = dbHelper.getInstance(false);
     }
 
-    @Override
     public void create(Route route) {
         route.setId((int) writableDb.insert(TABLE_NAME, null, valueGenerator(route)));
     }
@@ -50,7 +49,6 @@ public class RouteDAO implements IDAO<Route> {
         return values;
     }
 
-    @Override
     public Route read(int id) {
         Route result = new Route();
         String selection = COL_ID + " = ?";
@@ -91,7 +89,6 @@ public class RouteDAO implements IDAO<Route> {
      * @param userId id of specific user of whom routes have to be selected
      * @return List of all routes belong to specific user in database sorted descending after id
      */
-    @Override
     public List<Route> readAll(int userId) {
         return this.readAll(userId, new String[]{"id", "DESC"});
     }
@@ -140,7 +137,6 @@ public class RouteDAO implements IDAO<Route> {
         return result;
     }
 
-    @Override
     public void update(int id, Route route) {
         String selection = COL_ID + " = ?";
         String[] selectionArgs = { String.valueOf(route.getUserId()) };
@@ -153,7 +149,6 @@ public class RouteDAO implements IDAO<Route> {
         writableDb.delete(TABLE_NAME, selection, selectionArgs);
     }
 
-    @Override
     public void delete(Route route) {
         this.delete(route.getId());
     }
