@@ -89,6 +89,7 @@ public class UserDAO {
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_FORENAME)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)),
                         cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE))));
             } while (cursor.moveToNext());

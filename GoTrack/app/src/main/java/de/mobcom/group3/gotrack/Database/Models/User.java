@@ -25,12 +25,13 @@ public class User {
      * @param eMail of type string
      * @param image of type byte array
      */
-    public User(int id, String firstName, String lastName, String eMail, byte[] image) {
+    public User(int id, String firstName, String lastName, int active, String eMail, byte[] image) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.eMail = eMail;
         this.image = image;
+        this.setActive(active);
     }
 
     /**

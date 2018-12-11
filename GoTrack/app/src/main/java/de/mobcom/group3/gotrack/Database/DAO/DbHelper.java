@@ -12,6 +12,9 @@ import de.mobcom.group3.gotrack.Database.Models.User;
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.*;
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.UserEntry.*;
 
+/**
+ * Helper class to provide database operations
+ */
 class DbHelper extends SQLiteOpenHelper {
 
     /**
@@ -47,10 +50,10 @@ class DbHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Method to upgrade to a newer version
-     * @param db
-     * @param oldVersion
-     * @param newVersion
+     * Method to upgrade to a newer version of the database
+     * @param db of type SQLiteDatabase
+     * @param oldVersion of type integer
+     * @param newVersion of type integer
      */
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.w(DbHelper.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion +
@@ -65,6 +68,7 @@ class DbHelper extends SQLiteOpenHelper {
     private void createInitialUser(){
         User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
                 null);
+        initialUser.setActive(1);
         ContentValues values = new ContentValues();
         values.put(COL_FORENAME, initialUser.getFirstName());
         values.put(COL_LASTNAME, initialUser.getLastName());
