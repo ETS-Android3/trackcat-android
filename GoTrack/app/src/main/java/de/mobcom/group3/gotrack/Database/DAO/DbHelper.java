@@ -46,7 +46,6 @@ class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ROUTE_TABLE);
         db.execSQL(SQL_CREATE_USER_TABLE);
-        createInitialUser();
     }
 
     /**
