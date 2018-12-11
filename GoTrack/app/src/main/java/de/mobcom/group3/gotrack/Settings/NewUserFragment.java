@@ -80,12 +80,18 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                     user.setFirstName(firstName);
                     user.setLastName(lastName);
                     user.setMail(email);
+                    user.setActive(1);
                     UserDAO dao = new UserDAO(getContext());
 
                     String fullName = user.getFirstName() + " " + user.getLastName();
                     if (actionBtn.getText().equals("erstellen")) {
                         // An Datenbank senden
                         dao.create(user);
+
+                        /*Alten Nutzer deaktivieren*/
+                        User oldUser = dao.read(MainActivity.getActiveUser());
+                        oldUser.setActive(0);
+                        dao.update(MainActivity.getActiveUser(), oldUser);
 
                         Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde erstellt!", Toast.LENGTH_LONG).show();
                         fieldFirstName.setText("");
@@ -94,11 +100,10 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                     } else {
                         // An Datenbank senden
                         dao.update(MainActivity.getActiveUser(), user);
-
                         Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde bearbeitet!", Toast.LENGTH_LONG).show();
                     }
 
-                    MainActivity.getInstance().addItemsToSpinner();
+                   MainActivity.getInstance().addItemsToSpinner();
                 } else {
                     Toast.makeText(getContext(), "Bitte alle Felder ausfüllen", Toast.LENGTH_LONG).show();
                 }

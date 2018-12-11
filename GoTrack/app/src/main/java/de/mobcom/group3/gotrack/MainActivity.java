@@ -43,15 +43,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NotificationManagerCompat notificationManager;
     private static Spinner spinner;
     private static int activeUser;
+    private boolean firstRun;
 
     private static final String PREF_DARK_THEME = "dark_theme";
 
     public static MainActivity getInstance() {
         return instance;
     }
+
     public static Spinner getSpinner() {
         return spinner;
     }
+
     public static int getActiveUser() {
         return activeUser;
     }
@@ -119,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // TODO Profilwechsel
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         addItemsToSpinner();
-
-
     }
 
     // add items into spinner dynamically
@@ -130,18 +131,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final ArrayList<Integer> spinnerAccountIcons = new ArrayList<Integer>();
         ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
         final ArrayList<String> spinnerAccountNames = new ArrayList<String>();
-
         UserDAO dao = new UserDAO(this);
         List<User> users = dao.readAll();
+        int selectedID = 0;
 
         for (int i = 0; i < users.size(); i++) {
             spinnerAccountEmail.add(users.get(i).getMail());
             spinnerAccountNames.add(users.get(i).getFirstName() + " " + users.get(i).getLastName());
             spinnerAccountIcons.add(R.raw.default_profile);
+            if (users.get(i).isActive()) {
+                activeUser = users.get(i).getId();
+                selectedID = i;
+            }
         }
 
-        // TODO dynamisches Auslesne nach Feld in der DB
-        activeUser=1;
+        Toast.makeText(getApplicationContext(), " momentan Aktiver Nutzer: " + activeUser,
+                Toast.LENGTH_LONG).show();
 
         /* Erstellen des Custom Spinners */
         final CustomSpinnerAdapter spinAdapter = new CustomSpinnerAdapter(
@@ -149,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* Setzen des Adapters */
         spinner.setAdapter(spinAdapter);
+        spinner.setSelection(selectedID);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -163,13 +169,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 circleImageView.setImageResource(imgResource);
 
                 /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
-                if (position >= spinnerAccountNames.size()) {
-                    Toast.makeText(getApplicationContext(), item + " ausgewählt",
-                            Toast.LENGTH_LONG).show();
+                for (int i = 0; i < users.size(); i++) {
+                    if (adapter.getItemAtPosition(position).equals(users.get(i).getFirstName() + " " + users.get(i).getLastName())) {
 
-                } else {
-                    Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item,
-                            Toast.LENGTH_LONG).show();
+                        /*Ausgewählten Nutzer als aktiven Nutzer setzen*/
+                        User user = new User();
+                        user.setFirstName(users.get(i).getFirstName());
+                        user.setLastName(users.get(i).getLastName());
+                        user.setMail(users.get(i).getMail());
+                        user.setImage(users.get(i).getImage());
+                        user.setActive(1);
+                        dao.update(users.get(i).getId(), user);
+
+                        /*Alten Nutzer deaktivieren*/
+                        User oldUser = dao.read(activeUser);
+                        oldUser.setActive(0);
+                        dao.update(activeUser, oldUser);
+
+                        /*Nutzerwechsel in globaler Variable*/
+                        activeUser = users.get(i).getId();
+                        Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 
