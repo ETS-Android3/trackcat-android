@@ -1,6 +1,8 @@
 package de.mobcom.group3.gotrack;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -128,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void addItemsToSpinner() {
 
         /* Erstellen der Listen */
-        final ArrayList<Integer> spinnerAccountIcons = new ArrayList<Integer>();
+        final ArrayList<byte[]> spinnerAccountIcons = new ArrayList<byte[]>();
         ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
         final ArrayList<String> spinnerAccountNames = new ArrayList<String>();
         UserDAO dao = new UserDAO(this);
@@ -138,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for (int i = 0; i < users.size(); i++) {
             spinnerAccountEmail.add(users.get(i).getMail());
             spinnerAccountNames.add(users.get(i).getFirstName() + " " + users.get(i).getLastName());
-            spinnerAccountIcons.add(R.raw.default_profile);
+            spinnerAccountIcons.add(users.get(i).getImage());
             if (users.get(i).isActive()) {
                 activeUser = users.get(i).getId();
                 selectedID = i;
@@ -164,9 +166,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String item = adapter.getItemAtPosition(position).toString();
 
                 /* Wechseln des Profilbildes */
-                int imgResource = spinnerAccountIcons.get(position);
+                byte[] imgResource = spinnerAccountIcons.get(position);
                 de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
-                circleImageView.setImageResource(imgResource);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imgResource, 0, imgResource.length);
+                circleImageView.setImageBitmap(bitmap);
 
                 /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
                 for (int i = 0; i < users.size(); i++) {

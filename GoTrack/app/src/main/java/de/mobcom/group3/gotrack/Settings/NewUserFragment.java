@@ -3,6 +3,9 @@ package de.mobcom.group3.gotrack.Settings;
 import android.app.Activity;
 import android.content.ContentProvider;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,9 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
@@ -34,10 +40,12 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
     TextView fieldTitle;
     Button actionBtn;
 
+    View view = null;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_new_user, container, false);
+        view = inflater.inflate(R.layout.fragment_new_user, container, false);
 
         /*je nach Seite Title und Buttontext ändern*/
         String title = getArguments().getString("title");
@@ -75,24 +83,36 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                 String email = fieldEmail.getText().toString();
 
                 if (!firstName.equals("") && !lastName.equals("") && !email.equals("")) {
+                    // ImageView in Bytes umwandeln
+                    ImageView imageView = view.findViewById(R.id.profile_image_upload);
+                    Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] imageBytes = stream.toByteArray();
+
                     // User-Instanz erzeugen
                     User user = new User();
                     user.setFirstName(firstName);
                     user.setLastName(lastName);
                     user.setMail(email);
                     user.setActive(1);
-                    UserDAO dao = new UserDAO(getContext());
+                    user.setImage(imageBytes);
 
+                    // Data Access Object (DAO)
+                    UserDAO dao = new UserDAO(getContext());
                     String fullName = user.getFirstName() + " " + user.getLastName();
+
                     if (actionBtn.getText().equals("erstellen")) {
                         // An Datenbank senden
                         dao.create(user);
 
-                        /*Alten Nutzer deaktivieren*/
+                        // Alten Nutzer deaktivieren
                         User oldUser = dao.read(MainActivity.getActiveUser());
                         oldUser.setActive(0);
                         dao.update(MainActivity.getActiveUser(), oldUser);
 
+                        // UI-Meldung & Felder löschen
                         Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde erstellt!", Toast.LENGTH_LONG).show();
                         fieldFirstName.setText("");
                         fieldLastName.setText("");
@@ -100,6 +120,8 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                     } else {
                         // An Datenbank senden
                         dao.update(MainActivity.getActiveUser(), user);
+
+                        // UI-Meldung
                         Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde bearbeitet!", Toast.LENGTH_LONG).show();
                     }
 
@@ -121,14 +143,44 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        Toast.makeText(getContext(), "onActivityResult() Methode", Toast.LENGTH_SHORT).show();
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Toast.makeText(getContext(), "Valid result", Toast.LENGTH_SHORT).show();
             if (resultData != null) {
-                Toast.makeText(getContext(), "Not empty data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Bild ausgewählt!", Toast.LENGTH_SHORT).show();
                 Log.i("NEW_USER", "URI: " + resultData.getData());
-                //((de.hdodenhof.circleimageview.CircleImageView)getView().findViewById(R.id.profile_image)).setImageURI(resultData.getData());
+
+                Bitmap img = null;
+                try {
+                    InputStream stream =   getContext().getContentResolver().openInputStream(resultData.getData());
+                    img = BitmapFactory.decodeStream(stream);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Log.i("ACTIVITY", "" + getActivity());
+                ((de.hdodenhof.circleimageview.CircleImageView)view.findViewById(R.id.profile_image_upload)).setImageBitmap(img);
             }
         }
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 }

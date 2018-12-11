@@ -78,4 +78,10 @@
         <item name="android:textSize">@dimen/profileSpinnerSubtitleSize</item>
     </style>
 
+    <!-- Profile Spinner Email-Adresse -->
+    <style name="RemoveBtn" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">?android:attr/textColor</item>
+        <item name="android:background">@android:color/holo_red_light</item>
+    </style>
+
 </resources>

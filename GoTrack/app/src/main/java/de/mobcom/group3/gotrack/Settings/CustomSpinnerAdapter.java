@@ -7,6 +7,8 @@ import java.util.zip.Inflater;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -30,14 +32,13 @@ import de.mobcom.group3.gotrack.R;
 public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
     private Context context1;
-    private ArrayList<Integer> listImages;
+    private ArrayList<byte[]> listImages;
     private ArrayList<String> listNames;
     private ArrayList<String> listEmails;
     public Resources res;
     LayoutInflater inflater;
-    TextView title;
 
-    public CustomSpinnerAdapter(Context context, ArrayList<Integer> profileImages, ArrayList<String> profileNames, ArrayList<String> profileEmails) {
+    public CustomSpinnerAdapter(Context context, ArrayList<byte[]> profileImages, ArrayList<String> profileNames, ArrayList<String> profileEmails) {
         super(context, R.layout.spinner_profile_selected, profileNames);
 
         context1 = context;
@@ -66,8 +67,8 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         if (position == listNames.size() - 1) {
             view = inflater.inflate(R.layout.spinner_footer, parent, false);
 
-            /*Anzeigen des Profilbearbeitungsfragment*/
-            LinearLayout editUserLayout = (LinearLayout )view.findViewById(R.id.profile_edit_user);
+            /* Anzeigen des Profilbearbeitungsfragment */
+            LinearLayout editUserLayout = (LinearLayout) view.findViewById(R.id.profile_edit_user);
             editUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -85,7 +86,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     bundle.putString("etitLastName", user.getLastName());
                     bundle.putString("etitEmail", user.getMail());
 
-                    NewUserFragment newUserFragment=new NewUserFragment();
+                    NewUserFragment newUserFragment = new NewUserFragment();
                     newUserFragment.setArguments(bundle);
 
                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
@@ -99,22 +100,22 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                         Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
                         method.setAccessible(true);
                         method.invoke(MainActivity.getInstance().getSpinner());
-                    }catch(Exception e){
+                    } catch (Exception e) {
                     }
                 }
             });
 
-            /*Anzeigen des Profilerstellungssfragment*/
-            LinearLayout addUserLayout = (LinearLayout )view.findViewById(R.id.profile_add_user);
+            /* Anzeigen des Profilerstellungssfragment */
+            LinearLayout addUserLayout = (LinearLayout) view.findViewById(R.id.profile_add_user);
             addUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    /*Titel und BtnText bearbeiten*/
+                    /* Titel und BtnText bearbeiten */
                     Bundle bundle = new Bundle();
                     bundle.putString("title", "Profil erstellen");
                     bundle.putString("btnText", "erstellen");
-                    NewUserFragment newUserFragment=new NewUserFragment();
+                    NewUserFragment newUserFragment = new NewUserFragment();
                     newUserFragment.setArguments(bundle);
 
                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
@@ -128,7 +129,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                         Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
                         method.setAccessible(true);
                         method.invoke(MainActivity.getInstance().getSpinner());
-                    }catch(Exception e){
+                    } catch (Exception e) {
                     }
                 }
             });
@@ -136,7 +137,9 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
         LinearLayout profileItem = view.findViewById(R.id.profile_layout_list);
         ImageView profileImage = profileItem.findViewById(R.id.profile_image);
-        profileImage.setImageResource(listImages.get(position));
+        Bitmap bitmap = BitmapFactory.decodeByteArray(listImages.get(position), 0, listImages.get(position).length);
+        profileImage.setImageBitmap(bitmap);
+        //profileImage.setImageResource(listImages.get(position));
 
         TextView profileName = profileItem.findViewById(R.id.profile_name);
         profileName.setText(listNames.get(position));
@@ -147,7 +150,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         return view;
     }
 
-    // Anzeige
+    // Anzeige des ausgewählten Profils
     public View getSelectedProfile(int position, ViewGroup parent) {
         View view = inflater.inflate(R.layout.spinner_profile_selected, parent, false);
 
@@ -160,5 +163,4 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
         return view;
     }
-
 }
