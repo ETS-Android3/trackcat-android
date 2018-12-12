@@ -11,6 +11,10 @@ import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.GeomagneticField;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.*;
 import android.support.annotation.NonNull;
@@ -26,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
@@ -34,6 +39,7 @@ import de.mobcom.group3.gotrack.RecordList.RecordListOneItemFragment;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.PageViewer;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 import de.mobcom.group3.gotrack.Statistics.mCounter;
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -47,13 +53,14 @@ import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.jar.Attributes;
 
 /*
  * Fragment for Track recording. includes GPS Locator and Statistics
  * Results displayed in this Fragment view
  * */
 
-public class RecordFragment extends Fragment implements IOrientationConsumer {
+public class RecordFragment extends Fragment implements IOrientationConsumer, SensorEventListener {
 
     /*
      * Statistics
@@ -130,6 +137,8 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
     private Route model;
 
     private RecordListOneItemFragment statistics;
+
+    private Sensor magnetometer;
 
     @Override
     public void onPause() {
@@ -237,7 +246,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
 
         mMapView.setMultiTouchControls(true);
         mMapController = (MapController) mMapView.getController();
-        mMapController.setZoom(18);
+        mMapController.setZoom(10);
 
         /*
          * add Marker and Polyline
@@ -296,6 +305,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
                 if (!northUp) {
                     northUp = true;
                     mMapView.setVerticalMapRepetitionEnabled(true);
+                    mMapView.setMapOrientation((float)0.0);
                 } else {
                     northUp = false;
                     mMapView.setVerticalMapRepetitionEnabled(false);
@@ -403,6 +413,16 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         }
 
         locatorGPS.startTracking();
+
+
+
+        // TODO Sensor setzen
+        SensorManager sensorManager = (SensorManager) MainActivity.getInstance().getSystemService(Context.SENSOR_SERVICE);
+
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+
 
         return view;
     }
@@ -714,10 +734,8 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
              + this part adjusts the desired values for map rotation based on compass heading,
              + location heading and gps speed
              */
-            if ((gpsBearing > 0.01) &&!northUp) {
+            if ((gpsBearing > 0.01) && !northUp) {
                 mMapView.setMapOrientation(-gpsBearing);
-            } else if ((gpsSpeed < 0.5) && !northUp) {
-                mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
             }
             Log.v("GPS-Bearing: ", String.valueOf(gpsBearing));
             Log.v("GPS-Speed", String.valueOf(gpsSpeed));
@@ -813,6 +831,51 @@ public class RecordFragment extends Fragment implements IOrientationConsumer {
         if (t > 360)
             t -= 360;
         mCompassOverlay.setAzimuthOffset(t);
+
+        if (!northUp) {
+            mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        if (event.sensor == magnetometer) {
+
+            float[] rotationMatrix = new float[9];
+            float[] orientation = new float[3];
+
+            SensorManager.getOrientation(rotationMatrix, orientation);
+
+
+            GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
+            float trueNorth = orientation[0] + gf.getDeclination();
+            if (trueNorth > 360.0f)
+                trueNorth = trueNorth - 360.0f;
+            //this part adjusts the desired map and compass rotation based on device orientation and compass heading
+            float t = (360 - trueNorth - this.deviceOrientation);
+            if (t < 0)
+                t += 360;
+            if (t > 360)
+                t -= 360;
+            //mCompassOverlay.setAzimuthOffset(t);
+
+            float value = mCompassOverlay.getOrientation();
+            if (value < 0)
+                value += 360;
+            if (value > 360)
+                value -= 360;
+
+            if (!northUp) {
+                mMapView.setMapOrientation(value);
+            }
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 
     public RecordListOneItemFragment getStatistics() {
