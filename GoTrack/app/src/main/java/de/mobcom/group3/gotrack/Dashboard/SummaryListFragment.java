@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
@@ -49,7 +47,7 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
         switch (v.getId()) {
             case R.id.show_more_records:
                 FragmentTransaction fragTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), "RECORDLIST");
+                fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
                 fragTransaction.commit();
                 break;
         }

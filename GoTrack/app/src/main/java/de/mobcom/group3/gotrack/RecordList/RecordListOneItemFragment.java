@@ -166,7 +166,7 @@ public class RecordListOneItemFragment extends Fragment {
     // switch
     private void switchBack() {
         FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, MainActivity.getInstance().getRecordFragment(), "RECORD");
+        fragTransaction.replace(R.id.mainFrame, MainActivity.getInstance().getRecordFragment(), getResources().getString(R.string.fRecord));
         fragTransaction.commit();
     }
 

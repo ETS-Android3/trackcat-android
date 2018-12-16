@@ -34,7 +34,7 @@ public class DashboardFragment extends Fragment {
         FloatingActionButton btn = item.findViewById(R.id.fabButton);
         btn.setOnClickListener(view1 -> {
             FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, new RecordFragment(), "RECORD");
+            fragTransaction.replace(R.id.mainFrame, new RecordFragment(), getResources().getString(R.string.fRecord));
             fragTransaction.commit();
         });*/
 

@@ -446,7 +446,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
         try {
             FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, statistics, "RECORDONEITEM");
+            fragTransaction.replace(R.id.mainFrame, statistics, getResources().getString(R.string.fRecordOneItem));
             fragTransaction.commit();
 
             /*
@@ -557,7 +557,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
     private void issueNotification(String content) {
         /* returns to Record Page when Notification is clicked */
         Intent notificationIntent = MainActivity.getInstance().getIntent();// new Intent(MainActivity.getInstance().getApplicationContext(), MainActivity.class);
-        notificationIntent.putExtra("action", "RECORD");
+        notificationIntent.putExtra("action", getResources().getString(R.string.fRecord));
         PendingIntent intent = PendingIntent.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
                 notificationIntent, 0);
 

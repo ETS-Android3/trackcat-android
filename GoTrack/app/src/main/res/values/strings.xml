@@ -4,6 +4,13 @@
     <string name="recordLastListTitle">Letzte Aktivitäten</string>
     <string name="recordLastListMoreLink">Mehr anzeigen</string>
 
+    <!-- Fragment Namen -->
+    <string name="fDashboard">DASHBOARD</string>
+    <string name="fRecordlist">RECORD_LIST</string>
+    <string name="fRecord">RECORD</string>
+    <string name="fRecordOneItem">RECORD_ONE_ITEM</string>
+    <string name="fSettings">SETTINGS</string>
+
     <!-- TODO: Preferences Page "SettingsFragment" -->
     <string name="category1">Allgemeines</string>
     <string name="category2">Sonstiges</string>
