@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
@@ -32,6 +34,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
     private ArrayList<String> listEmails;
     public Resources res;
     LayoutInflater inflater;
+    private UserDAO userDAO;
 
     public CustomSpinnerAdapter(Context context, ArrayList<byte[]> profileImages, ArrayList<String> profileNames, ArrayList<String> profileEmails) {
         super(context, R.layout.spinner_profile_selected, profileNames);
@@ -40,6 +43,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         this.listImages = profileImages;
         this.listNames = profileNames;
         this.listEmails = profileEmails;
+        this.userDAO= new UserDAO(MainActivity.getInstance());
 
         inflater = (LayoutInflater) context1
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -72,10 +76,8 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     bundle.putString("title", "Profil bearbeiten");
                     bundle.putString("btnText", "Speichern");
 
-                    // TODO Splitten des Ersten und Zweiten Namens
                     /* Aktiven Nutzer ermitteln und Text ausgeben */
-                    UserDAO dao = new UserDAO(MainActivity.getInstance());
-                    User user = dao.read(MainActivity.getActiveUser());
+                    User user = userDAO.read(MainActivity.getActiveUser());
                     bundle.putString("etitFistName", user.getFirstName());
                     bundle.putString("etitLastName", user.getLastName());
                     bundle.putString("etitEmail", user.getMail());
@@ -125,6 +127,31 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                         method.invoke(MainActivity.getInstance().getSpinner());
                     } catch (Exception e) {
                     }
+                }
+            });
+
+            /* Profil löschen */
+            LinearLayout deleteUserLayout = (LinearLayout) view.findViewById(R.id.profile_delete_user);
+            deleteUserLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    User user = userDAO.read(MainActivity.getActiveUser());
+                    userDAO.delete(user);
+
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Löschen von: " + user.getFirstName()+" "+user.getLastName(), Toast.LENGTH_LONG).show();
+
+                    /* Ausblenden des Spinners */
+                    DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
+                    mainDrawer.closeDrawer(GravityCompat.START);
+                    try {
+                        Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
+                        method.setAccessible(true);
+                        method.invoke(MainActivity.getInstance().getSpinner());
+                    } catch (Exception e) {
+                    }
+                    /*Aktualisieren des Spinners*/
+                   //MainActivity.getInstance().addItemsToSpinner();
                 }
             });
         }
