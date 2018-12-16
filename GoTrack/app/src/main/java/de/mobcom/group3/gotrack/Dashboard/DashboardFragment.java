@@ -9,9 +9,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
-
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
@@ -27,7 +25,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         fragTransaction.replace(R.id.chartContainer, new PageViewerCharts(), "PageViewer");
         fragTransaction.commit();
 
-        /*Funktionen hinter dem Schnellwechsel-Button*/
+        /* Aktuell ausgewählten Menüpunkt markieren */
+        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        menu.findItem(R.id.nav_dashboard).setChecked(true);
+
+        /* Funktionen hinter dem Schnellwechsel-Button */
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         FloatingActionButton fabButton = view.findViewById(R.id.fabButton);
         fabButton.setOnClickListener(this);
