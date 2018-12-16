@@ -37,7 +37,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             Log.d("PREFERENCES", "Wechsel des Themes!");
             /* getActivity().finish();
             final Intent intent = getActivity().getIntent();
-            intent.putExtra("action", "SETTINGS");
+            intent.putExtra("action", getResources().getString(R.string.fSettings));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             getActivity().startActivity(intent); */
 

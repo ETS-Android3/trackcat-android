@@ -63,13 +63,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intent intent = getIntent();
         String action = intent.getStringExtra("action");
-        if (action != null && action.equalsIgnoreCase("RECORD")) {
+        if (action != null && action.equalsIgnoreCase(getResources().getString(R.string.fRecord))) {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
+            fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
             fragTransaction.commit();
-        } else if (action != null && action.equalsIgnoreCase("SETTINGS")) {
+        } else if (action != null && action.equalsIgnoreCase(getResources().getString(R.string.fSettings))) {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), "SETTINGS");
+            fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
             fragTransaction.commit();
         }
     }
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* Startseite festlegen - Erster Aufruf */
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
+        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
         fragTransaction.commit();
     }
 
@@ -224,34 +224,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Aktion je nach Auswahl des Items */
         switch (menuItem.getItemId()) {
             case R.id.nav_dashboard:
-                if (getSupportFragmentManager().findFragmentByTag("DASHBOARD") == null) {
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
-                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
+                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
                     fragTransaction.commit();
                 }
                 break;
             case R.id.nav_recordlist:
-                if (getSupportFragmentManager().findFragmentByTag("RECORDLIST") == null) {
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
-                    fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), "RECORDLIST");
+                    fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
                     fragTransaction.commit();
                 }
                 break;
             case R.id.nav_record:
-                if (getSupportFragmentManager().findFragmentByTag("RECORD") == null) {
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
-                    fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
+                    fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
                     fragTransaction.commit();
                 }
                 break;
             case R.id.nav_settings:
-                if (getSupportFragmentManager().findFragmentByTag("SETTINGS") == null) {
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
-                    fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), "SETTINGS");
+                    fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
                     fragTransaction.commit();
                 }
                 break;
@@ -266,10 +266,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(getIntent());
         try {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
+            fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
             fragTransaction.commit();
         } catch (RuntimeException e) {
-            Log.v("TEST", e.toString());
+            Log.v("Fehler beim Stoppen: ", e.toString());
         }
         recordFragment.stopTracking();
 
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(getIntent());
         try {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, recordFragment, "RECORD");
+            fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
             fragTransaction.commit();
         } catch (RuntimeException e) {
 
