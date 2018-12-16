@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -210,6 +211,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
                     }
                 }
+
+                /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
+                FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+                fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
+                fragTransaction.commit();
+                NavigationView navigationView = findViewById(R.id.nav_view);
+                Menu menu = navigationView.getMenu();
+                menu.findItem(R.id.nav_record).setChecked(true);
             }
 
             @Override
