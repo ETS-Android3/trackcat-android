@@ -2,6 +2,7 @@
     <string name="app_name">GoTrack</string>
     <string name="recordListTitle">Aufnahmen</string>
     <string name="recordLastListTitle">Letzte Aktivitäten</string>
+    <string name="recordLastListMoreLink">Mehr anzeigen</string>
 
     <!-- TODO: Preferences Page "SettingsFragment" -->
     <string name="category1">Allgemeines</string>

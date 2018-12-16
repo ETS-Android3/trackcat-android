@@ -93,11 +93,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /* Startseite festlegen - Erster Aufruf */
-        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
-        fragTransaction.commit();
-
         /* Instanz für spätere Objekte speichern */
         instance = this;
         recordFragment = new RecordFragment();
@@ -130,6 +125,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // TODO Profilwechsel
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         addItemsToSpinner();
+
+        /* Startseite festlegen - Erster Aufruf */
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), "DASHBOARD");
+        fragTransaction.commit();
     }
 
     /* Dynamisches Hinzufügen von Spinner-Items */

@@ -84,4 +84,9 @@
         <item name="android:background">@android:color/holo_red_light</item>
     </style>
 
+    <!-- Link Farbe -->
+    <style name="Link">
+        <item name="android:textColor">?attr/colorAccent</item>
+    </style>
+
 </resources>
