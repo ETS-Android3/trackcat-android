@@ -1,9 +1,11 @@
 package de.mobcom.group3.gotrack.Dashboard;
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -49,6 +51,11 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
                 FragmentTransaction fragTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
                 fragTransaction.commit();
+
+                /* Menüvermerk festlegen */
+                NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                Menu menu = navigationView.getMenu();
+                menu.findItem(R.id.nav_recordlist).setChecked(true);
                 break;
         }
     }
