@@ -151,7 +151,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     } catch (Exception e) {
                     }
                     /*Aktualisieren des Spinners*/
-                   //MainActivity.getInstance().addItemsToSpinner();
+                   MainActivity.getInstance().addItemsToSpinner();
                 }
             });
         }

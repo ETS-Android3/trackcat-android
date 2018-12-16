@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final ArrayList<String> spinnerAccountNames = new ArrayList<String>();
         List<User> users = userDAO.readAll();
         int selectedID = 0;
-
+        boolean findActiveUser=false;
         for (int i = 0; i < users.size(); i++) {
             spinnerAccountEmail.add(users.get(i).getMail());
             spinnerAccountNames.add(users.get(i).getFirstName() + " " + users.get(i).getLastName());
@@ -149,11 +149,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (users.get(i).isActive()) {
                 activeUser = users.get(i).getId();
                 selectedID = i;
+                findActiveUser = true;
             }
         }
 
-        Toast.makeText(getApplicationContext(), " momentan Aktiver Nutzer: " + activeUser,
-                Toast.LENGTH_LONG).show();
+        /*Wenn nach dem Löschen eines Users kein neuer aktiver Nutzer gefunden wurde*/
+        if (!findActiveUser) {
+            activeUser = users.get(selectedID).getId();
+            User newActiveUser = userDAO.read(activeUser);
+            newActiveUser.setActive(1);
+            userDAO.update(activeUser, newActiveUser);
+        }
+        final boolean deactivateOldUser=findActiveUser;
 
         /* Erstellen des Custom Spinners */
         final CustomSpinnerAdapter spinAdapter = new CustomSpinnerAdapter(
@@ -174,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 byte[] imgRessource = spinnerAccountIcons.get(position);
                 de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.raw.default_profile);
-                if (imgRessource != null && imgRessource.length > 0){
+                if (imgRessource != null && imgRessource.length > 0) {
                     bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
                 }
                 circleImageView.setImageBitmap(bitmap);
@@ -192,9 +199,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         userDAO.update(users.get(i).getId(), user);
 
                         /* Alten Nutzer deaktivieren */
-                        User oldUser = userDAO.read(activeUser);
-                        oldUser.setActive(0);
-                        userDAO.update(activeUser, oldUser);
+                        if (deactivateOldUser) {
+                            User oldUser = userDAO.read(activeUser);
+                            oldUser.setActive(0);
+                            userDAO.update(activeUser, oldUser);
+                        }
 
                         /* Nutzerwechsel in globaler Variable */
                         activeUser = users.get(i).getId();

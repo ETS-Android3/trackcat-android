@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import de.hdodenhof.circleimageview.CircleImageView;
+import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
@@ -131,6 +133,10 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                     }
 
                    MainActivity.getInstance().addItemsToSpinner();
+
+                    /*Dashboard anzeigen*/
+                    swapFragment();
+
                 } else {
                     Toast.makeText(getContext(), "Bitte alle Felder ausfüllen", Toast.LENGTH_LONG).show();
                 }
@@ -161,5 +167,14 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                 ((CircleImageView)view.findViewById(R.id.profile_image_upload)).setImageBitmap(img);
             }
         }
+    }
+
+    /*Funktion die das Fragment zu Dashboard wechselt*/
+    public void swapFragment(){
+        DashboardFragment dashboardFragment = new DashboardFragment();
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.mainFrame, dashboardFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
