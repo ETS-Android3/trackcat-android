@@ -2,6 +2,8 @@ package de.mobcom.group3.gotrack.Settings;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -136,11 +138,14 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                 @Override
                 public void onClick(View v) {
 
+                    List<User> users = userDAO.readAll();
                     User user = userDAO.read(MainActivity.getActiveUser());
-                    userDAO.delete(user);
-
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Löschen von: " + user.getFirstName()+" "+user.getLastName(), Toast.LENGTH_LONG).show();
-
+                    if (users.size()>1) {
+                        userDAO.delete(user);
+                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Löschen von: " + user.getFirstName() + " " + user.getLastName(), Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), "" + user.getFirstName() + " " + user.getLastName() +" konnte nicht gelöscht werden, da sonst keine Nutzer mehr existieren.", Toast.LENGTH_LONG).show();
+                    }
                     /* Ausblenden des Spinners */
                     DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
                     mainDrawer.closeDrawer(GravityCompat.START);
