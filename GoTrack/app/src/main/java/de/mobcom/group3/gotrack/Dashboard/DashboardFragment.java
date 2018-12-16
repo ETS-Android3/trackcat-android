@@ -2,9 +2,11 @@ package de.mobcom.group3.gotrack.Dashboard;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,6 +43,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.mainFrame, recordFragment);
                 fragmentTransaction.commit();
+
+                NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                Menu menu = navigationView.getMenu();
+                menu.findItem(R.id.nav_record).setChecked(true);
                 break;
         }
     }
