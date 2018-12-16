@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.RecordList.CustomRecordListAdapter;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
+import de.mobcom.group3.gotrack.Recording.RecordFragment;
 
 public class SummaryListFragment extends Fragment implements View.OnClickListener {
 
@@ -26,11 +28,15 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_summary_list, container, false);
+        LinearLayout showMore = view.findViewById(R.id.show_more_records);
+        LinearLayout noEntries = view.findViewById(R.id.no_entries_alert);
+        Button firstRecordBtn = view.findViewById(R.id.create_first_record);
 
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         List<Route> records = dao.readAll(MainActivity.getActiveUser());
 
         List<Route> mList = new ArrayList<>();
+        mList.clear();
         for (int i = 0; i < getResources().getInteger(R.integer.summaryRecordListAmount) && i < records.size(); i++) {
             mList.add(records.get(i));
         }
@@ -39,23 +45,42 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
         ListView recordList = view.findViewById(R.id.record_list);
         recordList.setAdapter(adapter);
 
-        LinearLayout showMore = view.findViewById(R.id.show_more_records);
+        if (mList.isEmpty()) {
+            showMore.setVisibility(View.GONE);
+            noEntries.setVisibility(View.VISIBLE);
+        } else {
+            showMore.setVisibility(View.VISIBLE);
+            noEntries.setVisibility(View.GONE);
+        }
         showMore.setOnClickListener(this);
+        firstRecordBtn.setOnClickListener(this);
         return view;
     }
 
     @Override
     public void onClick(View v) {
+        /* FragmentManager initialisieren */
+        FragmentTransaction fragTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+
+        /* Menu instanziieren */
+        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+
+        /* ActionHandler */
         switch (v.getId()) {
             case R.id.show_more_records:
-                FragmentTransaction fragTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
                 fragTransaction.commit();
 
                 /* Aktuell ausgewählten Menüpunkt markieren */
-                NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
-                Menu menu = navigationView.getMenu();
                 menu.findItem(R.id.nav_recordlist).setChecked(true);
+                break;
+            case R.id.create_first_record:
+                fragTransaction.replace(R.id.mainFrame, new RecordFragment(), getResources().getString(R.string.fRecord));
+                fragTransaction.commit();
+
+                /* Aktuell ausgewählten Menüpunkt markieren */
+                menu.findItem(R.id.nav_record).setChecked(true);
                 break;
         }
     }

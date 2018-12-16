@@ -47,74 +47,82 @@
 
 
                         <LinearLayout
-                            android:id="@+id/average_speed_Layout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center">
 
-                            <ImageView
-                                android:id="@+id/average_speed_icon"
+                            <LinearLayout
+                                android:id="@+id/average_speed_Layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_weight="0"
-                                app:srcCompat="@drawable/record_average_speed_white" />
+                                android:orientation="horizontal">
 
-                            <TextView
-                                android:id="@+id/average_speed_TextView"
-                                style="@style/TextAppearanceRecord"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0"
-                                android:gravity="center"
-                                android:text="0.0 km/h" />
-                        </LinearLayout>
+                                <ImageView
+                                    android:id="@+id/average_speed_icon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_weight="0"
+                                    app:srcCompat="@drawable/record_average_speed_white" />
 
-                        <LinearLayout
-                            android:id="@+id/real_average_speed_Layout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                                <TextView
+                                    android:id="@+id/average_speed_TextView"
+                                    style="@style/TextAppearanceRecord"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0"
+                                    android:gravity="center"
+                                    android:text="0.0 km/h" />
+                            </LinearLayout>
 
-                            <ImageView
-                                android:id="@+id/real_average_speed_icon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                android:layout_weight="0"
-                                app:srcCompat="@drawable/record_average_speed_white" />
-
-                            <TextView
-                                android:id="@+id/real_average_speed_TextView"
-                                style="@style/TextAppearanceRecord"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0"
-                                android:gravity="center"
-                                android:text="0.0 km/h" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/distance_Layout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:id="@+id/distance_Icon"
+                            <LinearLayout
+                                android:id="@+id/real_average_speed_Layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="5dp"
-                                app:srcCompat="@drawable/record_distance_white" />
+                                android:orientation="horizontal">
 
-                            <TextView
-                                android:id="@+id/distance_TextView"
-                                style="@style/TextAppearanceRecord"
+                                <ImageView
+                                    android:id="@+id/real_average_speed_icon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_weight="0"
+                                    app:srcCompat="@drawable/record_average_speed_white" />
+
+                                <TextView
+                                    android:id="@+id/real_average_speed_TextView"
+                                    style="@style/TextAppearanceRecord"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0"
+                                    android:gravity="center"
+                                    android:text="0.0 km/h" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/distance_Layout"
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0"
-                                android:gravity="center"
-                                android:text="0.0 km" />
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/distance_Icon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="5dp"
+                                    app:srcCompat="@drawable/record_distance_white" />
+
+                                <TextView
+                                    android:id="@+id/distance_TextView"
+                                    style="@style/TextAppearanceRecord"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0"
+                                    android:gravity="center"
+                                    android:text="0.0 km" />
+                            </LinearLayout>
+
                         </LinearLayout>
 
 

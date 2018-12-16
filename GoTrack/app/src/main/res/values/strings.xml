@@ -3,6 +3,7 @@
     <string name="recordListTitle">Aufnahmen</string>
     <string name="recordLastListTitle">Letzte Aktivitäten</string>
     <string name="recordLastListMoreLink">Mehr anzeigen</string>
+    <string name="recordLastListNothing">Noch keine\nAufnahmen</string>
 
     <!-- Fragment Namen -->
     <string name="fDashboard">DASHBOARD</string>
