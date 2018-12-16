@@ -14,7 +14,7 @@ import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.RecordList.CustomRecordListAdapter;
 
-public class SummaryList extends Fragment {
+public class SummaryListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

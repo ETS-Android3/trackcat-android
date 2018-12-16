@@ -15,7 +15,7 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragTransaction = getChildFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.summaryContainer, new SummaryList(), "Summary");
+        fragTransaction.replace(R.id.summaryContainer, new SummaryListFragment(), "Summary");
         fragTransaction.replace(R.id.chartContainer, new PageViewerCharts(), "PageViewer");
 /*
         // Summary dem Dashboard hinzufügen
