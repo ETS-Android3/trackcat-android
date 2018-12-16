@@ -2,27 +2,15 @@ package de.mobcom.group3.gotrack.RecordList;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
-import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
 
 public class RecordListFragment extends Fragment {
     @Override

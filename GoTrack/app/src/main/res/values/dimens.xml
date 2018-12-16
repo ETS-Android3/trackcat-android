@@ -12,6 +12,6 @@
     <dimen name="profileSpinnerTitleSize">14sp</dimen>
     <dimen name="profileSpinnerSubtitleSize">12sp</dimen>
 
-    <!-- -->
+    <!-- Allgemeine Zahlen -->
     <integer name="summaryRecordListAmount">2</integer>
 </resources>
