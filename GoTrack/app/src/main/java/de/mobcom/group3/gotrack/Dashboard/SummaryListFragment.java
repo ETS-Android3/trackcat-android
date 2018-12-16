@@ -52,7 +52,7 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
                 fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
                 fragTransaction.commit();
 
-                /* Menüvermerk festlegen */
+                /* Aktuell ausgewählten Menüpunkt markieren */
                 NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                 Menu menu = navigationView.getMenu();
                 menu.findItem(R.id.nav_recordlist).setChecked(true);
