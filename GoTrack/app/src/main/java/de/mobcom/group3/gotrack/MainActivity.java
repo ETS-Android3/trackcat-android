@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static Spinner spinner;
     private static int activeUser;
     private static boolean hints;
+    private static boolean darkTheme;
     UserDAO userDAO;
 
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -60,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     public static boolean getHints() {
         return hints;
+    }
+    public static boolean getDarkTheme() {
+        return darkTheme;
     }
 
     @Override
@@ -154,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (users.get(i).isActive()) {
                 activeUser = users.get(i).getId();
                 hints=true;
+                darkTheme=true;
                 selectedID = i;
                 findActiveUser = true;
             }

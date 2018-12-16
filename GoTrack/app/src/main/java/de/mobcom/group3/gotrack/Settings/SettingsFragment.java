@@ -21,8 +21,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         // Load the Preferences from the XML file
         addPreferencesFromResource(R.xml.fragment_settings);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        CheckBoxPreference checkBoxPreference = (CheckBoxPreference)findPreference("help_messages");
-        checkBoxPreference.setChecked(MainActivity.getHints());
+        /*Anzeigen der Benutzerspezifischen Einstellungen*/
+        CheckBoxPreference help_messages = (CheckBoxPreference)findPreference("help_messages");
+        help_messages.setChecked(MainActivity.getHints());
+        SwitchPreference theme = (SwitchPreference)findPreference("dark_theme");
+        theme.setChecked(MainActivity.getDarkTheme());
 
     }
 
