@@ -74,7 +74,7 @@
             <ImageView
                 android:id="@+id/profile_delete_user_icon"
                 style="@style/TitleBarImage"
-                android:background="@drawable/menu_plus" />
+                android:background="@drawable/menu_delete" />
 
             <TextView
                 android:id="@+id/profile_delete_user_text"
