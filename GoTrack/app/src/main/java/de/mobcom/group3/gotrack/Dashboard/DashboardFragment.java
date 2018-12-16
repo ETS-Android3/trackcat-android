@@ -2,17 +2,13 @@ package de.mobcom.group3.gotrack.Dashboard;
 
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import de.mobcom.group3.gotrack.R;
-import de.mobcom.group3.gotrack.Recording.RecordFragment;
 
 public class DashboardFragment extends Fragment {
     private FragmentTransaction fragTransaction;
@@ -21,7 +17,7 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragTransaction = getChildFragmentManager().beginTransaction();
-
+        fragTransaction.replace(R.id.summaryContainer, new SummaryList(), "Summary");
         fragTransaction.replace(R.id.chartContainer, new PageViewerCharts(), "PageViewer");
 /*
         // Summary dem Dashboard hinzufügen

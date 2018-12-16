@@ -11,4 +11,7 @@
     <!-- Text parameters -->
     <dimen name="profileSpinnerTitleSize">14sp</dimen>
     <dimen name="profileSpinnerSubtitleSize">12sp</dimen>
+
+    <!-- -->
+    <integer name="summaryRecordListAmount">2</integer>
 </resources>
