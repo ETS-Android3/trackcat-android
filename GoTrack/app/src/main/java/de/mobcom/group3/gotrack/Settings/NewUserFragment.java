@@ -125,7 +125,9 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                         dao.update(MainActivity.getActiveUser(), oldUser);
 
                         /* UI-Meldung & Felder löschen */
-                        Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde erstellt!", Toast.LENGTH_LONG).show();
+                        if (MainActivity.getHints()) {
+                            Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde erstellt!", Toast.LENGTH_LONG).show();
+                        }
                         fieldFirstName.setText("");
                         fieldLastName.setText("");
                         fieldEmail.setText("");
@@ -135,16 +137,19 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                         dao.update(MainActivity.getActiveUser(), user);
 
                         /* UI-Meldung */
-                        Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde bearbeitet!", Toast.LENGTH_LONG).show();
+                        if (MainActivity.getHints()) {
+                            Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde bearbeitet!", Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     MainActivity.getInstance().addItemsToSpinner();
-
                     /*Dashboard anzeigen*/
                     swapFragment();
 
                 } else {
-                    Toast.makeText(getContext(), "Bitte alle Felder ausfüllen", Toast.LENGTH_LONG).show();
+                    if (MainActivity.getHints()) {
+                        Toast.makeText(getContext(), "Bitte alle Felder ausfüllen", Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
             case R.id.profile_image_upload:
@@ -152,8 +157,9 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
                 startActivityForResult(intent, READ_REQUEST_CODE);
-
-                Toast.makeText(getContext(), "Wählen Sie Ihr Profilbild aus!", Toast.LENGTH_LONG).show();
+                if (MainActivity.getHints()) {
+                    Toast.makeText(getContext(), "Wählen Sie Ihr Profilbild aus!", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }
@@ -162,7 +168,9 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
-                Toast.makeText(getContext(), "Bild ausgewählt!", Toast.LENGTH_SHORT).show();
+                if (MainActivity.getHints()) {
+                    Toast.makeText(getContext(), "Bild ausgewählt!", Toast.LENGTH_SHORT).show();
+                }
                 Bitmap img = null;
                 try {
                     InputStream stream = getContext().getContentResolver().openInputStream(resultData.getData());

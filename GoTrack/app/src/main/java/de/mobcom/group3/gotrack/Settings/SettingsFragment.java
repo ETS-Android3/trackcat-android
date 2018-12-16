@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -19,6 +21,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         // Load the Preferences from the XML file
         addPreferencesFromResource(R.xml.fragment_settings);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        CheckBoxPreference checkBoxPreference = (CheckBoxPreference)findPreference("help_messages");
+        checkBoxPreference.setChecked(MainActivity.getHints());
+
     }
 
     @Override

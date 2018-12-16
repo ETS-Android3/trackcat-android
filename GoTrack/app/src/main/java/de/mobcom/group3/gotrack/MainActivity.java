@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NotificationManagerCompat notificationManager;
     private static Spinner spinner;
     private static int activeUser;
+    private static boolean hints;
     UserDAO userDAO;
 
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -56,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static int getActiveUser() {
         return activeUser;
+    }
+    public static boolean getHints() {
+        return hints;
     }
 
     @Override
@@ -149,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             spinnerAccountIcons.add(users.get(i).getImage());
             if (users.get(i).isActive()) {
                 activeUser = users.get(i).getId();
+                hints=true;
                 selectedID = i;
                 findActiveUser = true;
             }
@@ -208,7 +213,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         /* Nutzerwechsel in globaler Variable */
                         activeUser = users.get(i).getId();
-                        Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
+                        if (hints) {
+                            Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
 

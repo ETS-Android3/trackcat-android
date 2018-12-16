@@ -8,7 +8,7 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="help_messages"
-            android:summary="Zeige hilfreiche Nachrichten an"
+            android:summary="Zeige allgemeine Hinweise an"
             android:title="Hilfestellungen" >
         </CheckBoxPreference>
         <ListPreference
