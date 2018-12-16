@@ -6,9 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,9 +20,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
@@ -63,7 +69,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
             fieldEmail.setText(getArguments().getString("etitEmail"));
             byte[] imgRessource = getArguments().getByteArray("currentImage");
             Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.raw.default_profile);
-            if (imgRessource != null && imgRessource.length > 0){
+            if (imgRessource != null && imgRessource.length > 0) {
                 bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
             }
             imageView.setImageBitmap(bitmap);
@@ -91,7 +97,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                 if (!firstName.equals("") && !lastName.equals("") && !email.equals("")) {
                     /* ImageView in Bytes umwandeln */
                     ImageView imageView = view.findViewById(R.id.profile_image_upload);
-                    Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+                    Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
                     bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -132,7 +138,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                         Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde bearbeitet!", Toast.LENGTH_LONG).show();
                     }
 
-                   MainActivity.getInstance().addItemsToSpinner();
+                    MainActivity.getInstance().addItemsToSpinner();
 
                     /*Dashboard anzeigen*/
                     swapFragment();
@@ -159,22 +165,25 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(), "Bild ausgewählt!", Toast.LENGTH_SHORT).show();
                 Bitmap img = null;
                 try {
-                    InputStream stream =   getContext().getContentResolver().openInputStream(resultData.getData());
+                    InputStream stream = getContext().getContentResolver().openInputStream(resultData.getData());
                     img = BitmapFactory.decodeStream(stream);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                ((CircleImageView)view.findViewById(R.id.profile_image_upload)).setImageBitmap(img);
+                ((CircleImageView) view.findViewById(R.id.profile_image_upload)).setImageBitmap(img);
             }
         }
     }
 
     /*Funktion die das Fragment zu Dashboard wechselt*/
-    public void swapFragment(){
+    public void swapFragment() {
         DashboardFragment dashboardFragment = new DashboardFragment();
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.mainFrame, dashboardFragment);
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
+        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        menu.findItem(R.id.nav_dashboard).setChecked(true);
     }
 }
