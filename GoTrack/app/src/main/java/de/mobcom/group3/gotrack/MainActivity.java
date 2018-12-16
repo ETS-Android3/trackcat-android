@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private PermissionManager permissionManager = new PermissionManager() {};
     final int NOTIFICATION_ID = 100;
     private DrawerLayout mainDrawer;
+    private NavigationView navigationView;
     private static MainActivity instance;
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Actionbar definieren und MenuListener festlegen */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         /* Menu Toggle */
@@ -224,13 +225,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
 
-                /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
-                FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-                fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
-                fragTransaction.commit();
-                NavigationView navigationView = findViewById(R.id.nav_view);
-                Menu menu = navigationView.getMenu();
-                menu.findItem(R.id.nav_record).setChecked(true);
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
+                    /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
+                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
+                    fragTransaction.commit();
+                    Menu menu = navigationView.getMenu();
+                    menu.findItem(R.id.nav_dashboard).setChecked(true);
+                }
             }
 
             @Override
