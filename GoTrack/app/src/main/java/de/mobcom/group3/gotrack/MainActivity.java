@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-        //* Entferne die Benachrichtigung, wenn App läuft */
+        /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
         super.onDestroy();
     }
@@ -182,8 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
                 for (int i = 0; i < users.size(); i++) {
                     if (adapter.getItemAtPosition(position).equals(users.get(i).getFirstName() + " " + users.get(i).getLastName())) {
-
-                        /*Ausgewählten Nutzer als aktiven Nutzer setzen*/
+                        /* Ausgewählten Nutzer als aktiven Nutzer setzen */
                         User user = new User();
                         user.setFirstName(users.get(i).getFirstName());
                         user.setLastName(users.get(i).getLastName());
@@ -192,12 +191,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         user.setActive(1);
                         userDAO.update(users.get(i).getId(), user);
 
-                        /*Alten Nutzer deaktivieren*/
+                        /* Alten Nutzer deaktivieren */
                         User oldUser = userDAO.read(activeUser);
                         oldUser.setActive(0);
                         userDAO.update(activeUser, oldUser);
 
-                        /*Nutzerwechsel in globaler Variable*/
+                        /* Nutzerwechsel in globaler Variable */
                         activeUser = users.get(i).getId();
                         Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
                     }
