@@ -63,5 +63,26 @@
                 android:textAppearance="@style/TextAppearanceTitle"
                 android:textSize="8pt" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/profile_delete_user"
+            style="@style/VerticalThemeLayoutInputs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/profile_delete_user_icon"
+                style="@style/TitleBarImage"
+                android:background="@drawable/menu_plus" />
+
+            <TextView
+                android:id="@+id/profile_delete_user_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profil löschen"
+                android:textAppearance="@style/TextAppearanceTitle"
+                android:textSize="8pt" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
