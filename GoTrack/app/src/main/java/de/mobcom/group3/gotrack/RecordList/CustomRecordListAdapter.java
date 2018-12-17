@@ -9,7 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
+
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.R;
 
@@ -35,7 +42,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         LinearLayout recordItem = view.findViewById(R.id.record_one_item);
 
         TextView recordId = recordItem.findViewById(R.id.record_id);
-        recordId.setText("" + (position+1));
+        recordId.setText("" + (position + 1));
 
         ImageView recordType = recordItem.findViewById(R.id.activity_type);
         recordType.setImageResource(R.drawable.activity_running_record_list);
@@ -44,10 +51,21 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         recordName.setText(records.get(position).getName());
 
         TextView recordDistance = recordItem.findViewById(R.id.record_distance);
-        recordDistance.setText(records.get(position).getDistance() + " km |");
+        double distance = Math.round(records.get(position).getDistance());
+        if (distance >= 1000){
+            String d = "" + distance/1000L;
+            recordDistance.setText(d.replace('.', ',') + " km |");
+        } else {
+            recordDistance.setText((int)distance + " m |");
+        }
 
         TextView recordTime = recordItem.findViewById(R.id.record_time);
-        recordTime.setText(records.get(position).getTime() + " Minuten");
+
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        df.setTimeZone(tz);
+        String time = df.format(new Date(records.get(position).getTime() * 1000));
+        recordTime.setText(time);
 
         return view;
     }
