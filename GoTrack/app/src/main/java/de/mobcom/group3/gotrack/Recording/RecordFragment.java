@@ -2,10 +2,12 @@ package de.mobcom.group3.gotrack.Recording;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
@@ -30,16 +32,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.NotificationActionReciever;
 import de.mobcom.group3.gotrack.R;
-import de.mobcom.group3.gotrack.RecordList.RecordListOneItemFragment;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.PageViewer;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 import de.mobcom.group3.gotrack.Statistics.mCounter;
-
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -51,9 +51,13 @@ import org.osmdroid.views.overlay.compass.IOrientationConsumer;
 import org.osmdroid.views.overlay.compass.IOrientationProvider;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
-import java.util.jar.Attributes;
+
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 /*
  * Fragment for Track recording. includes GPS Locator and Statistics
@@ -135,8 +139,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
      * Model of Route
      * */
     private Route model;
-
-    private RecordListOneItemFragment statistics;
 
     private Sensor magnetometer;
 
@@ -305,7 +307,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
                 if (!northUp) {
                     northUp = true;
                     mMapView.setVerticalMapRepetitionEnabled(true);
-                    mMapView.setMapOrientation((float)0.0);
+                    mMapView.setMapOrientation((float) 0.0);
                 } else {
                     northUp = false;
                     mMapView.setVerticalMapRepetitionEnabled(false);
@@ -415,7 +417,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         locatorGPS.startTracking();
 
 
-
         // TODO Sensor setzen
         SensorManager sensorManager = (SensorManager) MainActivity.getInstance().getSystemService(Context.SENSOR_SERVICE);
 
@@ -432,42 +433,97 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
      * */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void endTracking() {
-
         stopTracking();
         notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
 
         model.setTime(timer.getTime());
         model.setRideTime(rideTimer.getTime());
         model.setDistance(kmCounter.getAmount());
+        model.setUserID(MainActivity.getActiveUser());
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm:ss");
+        String dateStr = simpleDateFormat.format(currentTime);
+        String defaultName = "Rec_" + dateStr;
 
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Aufnahme speichern?");
 
-        statistics = new RecordListOneItemFragment();
-        statistics.setModel(model);
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View alertView = inflater.inflate(R.layout.fragment_record_list_one_item, null, true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            alert.setView(alertView);
 
-        try {
-            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, statistics, getResources().getString(R.string.fRecordOneItem));
-            fragTransaction.commit();
+            /* Route auf Karte zeichnen */
+            drawRoute(alertView);
 
-            /*
-             * kill this instance and create new Fragment in Main
-             * */
-            MainActivity.getInstance().endTracking();
-        } catch (Exception e) {
-            Log.v("TEST", e.toString());
+            /* Placeholder festlegen */
+            TextView recordName = alertView.findViewById(R.id.record_name);
+            recordName.setHint(defaultName);
 
+            /* Setzt die aufgezeichneten Kilometer */
+            TextView distance_TextView = alertView.findViewById(R.id.distance_TextView);
+            distance_TextView.setText(Math.round(kmCounter.getAmount()) / 1000.0 + " km");
+
+            /* Setzt die Zeit */
+            TextView total_time_TextView = alertView.findViewById(R.id.total_time_TextView);
+            Timer timerForCalc = new Timer();
+            total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
+        } else {
+            //TODO Implementation für Nutzer mit API <= 16
         }
 
+        alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                TextView recordName = alertView.findViewById(R.id.record_name);
+                if(recordName.getText().toString().equals("")){
+                    model.setName(defaultName);
+                } else {
+                    model.setName(recordName.getText().toString());
+                }
 
+                RouteDAO dao = new RouteDAO(MainActivity.getInstance());
+                dao.create(model);
+            }
+        });
+
+        alert.setNegativeButton("Verwerfen", null);
+        alert.show();
     }
 
+    private void drawRoute(View alertView) {
+        MapView mMapView = alertView.findViewById(R.id.mapview);
+        mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
+        mMapView.setBuiltInZoomControls(false);
+        mMapView.setMultiTouchControls(true);
+        MapController mMapController = (MapController) mMapView.getController();
+        mMapController.setZoom(19);
 
-    /*   public String setTime() {
-     *//* rectrate status of Timer *//*
-        if (timer != null) {
-            return timer.getTime();
-        }
-    }*/
+        /* Marker und Polyline zeichnen */
+        GeoPoint gPt = new GeoPoint(model.getLocations().get(0).getLatitude(), model.getLocations().get(0).getLongitude());
+        Marker startMarker = new Marker(mMapView);
+        startMarker.setPosition(gPt);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
+
+        gPt = new GeoPoint(model.getLocations().get(model.getLocations().size() - 1).getLatitude(), model.getLocations().get(model.getLocations().size() - 1).getLongitude());
+        Marker stopMarker = new Marker(mMapView);
+        stopMarker.setPosition(gPt);
+        stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        stopMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_end));
+
+        Polyline mPath = new Polyline(mMapView);
+
+        mMapView.getOverlays().add(mPath);
+        mMapView.getOverlays().add(startMarker);
+        mMapView.getOverlays().add(stopMarker);
+
+        mPath.setPoints(GPSData);
+        mPath.setColor(Color.RED);
+        mPath.setWidth(4);
+
+        gPt = new GeoPoint(model.getLocations().get(model.getLocations().size() / 2).getLatitude(), model.getLocations().get(model.getLocations().size() / 2).getLongitude());
+        mMapController.setCenter(gPt);
+    }
 
     /*
      * start Timer for stop/save Tracking Progressbar
@@ -877,9 +933,4 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
-
-    public RecordListOneItemFragment getStatistics() {
-        return statistics;
-    }
-
 }
