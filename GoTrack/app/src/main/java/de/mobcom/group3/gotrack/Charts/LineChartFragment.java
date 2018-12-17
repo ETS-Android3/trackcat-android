@@ -9,8 +9,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import de.mobcom.group3.gotrack.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -22,9 +25,12 @@ public class LineChartFragment extends Fragment {
     private int pointPerSegment = 10;
     private int incrementStepsX = 1;
     private int incrementStepsY = 10;
+    private Number[] series1Numbers;
 
 
-    public LineChartFragment(){}
+    public LineChartFragment() {
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,16 +42,32 @@ public class LineChartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_line_chart, container, false);
+        String result = "";
+        String title="Series1";
+        if (getArguments() != null) {
+           double[] values = getArguments().getDoubleArray("array");
+           title= getArguments().getString("title");
+            series1Numbers = new Number[values.length];
+            for (int i = 0; i < series1Numbers.length; i++) {
+                series1Numbers[i] = values[i];
+                result = result + " " + values[i] + " ";
+
+            }
+
+        }else{
+            series1Numbers = new Number[]{1, 4, 2, 8, 4, 16, 8, 32, 16, 64};
+        }
+
+
+       Toast.makeText(getContext(), "Zahlen" + result, Toast.LENGTH_LONG).show();
 
         // Getting in xml defined Plot
         plot = view.findViewById(R.id.linePlot);
 
-        // Arrays for the Plot
-        Number[] series1Numbers = {1, 4, 2, 8, 4, 16, 8, 32, 16, 64};
 
         // Turning Arrays to XYSeries
         XYSeries series1 = new SimpleXYSeries(
-                Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
+                Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, title);
 
         // Create Formatters with xml defined Format
         LineAndPointFormatter series1Format =
