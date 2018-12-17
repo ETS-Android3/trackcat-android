@@ -462,7 +462,13 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
             /* Setzt die aufgezeichneten Kilometer */
             TextView distance_TextView = alertView.findViewById(R.id.distance_TextView);
-            distance_TextView.setText(Math.round(kmCounter.getAmount()) / 1000.0 + " km");
+            double distance = Math.round(kmCounter.getAmount());
+            if (distance >= 1000){
+                String d = "" + distance/1000L;
+                distance_TextView.setText(d.replace('.', ',') + " km");
+            } else {
+                distance_TextView.setText((int)distance + " m");
+            }
 
             /* Setzt die Zeit */
             TextView total_time_TextView = alertView.findViewById(R.id.total_time_TextView);
