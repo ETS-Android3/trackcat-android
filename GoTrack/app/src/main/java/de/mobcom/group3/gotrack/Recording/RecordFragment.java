@@ -237,7 +237,13 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
          *Inflate the layout for this fragment
          *
          * */
-        view = inflater.inflate(R.layout.fragment_record_main, container, false);
+
+        // TODO version 21
+        if (android.os.Build.VERSION.SDK_INT > 21) {
+            view = inflater.inflate(R.layout.fragment_record_main, container, false);
+        } else {
+            view = inflater.inflate(R.layout.fragment_record_main_api_less_21, container, false);
+        }
 
         /*
          * set Map Attributes
@@ -493,10 +499,17 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
                 RouteDAO dao = new RouteDAO(MainActivity.getInstance());
                 dao.create(model);
+
+                MainActivity.getInstance().endTracking();
             }
         });
 
-        alert.setNegativeButton("Verwerfen", null);
+        alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                MainActivity.getInstance().endTracking();
+            }
+        });
         alert.show();
     }
 
@@ -513,7 +526,11 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         Marker startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
+
+        // TODO version 21
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
+        }
 
         gPt = new GeoPoint(model.getLocations().get(model.getLocations().size() - 1).getLatitude(), model.getLocations().get(model.getLocations().size() - 1).getLongitude());
         Marker stopMarker = new Marker(mMapView);
@@ -651,7 +668,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         /* Nur in neueren Versionen */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= 21) {
             mBuilder.setSmallIcon(R.drawable.ic_icon)
                     .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.drawable.ic_launcher));
         }
