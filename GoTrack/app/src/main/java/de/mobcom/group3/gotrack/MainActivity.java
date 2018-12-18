@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
 
     private PermissionManager permissionManager = new PermissionManager() {};
     final int NOTIFICATION_ID = 100;
@@ -65,6 +65,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     public static boolean getDarkTheme() {
         return darkTheme;
+    }
+
+    /* App nach zweimal zurück beenden */
+    private boolean exitApp = false;
+    @Override
+    public void onBackPressed(){
+        if (exitApp){
+            finish();
+            System.exit(0);
+        }
+
+        exitApp = true;
+        Toast.makeText(instance, "Noch einmal klicken, um App zu beenden!", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                exitApp = false;
+                Toast.makeText(instance, "Zu langsam. Versuche es erneut...", Toast.LENGTH_LONG).show();
+            }
+        }, 3000);
     }
 
     @Override
