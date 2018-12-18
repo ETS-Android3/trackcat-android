@@ -2,6 +2,7 @@ package de.mobcom.group3.gotrack.RecordList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -15,13 +16,16 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
@@ -59,11 +63,11 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
 
         TextView recordDistance = recordItem.findViewById(R.id.record_distance);
         double distance = Math.round(records.get(position).getDistance());
-        if (distance >= 1000){
-            String d = "" + distance/1000L;
+        if (distance >= 1000) {
+            String d = "" + distance / 1000L;
             recordDistance.setText(d.replace('.', ',') + " km |");
         } else {
-            recordDistance.setText((int)distance + " m |");
+            recordDistance.setText((int) distance + " m |");
         }
 
         TextView recordTime = recordItem.findViewById(R.id.record_time);
@@ -73,18 +77,31 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         String time = df.format(new Date(records.get(position).getTime() * 1000));
         recordTime.setText(time);
 
-        /* Anzeigen des Profilerstellungssfragment */
+        /* Anzeigen der Routendetaills */
         recordItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                /*Daten holen*/
+                ArrayList<Location> locations = records.get(position).getLocations();
+                double[] speedValues = new double[locations.size()];
+                double[] altitudeValues = new double[locations.size()];
+                for (int i = 0; i < locations.size(); i++) {
+                    Location location = locations.get(i);
+                    speedValues[i] = location.getSpeed();
+                    altitudeValues[i] = location.getAltitude();
+                }
+
+                /*Neues Fragment erstellen*/
                 Bundle bundle = new Bundle();
-                bundle.putInt("id", records.get(position).getId());
+                bundle.putDoubleArray("altitudeArray", altitudeValues);
+                bundle.putDoubleArray("speedArray", speedValues);
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, "Record DETAILS");
                 fragTransaction.commit();
-                Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme von ID: "+records.get(position).getId(), Toast.LENGTH_LONG).show();
+                //  Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme von ID: "+records.get(position).getId(), Toast.LENGTH_LONG).show();
             }
         });
 
