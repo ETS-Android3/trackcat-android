@@ -318,6 +318,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void endTracking() {
         // TODO switch to Statisitcs page
         recordFragment = new RecordFragment();
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
+        fragTransaction.commit();
     }
 
     public RecordFragment getRecordFragment() {

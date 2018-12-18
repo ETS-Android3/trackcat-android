@@ -68,11 +68,11 @@
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="0"
-                                app:srcCompat="@drawable/ic_clock" />
+                                app:srcCompat="@drawable/ic_clock_theme_color" />
 
                             <TextView
                                 android:id="@+id/total_time_TextView"
-                                style="@style/TextAppearanceRecord"
+                                style="@style/TextAppearanceRecordSummaryText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
@@ -92,11 +92,11 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="5dp"
-                                app:srcCompat="@drawable/record_distance_white" />
+                                app:srcCompat="@drawable/record_distance_theme_color" />
 
                             <TextView
                                 android:id="@+id/distance_TextView"
-                                style="@style/TextAppearanceRecord"
+                                style="@style/TextAppearanceRecordSummaryText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0"

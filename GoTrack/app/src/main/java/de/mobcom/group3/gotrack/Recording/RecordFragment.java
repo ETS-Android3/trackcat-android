@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
@@ -40,6 +41,7 @@ import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.PageViewer;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 import de.mobcom.group3.gotrack.Statistics.mCounter;
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -235,7 +237,13 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
          *Inflate the layout for this fragment
          *
          * */
-        view = inflater.inflate(R.layout.fragment_record_main, container, false);
+
+        // TODO version 21
+        if (android.os.Build.VERSION.SDK_INT > 21) {
+            view = inflater.inflate(R.layout.fragment_record_main, container, false);
+        } else {
+            view = inflater.inflate(R.layout.fragment_record_main_api_less_21, container, false);
+        }
 
         /*
          * set Map Attributes
@@ -248,13 +256,15 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
         mMapView.setMultiTouchControls(true);
         mMapController = (MapController) mMapView.getController();
-        mMapController.setZoom(10);
+        mMapController.setZoom(18);
 
         /*
          * add Marker and Polyline
          * */
         startMarker = new Marker(mMapView);
-        startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_maps_location_flag));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_maps_location_flag));
+        }
         mPath = new Polyline(mMapView);
 
 
@@ -463,11 +473,11 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
             /* Setzt die aufgezeichneten Kilometer */
             TextView distance_TextView = alertView.findViewById(R.id.distance_TextView);
             double distance = Math.round(kmCounter.getAmount());
-            if (distance >= 1000){
-                String d = "" + distance/1000L;
+            if (distance >= 1000) {
+                String d = "" + distance / 1000L;
                 distance_TextView.setText(d.replace('.', ',') + " km");
             } else {
-                distance_TextView.setText((int)distance + " m");
+                distance_TextView.setText((int) distance + " m");
             }
 
             /* Setzt die Zeit */
@@ -481,7 +491,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 TextView recordName = alertView.findViewById(R.id.record_name);
-                if(recordName.getText().toString().equals("")){
+                if (recordName.getText().toString().equals("")) {
                     model.setName(defaultName);
                 } else {
                     model.setName(recordName.getText().toString());
@@ -489,10 +499,17 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
                 RouteDAO dao = new RouteDAO(MainActivity.getInstance());
                 dao.create(model);
+
+                MainActivity.getInstance().endTracking();
             }
         });
 
-        alert.setNegativeButton("Verwerfen", null);
+        alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                MainActivity.getInstance().endTracking();
+            }
+        });
         alert.show();
     }
 
@@ -509,7 +526,11 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         Marker startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
+
+        // TODO version 21
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
+        }
 
         gPt = new GeoPoint(model.getLocations().get(model.getLocations().size() - 1).getLatitude(), model.getLocations().get(model.getLocations().size() - 1).getLongitude());
         Marker stopMarker = new Marker(mMapView);
@@ -639,14 +660,18 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
          * create Notification
          * */
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MainActivity.getInstance(), CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_icon)
-                .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.drawable.ic_launcher))
                 .setContentTitle("Laufende Aufzeichnung")
                 .setContentText(content)
                 .setSound(null)
                 .setOngoing(false) // TODO vielleich komisch weil Notification kann gelöscht werden
                 .setContentIntent(intent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        /* Nur in neueren Versionen */
+        if (Build.VERSION.SDK_INT >= 21) {
+            mBuilder.setSmallIcon(R.drawable.ic_icon)
+                    .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.drawable.ic_launcher));
+        }
 
         if (isTracking) {
             mBuilder.addAction(R.drawable.ic_pause_circle_filled_white_24dp, "Pause",
