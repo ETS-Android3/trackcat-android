@@ -60,6 +60,7 @@ public class LineChartFragment extends Fragment {
 
         // Getting in xml defined Plot
         plot = view.findViewById(R.id.linePlot);
+        plot.setTitle(title);
 
 
         // Turning Arrays to XYSeries

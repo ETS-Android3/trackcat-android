@@ -87,15 +87,18 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 double[] speedValues = new double[locations.size()];
                 double[] altitudeValues = new double[locations.size()];
                 for (int i = 0; i < locations.size(); i++) {
-                    Location location = locations.get(i);
-                    speedValues[i] = location.getSpeed();
-                    altitudeValues[i] = location.getAltitude();
-                }
 
+                        Location location = locations.get(i);
+                        speedValues[i] = location.getSpeed();
+                        altitudeValues[i] = location.getAltitude();
+
+                }
+ //Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzahl: "+altitudeValues.length, Toast.LENGTH_LONG).show();
                 /*Neues Fragment erstellen*/
                 Bundle bundle = new Bundle();
                 bundle.putDoubleArray("altitudeArray", altitudeValues);
                 bundle.putDoubleArray("speedArray", speedValues);
+                bundle.putInt("id", records.get(position).getId());
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
