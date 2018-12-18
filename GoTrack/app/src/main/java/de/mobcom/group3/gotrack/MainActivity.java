@@ -21,7 +21,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.karan.churi.PermissionManager.PermissionManager;
+
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
@@ -29,12 +31,14 @@ import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private PermissionManager permissionManager = new PermissionManager() {};
+    private PermissionManager permissionManager = new PermissionManager() {
+    };
     final int NOTIFICATION_ID = 100;
     private DrawerLayout mainDrawer;
     private NavigationView navigationView;
@@ -60,32 +64,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static int getActiveUser() {
         return activeUser;
     }
+
     public static boolean getHints() {
         return hints;
     }
+
     public static boolean getDarkTheme() {
         return darkTheme;
-    }
-
-    /* App nach zweimal zurück beenden */
-    private boolean exitApp = false;
-    @Override
-    public void onBackPressed(){
-        if (exitApp){
-            finish();
-            System.exit(0);
-        }
-
-        exitApp = true;
-        Toast.makeText(instance, "Noch einmal klicken, um App zu beenden!", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                exitApp = false;
-                Toast.makeText(instance, "Zu langsam. Versuche es erneut...", Toast.LENGTH_LONG).show();
-            }
-        }, 3000);
     }
 
     @Override
@@ -145,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* Initiale Usererstellung */
         userDAO = new UserDAO(this);
-        List<User> userList= userDAO.readAll();
-        if (userList.size()==0) {
+        List<User> userList = userDAO.readAll();
+        if (userList.size() == 0) {
             User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
                     null);
             initialUser.setActive(1);
@@ -172,15 +157,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final ArrayList<String> spinnerAccountNames = new ArrayList<String>();
         List<User> users = userDAO.readAll();
         int selectedID = 0;
-        boolean findActiveUser=false;
+        boolean findActiveUser = false;
         for (int i = 0; i < users.size(); i++) {
             spinnerAccountEmail.add(users.get(i).getMail());
             spinnerAccountNames.add(users.get(i).getFirstName() + " " + users.get(i).getLastName());
             spinnerAccountIcons.add(users.get(i).getImage());
             if (users.get(i).isActive()) {
                 activeUser = users.get(i).getId();
-                hints=true;
-                darkTheme=true;
+                hints = true;
+                darkTheme = true;
                 selectedID = i;
                 findActiveUser = true;
             }
@@ -193,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             newActiveUser.setActive(1);
             userDAO.update(activeUser, newActiveUser);
         }
-        final boolean deactivateOldUser=findActiveUser;
+        final boolean deactivateOldUser = findActiveUser;
 
         /* Erstellen des Custom Spinners */
         final CustomSpinnerAdapter spinAdapter = new CustomSpinnerAdapter(
@@ -346,6 +331,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public RecordFragment getRecordFragment() {
         return recordFragment;
+    }
+
+    /* BackPressed Listener */
+    private boolean exitApp = false;
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboardSummary)) != null) {
+            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
+            fragTransaction.commit();
+        } else {
+            if (exitApp) {
+                finish();
+                System.exit(0);
+            }
+
+            exitApp = true;
+            Toast.makeText(instance, "Noch einmal klicken, um App zu beenden!", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exitApp = false;
+                    Toast.makeText(instance, "Zu langsam. Versuche es erneut...", Toast.LENGTH_LONG).show();
+                }
+            }, 3000);
+        }
     }
 
 }

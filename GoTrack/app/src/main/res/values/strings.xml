@@ -7,10 +7,13 @@
 
     <!-- Fragment Namen -->
     <string name="fDashboard">DASHBOARD</string>
+    <string name="fDashboardSummary">DASHBOARD_SUMMARY</string>
     <string name="fRecordlist">RECORD_LIST</string>
     <string name="fRecord">RECORD</string>
     <string name="fRecordOneItem">RECORD_ONE_ITEM</string>
+    <string name="fRecordDetails">RECORD_DETAILS</string>
     <string name="fSettings">SETTINGS</string>
+    <string name="fPageViewer">PAGE_VIEWER</string>
 
     <!-- TODO: Preferences Page "SettingsFragment" -->
     <string name="category1">Allgemeines</string>

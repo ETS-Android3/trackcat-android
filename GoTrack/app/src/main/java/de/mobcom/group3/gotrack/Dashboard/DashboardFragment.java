@@ -21,8 +21,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragTransaction = getChildFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.summaryContainer, new SummaryListFragment(), "Summary");
-        fragTransaction.replace(R.id.chartContainer, new PageViewerCharts(), "PageViewer");
+        fragTransaction.replace(R.id.summaryContainer, new SummaryListFragment(), getResources().getString(R.string.fDashboardSummary));
+        fragTransaction.replace(R.id.chartContainer, new PageViewerCharts(), getResources().getString(R.string.fPageViewer));
         fragTransaction.commit();
 
         /* Aktuell ausgewählten Menüpunkt markieren */
