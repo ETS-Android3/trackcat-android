@@ -42,24 +42,21 @@ public class LineChartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_line_chart, container, false);
-        String result = "";
-        String title="Series1";
+        String title = "Series1";
+        double[] values = new double[0];
         if (getArguments() != null) {
-           double[] values = getArguments().getDoubleArray("array");
-           title= getArguments().getString("title");
+            values = getArguments().getDoubleArray("array");
+            title = getArguments().getString("title");
             series1Numbers = new Number[values.length];
             for (int i = 0; i < series1Numbers.length; i++) {
-                series1Numbers[i] = values[i];
-                result = result + " " + values[i] + " ";
-
+                series1Numbers[i] = (int) Math.round(values[i]);
             }
+            pointPerSegment = series1Numbers.length;
+            incrementStepsY = series1Numbers.length;
 
-        }else{
+        } else {
             series1Numbers = new Number[]{1, 4, 2, 8, 4, 16, 8, 32, 16, 64};
         }
-
-
-       Toast.makeText(getContext(), "Zahlen" + result, Toast.LENGTH_LONG).show();
 
         // Getting in xml defined Plot
         plot = view.findViewById(R.id.linePlot);
@@ -91,7 +88,7 @@ public class LineChartFragment extends Fragment {
         plot.setRangeLowerBoundary(LOWER_BOUNDARY_Y, BoundaryMode.FIXED);
         plot.setDomainStep(StepMode.INCREMENT_BY_VAL, incrementStepsX);
         plot.setRangeStep(StepMode.INCREMENT_BY_VAL, incrementStepsY);
-
+        // Toast.makeText(getContext(), "Es gibt Argumente "+result +" Size: "+series1Numbers.length, Toast.LENGTH_LONG).show();
         return view;
     }
 
