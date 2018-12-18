@@ -256,7 +256,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
         mMapView.setMultiTouchControls(true);
         mMapController = (MapController) mMapView.getController();
-        mMapController.setZoom(10);
+        mMapController.setZoom(18);
 
         /*
          * add Marker and Polyline

@@ -42,6 +42,15 @@ public class RecordPageViewerCharts extends Fragment {
         /*Layout inflaten*/
         View view = inflater.inflate(R.layout.fragment_page_viewer_charts, container, false);
 
+        /*Anzeige der allgemeinen Informationen*/
+        int id =getArguments().getInt("id");
+        Bundle bundleInformation = new Bundle();
+        bundleInformation.putInt("id", id);
+
+        RecordDetailsInformationFragment recordDetailsInformationFragment = new RecordDetailsInformationFragment();
+        recordDetailsInformationFragment.setArguments(bundleInformation);
+        listFragments.add(recordDetailsInformationFragment);
+
         /*Anzeige der Höhenmeter*/
         double[] altitudeValues = getArguments().getDoubleArray("altitudeArray");
         Bundle bundleAltitide = new Bundle();
