@@ -64,7 +64,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <ImageView
+                            <android.support.v7.widget.AppCompatImageView
                                 android:id="@+id/average_speed_icon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <ImageView
+                            <android.support.v7.widget.AppCompatImageView
                                 android:id="@+id/distance_Icon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <ImageView
+                        <android.support.v7.widget.AppCompatImageView
                             android:id="@+id/play_imageView"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
@@ -146,7 +146,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <ImageView
+                            <android.support.v7.widget.AppCompatImageView
                                 android:id="@+id/altimeter_icon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <ImageView
+                            <android.support.v7.widget.AppCompatImageView
                                 android:id="@+id/accuracy_icon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
