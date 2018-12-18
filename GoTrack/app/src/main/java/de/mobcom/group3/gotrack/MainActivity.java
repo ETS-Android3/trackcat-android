@@ -27,6 +27,7 @@ import com.karan.churi.PermissionManager.PermissionManager;
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
+import de.mobcom.group3.gotrack.RecordList.RecordDetailsInformationFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
@@ -264,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
-                    fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
+                    fragTransaction.replace(R.id.mainFrame, new RecordDetailsInformationFragment(), getResources().getString(R.string.fRecordlist));
                     fragTransaction.commit();
                 }
                 break;

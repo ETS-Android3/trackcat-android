@@ -101,7 +101,8 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 bundle.putDoubleArray("altitudeArray", altitudeValues);
                 bundle.putDoubleArray("speedArray", speedValues);
                 bundle.putInt("id", records.get(position).getId());
-                RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
+
+                RecordDetailsInformationFragment recordDetailsFragment = new RecordDetailsInformationFragment();
                 recordDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
