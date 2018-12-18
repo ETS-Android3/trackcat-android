@@ -30,7 +30,7 @@ public class RecordDetailsFragment extends Fragment {
         RecordPageViewerCharts recordPageViewerCharts = new RecordPageViewerCharts();
         recordPageViewerCharts.setArguments(bundle);
         FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.chartContainer, recordPageViewerCharts, getResources().getString(R.string.fRecordDetails));
+        fragTransaction.replace(R.id.chartContainer, recordPageViewerCharts, getResources().getString(R.string.fRecordDetailsDashbaord));
         fragTransaction.commit();
 
         View view = inflater.inflate(R.layout.fragment_record_details, container, false);

@@ -41,7 +41,7 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
             mList.add(records.get(i));
         }
 
-        CustomRecordListAdapter adapter = new CustomRecordListAdapter(MainActivity.getInstance(), mList);
+        CustomRecordListAdapter adapter = new CustomRecordListAdapter(MainActivity.getInstance(), mList, getResources().getString(R.string.fRecordDetailsDashbaord));
         ListView recordList = view.findViewById(R.id.record_list);
         recordList.setAdapter(adapter);
 

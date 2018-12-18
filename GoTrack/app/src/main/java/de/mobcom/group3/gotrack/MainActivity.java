@@ -337,9 +337,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean exitApp = false;
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboardSummary)) != null) {
+        if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null) {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
+            fragTransaction.commit();
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
+            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
             fragTransaction.commit();
         } else {
             if (exitApp) {

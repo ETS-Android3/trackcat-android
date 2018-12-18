@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import java.util.List;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
@@ -24,7 +22,7 @@ public class RecordListFragment extends Fragment {
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         List<Route> records = dao.readAll(MainActivity.getActiveUser());
 
-        CustomRecordListAdapter adapter = new CustomRecordListAdapter(MainActivity.getInstance(), records);
+        CustomRecordListAdapter adapter = new CustomRecordListAdapter(MainActivity.getInstance(), records, getResources().getString(R.string.fRecordDetailsList));
         ListView recordList = (ListView) view.findViewById(R.id.record_list);
         recordList.setAdapter(adapter);
 

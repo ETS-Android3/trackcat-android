@@ -35,11 +35,13 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
 
     private List<Route> records;
     LayoutInflater inflater;
+    String TAG;
 
-    public CustomRecordListAdapter(Activity context, List<Route> records) {
+    public CustomRecordListAdapter(Activity context, List<Route> records, String TAG) {
         super(context, R.layout.fragment_record_list);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.records = records;
+        this.TAG = TAG;
     }
 
     @Override
@@ -102,7 +104,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, "Record DETAILS");
+                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
                 fragTransaction.commit();
                 //  Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme von ID: "+records.get(position).getId(), Toast.LENGTH_LONG).show();
             }
