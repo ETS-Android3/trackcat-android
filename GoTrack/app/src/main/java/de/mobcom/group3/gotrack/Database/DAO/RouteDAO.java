@@ -9,8 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 
-import java.io.FileWriter;
-import java.io.Writer;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
