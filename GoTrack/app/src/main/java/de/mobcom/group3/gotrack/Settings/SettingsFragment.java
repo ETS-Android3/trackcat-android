@@ -6,10 +6,7 @@ import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.*;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
@@ -25,7 +22,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         CheckBoxPreference help_messages = (CheckBoxPreference)findPreference("help_messages");
         help_messages.setChecked(MainActivity.getHints());
         SwitchPreference theme = (SwitchPreference)findPreference("dark_theme");
-        theme.setChecked(MainActivity.getDarkTheme());
+//        theme.setChecked(MainActivity.getDarkTheme());
 
     }
 
@@ -40,7 +37,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
-        // Wechsel des Themes
+        /* Wechsel des Themes */
         if (preference instanceof SwitchPreference) {
             Log.d("PREFERENCES", "Wechsel des Themes!");
             /* getActivity().finish();
@@ -49,8 +46,22 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             getActivity().startActivity(intent); */
 
-            getActivity().recreate();
-            if (preference.isEnabled()) {
+            /* Theme wechseln */
+            getActivity().setTheme(android.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("dark_theme", false) ? R.style.AppTheme_Dark : R.style.AppTheme);
+
+            /* Aktuelles Fragment neustarten */
+            FragmentTransaction fragTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
+            fragTransaction.commit();
+
+            // TODO: Voll funktionierendes Beenden und Neuerstellen der vorherigen Instanz
+            Bundle savedInstanceState = new Bundle();
+            onSaveInstanceState(savedInstanceState);
+            onDestroy();
+            onCreate(savedInstanceState);
+
+            //getActivity().recreate();
+            if (((SwitchPreference) preference).isChecked()) {
                 Toast.makeText(getActivity(), "DarkTheme aktiviert!", Toast.LENGTH_LONG).show();
                 Log.d("PREFERENCES", "DarkTheme aktiviert!");
             } else {
