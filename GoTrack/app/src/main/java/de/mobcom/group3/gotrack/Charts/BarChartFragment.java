@@ -31,6 +31,7 @@ public class BarChartFragment extends Fragment {
     private int incrementStepsX = 1;
     private int incrementStepsY = 1;
     private int barWidth = 10;
+    private Number[] series1Numbers;
 
     public BarChartFragment(){}
 
@@ -44,14 +45,28 @@ public class BarChartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        view = inflater.inflate(R.layout.fragment_bar_chart, container, false);
+        view = inflater.inflate(R.layout.fragment_line_chart, container, false);
+        String title = "Series1";
+        double[] values = new double[0];
+        if (getArguments() != null) {
+            values = getArguments().getDoubleArray("array");
+            title = getArguments().getString("title");
+            series1Numbers = new Number[values.length];
+            for (int i = 0; i < series1Numbers.length; i++) {
+                series1Numbers[i] = (int) Math.round(values[i]);
+            }
+
+        } else {
+            series1Numbers = new Number[]{0, 1, 2, 3, 4, 5, 6, 7, 0};
+        }
 
         // Getting in xml defined Plot
-        plot = view.findViewById(R.id.barPlot);
+        plot = view.findViewById(R.id.linePlot);
+        plot.setTitle(title);
+
 
         // Arrays for the Plot
         // Keep first and last Value 0 for better Visualization
-        Number[] series1Numbers = {0, 1, 2, 3, 4, 5, 6, 7, 0};
 
         // Turning Arrays to XYSeries
         XYSeries series1 = new SimpleXYSeries(
