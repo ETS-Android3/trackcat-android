@@ -12,12 +12,13 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         ap:title="LineChart"
-        ap:rangeTitle="Km/h"
+        ap:rangeTitle="km/h"
         ap:lineLabels="left|bottom"
         ap:domainLineColor="@color/ap_transparent"
         ap:rangeLineColor="@color/ap_transparent"
         ap:domainOriginLineColor="@color/ap_transparent"
         ap:rangeOriginLineColor="@color/ap_transparent"
+
         ap:lineLabelRotationBottom="-45"/>
 
 </FrameLayout>

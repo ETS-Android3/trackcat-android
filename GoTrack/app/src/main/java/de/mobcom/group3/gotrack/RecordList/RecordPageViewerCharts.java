@@ -10,10 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import de.mobcom.group3.gotrack.Charts.BarChartFragment;
-import de.mobcom.group3.gotrack.Charts.LineChartFragment;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.CurrentPageIndicator;
@@ -39,41 +36,30 @@ public class RecordPageViewerCharts extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        /*Layout inflaten*/
+        /* Layout inflaten */
         View view = inflater.inflate(R.layout.fragment_page_viewer_charts, container, false);
 
-        /*Anzeige der allgemeinen Informationen*/
+        // TODO muss funktionstüchtig eingebaut werden
+        /* Anzeige der allgemeinen Informationen
         int id =getArguments().getInt("id");
         Bundle bundleInformation = new Bundle();
         bundleInformation.putInt("id", id);
 
         RecordDetailsInformationFragment recordDetailsInformationFragment = new RecordDetailsInformationFragment();
         recordDetailsInformationFragment.setArguments(bundleInformation);
-        listFragments.add(recordDetailsInformationFragment);
+        listFragments.add(recordDetailsInformationFragment);*/
 
-        /*Anzeige der Höhenmeter*/
-        double[] altitudeValues = getArguments().getDoubleArray("altitudeArray");
-        Bundle bundleAltitide = new Bundle();
-        bundleAltitide.putDoubleArray("array", altitudeValues);
-        bundleAltitide.putString("title", "Höhenmeter");
-
-        LineChartFragment lineFragAltitude = new LineChartFragment();
-        lineFragAltitude.setArguments(bundleAltitide);
-        listFragments.add(lineFragAltitude);
-
-        /*Anzeige der Geschwindigkeit*/
+        /* Anzeige der Charts */
         double[] speedValues = getArguments().getDoubleArray("speedArray");
-        Bundle bundleSpeed = new Bundle();
-        bundleSpeed.putDoubleArray("array", speedValues);
-        bundleSpeed.putString("title", "Geschwindigkeit");
+        double[] altitudeValues = getArguments().getDoubleArray("altitudeArray");
+        Bundle bundleCharts = new Bundle();
+        bundleCharts.putDoubleArray("speedArray", speedValues);
+        bundleCharts.putDoubleArray("altitudeArray", altitudeValues);
+        RecordDetailsChartsFragment recordDetailsCharts = new RecordDetailsChartsFragment();
+        recordDetailsCharts.setArguments(bundleCharts);
+        listFragments.add(recordDetailsCharts);
 
-        LineChartFragment lineFragSpeed = new LineChartFragment();
-        lineFragSpeed.setArguments(bundleSpeed);
-        listFragments.add(lineFragSpeed);
-        //  listFragments.add(barFrag);
-        //  BarChartFragment barFrag = new BarChartFragment();
-
-        // Instantiate a ViewPager and a PagerAdapter.
+        /* Instanziieren des ViewPagers */
         ViewPager mPager = view.findViewById(R.id.pager);
         PagerAdapter mPagerAdapter = new RecordPageViewerCharts.ScreenSlidePagerAdapter(MainActivity.getInstance().getSupportFragmentManager());
 
