@@ -640,7 +640,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
     private void issueNotification(String content) {
         /* returns to Record Page when Notification is clicked */
         Intent notificationIntent = MainActivity.getInstance().getIntent();// new Intent(MainActivity.getInstance().getApplicationContext(), MainActivity.class);
-        notificationIntent.putExtra("action", getResources().getString(R.string.fRecord));
+        notificationIntent.putExtra("action", MainActivity.getInstance().getResources().getString(R.string.fRecord));
         PendingIntent intent = PendingIntent.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
                 notificationIntent, 0);
 
