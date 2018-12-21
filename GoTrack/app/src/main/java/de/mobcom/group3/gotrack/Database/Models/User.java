@@ -8,6 +8,8 @@ public class User {
     private String firstName;
     private String lastName;
     private boolean isActive;
+    private boolean darkThemeActive; // true for dark, false for light theme
+    private boolean hintsActive;
     private int id;
     private String eMail;
     private byte[] image;
@@ -25,13 +27,16 @@ public class User {
      * @param eMail of type string
      * @param image of type byte array
      */
-    public User(int id, String firstName, String lastName, int active, String eMail, byte[] image) {
+    public User(int id, String firstName, String lastName, int active, int themeActive, int hintsActive, String eMail,
+                byte[] image) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.eMail = eMail;
         this.image = image;
         this.setActive(active);
+        this.setDarkThemeActiveDB(themeActive);
+        this.setHintsActiveDB(hintsActive);
     }
 
     /**
@@ -153,5 +158,45 @@ public class User {
      */
     public void setActive(int active) {
         isActive = active == 1;
+    }
+
+    public boolean isDarkThemeActive() {
+        return darkThemeActive;
+    }
+
+    public int isDarkThemeActiveDB() {
+        if(darkThemeActive) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public void setDarkThemeActive(boolean isDarkTheme) {
+        this.darkThemeActive = isDarkTheme;
+    }
+
+    public void setDarkThemeActiveDB(int theme) {
+        this.darkThemeActive = theme == 1;
+    }
+
+    public boolean isHintsActive() {
+        return hintsActive;
+    }
+
+    public int isHintsActiveDB() {
+        if(hintsActive) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public void setHintsActive(boolean hintsActive) {
+        this.hintsActive = hintsActive;
+    }
+
+    public void setHintsActiveDB(int hint) {
+        this.hintsActive = hint == 1;
     }
 }

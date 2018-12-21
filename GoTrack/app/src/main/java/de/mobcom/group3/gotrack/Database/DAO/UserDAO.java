@@ -4,8 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
+
 import com.google.gson.Gson;
 import de.mobcom.group3.gotrack.Database.Models.User;
 
@@ -23,7 +22,6 @@ public class UserDAO {
     private Gson gson = new Gson();
     private Type imExportType = User.class;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public UserDAO(Context context) {
         DbHelper dbHelper = new DbHelper(context);
         writableDb = dbHelper.getInstance(true);
@@ -38,7 +36,16 @@ public class UserDAO {
         User result = new User();
         String selection = COL_ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
-        String[] projection = {COL_ID, COL_FORENAME, COL_LASTNAME, COL_MAIL, COL_ISACTIVE, COL_IMAGE};
+        String[] projection = {
+                COL_ID,
+                COL_FIRSTNAME,
+                COL_LASTNAME,
+                COL_MAIL,
+                COL_ISACTIVE,
+                COL_THEME,
+                COL_HINT,
+                COL_IMAGE
+        };
         Cursor cursor = readableDb.query(
                 TABLE_NAME,
                 projection,
@@ -51,9 +58,11 @@ public class UserDAO {
 
         if (cursor.moveToFirst()) {
             result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
-            result.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(COL_FORENAME)));
+            result.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(COL_FIRSTNAME)));
             result.setLastName(cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)));
             result.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)));
+            result.setHintsActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)));
+            result.setDarkThemeActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)));
             result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));
             result.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)));
         }
@@ -70,9 +79,18 @@ public class UserDAO {
      * @param orderArgs String[] { column to sort, ASC / DESC } use COL_ID or COL_NAME as columns
      * @return List of all users in database
      */
-    public List<User> readAll(String[] orderArgs) {
+    private List<User> readAll(String[] orderArgs) {
         ArrayList<User> result = new ArrayList<>();
-        String[] projection = {COL_ID, COL_FORENAME, COL_LASTNAME, COL_MAIL, COL_ISACTIVE, COL_IMAGE};
+        String[] projection = {
+                COL_ID,
+                COL_FIRSTNAME,
+                COL_LASTNAME,
+                COL_MAIL,
+                COL_ISACTIVE,
+                COL_IMAGE,
+                COL_HINT,
+                COL_THEME
+        };
 
         Cursor cursor = readableDb.query(
                 TABLE_NAME,
@@ -87,9 +105,11 @@ public class UserDAO {
             do {
                 result.add(new User(
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COL_FORENAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COL_FIRSTNAME)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)),
                         cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE))));
             } while (cursor.moveToNext());
@@ -107,10 +127,12 @@ public class UserDAO {
 
     private ContentValues valueGenerator(User user) {
         ContentValues values = new ContentValues();
-        values.put(COL_FORENAME, user.getFirstName());
+        values.put(COL_FIRSTNAME, user.getFirstName());
         values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_MAIL, user.getMail());
         values.put(COL_ISACTIVE, user.isActiveForDB());
+        values.put(COL_HINT, user.isHintsActiveDB());
+        values.put(COL_THEME, user.isDarkThemeActiveDB());
         values.put(COL_IMAGE, user.getImage());
         return values;
     }

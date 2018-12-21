@@ -21,10 +21,8 @@ class DbHelper extends SQLiteOpenHelper {
      * default constructor to init database
      * @param context of type context
      */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.getWritableDatabase().setForeignKeyConstraintsEnabled(true);
     }
 
     /**
@@ -32,7 +30,6 @@ class DbHelper extends SQLiteOpenHelper {
      * @param writable of type boolean ( true for writable, false for readable access)
      * @return readable or writable SQLite database
      */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     SQLiteDatabase getInstance(boolean writable) {
         if(writable)
             return this.getWritableDatabase();
@@ -69,7 +66,7 @@ class DbHelper extends SQLiteOpenHelper {
                 null);
         initialUser.setActive(1);
         ContentValues values = new ContentValues();
-        values.put(COL_FORENAME, initialUser.getFirstName());
+        values.put(COL_FIRSTNAME, initialUser.getFirstName());
         values.put(COL_LASTNAME, initialUser.getLastName());
         values.put(COL_MAIL, initialUser.getMail());
         values.put(COL_ISACTIVE, initialUser.isActiveForDB());
