@@ -18,12 +18,12 @@ import de.mobcom.group3.gotrack.Recording.Recording_UI.CurrentPageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecordPageViewerCharts extends Fragment {
+public class RecordListDetailsPageViewer extends Fragment {
 
 
     private List<Fragment> listFragments = new ArrayList<>();
 
-    public RecordPageViewerCharts() {
+    public RecordListDetailsPageViewer() {
         // Required empty public constructor
     }
 
@@ -61,10 +61,8 @@ public class RecordPageViewerCharts extends Fragment {
 
         /* Instanziieren des ViewPagers */
         ViewPager mPager = view.findViewById(R.id.pager);
-        PagerAdapter mPagerAdapter = new RecordPageViewerCharts.ScreenSlidePagerAdapter(MainActivity.getInstance().getSupportFragmentManager());
-
+        PagerAdapter mPagerAdapter = new RecordListDetailsPageViewer.ScreenSlidePagerAdapter(MainActivity.getInstance().getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
-
         LinearLayout mLinearLayout = view.findViewById(R.id.indicator);
 
         /* create Indicator (little buttons) */

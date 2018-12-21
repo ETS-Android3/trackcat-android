@@ -88,14 +88,21 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
 
                 /*Daten holen*/
                 ArrayList<Location> locations = records.get(position).getLocations();
-                int size = locations.size() / 10;
+                int size;
+                /*Überprüfung ob zu wenig Daten existieren*/
+                boolean fillArguments=false;
+                if (locations.size()>60) {
+                    size = locations.size() / 10;
+                }else{
+                    size=5;
+                    fillArguments=true;
+                }
                 int n = 0;
                 double[] speedValues = new double[size+1];
                 double[] altitudeValues = new double[size+1];
                 for (int i = 0; i <  locations.size(); i += 10) {
 
                     Location location = locations.get(i);
-
                     speedValues[n] = location.getSpeed()*3.931;
                     altitudeValues[n] = location.getAltitude();
 
@@ -105,9 +112,19 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                     n++;
 
                 }
+                /*Array auffüllen, falls zu wenig Argumente existieren*/
+                if (fillArguments){
+                    for (int i=n;i<=size;i++){
+                        speedValues[n] = 0.0;
+                        altitudeValues[n] = 0.0;
+                        Log.d("Schleifenwerte", "Zusatzspeed: " + speedValues[n]);
+                        Log.d("Schleifenwerte", "Zusatzaltitude: " + altitudeValues[n]);
+                    }
+                }
+
                 Log.d("Schleifenwerte", "Size: " + size);
                 Log.d("Schleifenwerte", "Locationsize: " + locations.size());
-                Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzahl: " + locations.size(), Toast.LENGTH_LONG).show();
+
                 /*Neues Fragment erstellen*/
                 Bundle bundle = new Bundle();
                 bundle.putDoubleArray("altitudeArray", altitudeValues);
@@ -118,7 +135,9 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
                 fragTransaction.commit();
-                //  Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme von ID: "+records.get(position).getId(), Toast.LENGTH_LONG).show();
+                if (MainActivity.getHints()) {
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName()+"\"", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
