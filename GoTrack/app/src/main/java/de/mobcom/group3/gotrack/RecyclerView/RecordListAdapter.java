@@ -13,8 +13,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
@@ -59,22 +62,37 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Route item = records.get(position);
+        holder.id.setText("" + (position + 1));
         holder.name.setText(item.getName());
-        holder.distance.setText("" + item.getDistance());
-        holder.time.setText("" + item.getTime());
+
+        TextView recordDistance = holder.distance;
+        double distance = Math.round(records.get(position).getDistance());
+        if (distance >= 1000) {
+            String d = "" + distance / 1000L;
+            recordDistance.setText(d.replace('.', ',') + " km |");
+        } else {
+            recordDistance.setText((int) distance + " m |");
+        }
+
+        TextView recordTime = holder.time;
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        df.setTimeZone(tz);
+        String time = df.format(new Date(records.get(position).getTime() * 1000));
+        recordTime.setText(time);
 
         // TODO: Dynamische Implementation des Typen anhand von Datenbankwerten...
         //switch(item.getType()){
         int type = 0;
         switch (type) {
             case 0:
-                holder.type.setImageResource(R.drawable.activity_running_record);
+                holder.type.setImageResource(R.drawable.activity_running_record_list);
                 break;
             case 1:
-                holder.type.setImageResource(R.drawable.activity_biking_record);
+                holder.type.setImageResource(R.drawable.activity_biking_record_list);
                 break;
             case 2:
-                holder.type.setImageResource(R.drawable.activity_caring_record);
+                holder.type.setImageResource(R.drawable.activity_caring_record_list);
                 break;
         }
 
@@ -82,10 +100,10 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
             @Override
             public void onClick(View v) {
 
-                /*Daten holen*/
+                /* Daten holen */
                 ArrayList<Location> locations = records.get(position).getLocations();
                 int size;
-                /*Überprüfung ob zu wenig Daten existieren*/
+                /* Überprüfung ob zu wenig Daten existieren */
                 boolean fillArguments = false;
                 if (locations.size() > 60) {
                     size = locations.size() / 10;
@@ -108,7 +126,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                     n++;
 
                 }
-                /*Array auffüllen, falls zu wenig Argumente existieren*/
+                /* Array auffüllen, falls zu wenig Argumente existieren */
                 if (fillArguments) {
                     for (int i = n; i <= size; i++) {
                         speedValues[n] = 0.0;
@@ -121,7 +139,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                 Log.d("Schleifenwerte", "Size: " + size);
                 Log.d("Schleifenwerte", "Locationsize: " + locations.size());
 
-                /*Neues Fragment erstellen*/
+                /* Neues Fragment erstellen */
                 Bundle bundle = new Bundle();
                 bundle.putDoubleArray("altitudeArray", altitudeValues);
                 bundle.putDoubleArray("speedArray", speedValues);

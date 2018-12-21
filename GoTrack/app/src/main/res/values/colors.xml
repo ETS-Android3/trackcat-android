@@ -16,8 +16,6 @@
     <color name="colorGreyDark">#232f34</color>
     <color name="colorGreyAccent">#F9AA33</color>
 
-
+    <!-- REMOVE COLOR RECORDS -->
     <color name="bg_row_background">#fa315b</color>
-    <color name="item_name">#535353</color>
-    <color name="description">#a9a9a9</color>
 </resources>

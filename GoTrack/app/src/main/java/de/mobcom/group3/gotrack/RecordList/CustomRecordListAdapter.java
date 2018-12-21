@@ -44,7 +44,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = inflater.inflate(R.layout.record_list_one_item, parent, false);
+        View view = inflater.inflate(R.layout.summary_list_item, parent, false);
         LinearLayout recordItem = view.findViewById(R.id.record_one_item);
 
         TextView recordId = recordItem.findViewById(R.id.record_id);
