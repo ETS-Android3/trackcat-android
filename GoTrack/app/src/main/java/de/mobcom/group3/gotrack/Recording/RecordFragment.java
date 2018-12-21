@@ -452,6 +452,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         model.setRideTime(rideTimer.getTime());
         model.setDistance(kmCounter.getAmount());
         model.setUserID(MainActivity.getActiveUser());
+        model.setDate(System.currentTimeMillis());
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm:ss");
         String dateStr = simpleDateFormat.format(currentTime);

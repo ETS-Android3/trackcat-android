@@ -12,7 +12,9 @@ import com.google.gson.reflect.TypeToken;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 
 import java.lang.reflect.Type;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
@@ -20,7 +22,6 @@ import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
 // toDo: write javaDoc and comments
 
 
-@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class RouteDAO {
     private SQLiteDatabase writableDb;
     private SQLiteDatabase readableDb;
@@ -43,6 +44,7 @@ public class RouteDAO {
         values.put(COL_USER, route.getUserId());
         values.put(COL_NAME, route.getName());
         values.put(COL_TIME, route.getTime());
+        values.put(COL_DATE, route.getDate());
         values.put(COL_RIDETIME, route.getRideTime());
         values.put(COL_DISTANCE, route.getDistance());
         values.put(COL_LOCATIONS, gson.toJson(route.getLocations())); // alternative toJsonTree().getAsString()
@@ -90,7 +92,7 @@ public class RouteDAO {
      * @return List of all routes belong to specific user in database sorted descending after id
      */
     public List<Route> readAll(int userId) {
-        return this.readAll(userId, new String[]{"id", "DESC"});
+        return this.readAll(userId, new String[]{"id", "ASC"});
     }
 
     /**
@@ -137,6 +139,46 @@ public class RouteDAO {
         return result;
     }
 
+    public List<Route> readLastSevenDays(int userId) {
+        String selection = COL_USER + " = ?";
+        String[] selectionArgs = { String.valueOf(userId) };
+        String[] projection = {
+                COL_ID,
+                COL_USER,
+                COL_NAME,
+                COL_TIME,
+                COL_RIDETIME,
+                COL_DISTANCE,
+                COL_LOCATIONS
+        };
+        long sevenDaysInMillis = 604800000;
+        String having =  COL_DATE + " >= " + (System.currentTimeMillis() - sevenDaysInMillis);
+        List<Route> result = new ArrayList<>();
+        Cursor cursor = readableDb.query(
+                TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                COL_DATE,
+                having,
+                "id  ASC"
+        );
+        if(cursor.moveToFirst())
+            do {
+                result.add(new Route(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
+                        gson.fromJson(cursor.getString(
+                                cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
+            } while (cursor.moveToNext());
+        cursor.close();
+        return result;
+    }
+
     public void update(int id, Route route) {
         String selection = COL_ID + " = ?";
         String[] selectionArgs = { String.valueOf(route.getUserId()) };
@@ -152,6 +194,29 @@ public class RouteDAO {
     public void delete(Route route) {
         this.delete(route.getId());
     }
+
+   /* public String[] getInfo(int id) {
+        String[] result = new String[]{};
+        String selection = COL_ID + " = ?";
+        String[] selectionArgs = { String.valueOf(id) };
+        String[] projection = { COL_DATE, COL_TIME, COL_RIDETIME, COL_DISTANCE };
+        Cursor cursor = writableDb.query(
+                TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        if(cursor.moveToFirst()) {
+            result[0] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
+            result[1] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
+            result[2] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
+            result[3] = String.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
+        }
+        return result;
+    }*/
 
     public void importRouteFromJSON(String jsonString) {
         this.create(gson.fromJson(jsonString, exImportType));
