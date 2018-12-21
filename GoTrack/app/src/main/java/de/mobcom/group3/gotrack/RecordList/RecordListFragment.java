@@ -14,7 +14,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import java.util.ArrayList;
 import java.util.List;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
@@ -94,7 +93,7 @@ public class RecordListFragment extends Fragment implements RecyclerItemTouchHel
             mAdapter.removeItem(viewHolder.getAdapterPosition());
 
             // showing snack bar with Undo option
-            Snackbar snackbar = Snackbar.make(constraintLayout, " Aufzeichnung \"" + name + "\" wurde entfernt!", Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(constraintLayout, "Aufzeichnung \"" + name + "\" wurde entfernt!", Snackbar.LENGTH_LONG);
             snackbar.setAction("Rückgängig", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

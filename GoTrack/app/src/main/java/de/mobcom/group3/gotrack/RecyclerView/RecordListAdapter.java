@@ -9,12 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
@@ -27,14 +29,17 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
     private List<Route> records;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, distance, time;
+        public TextView id, name, distance, time;
+        public ImageView type;
         public RelativeLayout viewBackground, viewForeground;
 
         public MyViewHolder(View view) {
             super(view);
-            name = view.findViewById(R.id.name);
-            distance = view.findViewById(R.id.description);
-            time = view.findViewById(R.id.price);
+            id = view.findViewById(R.id.record_id);
+            name = view.findViewById(R.id.record_name);
+            type = view.findViewById(R.id.activity_type);
+            distance = view.findViewById(R.id.record_distance);
+            time = view.findViewById(R.id.record_time);
 
             viewBackground = view.findViewById(R.id.view_background);
             viewForeground = view.findViewById(R.id.view_foreground);
@@ -50,7 +55,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cart_list_item, parent, false);
+                .inflate(R.layout.record_list_item, parent, false);
         return new MyViewHolder(itemView);
     }
 
@@ -61,6 +66,20 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
         holder.distance.setText("" + item.getDistance());
         holder.time.setText("" + item.getTime());
 
+        //switch(item.getType()){
+        int type = 0;
+        switch (type) {
+            case 0:
+                holder.type.setImageResource(R.drawable.activity_running_record);
+                break;
+            case 1:
+                holder.type.setImageResource(R.drawable.activity_biking_record);
+                break;
+            case 2:
+                holder.type.setImageResource(R.drawable.activity_caring_record);
+                break;
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,20 +88,20 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                 ArrayList<Location> locations = records.get(position).getLocations();
                 int size;
                 /*Überprüfung ob zu wenig Daten existieren*/
-                boolean fillArguments=false;
-                if (locations.size()>60) {
+                boolean fillArguments = false;
+                if (locations.size() > 60) {
                     size = locations.size() / 10;
-                }else{
-                    size=5;
-                    fillArguments=true;
+                } else {
+                    size = 5;
+                    fillArguments = true;
                 }
                 int n = 0;
-                double[] speedValues = new double[size+1];
-                double[] altitudeValues = new double[size+1];
-                for (int i = 0; i <  locations.size(); i += 10) {
+                double[] speedValues = new double[size + 1];
+                double[] altitudeValues = new double[size + 1];
+                for (int i = 0; i < locations.size(); i += 10) {
 
                     Location location = locations.get(i);
-                    speedValues[n] = location.getSpeed()*3.931;
+                    speedValues[n] = location.getSpeed() * 3.931;
                     altitudeValues[n] = location.getAltitude();
 
                     Log.d("Schleifenwerte", "Speed: " + speedValues[n]);
@@ -92,8 +111,8 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 
                 }
                 /*Array auffüllen, falls zu wenig Argumente existieren*/
-                if (fillArguments){
-                    for (int i=n;i<=size;i++){
+                if (fillArguments) {
+                    for (int i = n; i <= size; i++) {
                         speedValues[n] = 0.0;
                         altitudeValues[n] = 0.0;
                         Log.d("Schleifenwerte", "Zusatzspeed: " + speedValues[n]);
@@ -115,7 +134,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                 fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
                 fragTransaction.commit();
                 if (MainActivity.getHints()) {
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName()+"\"", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName() + "\"", Toast.LENGTH_LONG).show();
                 }
             }
         });
