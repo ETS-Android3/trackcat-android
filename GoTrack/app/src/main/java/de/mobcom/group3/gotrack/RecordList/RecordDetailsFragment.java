@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import de.mobcom.group3.gotrack.R;
 
@@ -20,17 +19,16 @@ public class RecordDetailsFragment extends Fragment {
         double[] altitudeArray = getArguments().getDoubleArray("altitudeArray");
         double[] speedArray = getArguments().getDoubleArray("speedArray");
         int id = getArguments().getInt("id");
-        Toast.makeText(getContext(), "Anzahl: " + altitudeArray.length, Toast.LENGTH_LONG).show();
 
         /*neues Fragment erstellen*/
         Bundle bundle = new Bundle();
         bundle.putDoubleArray("altitudeArray", altitudeArray);
         bundle.putDoubleArray("speedArray", speedArray);
         bundle.putInt("id", id);
-        RecordPageViewerCharts recordPageViewerCharts = new RecordPageViewerCharts();
-        recordPageViewerCharts.setArguments(bundle);
+        RecordListDetailsPageViewer recordListDetailsPageViewer = new RecordListDetailsPageViewer();
+        recordListDetailsPageViewer.setArguments(bundle);
         FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.chartContainer, recordPageViewerCharts, getResources().getString(R.string.fRecordDetailsDashbaord));
+        fragTransaction.replace(R.id.chartContainer, recordListDetailsPageViewer, getResources().getString(R.string.fRecordDetailsDashbaord));
         fragTransaction.commit();
 
         View view = inflater.inflate(R.layout.fragment_record_details, container, false);

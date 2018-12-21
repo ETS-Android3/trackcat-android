@@ -20,7 +20,7 @@ public class RecordDetailsChartsFragment extends Fragment {
         double[] speedValues = getArguments().getDoubleArray("speedArray");
         double[] altitudeValues = getArguments().getDoubleArray("altitudeArray");
 
-        /* Hohenmeterchart */
+        /* Höhenmeterchart */
         Bundle bundleAltitide = new Bundle();
         bundleAltitide.putDoubleArray("array", altitudeValues);
         bundleAltitide.putString("title", "Höhenmeter");
@@ -40,8 +40,8 @@ public class RecordDetailsChartsFragment extends Fragment {
 
         /* Charts in Container einfügen */
         fragTransaction = getChildFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.speedContainer,lineFragSpeed , "T");
-        fragTransaction.replace(R.id.altitudeContainer, lineFragAltitude, "T");
+        fragTransaction.replace(R.id.speedContainer,lineFragSpeed , getResources().getString(R.string.fRecordDetailsChartSpeed));
+        fragTransaction.replace(R.id.altitudeContainer, lineFragAltitude, getResources().getString(R.string.fRecordDetailsChartAltitude));
         fragTransaction.commit();
 
 
