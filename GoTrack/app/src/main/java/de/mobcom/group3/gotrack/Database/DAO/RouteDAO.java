@@ -3,40 +3,36 @@ package de.mobcom.group3.gotrack.Database.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import de.mobcom.group3.gotrack.Database.Models.Route;
-
 import java.lang.reflect.Type;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
 
 // toDo: write javaDoc and comments
 
 
 public class RouteDAO {
-    private SQLiteDatabase writableDb;
-    private SQLiteDatabase readableDb;
+    private final Context context;
     private Gson gson = new Gson();
     private Type listType = new TypeToken<ArrayList<Location>>() {}.getType();
     private Type exImportType = Route.class;
 
     public RouteDAO(Context context) {
-        DbHelper dbHelper = new DbHelper(context);
-        writableDb = dbHelper.getInstance(true);
-        readableDb = dbHelper.getInstance(false);
+        this.context = context;
     }
 
     public void create(Route route) {
-        route.setId((int) writableDb.insert(TABLE_NAME, null, valueGenerator(route)));
+        DbHelper dbHelper = new DbHelper(context);
+        try {
+            route.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null,
+                    valueGenerator(route)));
+        } finally {
+            dbHelper.close();
+        }
     }
 
     private ContentValues valueGenerator(Route route) {
@@ -53,37 +49,40 @@ public class RouteDAO {
 
     public Route read(int id) {
         Route result = new Route();
-        String selection = COL_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(id) };
-        String[] projection = {
-                COL_ID,
-                COL_USER,
-                COL_NAME,
-                COL_TIME,
-                COL_RIDETIME,
-                COL_DISTANCE,
-                COL_LOCATIONS
-        };
-        Cursor cursor = readableDb.query(
-                TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
-        if (cursor.moveToFirst()) {
-            result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
-            result.setUserID(cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)));
-            result.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
-            result.setTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
-            result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
-            result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
-            result.setLocations(gson.fromJson(cursor.getString(
-                    cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType));
+        DbHelper dbHelper = new DbHelper(context);
+        try {
+            String selection = COL_ID + " = ?";
+            String[] selectionArgs = {String.valueOf(id)};
+            String[] projection = {
+                    COL_ID,
+                    COL_USER,
+                    COL_NAME,
+                    COL_TIME,
+                    COL_RIDETIME,
+                    COL_DISTANCE,
+                    COL_LOCATIONS };
+            try (Cursor cursor = dbHelper.getReadableDatabase().query(
+                    TABLE_NAME,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null )) {
+                if (cursor.moveToFirst()) {
+                    result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
+                    result.setUserID(cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)));
+                    result.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
+                    result.setTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
+                    result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
+                    result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
+                    result.setLocations(gson.fromJson(cursor.getString(
+                            cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType));
+                }
+            }
+        } finally {
+            dbHelper.close();
         }
-        cursor.close();
         return result;
     }
 
@@ -102,93 +101,109 @@ public class RouteDAO {
      * @return List of all users in database
      */
     public List<Route> readAll(int userId, String[] orderArgs) {
-        String selection = COL_USER + " = ?";
-        String[] selectionArgs = { String.valueOf(userId) };
-        String[] projection = {
-                COL_ID,
-                COL_USER,
-                COL_NAME,
-                COL_TIME,
-                COL_RIDETIME,
-                COL_DISTANCE,
-                COL_LOCATIONS
-        };
+        DbHelper dbHelper = new DbHelper(context);
         List<Route> result = new ArrayList<>();
-        Cursor cursor = readableDb.query(
-                TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                orderArgs[0] + " " + orderArgs[1]
-        );
-        if(cursor.moveToFirst())
-            do {
-                result.add(new Route(
-                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
-                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
-                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
-                        gson.fromJson(cursor.getString(
-                                cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
-            } while (cursor.moveToNext());
-        cursor.close();
+        String selection = COL_USER + " = ?";
+        try {
+            String[] selectionArgs = {String.valueOf(userId)};
+            String[] projection = {
+                    COL_ID,
+                    COL_USER,
+                    COL_NAME,
+                    COL_TIME,
+                    COL_RIDETIME,
+                    COL_DISTANCE,
+                    COL_LOCATIONS };
+            try (Cursor cursor = dbHelper.getReadableDatabase().query(
+                    TABLE_NAME,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    orderArgs[0] + " " + orderArgs[1] )) {
+                if (cursor.moveToFirst())
+                    do {
+                        result.add(new Route(
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
+                                cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
+                                cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
+                                gson.fromJson(cursor.getString(
+                                        cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
+                    } while (cursor.moveToNext());
+            }
+        } finally {
+            dbHelper.close();
+        }
         return result;
     }
 
     public List<Route> readLastSevenDays(int userId) {
-        String selection = COL_USER + " = ?";
-        String[] selectionArgs = { String.valueOf(userId) };
-        String[] projection = {
-                COL_ID,
-                COL_USER,
-                COL_NAME,
-                COL_TIME,
-                COL_RIDETIME,
-                COL_DISTANCE,
-                COL_LOCATIONS
-        };
-        long sevenDaysInMillis = 604800000;
-        String having =  COL_DATE + " >= " + (System.currentTimeMillis() - sevenDaysInMillis);
+        DbHelper dbHelper = new DbHelper(context);
         List<Route> result = new ArrayList<>();
-        Cursor cursor = readableDb.query(
-                TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                COL_DATE,
-                having,
-                "id  ASC"
-        );
-        if(cursor.moveToFirst())
-            do {
-                result.add(new Route(
-                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
-                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
-                        cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
-                        cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
-                        gson.fromJson(cursor.getString(
-                                cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
-            } while (cursor.moveToNext());
-        cursor.close();
+        try {
+            String selection = COL_USER + " = ?";
+            String[] selectionArgs = {String.valueOf(userId)};
+            String[] projection = {
+                    COL_ID,
+                    COL_USER,
+                    COL_NAME,
+                    COL_TIME,
+                    COL_RIDETIME,
+                    COL_DISTANCE,
+                    COL_LOCATIONS };
+            long sevenDaysInMillis = 604800000;
+            String having = COL_DATE + " >= " + (System.currentTimeMillis() - sevenDaysInMillis);
+            try (Cursor cursor = dbHelper.getWritableDatabase().query(
+                    TABLE_NAME,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    COL_DATE,
+                    having,
+                    "id  ASC" )) {
+                if (cursor.moveToFirst())
+                    do {
+                        result.add(new Route(
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
+                                cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
+                                cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
+                                gson.fromJson(cursor.getString(
+                                        cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
+                    } while (cursor.moveToNext());
+            }
+        } finally {
+            dbHelper.close();
+        }
         return result;
     }
 
     public void update(int id, Route route) {
+        DbHelper dbHelper = new DbHelper(context);
         String selection = COL_ID + " = ?";
         String[] selectionArgs = { String.valueOf(route.getUserId()) };
-        writableDb.update(TABLE_NAME, valueGenerator(route), selection, selectionArgs);
+        try {
+            dbHelper.getWritableDatabase().update(TABLE_NAME, valueGenerator(route), selection, selectionArgs);
+        } finally {
+            dbHelper.close();
+        }
     }
 
     private void delete(int id) {
+        DbHelper dbHelper = new DbHelper(context);
         String selection = COL_ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(id) };
-        writableDb.delete(TABLE_NAME, selection, selectionArgs);
+        try {
+            dbHelper.getWritableDatabase().delete(TABLE_NAME, selection, selectionArgs);
+        } finally {
+            dbHelper.close();
+        }
     }
 
     public void delete(Route route) {
