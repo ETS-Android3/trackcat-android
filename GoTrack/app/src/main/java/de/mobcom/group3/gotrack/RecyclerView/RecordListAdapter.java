@@ -13,15 +13,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.RecordList.RecordDetailsFragment;
-
 import static android.support.constraint.Constraints.TAG;
 
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.MyViewHolder> {
@@ -66,6 +63,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
         holder.distance.setText("" + item.getDistance());
         holder.time.setText("" + item.getTime());
 
+        // TODO: Dynamische Implementation des Typen anhand von Datenbankwerten...
         //switch(item.getType()){
         int type = 0;
         switch (type) {
@@ -147,15 +145,11 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 
     public void removeItem(int position) {
         records.remove(position);
-        // notify the item removed by position
-        // to perform recycler view delete animations
-        // NOTE: don't call notifyDataSetChanged()
         notifyItemRemoved(position);
     }
 
     public void restoreItem(Route item, int position) {
         records.add(position, item);
-        // notify item added by position
         notifyItemInserted(position);
     }
 }

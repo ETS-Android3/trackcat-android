@@ -14,6 +14,8 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
 import java.util.List;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
@@ -27,7 +29,7 @@ public class RecordListFragment extends Fragment implements RecyclerItemTouchHel
     private RecyclerView recyclerView;
     private List<Route> records;
     private RecordListAdapter mAdapter;
-    private ConstraintLayout constraintLayout;
+    private LinearLayout constraintLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
