@@ -15,4 +15,12 @@
     <color name="colorGreyLight">#2c3a41</color>
     <color name="colorGreyDark">#232f34</color>
     <color name="colorGreyAccent">#F9AA33</color>
+
+
+    <color name="colorPrimary">#111</color>
+    <color name="colorPrimaryDark">#FFF</color>
+    <color name="colorAccent">#ea3732</color>
+    <color name="bg_row_background">#fa315b</color>
+    <color name="item_name">#535353</color>
+    <color name="description">#a9a9a9</color>
 </resources>

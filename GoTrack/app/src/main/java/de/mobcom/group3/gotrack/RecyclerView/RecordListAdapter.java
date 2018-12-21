@@ -1,79 +1,67 @@
-package de.mobcom.group3.gotrack.RecordList;
+package de.mobcom.group3.gotrack.RecyclerView;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
+import de.mobcom.group3.gotrack.RecordList.RecordDetailsFragment;
 
-public class CustomRecordListAdapter extends ArrayAdapter<String> {
+import static android.support.constraint.Constraints.TAG;
 
+public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.MyViewHolder> {
+    private Context context;
     private List<Route> records;
-    LayoutInflater inflater;
-    String TAG;
 
-    public CustomRecordListAdapter(Activity context, List<Route> records, String TAG) {
-        super(context, R.layout.fragment_record_list);
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.records = records;
-        this.TAG = TAG;
-    }
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        public TextView name, distance, time;
+        public RelativeLayout viewBackground, viewForeground;
 
-    @Override
-    public int getCount() {
-        return records.size();
-    }
+        public MyViewHolder(View view) {
+            super(view);
+            name = view.findViewById(R.id.name);
+            distance = view.findViewById(R.id.description);
+            time = view.findViewById(R.id.price);
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view = inflater.inflate(R.layout.record_list_one_item, parent, false);
-        LinearLayout recordItem = view.findViewById(R.id.record_one_item);
-
-        TextView recordId = recordItem.findViewById(R.id.record_id);
-        recordId.setText("" + (position + 1));
-
-        ImageView recordType = recordItem.findViewById(R.id.activity_type);
-        recordType.setImageResource(R.drawable.activity_running_record_list);
-
-        TextView recordName = recordItem.findViewById(R.id.record_name);
-        recordName.setText(records.get(position).getName());
-
-        TextView recordDistance = recordItem.findViewById(R.id.record_distance);
-        double distance = Math.round(records.get(position).getDistance());
-        if (distance >= 1000) {
-            String d = "" + distance / 1000L;
-            recordDistance.setText(d.replace('.', ',') + " km |");
-        } else {
-            recordDistance.setText((int) distance + " m |");
+            viewBackground = view.findViewById(R.id.view_background);
+            viewForeground = view.findViewById(R.id.view_foreground);
         }
+    }
 
-        TextView recordTime = recordItem.findViewById(R.id.record_time);
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        df.setTimeZone(tz);
-        String time = df.format(new Date(records.get(position).getTime() * 1000));
-        recordTime.setText(time);
 
-        /* Anzeigen der Routendetaills */
-        recordItem.setOnClickListener(new View.OnClickListener() {
+    public RecordListAdapter(Context context, List<Route> cartList) {
+        this.context = context;
+        this.records = cartList;
+    }
+
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.cart_list_item, parent, false);
+        return new MyViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
+        final Route item = records.get(position);
+        holder.name.setText(item.getName());
+        holder.distance.setText("" + item.getDistance());
+        holder.time.setText("" + item.getTime());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -131,13 +119,24 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 }
             }
         });
-
-        return view;
     }
 
-    double roundTwoDecimals(double d)
-    {
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        return Double.valueOf(twoDForm.format(d));
+    @Override
+    public int getItemCount() {
+        return records.size();
+    }
+
+    public void removeItem(int position) {
+        records.remove(position);
+        // notify the item removed by position
+        // to perform recycler view delete animations
+        // NOTE: don't call notifyDataSetChanged()
+        notifyItemRemoved(position);
+    }
+
+    public void restoreItem(Route item, int position) {
+        records.add(position, item);
+        // notify item added by position
+        notifyItemInserted(position);
     }
 }
