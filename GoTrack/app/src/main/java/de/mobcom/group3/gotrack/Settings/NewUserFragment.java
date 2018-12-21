@@ -108,7 +108,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                     user.setFirstName(firstName);
                     user.setLastName(lastName);
                     user.setMail(email);
-                    user.setActive(1);
+                    user.setActive(true);
                     user.setImage(imageBytes);
 
                     /* Data Access Object (DAO) */
@@ -121,7 +121,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
 
                         /* Alten Nutzer deaktivieren */
                         User oldUser = dao.read(MainActivity.getActiveUser());
-                        oldUser.setActive(0);
+                        oldUser.setActive(false);
                         dao.update(MainActivity.getActiveUser(), oldUser);
 
                         /* UI-Meldung & Felder löschen */

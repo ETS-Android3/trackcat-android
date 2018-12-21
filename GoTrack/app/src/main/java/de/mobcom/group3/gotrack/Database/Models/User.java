@@ -34,7 +34,7 @@ public class User {
         this.lastName = lastName;
         this.eMail = eMail;
         this.image = image;
-        this.setActive(active);
+        this.setActiveForDB(active);
         this.setDarkThemeActiveDB(themeActive);
         this.setHintsActiveDB(hintsActive);
     }
@@ -156,8 +156,12 @@ public class User {
      * SQLite does not implement boolean values natively as true or false but only as integer.
      * @param active int value '1' for true and '0' for false
      */
-    public void setActive(int active) {
-        isActive = active == 1;
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public void setActiveForDB(int active) {
+        this.isActive = active == 1;
     }
 
     public boolean isDarkThemeActive() {

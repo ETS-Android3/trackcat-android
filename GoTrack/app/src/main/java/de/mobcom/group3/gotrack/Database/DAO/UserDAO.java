@@ -57,7 +57,7 @@ public class UserDAO {
                     result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
                     result.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(COL_FIRSTNAME)));
                     result.setLastName(cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)));
-                    result.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)));
+                    result.setActiveForDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)));
                     result.setHintsActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)));
                     result.setDarkThemeActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)));
                     result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));

@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (userList.size() == 0) {
             User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
                     null);
-            initialUser.setActive(1);
+            initialUser.setActive(true);
             userDAO.create(initialUser);
         }
 
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!findActiveUser) {
             activeUser = users.get(selectedID).getId();
             User newActiveUser = userDAO.read(activeUser);
-            newActiveUser.setActive(1);
+            newActiveUser.setActive(true);
             userDAO.update(activeUser, newActiveUser);
         }
         final boolean deactivateOldUser = findActiveUser;
@@ -215,13 +215,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         user.setLastName(users.get(i).getLastName());
                         user.setMail(users.get(i).getMail());
                         user.setImage(users.get(i).getImage());
-                        user.setActive(1);
+                        user.setActive(true);
                         userDAO.update(users.get(i).getId(), user);
 
                         /* Alten Nutzer deaktivieren */
                         if (deactivateOldUser) {
                             User oldUser = userDAO.read(activeUser);
-                            oldUser.setActive(0);
+                            oldUser.setActive(false);
                             userDAO.update(activeUser, oldUser);
                         }
 

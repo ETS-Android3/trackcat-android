@@ -171,7 +171,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
 
     @TargetApi(Build.VERSION_CODES.N)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint({"HandlerLeak", "ClickableViewAccessibility"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
