@@ -68,8 +68,10 @@ public class RecordListFragment extends Fragment implements RecyclerItemTouchHel
             final Route deletedItem = records.get(viewHolder.getAdapterPosition());
             final int deletedIndex = viewHolder.getAdapterPosition();
 
-            /* Item aus Recycler View entfernen */
+            /* Item aus Recycler View und Datenbank entfernen */
             mAdapter.removeItem(viewHolder.getAdapterPosition());
+            RouteDAO dao = new RouteDAO(MainActivity.getInstance());
+            dao.delete(deletedItem);
 
             /* Snackbar mit 'Rückgängig' Funbktion anzeigen */
             Snackbar snackbar = Snackbar.make(mainLayout, "Aufzeichnung \"" + name + "\" wurde entfernt!", Snackbar.LENGTH_LONG);
@@ -78,9 +80,10 @@ public class RecordListFragment extends Fragment implements RecyclerItemTouchHel
             snackbar.setAction("Rückgängig", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    // undo is selected, restore the deleted item
+                    /* Gelöschtes Item wiederherstellen */
                     mAdapter.restoreItem(deletedItem, deletedIndex);
+                    // TODO: Route sollte wieder an vorher genutzem Index eingefügt werden können
+                    dao.create(deletedItem);
                 }
             });
             snackbar.setActionTextColor(Color.YELLOW);
