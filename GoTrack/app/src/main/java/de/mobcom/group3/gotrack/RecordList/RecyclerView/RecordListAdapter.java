@@ -82,9 +82,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
         recordTime.setText(time);
 
         // TODO: Dynamische Implementation des Typen anhand von Datenbankwerten...
-        //switch(item.getType()){
-        int type = 0;
-        switch (type) {
+        switch(item.getType()){
             case 0:
                 holder.type.setImageResource(R.drawable.activity_running_record_list);
                 break;
