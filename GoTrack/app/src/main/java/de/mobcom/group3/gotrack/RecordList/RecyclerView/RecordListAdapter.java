@@ -13,11 +13,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
@@ -69,7 +71,6 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 
         /* Typ symbolisieren */
         holder.type.setImageResource(SpeedAverager.getTypeIcon(item.getType(), true));
-
 
         /* Name anzeigen */
         holder.name.setText(item.getName());

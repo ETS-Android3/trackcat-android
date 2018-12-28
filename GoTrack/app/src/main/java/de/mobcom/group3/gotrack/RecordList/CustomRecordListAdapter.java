@@ -14,12 +14,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
@@ -87,20 +89,20 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 ArrayList<Location> locations = records.get(position).getLocations();
                 int size;
                 /*Überprüfung ob zu wenig Daten existieren*/
-                boolean fillArguments=false;
-                if (locations.size()>60) {
+                boolean fillArguments = false;
+                if (locations.size() > 60) {
                     size = locations.size() / 10;
-                }else{
-                    size=5;
-                    fillArguments=true;
+                } else {
+                    size = 5;
+                    fillArguments = true;
                 }
                 int n = 0;
-                double[] speedValues = new double[size+1];
-                double[] altitudeValues = new double[size+1];
-                for (int i = 0; i <  locations.size(); i += 10) {
+                double[] speedValues = new double[size + 1];
+                double[] altitudeValues = new double[size + 1];
+                for (int i = 0; i < locations.size(); i += 10) {
 
                     Location location = locations.get(i);
-                    speedValues[n] = location.getSpeed()*3.931;
+                    speedValues[n] = location.getSpeed() * 3.931;
                     altitudeValues[n] = location.getAltitude();
 
                     Log.d("Schleifenwerte", "Speed: " + speedValues[n]);
@@ -110,8 +112,8 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
 
                 }
                 /*Array auffüllen, falls zu wenig Argumente existieren*/
-                if (fillArguments){
-                    for (int i=n;i<=size;i++){
+                if (fillArguments) {
+                    for (int i = n; i <= size; i++) {
                         speedValues[n] = 0.0;
                         altitudeValues[n] = 0.0;
                         Log.d("Schleifenwerte", "Zusatzspeed: " + speedValues[n]);
@@ -133,7 +135,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
                 fragTransaction.commit();
                 if (MainActivity.getHints()) {
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName()+"\"", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName() + "\"", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -141,8 +143,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         return view;
     }
 
-    double roundTwoDecimals(double d)
-    {
+    double roundTwoDecimals(double d) {
         DecimalFormat twoDForm = new DecimalFormat("#.##");
         return Double.valueOf(twoDForm.format(d));
     }
