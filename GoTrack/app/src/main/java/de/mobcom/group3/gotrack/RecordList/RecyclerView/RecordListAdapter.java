@@ -26,7 +26,6 @@ import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.RecordList.RecordDetailsFragment;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 
-import static android.support.constraint.Constraints.TAG;
 
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.MyViewHolder> {
     private Context context;
@@ -97,21 +96,24 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
             @Override
             public void onClick(View v) {
 
-                /* Daten holen */
+                /*Daten holen*/
                 ArrayList<Location> locations = records.get(position).getLocations();
                 int size;
-                /* Überprüfung ob zu wenig Daten existieren */
+                int run;
+                /*Überprüfung ob zu wenig Daten existieren*/
                 boolean fillArguments = false;
-                if (locations.size() > 60) {
+                if (locations!=null && locations.size() > 60) {
                     size = locations.size() / 10;
+                    run=locations.size();
                 } else {
                     size = 5;
+                    run=0;
                     fillArguments = true;
                 }
                 int n = 0;
                 double[] speedValues = new double[size + 1];
                 double[] altitudeValues = new double[size + 1];
-                for (int i = 0; i < locations.size(); i += 10) {
+                for (int i = 0; i < run; i += 10) {
 
                     Location location = locations.get(i);
                     speedValues[n] = location.getSpeed() * 3.931;
@@ -123,7 +125,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                     n++;
 
                 }
-                /* Array auffüllen, falls zu wenig Argumente existieren */
+                /*Array auffüllen, falls zu wenig Argumente existieren*/
                 if (fillArguments) {
                     for (int i = n; i <= size; i++) {
                         speedValues[n] = 0.0;
@@ -134,7 +136,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                 }
 
                 Log.d("Schleifenwerte", "Size: " + size);
-                Log.d("Schleifenwerte", "Locationsize: " + locations.size());
+                Log.d("Schleifenwerte", "Locationsize: " + run);
 
                 /* Neues Fragment erstellen */
                 Bundle bundle = new Bundle();
@@ -144,7 +146,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
+                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsList));
                 fragTransaction.commit();
                 if (MainActivity.getHints()) {
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName() + "\"", Toast.LENGTH_LONG).show();
