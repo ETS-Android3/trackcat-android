@@ -22,6 +22,8 @@ import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.RecordList.RecordDetailsFragment;
+import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
+
 import static android.support.constraint.Constraints.TAG;
 
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.MyViewHolder> {
@@ -66,17 +68,8 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
         holder.id.setText("" + (position + 1));
 
         /* Typ symbolisieren */
-        switch(item.getType()){
-            case 0:
-                holder.type.setImageResource(R.drawable.activity_running_record_list);
-                break;
-            case 1:
-                holder.type.setImageResource(R.drawable.activity_biking_record_list);
-                break;
-            case 2:
-                holder.type.setImageResource(R.drawable.activity_caring_record_list);
-                break;
-        }
+        holder.type.setImageResource(SpeedAverager.getTypeIcon(item.getType(), true));
+
 
         /* Name anzeigen */
         holder.name.setText(item.getName());

@@ -472,7 +472,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
             /* Typ festlegen */
             ImageView typeIcon = alertView.findViewById(R.id.fabButton);
-            typeIcon.setImageResource(SpeedAverager.getTypeIcon(type));
+            typeIcon.setImageResource(SpeedAverager.getTypeIcon(type, false));
 
             /* Placeholder festlegen */
             TextView recordName = alertView.findViewById(R.id.record_name);

@@ -23,6 +23,7 @@ import java.util.TimeZone;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
+import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 
 public class CustomRecordListAdapter extends ArrayAdapter<String> {
 
@@ -53,17 +54,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
 
         /* Typ symbolisieren */
         ImageView recordType = recordItem.findViewById(R.id.activity_type);
-        switch(records.get(position).getType()){
-            case 0:
-                recordType.setImageResource(R.drawable.activity_running_record_list);
-                break;
-            case 1:
-                recordType.setImageResource(R.drawable.activity_biking_record_list);
-                break;
-            case 2:
-                recordType.setImageResource(R.drawable.activity_caring_record_list);
-                break;
-        }
+        recordType.setImageResource(SpeedAverager.getTypeIcon(records.get(position).getType(), true));
 
         /* Name anzeigen */
         TextView recordName = recordItem.findViewById(R.id.record_name);
