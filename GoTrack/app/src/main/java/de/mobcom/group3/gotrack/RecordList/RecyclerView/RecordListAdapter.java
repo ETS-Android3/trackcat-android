@@ -13,19 +13,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.RecordList.RecordDetailsFragment;
-import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
-
+import static android.support.constraint.Constraints.TAG;
 
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.MyViewHolder> {
     private Context context;
@@ -65,16 +62,9 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Route item = records.get(position);
-        /* ID anzeigen */
         holder.id.setText("" + (position + 1));
-
-        /* Typ symbolisieren */
-        holder.type.setImageResource(SpeedAverager.getTypeIcon(item.getType(), true));
-
-        /* Name anzeigen */
         holder.name.setText(item.getName());
 
-        /* Distanz anzeigen */
         TextView recordDistance = holder.distance;
         double distance = Math.round(records.get(position).getDistance());
         if (distance >= 1000) {
@@ -84,7 +74,6 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
             recordDistance.setText((int) distance + " m |");
         }
 
-        /* Zeit anzeigen */
         TextView recordTime = holder.time;
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         TimeZone tz = TimeZone.getTimeZone("UTC");
@@ -92,28 +81,40 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
         String time = df.format(new Date(records.get(position).getTime() * 1000));
         recordTime.setText(time);
 
+        // TODO: Dynamische Implementation des Typen anhand von Datenbankwerten...
+        //switch(item.getType()){
+        int type = 0;
+        switch (type) {
+            case 0:
+                holder.type.setImageResource(R.drawable.activity_running_record_list);
+                break;
+            case 1:
+                holder.type.setImageResource(R.drawable.activity_biking_record_list);
+                break;
+            case 2:
+                holder.type.setImageResource(R.drawable.activity_caring_record_list);
+                break;
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                /*Daten holen*/
+                /* Daten holen */
                 ArrayList<Location> locations = records.get(position).getLocations();
                 int size;
-                int run;
-                /*Überprüfung ob zu wenig Daten existieren*/
+                /* Überprüfung ob zu wenig Daten existieren */
                 boolean fillArguments = false;
-                if (locations!=null && locations.size() > 60) {
+                if (locations.size() > 60) {
                     size = locations.size() / 10;
-                    run=locations.size();
                 } else {
                     size = 5;
-                    run=0;
                     fillArguments = true;
                 }
                 int n = 0;
                 double[] speedValues = new double[size + 1];
                 double[] altitudeValues = new double[size + 1];
-                for (int i = 0; i < run; i += 10) {
+                for (int i = 0; i < locations.size(); i += 10) {
 
                     Location location = locations.get(i);
                     speedValues[n] = location.getSpeed() * 3.931;
@@ -125,7 +126,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                     n++;
 
                 }
-                /*Array auffüllen, falls zu wenig Argumente existieren*/
+                /* Array auffüllen, falls zu wenig Argumente existieren */
                 if (fillArguments) {
                     for (int i = n; i <= size; i++) {
                         speedValues[n] = 0.0;
@@ -136,7 +137,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                 }
 
                 Log.d("Schleifenwerte", "Size: " + size);
-                Log.d("Schleifenwerte", "Locationsize: " + run);
+                Log.d("Schleifenwerte", "Locationsize: " + locations.size());
 
                 /* Neues Fragment erstellen */
                 Bundle bundle = new Bundle();
@@ -146,7 +147,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsList));
+                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
                 fragTransaction.commit();
                 if (MainActivity.getHints()) {
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName() + "\"", Toast.LENGTH_LONG).show();
