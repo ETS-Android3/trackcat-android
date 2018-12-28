@@ -450,6 +450,8 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         model.setTime(timer.getTime());
         model.setRideTime(rideTimer.getTime());
         model.setDistance(kmCounter.getAmount());
+        int type = SpeedAverager.getRouteType(kmhAverager.getAvgSpeed());
+        model.setType(type);
         model.setUserID(MainActivity.getActiveUser());
         model.setDate(System.currentTimeMillis());
         Date currentTime = Calendar.getInstance().getTime();
@@ -467,6 +469,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
             /* Route auf Karte zeichnen */
             drawRoute(alertView);
+
+            /* Typ festlegen */
+            ImageView typeIcon = alertView.findViewById(R.id.fabButton);
+            typeIcon.setImageResource(SpeedAverager.getTypeIcon(type));
 
             /* Placeholder festlegen */
             TextView recordName = alertView.findViewById(R.id.record_name);
@@ -487,7 +493,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
             Timer timerForCalc = new Timer();
             total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
         } else {
-            //TODO Implementation für Nutzer mit API <= 16
+            // TODO Implementation für Nutzer mit API <= 16
         }
 
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
@@ -767,8 +773,19 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         //TODO in progress.....
         try {
             FloatingActionButton fab = view.findViewById(R.id.fabButton);
-
-            fab.setImageResource(kmhAverager.getRouteType(kmhAverager.getAvgSpeed()));
+            int icon = R.drawable.activity_running_record;
+            switch(kmhAverager.getRouteType(kmhAverager.getAvgSpeed())){
+                case 0:
+                    icon = R.drawable.activity_running_record;
+                    break;
+                case 1:
+                    icon = R.drawable.activity_biking_record;
+                    break;
+                case 2:
+                    icon = R.drawable.activity_caring_record;
+                    break;
+            }
+            fab.setImageResource(icon);
         } catch (Exception e) {
             Log.v("GOTRACK", e.toString());
         }
@@ -783,7 +800,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
                 iconAcc.setImageResource(R.drawable.ic_signal_cellular_4_bar_black_24dp);
             } else if (location.getAccuracy() < 10) {
                 iconAcc.setImageResource(R.drawable.ic_signal_cellular_3_bar_black_24dp);
-
             } else if (location.getAccuracy() < 20) {
                 iconAcc.setImageResource(R.drawable.ic_signal_cellular_2_bar_black_24dp);
             } else if (location.getAccuracy() > 30) {

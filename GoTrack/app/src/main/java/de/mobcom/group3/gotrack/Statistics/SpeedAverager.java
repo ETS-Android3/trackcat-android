@@ -9,8 +9,8 @@ import de.mobcom.group3.gotrack.Recording.Timer;
  * */
 public class SpeedAverager {
 
-    final private int WALKER_MAX_SPEED = 14;
-    final private int BIKE_MAX_SPEED = 25;
+    final private static int WALKER_MAX_SPEED = 14;
+    final private static int BIKE_MAX_SPEED = 40;
 
     private MainActivity creator;
 
@@ -54,17 +54,38 @@ public class SpeedAverager {
         return avgSpeed;
     }
 
-
-    public int getRouteType(double avg) {
+    /* Liefert den entsprechenden Typene einer Durchschnittsgeschwindigkeit */
+    public static int getRouteType(double avg) {
+        int type;
+        /* Läufer */
         if (avg * 60 * 60 / 1000 < WALKER_MAX_SPEED) {
-            // Walker
-            return R.drawable.activity_running_record;
-        } else if (avg * 60 * 60 / 1000 < BIKE_MAX_SPEED) {
-            //Bike
-            return R.drawable.activity_biking_record;
-        } else {
-            //Car
-            return R.drawable.activity_caring_record;
+            type = 0;
         }
+        /* Fahrrad */
+        else if (avg * 60 * 60 / 1000 < BIKE_MAX_SPEED) {
+            type = 1;
+        }
+        /* Auto */
+        else {
+            type = 2;
+        }
+        return type;
+    }
+
+    /* Liefert die entsprechende Icon ID zu einem Typen */
+    public static int getTypeIcon(int type){
+        int drawableInt = R.drawable.activity_running_record;
+        switch(type){
+            case 0:
+                drawableInt = R.drawable.activity_running_record;
+                break;
+            case 1:
+                drawableInt = R.drawable.activity_biking_record;
+                break;
+            case 2:
+                drawableInt = R.drawable.activity_caring_record;
+                break;
+        }
+        return drawableInt;
     }
 }
