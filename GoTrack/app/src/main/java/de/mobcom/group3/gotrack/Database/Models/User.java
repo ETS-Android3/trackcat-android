@@ -151,10 +151,8 @@ public class User {
     }
 
     /**
-     * Setter to decide if user is currently active user or not
-     * Integer value is necessary due to SQLite Database constraint.
-     * SQLite does not implement boolean values natively as true or false but only as integer.
-     * @param active int value '1' for true and '0' for false
+     * Setter to decide if user is currently active user or not for UI purposes
+     * @param active boolean value
      */
     public void setActive(boolean active) {
         isActive = active;

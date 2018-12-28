@@ -9,13 +9,13 @@ import static de.mobcom.group3.gotrack.Database.DAO.DbContract.*;
 /**
  * Helper class to provide database operations
  */
-class DbHelper extends SQLiteOpenHelper {
+public class DbHelper extends SQLiteOpenHelper {
 
     /**
      * default constructor to init database
      * @param context of type context
      */
-    DbHelper(Context context) {
+    public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

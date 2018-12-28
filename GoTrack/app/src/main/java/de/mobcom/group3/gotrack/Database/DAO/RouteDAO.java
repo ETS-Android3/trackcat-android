@@ -5,8 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import de.mobcom.group3.gotrack.Database.Models.Route;
+
+import java.io.FileWriter;
+import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +45,7 @@ public class RouteDAO {
         values.put(COL_NAME, route.getName());
         values.put(COL_TIME, route.getTime());
         values.put(COL_DATE, route.getDate());
+        values.put(COL_TYPE, route.getType());
         values.put(COL_RIDETIME, route.getRideTime());
         values.put(COL_DISTANCE, route.getDistance());
         values.put(COL_LOCATIONS, gson.toJson(route.getLocations())); // alternative toJsonTree().getAsString()
@@ -58,6 +63,8 @@ public class RouteDAO {
                     COL_USER,
                     COL_NAME,
                     COL_TIME,
+                    COL_DATE,
+                    COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
                     COL_LOCATIONS };
@@ -74,6 +81,8 @@ public class RouteDAO {
                     result.setUserID(cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)));
                     result.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
                     result.setTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
+                    result.setDate(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
+                    result.setType(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)));
                     result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
                     result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
                     result.setLocations(gson.fromJson(cursor.getString(
@@ -100,7 +109,7 @@ public class RouteDAO {
      *                  use COL_ID, COL_NAME, COL_TIME or COL_DISTANCE as columns
      * @return List of all users in database
      */
-    public List<Route> readAll(int userId, String[] orderArgs) {
+    private List<Route> readAll(int userId, String[] orderArgs) {
         DbHelper dbHelper = new DbHelper(context);
         List<Route> result = new ArrayList<>();
         String selection = COL_USER + " = ?";
@@ -111,6 +120,8 @@ public class RouteDAO {
                     COL_USER,
                     COL_NAME,
                     COL_TIME,
+                    COL_DATE,
+                    COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
                     COL_LOCATIONS };
@@ -131,6 +142,8 @@ public class RouteDAO {
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
                                 cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                 gson.fromJson(cursor.getString(
                                         cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
                     } while (cursor.moveToNext());
@@ -152,6 +165,8 @@ public class RouteDAO {
                     COL_USER,
                     COL_NAME,
                     COL_TIME,
+                    COL_DATE,
+                    COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
                     COL_LOCATIONS };
@@ -174,6 +189,8 @@ public class RouteDAO {
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
                                 cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                 gson.fromJson(cursor.getString(
                                         cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
                     } while (cursor.moveToNext());
