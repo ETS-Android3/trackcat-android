@@ -79,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return darkTheme;
     }
 
+    public static void setDarkTheme(boolean activeDarkTheme) {
+        darkTheme=activeDarkTheme;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

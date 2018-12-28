@@ -41,12 +41,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
 
+        /* Data Access Object (DAO) */
+        UserDAO dao = new UserDAO(getActivity());
+        User oldUser = dao.read(MainActivity.getActiveUser());
+
         /*Wechsel beim Anzeigen der Hilfreichen Tipps*/
         if (preference instanceof CheckBoxPreference) {
-
-            /* Data Access Object (DAO) */
-            UserDAO dao = new UserDAO(getActivity());
-            User oldUser = dao.read(MainActivity.getActiveUser());
 
             if (((CheckBoxPreference) preference).isChecked()) {
                 Toast.makeText(getActivity(), "Hilfreiche Tipps aktiviert!", Toast.LENGTH_LONG).show();
@@ -61,10 +61,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 MainActivity.setHints(false);
             }
 
-            dao.update(MainActivity.getActiveUser(), oldUser);
+
         }
         /* Wechsel des Themes */
-        if (preference instanceof SwitchPreference) {
+        else if (preference instanceof SwitchPreference) {
             Log.d("PREFERENCES", "Wechsel des Themes!");
             /* getActivity().finish();
             final Intent intent = getActivity().getIntent();
@@ -90,13 +90,22 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             if (((SwitchPreference) preference).isChecked()) {
                 Toast.makeText(getActivity(), "DarkTheme aktiviert!", Toast.LENGTH_LONG).show();
                 Log.d("PREFERENCES", "DarkTheme aktiviert!");
+                /* Nutzer aktualisieren */
+                oldUser.setDarkThemeActive(true);
+                MainActivity.setDarkTheme(true);
+
             } else {
                 Toast.makeText(getActivity(), "LightTheme aktiviert!", Toast.LENGTH_LONG).show();
                 Log.d("PREFERENCES", "LightTheme aktiviert!");
+                /* Nutzer aktualisieren */
+                oldUser.setDarkThemeActive(false);
+                MainActivity.setDarkTheme(false);
             }
         } else {
             Log.d("PREFERENCES", "Unbekannte Aktion ausgeführt!");
         }
+
+        dao.update(MainActivity.getActiveUser(), oldUser);
     }
 
     @Override
