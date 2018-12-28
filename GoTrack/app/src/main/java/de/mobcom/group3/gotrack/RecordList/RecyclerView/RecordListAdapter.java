@@ -62,26 +62,10 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Route item = records.get(position);
+        /* ID anzeigen */
         holder.id.setText("" + (position + 1));
-        holder.name.setText(item.getName());
 
-        TextView recordDistance = holder.distance;
-        double distance = Math.round(records.get(position).getDistance());
-        if (distance >= 1000) {
-            String d = "" + distance / 1000L;
-            recordDistance.setText(d.replace('.', ',') + " km |");
-        } else {
-            recordDistance.setText((int) distance + " m |");
-        }
-
-        TextView recordTime = holder.time;
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        df.setTimeZone(tz);
-        String time = df.format(new Date(records.get(position).getTime() * 1000));
-        recordTime.setText(time);
-
-        // TODO: Dynamische Implementation des Typen anhand von Datenbankwerten...
+        /* Typ symbolisieren */
         switch(item.getType()){
             case 0:
                 holder.type.setImageResource(R.drawable.activity_running_record_list);
@@ -93,6 +77,27 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                 holder.type.setImageResource(R.drawable.activity_caring_record_list);
                 break;
         }
+
+        /* Name anzeigen */
+        holder.name.setText(item.getName());
+
+        /* Distanz anzeigen */
+        TextView recordDistance = holder.distance;
+        double distance = Math.round(records.get(position).getDistance());
+        if (distance >= 1000) {
+            String d = "" + distance / 1000L;
+            recordDistance.setText(d.replace('.', ',') + " km |");
+        } else {
+            recordDistance.setText((int) distance + " m |");
+        }
+
+        /* Zeit anzeigen */
+        TextView recordTime = holder.time;
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        df.setTimeZone(tz);
+        String time = df.format(new Date(records.get(position).getTime() * 1000));
+        recordTime.setText(time);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

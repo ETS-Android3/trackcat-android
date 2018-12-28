@@ -45,7 +45,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         UserDAO dao = new UserDAO(getActivity());
         User oldUser = dao.read(MainActivity.getActiveUser());
 
-        /*Wechsel beim Anzeigen der Hilfreichen Tipps*/
+        /* Wechsel beim Anzeigen der Hilfreichen Tipps */
         if (preference instanceof CheckBoxPreference) {
 
             if (((CheckBoxPreference) preference).isChecked()) {

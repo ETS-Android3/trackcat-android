@@ -39,8 +39,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private PermissionManager permissionManager = new PermissionManager() {
-    };
+    private PermissionManager permissionManager = new PermissionManager() {};
     final int NOTIFICATION_ID = 100;
     private DrawerLayout mainDrawer;
     private NavigationView navigationView;
@@ -149,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             userDAO.create(initialUser);
         }
 
-        // TODO Profilwechsel
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         addItemsToSpinner();
 

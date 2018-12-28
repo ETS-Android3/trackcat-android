@@ -47,11 +47,12 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         View view = inflater.inflate(R.layout.summary_list_item, parent, false);
         LinearLayout recordItem = view.findViewById(R.id.record_one_item);
 
+        /* ID anzeigen */
         TextView recordId = recordItem.findViewById(R.id.record_id);
         recordId.setText("" + (position + 1));
 
+        /* Typ symbolisieren */
         ImageView recordType = recordItem.findViewById(R.id.activity_type);
-        // TODO: Dynamische Implementation des Typen anhand von Datenbankwerten...
         switch(records.get(position).getType()){
             case 0:
                 recordType.setImageResource(R.drawable.activity_running_record_list);
@@ -64,9 +65,11 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 break;
         }
 
+        /* Name anzeigen */
         TextView recordName = recordItem.findViewById(R.id.record_name);
         recordName.setText(records.get(position).getName());
 
+        /* Distanz anzeigen */
         TextView recordDistance = recordItem.findViewById(R.id.record_distance);
         double distance = Math.round(records.get(position).getDistance());
         if (distance >= 1000) {
@@ -76,6 +79,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
             recordDistance.setText((int) distance + " m |");
         }
 
+        /* Zeit anzeigen */
         TextView recordTime = recordItem.findViewById(R.id.record_time);
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         TimeZone tz = TimeZone.getTimeZone("UTC");
