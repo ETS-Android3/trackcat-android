@@ -52,9 +52,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
 
         ImageView recordType = recordItem.findViewById(R.id.activity_type);
         // TODO: Dynamische Implementation des Typen anhand von Datenbankwerten...
-        //switch(item.getType()){
-        int type = 0;
-        switch (type) {
+        switch(records.get(position).getType()){
             case 0:
                 recordType.setImageResource(R.drawable.activity_running_record_list);
                 break;
