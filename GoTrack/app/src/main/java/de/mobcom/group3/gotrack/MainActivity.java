@@ -71,8 +71,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return hints;
     }
 
+    public static void setHints(boolean activeHints) {
+        hints=activeHints;
+    }
+
     public static boolean getDarkTheme() {
         return darkTheme;
+    }
+
+    public static void setDarkTheme(boolean activeDarkTheme) {
+        darkTheme=activeDarkTheme;
     }
 
     @Override
@@ -137,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
                     null);
             initialUser.setActive(true);
+            initialUser.setHintsActive(true);
             userDAO.create(initialUser);
         }
 
@@ -166,8 +175,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             spinnerAccountIcons.add(users.get(i).getImage());
             if (users.get(i).isActive()) {
                 activeUser = users.get(i).getId();
-                hints = true;
-                darkTheme = true;
+                hints = users.get(i).isHintsActive();
+                darkTheme = users.get(i).isDarkThemeActive();
                 selectedID = i;
                 findActiveUser = true;
             }
@@ -215,6 +224,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         user.setLastName(users.get(i).getLastName());
                         user.setMail(users.get(i).getMail());
                         user.setImage(users.get(i).getImage());
+                        user.setHintsActive(users.get(i).isHintsActive());
+                        user.setDarkThemeActive(users.get(i).isDarkThemeActive());
                         user.setActive(true);
                         userDAO.update(users.get(i).getId(), user);
 
@@ -227,6 +238,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         /* Nutzerwechsel in globaler Variable */
                         activeUser = users.get(i).getId();
+                        hints = users.get(i).isHintsActive();
+                        darkTheme = users.get(i).isDarkThemeActive();
                         if (hints) {
                             Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
                         }

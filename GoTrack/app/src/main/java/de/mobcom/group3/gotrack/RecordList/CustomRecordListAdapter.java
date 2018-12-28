@@ -51,7 +51,20 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         recordId.setText("" + (position + 1));
 
         ImageView recordType = recordItem.findViewById(R.id.activity_type);
-        recordType.setImageResource(R.drawable.activity_running_record_list);
+        // TODO: Dynamische Implementation des Typen anhand von Datenbankwerten...
+        //switch(item.getType()){
+        int type = 0;
+        switch (type) {
+            case 0:
+                recordType.setImageResource(R.drawable.activity_running_record_list);
+                break;
+            case 1:
+                recordType.setImageResource(R.drawable.activity_biking_record_list);
+                break;
+            case 2:
+                recordType.setImageResource(R.drawable.activity_caring_record_list);
+                break;
+        }
 
         TextView recordName = recordItem.findViewById(R.id.record_name);
         recordName.setText(records.get(position).getName());

@@ -19,8 +19,8 @@ import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
-import de.mobcom.group3.gotrack.RecyclerView.RecordListAdapter;
-import de.mobcom.group3.gotrack.RecyclerView.RecyclerItemTouchHelper;
+import de.mobcom.group3.gotrack.RecordList.RecyclerView.RecordListAdapter;
+import de.mobcom.group3.gotrack.RecordList.RecyclerView.RecyclerItemTouchHelper;
 
 public class RecordListFragment extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
