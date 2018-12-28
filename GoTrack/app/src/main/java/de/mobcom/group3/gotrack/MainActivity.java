@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static int activeUser;
     private static boolean hints;
     private static boolean darkTheme;
+    private boolean createInitialUser =false;
     UserDAO userDAO;
 
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -146,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             initialUser.setActive(true);
             initialUser.setHintsActive(true);
             userDAO.create(initialUser);
+            createInitialUser=true;
         }
 
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
@@ -228,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         userDAO.update(users.get(i).getId(), user);
 
                         /* Alten Nutzer deaktivieren */
-                        if (deactivateOldUser) {
+                        if (deactivateOldUser && !createInitialUser) {
                             User oldUser = userDAO.read(activeUser);
                             oldUser.setActive(false);
                             userDAO.update(activeUser, oldUser);
