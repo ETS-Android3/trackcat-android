@@ -1,4 +1,4 @@
-package de.mobcom.group3.gotrack.RecyclerView;
+package de.mobcom.group3.gotrack.RecordList.RecyclerView;
 
 import android.content.Context;
 import android.location.Location;
