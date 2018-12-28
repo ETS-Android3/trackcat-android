@@ -88,18 +88,21 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 /*Daten holen*/
                 ArrayList<Location> locations = records.get(position).getLocations();
                 int size;
+                int run;
                 /*Überprüfung ob zu wenig Daten existieren*/
                 boolean fillArguments = false;
-                if (locations.size() > 60) {
+                if (locations!=null && locations.size() > 60) {
                     size = locations.size() / 10;
+                    run=locations.size();
                 } else {
                     size = 5;
+                    run=0;
                     fillArguments = true;
                 }
                 int n = 0;
                 double[] speedValues = new double[size + 1];
                 double[] altitudeValues = new double[size + 1];
-                for (int i = 0; i < locations.size(); i += 10) {
+                for (int i = 0; i < run; i += 10) {
 
                     Location location = locations.get(i);
                     speedValues[n] = location.getSpeed() * 3.931;
@@ -122,7 +125,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 }
 
                 Log.d("Schleifenwerte", "Size: " + size);
-                Log.d("Schleifenwerte", "Locationsize: " + locations.size());
+                Log.d("Schleifenwerte", "Locationsize: " + run);
 
                 /*Neues Fragment erstellen*/
                 Bundle bundle = new Bundle();
