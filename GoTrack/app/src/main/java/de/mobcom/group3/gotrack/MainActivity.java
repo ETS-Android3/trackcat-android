@@ -224,6 +224,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         user.setLastName(users.get(i).getLastName());
                         user.setMail(users.get(i).getMail());
                         user.setImage(users.get(i).getImage());
+                        user.setHintsActive(users.get(i).isHintsActive());
+                        user.setDarkThemeActive(users.get(i).isDarkThemeActive());
                         user.setActive(true);
                         userDAO.update(users.get(i).getId(), user);
 
@@ -236,6 +238,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         /* Nutzerwechsel in globaler Variable */
                         activeUser = users.get(i).getId();
+                        hints = users.get(i).isHintsActive();
+                        darkTheme = users.get(i).isDarkThemeActive();
                         if (hints) {
                             Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
                         }
