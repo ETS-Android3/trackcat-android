@@ -71,6 +71,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return hints;
     }
 
+    public static void setHints(boolean activeHints) {
+        hints=activeHints;
+    }
+
     public static boolean getDarkTheme() {
         return darkTheme;
     }
@@ -137,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
                     null);
             initialUser.setActive(true);
+            initialUser.setHintsActive(true);
             userDAO.create(initialUser);
         }
 
@@ -166,8 +171,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             spinnerAccountIcons.add(users.get(i).getImage());
             if (users.get(i).isActive()) {
                 activeUser = users.get(i).getId();
-                hints = true;
-                darkTheme = true;
+                hints = users.get(i).isHintsActive();
+                darkTheme = users.get(i).isDarkThemeActive();
                 selectedID = i;
                 findActiveUser = true;
             }

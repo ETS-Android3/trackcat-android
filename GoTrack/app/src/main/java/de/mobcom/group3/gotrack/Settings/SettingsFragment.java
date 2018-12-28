@@ -7,6 +7,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.*;
 import android.util.Log;
 import android.widget.Toast;
+
+import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
+import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
@@ -37,6 +40,29 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
+
+        /*Wechsel beim Anzeigen der Hilfreichen Tipps*/
+        if (preference instanceof CheckBoxPreference) {
+
+            /* Data Access Object (DAO) */
+            UserDAO dao = new UserDAO(getActivity());
+            User oldUser = dao.read(MainActivity.getActiveUser());
+
+            if (((CheckBoxPreference) preference).isChecked()) {
+                Toast.makeText(getActivity(), "Hilfreiche Tipps aktiviert!", Toast.LENGTH_LONG).show();
+                /* Nutzer aktualisieren */
+                oldUser.setHintsActive(true);
+                MainActivity.setHints(true);
+
+            } else {
+                Toast.makeText(getActivity(), "Hilfreiche Tipps deaktiviert!", Toast.LENGTH_LONG).show();
+                /* Nutzer aktualisieren */
+                oldUser.setHintsActive(false);
+                MainActivity.setHints(false);
+            }
+
+            dao.update(MainActivity.getActiveUser(), oldUser);
+        }
         /* Wechsel des Themes */
         if (preference instanceof SwitchPreference) {
             Log.d("PREFERENCES", "Wechsel des Themes!");
