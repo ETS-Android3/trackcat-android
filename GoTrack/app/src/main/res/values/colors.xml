@@ -15,4 +15,7 @@
     <color name="colorGreyLight">#2c3a41</color>
     <color name="colorGreyDark">#232f34</color>
     <color name="colorGreyAccent">#F9AA33</color>
+
+    <!-- REMOVE COLOR RECORDS -->
+    <color name="bg_row_background">#fa315b</color>
 </resources>

@@ -8,6 +8,8 @@ public class User {
     private String firstName;
     private String lastName;
     private boolean isActive;
+    private boolean darkThemeActive; // true for dark, false for light theme
+    private boolean hintsActive;
     private int id;
     private String eMail;
     private byte[] image;
@@ -25,13 +27,16 @@ public class User {
      * @param eMail of type string
      * @param image of type byte array
      */
-    public User(int id, String firstName, String lastName, int active, String eMail, byte[] image) {
+    public User(int id, String firstName, String lastName, int active, int themeActive, int hintsActive, String eMail,
+                byte[] image) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.eMail = eMail;
         this.image = image;
-        this.setActive(active);
+        this.setActiveForDB(active);
+        this.setDarkThemeActiveDB(themeActive);
+        this.setHintsActiveDB(hintsActive);
     }
 
     /**
@@ -146,12 +151,54 @@ public class User {
     }
 
     /**
-     * Setter to decide if user is currently active user or not
-     * Integer value is necessary due to SQLite Database constraint.
-     * SQLite does not implement boolean values natively as true or false but only as integer.
-     * @param active int value '1' for true and '0' for false
+     * Setter to decide if user is currently active user or not for UI purposes
+     * @param active boolean value
      */
-    public void setActive(int active) {
-        isActive = active == 1;
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public void setActiveForDB(int active) {
+        this.isActive = active == 1;
+    }
+
+    public boolean isDarkThemeActive() {
+        return darkThemeActive;
+    }
+
+    public int isDarkThemeActiveDB() {
+        if(darkThemeActive) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public void setDarkThemeActive(boolean isDarkTheme) {
+        this.darkThemeActive = isDarkTheme;
+    }
+
+    public void setDarkThemeActiveDB(int theme) {
+        this.darkThemeActive = theme == 1;
+    }
+
+    public boolean isHintsActive() {
+        return hintsActive;
+    }
+
+    public int isHintsActiveDB() {
+        if(hintsActive) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public void setHintsActive(boolean hintsActive) {
+        this.hintsActive = hintsActive;
+    }
+
+    public void setHintsActiveDB(int hint) {
+        this.hintsActive = hint == 1;
     }
 }

@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "de.mobcom.group3.gotrack"
-        minSdkVersion 16
+        minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -21,8 +21,13 @@ android {
         }
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // modification to run tests on database
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 
@@ -31,7 +36,7 @@ ext {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:${supportLibVersion}"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation "com.android.support:support-v4:${supportLibVersion}"
@@ -40,25 +45,24 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation "com.android.support:design:${supportLibVersion}"
-
     implementation 'org.osmdroid:osmdroid-android:6.0.2'
     implementation "com.android.support:support-compat:${supportLibVersion}"
-
     implementation "com.android.support:preference-v7:${supportLibVersion}"
     implementation "com.android.support:preference-v14:${supportLibVersion}"
-
-    implementation "com.androidplot:androidplot-core:1.5.6"
-    implementation "de.hdodenhof:circleimageview:1.3.0"
+    implementation 'com.androidplot:androidplot-core:1.5.6'
+    implementation 'de.hdodenhof:circleimageview:1.3.0'
     implementation "com.android.support:design:${supportLibVersion}"
-
     // JSON Tool from Google
     implementation 'com.google.code.gson:gson:2.8.2'
-
     // Add PermissionManager Libary
     implementation 'com.github.karanchuri:PermissionManager:0.1.0'
-
     // SQLite Debugging Tool
     // Im Terminal "adb forward tcp:8080 tcp:8080" eingeben
     // Im Logcat nach "dbdebug" suchen und Link anklicken
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+
+    implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
+
+    // Library to run tests on the database
+    testImplementation 'org.robolectric:robolectric:3.0'
 }

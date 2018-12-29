@@ -1,5 +1,7 @@
 package de.mobcom.group3.gotrack.Recording;
 
+// testPush
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -169,7 +171,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
 
     @TargetApi(Build.VERSION_CODES.N)
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @SuppressLint({"HandlerLeak", "ClickableViewAccessibility"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -305,7 +306,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
         mCompassOverlay = new CompassOverlay(Objects.requireNonNull(getContext()),
                 new InternalCompassOrientationProvider(Objects.requireNonNull(getActivity())), mMapView);
-
         mMapView.getOverlays().add(mCompassOverlay);
 
         /*
@@ -413,9 +413,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
         /*start Tracking*/// TODO: 02.11.2018
         //startTracking();
-        if (timer != null)
-
-        {
+        if (timer != null) {
             timer.sendTime();
         }
 
@@ -429,11 +427,8 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
         // TODO Sensor setzen
         SensorManager sensorManager = (SensorManager) MainActivity.getInstance().getSystemService(Context.SENSOR_SERVICE);
-
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
-
 
         return view;
     }
@@ -449,7 +444,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         model.setTime(timer.getTime());
         model.setRideTime(rideTimer.getTime());
         model.setDistance(kmCounter.getAmount());
+        int type = SpeedAverager.getRouteType(kmhAverager.getAvgSpeed());
+        model.setType(type);
         model.setUserID(MainActivity.getActiveUser());
+        model.setDate(System.currentTimeMillis());
         Date currentTime = Calendar.getInstance().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm:ss");
         String dateStr = simpleDateFormat.format(currentTime);
@@ -465,6 +463,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
             /* Route auf Karte zeichnen */
             drawRoute(alertView);
+
+            /* Typ festlegen */
+            ImageView typeIcon = alertView.findViewById(R.id.fabButton);
+            typeIcon.setImageResource(SpeedAverager.getTypeIcon(type, false));
 
             /* Placeholder festlegen */
             TextView recordName = alertView.findViewById(R.id.record_name);
@@ -485,7 +487,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
             Timer timerForCalc = new Timer();
             total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
         } else {
-            //TODO Implementation für Nutzer mit API <= 16
+            // TODO Implementation für Nutzer mit API <= 16
         }
 
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
@@ -629,9 +631,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         }
 
         playPause.setImageResource(R.drawable.record_pausebtn_white);
-
         issueNotification(notificationContent);
-
     }
 
     /*
@@ -640,7 +640,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
     private void issueNotification(String content) {
         /* returns to Record Page when Notification is clicked */
         Intent notificationIntent = MainActivity.getInstance().getIntent();// new Intent(MainActivity.getInstance().getApplicationContext(), MainActivity.class);
-        notificationIntent.putExtra("action", getResources().getString(R.string.fRecord));
+        notificationIntent.putExtra("action", MainActivity.getInstance().getResources().getString(R.string.fRecord));
         PendingIntent intent = PendingIntent.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
                 notificationIntent, 0);
 
@@ -680,7 +680,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
             mBuilder.addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play",
                     intentPlay);
         }
-
 
         // start Notification
         notificationManager.notify(MainActivity.getInstance().getNOTIFICATION_ID(), mBuilder.build());
@@ -731,12 +730,10 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         timeOfFix = location.getTime();
         Log.v("GPS-Location: ", location.toString());
 
-
         /*
          * move Map
          * */
         mMapController.setCenter(gPt);
-
 
         /*
          * set Marker for current Position
@@ -744,29 +741,9 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-      /*  try {
-            FloatingActionButton fab = view.findViewById(R.id.fabButton);
-
-            // change Icon TODO add images
-            switch (kmhAverager.getRouteType()) {
-                case 1:
-                    fab.setImageResource(R.drawable.activity_running_record);
-                    break;
-                case 2:
-                    fab.setImageResource(R.drawable.activity_biking_record);
-                    break;
-                case 3:
-                    fab.setImageResource(R.drawable.activity_caring_record);
-                    break;
-            }
-        } catch (Exception e) {
-            Log.v("GOTRACK", e.toString());
-        }*/
-        //TODO in progress.....
         try {
             FloatingActionButton fab = view.findViewById(R.id.fabButton);
-
-            fab.setImageResource(kmhAverager.getRouteType(kmhAverager.getAvgSpeed()));
+            fab.setImageResource(SpeedAverager.getTypeIcon(SpeedAverager.getRouteType(kmhAverager.getAvgSpeed()), false));
         } catch (Exception e) {
             Log.v("GOTRACK", e.toString());
         }
@@ -781,7 +758,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
                 iconAcc.setImageResource(R.drawable.ic_signal_cellular_4_bar_black_24dp);
             } else if (location.getAccuracy() < 10) {
                 iconAcc.setImageResource(R.drawable.ic_signal_cellular_3_bar_black_24dp);
-
             } else if (location.getAccuracy() < 20) {
                 iconAcc.setImageResource(R.drawable.ic_signal_cellular_2_bar_black_24dp);
             } else if (location.getAccuracy() > 30) {
@@ -790,12 +766,9 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
         } catch (NullPointerException e) {
             Log.v("GOREACK", e.toString());
-
         }
 
-
         if (isTracking) {
-
             // add Location to Model
             model.addLocation(location);
 
@@ -859,7 +832,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
                 kmh_TextView.setText(toSet);
             } catch (NullPointerException e) {
                 Log.v("GOREACK", e.toString());
-
             }
             try {
                 TextView distance_TextView = view.findViewById(R.id.distance_TextView);
@@ -867,7 +839,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
                 distance_TextView.setText(toSet);
             } catch (NullPointerException e) {
                 Log.v("GOREACK", e.toString());
-
             }
             try {
                 TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
@@ -875,7 +846,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
                 altimeter_TextView.setText(toSet);
             } catch (NullPointerException e) {
                 Log.v("GOREACK", e.toString());
-
             }
         }
     }
@@ -933,7 +903,6 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
             float[] orientation = new float[3];
 
             SensorManager.getOrientation(rotationMatrix, orientation);
-
 
             GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
             float trueNorth = orientation[0] + gf.getDeclination();

@@ -1,5 +1,6 @@
 package de.mobcom.group3.gotrack.Dashboard;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import de.mobcom.group3.gotrack.Charts.BarChartFragment;
 import de.mobcom.group3.gotrack.Charts.LineChartFragment;
+import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
+import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.CurrentPageIndicator;
@@ -39,11 +42,20 @@ public class PageViewerCharts extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_page_viewer_charts, container, false);
 
-        /* create Fragments for ViewPager */
-        BarChartFragment barFrag = new BarChartFragment();
-        LineChartFragment lineFrag = new LineChartFragment();
+        /*Daten aus Datenbank auslesen*/
+     //   RouteDAO dao = new RouteDAO(MainActivity.getInstance());
+       // List<Route> records = dao.readAll(MainActivity.getActiveUser());
+        double[] values = {0, 1, 2, 3, 5, 5, 6, 7, 0};
 
-        listFragments.add(lineFrag);
+        /*Bundle erstellen und Werte dem Fragment übergeben*/
+        Bundle bundle = new Bundle();
+        bundle.putDoubleArray("array", values);
+        BarChartFragment barFrag = new BarChartFragment();
+        barFrag.setArguments(bundle);
+        
+        //LineChartFragment lineFrag = new LineChartFragment();
+
+        //listFragments.add(lineFrag);
         listFragments.add(barFrag);
 
         // Instantiate a ViewPager and a PagerAdapter.

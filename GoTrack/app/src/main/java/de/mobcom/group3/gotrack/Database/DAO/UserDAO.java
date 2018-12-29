@@ -3,62 +3,70 @@ package de.mobcom.group3.gotrack.Database.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import com.google.gson.Gson;
 import de.mobcom.group3.gotrack.Database.Models.User;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.UserEntry.*;
 
 // toDo: write javaDoc and comments
 
 public class UserDAO {
-    private SQLiteDatabase writableDb;
-    private SQLiteDatabase readableDb;
+    private final Context context;
     private Gson gson = new Gson();
     private Type imExportType = User.class;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public UserDAO(Context context) {
-        DbHelper dbHelper = new DbHelper(context);
-        writableDb = dbHelper.getInstance(true);
-        readableDb = dbHelper.getInstance(false);
+        this.context = context;
     }
 
     public void create(User user) {
-        user.setId((int) writableDb.insert(TABLE_NAME, null, valueGenerator(user)));
+        DbHelper dbHelper = new DbHelper(context);
+        try {
+            user.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(user)));
+        } finally {
+            dbHelper.close();
+        }
     }
 
     public User read(int id) {
+        DbHelper dbHelper = new DbHelper(context);
         User result = new User();
-        String selection = COL_ID + " = ?";
-        String[] selectionArgs = {String.valueOf(id)};
-        String[] projection = {COL_ID, COL_FORENAME, COL_LASTNAME, COL_MAIL, COL_ISACTIVE, COL_IMAGE};
-        Cursor cursor = readableDb.query(
-                TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
-
-        if (cursor.moveToFirst()) {
-            result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
-            result.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(COL_FORENAME)));
-            result.setLastName(cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)));
-            result.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)));
-            result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));
-            result.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)));
+        try {
+            String selection = COL_ID + " = ?";
+            String[] selectionArgs = {String.valueOf(id)};
+            String[] projection = {
+                    COL_ID,
+                    COL_FIRSTNAME,
+                    COL_LASTNAME,
+                    COL_MAIL,
+                    COL_ISACTIVE,
+                    COL_THEME,
+                    COL_HINT,
+                    COL_IMAGE };
+            try (Cursor cursor = dbHelper.getReadableDatabase().query(
+                    TABLE_NAME,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null )) {
+                if (cursor.moveToFirst()) {
+                    result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
+                    result.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(COL_FIRSTNAME)));
+                    result.setLastName(cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)));
+                    result.setActiveForDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)));
+                    result.setHintsActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)));
+                    result.setDarkThemeActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)));
+                    result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));
+                    result.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)));
+                }
+            }
+        } finally {
+            dbHelper.close();
         }
-        cursor.close();
-
         return result;
     }
 
@@ -70,55 +78,78 @@ public class UserDAO {
      * @param orderArgs String[] { column to sort, ASC / DESC } use COL_ID or COL_NAME as columns
      * @return List of all users in database
      */
-    public List<User> readAll(String[] orderArgs) {
+    private List<User> readAll(String[] orderArgs) {
+        DbHelper dbHelper = new DbHelper(context);
         ArrayList<User> result = new ArrayList<>();
-        String[] projection = {COL_ID, COL_FORENAME, COL_LASTNAME, COL_MAIL, COL_ISACTIVE, COL_IMAGE};
-
-        Cursor cursor = readableDb.query(
-                TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                orderArgs[0] + " " + orderArgs[1]
-        );
-        if (cursor.moveToFirst())
-            do {
-                result.add(new User(
-                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COL_FORENAME)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)),
-                        cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE))));
-            } while (cursor.moveToNext());
-        cursor.close();
-
+        try {
+            String[] projection = {
+                    COL_ID,
+                    COL_FIRSTNAME,
+                    COL_LASTNAME,
+                    COL_MAIL,
+                    COL_ISACTIVE,
+                    COL_IMAGE,
+                    COL_HINT,
+                    COL_THEME };
+            try (Cursor cursor = dbHelper.getReadableDatabase().query(
+                    TABLE_NAME,
+                    projection,
+                    null,
+                    null,
+                    null,
+                    null,
+                    orderArgs[0] + " " + orderArgs[1] )) {
+                if (cursor.moveToFirst())
+                    do {
+                        result.add(new User(
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
+                                cursor.getString(cursor.getColumnIndexOrThrow(COL_FIRSTNAME)),
+                                cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)),
+                                cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)),
+                                cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE))));
+                    } while (cursor.moveToNext());
+            }
+        } finally {
+            dbHelper.close();
+        }
         return result;
     }
 
     public void update(int id, User user) {
-        String selection = COL_ID + " = ?";
-        String[] selectionArgs = {String.valueOf(id)};
-        valueGenerator(user);
-        user.setId(writableDb.update(TABLE_NAME, valueGenerator(user), selection, selectionArgs));
+        DbHelper dbHelper = new DbHelper(context);
+        try {
+            String selection = COL_ID + " = ?";
+            String[] selectionArgs = {String.valueOf(id)};
+            user.setId(dbHelper.getWritableDatabase().update(TABLE_NAME, valueGenerator(user), selection, selectionArgs));
+        } finally {
+            dbHelper.close();
+        }
     }
 
     private ContentValues valueGenerator(User user) {
         ContentValues values = new ContentValues();
-        values.put(COL_FORENAME, user.getFirstName());
+        values.put(COL_FIRSTNAME, user.getFirstName());
         values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_MAIL, user.getMail());
         values.put(COL_ISACTIVE, user.isActiveForDB());
+        values.put(COL_HINT, user.isHintsActiveDB());
+        values.put(COL_THEME, user.isDarkThemeActiveDB());
         values.put(COL_IMAGE, user.getImage());
         return values;
     }
 
     public void delete(User user) {
-        String selection = COL_ID + " LIKE ?";
-        String[] selectionArgs = {String.valueOf(user.getId())};
-        writableDb.delete(TABLE_NAME, selection, selectionArgs);
+        DbHelper dbHelper = new DbHelper(context);
+        try {
+            String selection = COL_ID + " LIKE ?";
+            String[] selectionArgs = {String.valueOf(user.getId())};
+            dbHelper.getWritableDatabase().delete(TABLE_NAME, selection, selectionArgs);
+        } finally {
+            dbHelper.close();
+        }
     }
 
     public void importUserFromJson(String jsonString) {

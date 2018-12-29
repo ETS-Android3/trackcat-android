@@ -25,7 +25,9 @@ import android.widget.Toast;
 import com.karan.churi.PermissionManager.PermissionManager;
 
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
+import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
+import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.RecordList.RecordDetailsInformationFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
@@ -38,8 +40,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private PermissionManager permissionManager = new PermissionManager() {
-    };
+    private PermissionManager permissionManager = new PermissionManager() {};
     final int NOTIFICATION_ID = 100;
     private DrawerLayout mainDrawer;
     private NavigationView navigationView;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static int activeUser;
     private static boolean hints;
     private static boolean darkTheme;
+    private boolean createInitialUser =false;
     UserDAO userDAO;
 
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -70,8 +72,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return hints;
     }
 
+    public static void setHints(boolean activeHints) {
+        hints=activeHints;
+    }
+
     public static boolean getDarkTheme() {
         return darkTheme;
+    }
+
+    public static void setDarkTheme(boolean activeDarkTheme) {
+        darkTheme=activeDarkTheme;
     }
 
     @Override
@@ -135,11 +145,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (userList.size() == 0) {
             User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
                     null);
-            initialUser.setActive(1);
+            initialUser.setActive(true);
+            initialUser.setHintsActive(true);
             userDAO.create(initialUser);
+            createInitialUser=true;
         }
 
-        // TODO Profilwechsel
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         addItemsToSpinner();
 
@@ -165,8 +176,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             spinnerAccountIcons.add(users.get(i).getImage());
             if (users.get(i).isActive()) {
                 activeUser = users.get(i).getId();
-                hints = true;
-                darkTheme = true;
+                hints = users.get(i).isHintsActive();
+                darkTheme = users.get(i).isDarkThemeActive();
                 selectedID = i;
                 findActiveUser = true;
             }
@@ -176,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!findActiveUser) {
             activeUser = users.get(selectedID).getId();
             User newActiveUser = userDAO.read(activeUser);
-            newActiveUser.setActive(1);
+            newActiveUser.setActive(true);
             userDAO.update(activeUser, newActiveUser);
         }
         final boolean deactivateOldUser = findActiveUser;
@@ -214,18 +225,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         user.setLastName(users.get(i).getLastName());
                         user.setMail(users.get(i).getMail());
                         user.setImage(users.get(i).getImage());
-                        user.setActive(1);
+                        user.setHintsActive(users.get(i).isHintsActive());
+                        user.setDarkThemeActive(users.get(i).isDarkThemeActive());
+                        user.setActive(true);
                         userDAO.update(users.get(i).getId(), user);
 
                         /* Alten Nutzer deaktivieren */
-                        if (deactivateOldUser) {
+                        if (deactivateOldUser && !createInitialUser) {
                             User oldUser = userDAO.read(activeUser);
-                            oldUser.setActive(0);
+                            oldUser.setActive(false);
                             userDAO.update(activeUser, oldUser);
                         }
 
                         /* Nutzerwechsel in globaler Variable */
                         activeUser = users.get(i).getId();
+                        hints = users.get(i).isHintsActive();
+                        darkTheme = users.get(i).isDarkThemeActive();
                         if (hints) {
                             Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
                         }

@@ -15,6 +15,8 @@
     <string name="fRecordDetailsList">RECORD_DETAILS_LIST</string>
     <string name="fSettings">SETTINGS</string>
     <string name="fPageViewer">PAGE_VIEWER</string>
+    <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
+    <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
 
     <!-- TODO: Preferences Page "SettingsFragment" -->
     <string name="category1">Allgemeines</string>
