@@ -1,7 +1,5 @@
 package de.mobcom.group3.gotrack.Recording;
 
-// testPush
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -61,7 +59,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 /*
  * Fragment for Track recording. includes GPS Locator and Statistics
@@ -365,13 +362,11 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
                         /* timer for Progressbar */
                         startTimer();
 
-                        /*
-                         * todo
-                         * Toast for user help
-                         * */
-                        Toast toast = Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Halten für speichern", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.TOP, 0, 0);
-                        toast.show();
+                        if (MainActivity.getHints()) {
+                            Toast toast = Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Halten für speichern", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.TOP, 0, 0);
+                            toast.show();
+                        }
                     }
                     /*
                      * when Button is released

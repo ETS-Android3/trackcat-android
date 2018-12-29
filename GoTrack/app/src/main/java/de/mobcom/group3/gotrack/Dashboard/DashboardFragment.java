@@ -41,7 +41,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fabButton:
-                Toast.makeText(getContext(), "Wechseln auf Aufnahme", Toast.LENGTH_LONG).show();
+                if (MainActivity.getHints()) {
+                    Toast.makeText(getContext(), "Wechseln auf Aufnahme", Toast.LENGTH_LONG).show();
+                }
                 RecordFragment recordFragment = MainActivity.getInstance().getRecordFragment();
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.mainFrame, recordFragment);

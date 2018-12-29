@@ -45,7 +45,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         this.listImages = profileImages;
         this.listNames = profileNames;
         this.listEmails = profileEmails;
-        this.userDAO= new UserDAO(MainActivity.getInstance());
+        this.userDAO = new UserDAO(MainActivity.getInstance());
 
         inflater = (LayoutInflater) context1
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -140,11 +140,15 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
                     List<User> users = userDAO.readAll();
                     User user = userDAO.read(MainActivity.getActiveUser());
-                    if (users.size()>1) {
+                    if (users.size() > 1) {
                         userDAO.delete(user);
-                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Löschen von: " + user.getFirstName() + " " + user.getLastName(), Toast.LENGTH_LONG).show();
-                    }else{
-                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), "" + user.getFirstName() + " " + user.getLastName() +" konnte nicht gelöscht werden, da sonst keine Nutzer mehr existieren.", Toast.LENGTH_LONG).show();
+                        if (MainActivity.getHints()) {
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Löschen von: " + user.getFirstName() + " " + user.getLastName(), Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        if (MainActivity.getHints()) {
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "" + user.getFirstName() + " " + user.getLastName() + " konnte nicht gelöscht werden, da sonst keine Nutzer mehr existieren.", Toast.LENGTH_LONG).show();
+                        }
                     }
                     /* Ausblenden des Spinners */
                     DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
@@ -156,7 +160,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     } catch (Exception e) {
                     }
                     /*Aktualisieren des Spinners*/
-                   MainActivity.getInstance().addItemsToSpinner();
+                    MainActivity.getInstance().addItemsToSpinner();
                 }
             });
         }
@@ -167,7 +171,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
         ImageView profileImage = profileItem.findViewById(R.id.profile_image);
         byte[] imgRessource = listImages.get(position);
         Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.raw.default_profile);
-        if (imgRessource != null && imgRessource.length > 0){
+        if (imgRessource != null && imgRessource.length > 0) {
             bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
         }
         profileImage.setImageBitmap(bitmap);
