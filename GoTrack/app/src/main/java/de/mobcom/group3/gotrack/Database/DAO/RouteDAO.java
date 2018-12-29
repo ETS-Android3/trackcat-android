@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 
