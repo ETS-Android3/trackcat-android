@@ -1,4 +1,4 @@
-package de.mobcom.group3.gotrack.RecordList.RecyclerView;
+package de.mobcom.group3.gotrack.RecordList.SwipeControll;
 
 import android.content.Context;
 import android.location.Location;
@@ -43,9 +43,6 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
             type = view.findViewById(R.id.activity_type);
             distance = view.findViewById(R.id.record_distance);
             time = view.findViewById(R.id.record_time);
-
-            viewBackground = view.findViewById(R.id.view_background);
-            viewForeground = view.findViewById(R.id.view_foreground);
         }
     }
 
