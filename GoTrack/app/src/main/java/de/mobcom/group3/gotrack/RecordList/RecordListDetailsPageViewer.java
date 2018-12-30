@@ -40,14 +40,14 @@ public class RecordListDetailsPageViewer extends Fragment {
         View view = inflater.inflate(R.layout.fragment_page_viewer_charts, container, false);
 
         // TODO muss funktionstüchtig eingebaut werden
-        /* Anzeige der allgemeinen Informationen
-        int id =getArguments().getInt("id");
+        /* Anzeige der allgemeinen Informationen */
+        int id = getArguments().getInt("id");
         Bundle bundleInformation = new Bundle();
         bundleInformation.putInt("id", id);
 
         RecordDetailsInformationFragment recordDetailsInformationFragment = new RecordDetailsInformationFragment();
         recordDetailsInformationFragment.setArguments(bundleInformation);
-        listFragments.add(recordDetailsInformationFragment);*/
+        listFragments.add(recordDetailsInformationFragment);
 
         /* Anzeige der Charts */
         double[] speedValues = getArguments().getDoubleArray("speedArray");
