@@ -35,6 +35,8 @@ public class RecordDetailsInformationFragment extends Fragment {
     View view;
     ArrayList<GeoPoint> GPSData = new ArrayList<>();
     private double height = 0;
+    private double altitudeUp = 0;
+    private double altitudeDown = 0;
     private double maxSpeed = 0;
     ArrayList<Location> locations;
 
@@ -49,6 +51,7 @@ public class RecordDetailsInformationFragment extends Fragment {
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         Route record = dao.read(id);
         locations = record.getLocations();
+        double prevDistance=0;
 
         /*Auslesen der Locations und ermitteln der Höhe und der maximalen Geschwindigkeit*/
         for (int i = 0; i < locations.size(); i++) {
@@ -57,10 +60,18 @@ public class RecordDetailsInformationFragment extends Fragment {
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
             GPSData.add(gPt);
 
+            double distance = record.getLocations().get(i - 1).getAltitude() - location.getAltitude();
+
             if (i > 1) {
-                double distance = record.getLocations().get(i - 1).getAltitude() - location.getAltitude();
                 if (distance < 0) {
                     distance = distance * -1;
+                }
+
+                /* Berechnung der Höhenmeter */
+                if (distance>prevDistance){
+                    altitudeUp=altitudeUp+distance;
+                }else{
+                    altitudeDown=altitudeDown+distance;
                 }
                 height = height + distance;
 
@@ -68,7 +79,7 @@ public class RecordDetailsInformationFragment extends Fragment {
                     maxSpeed = location.getSpeed();
                 }
             }
-
+            prevDistance=distance;
         }
 
         /*DateFormat setzen*/
