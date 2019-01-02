@@ -18,7 +18,7 @@ final class DbContract {
                     RouteEntry.COL_TYPE + " INTEGER, " +
                     RouteEntry.COL_RIDETIME + " LONG, " +
                     RouteEntry.COL_DISTANCE + " DOUBLE, " +
-                    RouteEntry.COL_LOCATIONS + " TEXT) ";
+                    RouteEntry.COL_LOCATIONS + " BLOB) ";
 
     static final String SQL_DELETE_ROUTE_TABLE =
             "DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME;

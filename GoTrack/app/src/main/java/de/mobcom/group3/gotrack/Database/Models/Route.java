@@ -1,7 +1,6 @@
 package de.mobcom.group3.gotrack.Database.Models;
 
 import android.location.Location;
-import android.net.http.SslCertificate;
 
 import java.util.ArrayList;
 
