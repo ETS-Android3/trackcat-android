@@ -44,7 +44,6 @@ public class RecordDetailsChartsFragment extends Fragment {
         fragTransaction.replace(R.id.altitudeContainer, lineFragAltitude, getResources().getString(R.string.fRecordDetailsChartAltitude));
         fragTransaction.commit();
 
-
         View view = inflater.inflate(R.layout.fragment_record_details_charts, container, false);
         return view;
     }

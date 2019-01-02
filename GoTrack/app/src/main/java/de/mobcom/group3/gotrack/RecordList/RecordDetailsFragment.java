@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import de.mobcom.group3.gotrack.R;
 
 public class RecordDetailsFragment extends Fragment {
@@ -20,7 +19,7 @@ public class RecordDetailsFragment extends Fragment {
         double[] speedArray = getArguments().getDoubleArray("speedArray");
         int id = getArguments().getInt("id");
 
-        /* neues Fragment erstellen */
+        /* Neues Fragment erstellen */
         Bundle bundle = new Bundle();
         bundle.putDoubleArray("altitudeArray", altitudeArray);
         bundle.putDoubleArray("speedArray", speedArray);

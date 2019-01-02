@@ -75,7 +75,7 @@ public class RecordListFragment extends Fragment {
                 RouteDAO dao = new RouteDAO(MainActivity.getInstance());
                 dao.delete(deletedItem);
 
-                /* Snackbar mit 'Rückgängig' Funbktion anzeigen */
+                /* Snackbar mit 'Rückgängig' Funnktion anzeigen */
                 Snackbar snackbar = Snackbar.make(mainLayout, "Aufzeichnung \"" + name + "\" wurde entfernt!", Snackbar.LENGTH_LONG);
                 TextView snackbarText = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackbarText.setTextColor(Color.WHITE);
