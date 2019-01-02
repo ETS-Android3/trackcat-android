@@ -47,13 +47,13 @@ public class RecordDetailsInformationFragment extends Fragment {
         int id = getArguments().getInt("id");
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
-        /* Auslesen der werte aus der Datenbank */
+        /* Auslesen der Werte aus der Datenbank */
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         Route record = dao.read(id);
         locations = record.getLocations();
         double prevDistance = 0;
 
-        /* Auslesen der Locations und ermitteln der Höhe und der maximalen Geschwindigkeit */
+        /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
             Location location = record.getLocations().get(i);
 
