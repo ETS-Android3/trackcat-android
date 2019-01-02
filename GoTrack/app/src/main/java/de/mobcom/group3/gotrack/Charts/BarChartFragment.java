@@ -46,11 +46,15 @@ public class BarChartFragment extends Fragment {
 
 
         view = inflater.inflate(R.layout.fragment_line_chart, container, false);
-        String title = "Series1";
+        String title = "Series01";
+        String rangeTitle="km/h";
+        int color = Color.GRAY;
         double[] values = new double[0];
         if (getArguments() != null) {
             values = getArguments().getDoubleArray("array");
             title = getArguments().getString("title");
+            color = getArguments().getInt("color");
+            rangeTitle = getArguments().getString("rangeTitle");
             series1Numbers = new Number[values.length];
             for (int i = 0; i < series1Numbers.length; i++) {
                 series1Numbers[i] = (int) Math.round(values[i]);
@@ -63,6 +67,7 @@ public class BarChartFragment extends Fragment {
         // Getting in xml defined Plot
         plot = view.findViewById(R.id.linePlot);
         plot.setTitle(title);
+        plot.setRangeLabel(rangeTitle);
 
 
         // Arrays for the Plot
@@ -70,10 +75,11 @@ public class BarChartFragment extends Fragment {
 
         // Turning Arrays to XYSeries
         XYSeries series1 = new SimpleXYSeries(
-                Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
+                Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, title);
 
         // create a bar formatter with a red fill color and a white outline:
-        BarFormatter bf = new BarFormatter(Color.RED, Color.WHITE);
+
+        BarFormatter bf = new BarFormatter(color, Color.WHITE);
         // Add Series of Values to Plot (Every Value is one Bar)
         plot.addSeries(series1, bf);
 

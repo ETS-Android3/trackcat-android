@@ -35,6 +35,8 @@ public class RecordDetailsInformationFragment extends Fragment {
     View view;
     ArrayList<GeoPoint> GPSData = new ArrayList<>();
     private double height = 0;
+    private double altitudeUp = 0;
+    private double altitudeDown = 0;
     private double maxSpeed = 0;
     ArrayList<Location> locations;
 
@@ -42,25 +44,35 @@ public class RecordDetailsInformationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        int id = 1;//= getArguments().getInt("id");
+        int id = getArguments().getInt("id");
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
-     /*   *//*Auslesen der werte aus der Datenbank*//*
+        /* Auslesen der Werte aus der Datenbank */
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         Route record = dao.read(id);
         locations = record.getLocations();
+        double prevDistance = 0;
 
-        //Auslesen der Locations und ermitteln der Höhe und der maximalen Geschwindigkeit
+        /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
             Location location = record.getLocations().get(i);
 
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
             GPSData.add(gPt);
 
+            double distance = 0;
+
             if (i > 1) {
-                double distance = record.getLocations().get(i - 1).getAltitude() - location.getAltitude();
+                distance = record.getLocations().get(i - 1).getAltitude() - location.getAltitude();
                 if (distance < 0) {
-                    distance = distance * -1;
+                    distance = distance * - 1;
+                }
+
+                /* Berechnung der Höhenmeter */
+                if (distance > prevDistance) {
+                    altitudeUp = altitudeUp + distance;
+                } else {
+                    altitudeDown = altitudeDown + distance;
                 }
                 height = height + distance;
 
@@ -68,56 +80,56 @@ public class RecordDetailsInformationFragment extends Fragment {
                     maxSpeed = location.getSpeed();
                 }
             }
+            prevDistance = distance;
         }
 
-        //DateFormat setzen
+        /* DateFormat setzen */
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         TimeZone tz = TimeZone.getTimeZone("UTC");
         df.setTimeZone(tz);
 
-        //Name setzen
-        TextView name_TextView = view.findViewById(R.id.name_TextView);
+        /* Name setzen */
+        TextView recordName = view.findViewById(R.id.record_name);
         String toSet = record.getName();
-        name_TextView.setText(toSet);
+        recordName.setText(toSet);
 
-        //Average Speed setzen
-        TextView average_speed_TextView = view.findViewById(R.id.average_speed_TextView);
-        toSet = Math.round(((record.getDistance() / record.getTime()) * 60 * 60) / 100) / 10.0 + " km/h";
-        average_speed_TextView.setText(toSet);
-
-        //Real Average Speed setzen
-        TextView real_average_speed_TextView = view.findViewById(R.id.real_average_speed_TextView);
+        /* Average Speed setzen */
+        TextView averageSpeed = view.findViewById(R.id.average_speed_value);
         toSet = Math.round(((record.getDistance() / record.getRideTime()) * 60 * 60) / 100) / 10.0 + " km/h";
-        real_average_speed_TextView.setText(toSet);
+        averageSpeed.setText(toSet);
 
-        //Distance setzen
-        TextView distance_TextView = view.findViewById(R.id.distance_TextView);
+        /* Distanz setzen */
+        TextView distance = view.findViewById(R.id.distance_value);
         toSet = Math.round(record.getDistance()) / 1000.0 + " km";
-        distance_TextView.setText(toSet);
+        distance.setText(toSet);
 
-        //Altimeter setzen
-        TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
-        toSet = "± " + Math.round(height) + " m";
-        altimeter_TextView.setText(toSet);
+        /* Positive Altimeter setzen */
+        TextView positiveAltimeter = view.findViewById(R.id.altimeter_pos_value);
+        toSet = Math.round(altitudeUp) + " m";
+        positiveAltimeter.setText(toSet);
 
-        //TotalTime setzen
-        TextView total_time_TextView = view.findViewById(R.id.total_time_TextView);
+        /* Negative Altimeter setzen */
+        TextView negativeAltimeter = view.findViewById(R.id.altimeter_neg_value);
+        toSet = Math.round(altitudeUp) + " m";
+        negativeAltimeter.setText(toSet);
+
+        /* TotalTime setzen */
+        TextView totalTime = view.findViewById(R.id.total_time_value);
         String time = df.format(new Date(record.getTime() * 1000));
-        total_time_TextView.setText(time);
+        totalTime.setText(time);
 
-        //RideTime setzen
-        TextView real_time_TextView = view.findViewById(R.id.real_time_TextView);
-        time = df.format(new Date(record.getRideTime() * 1000));
-        real_time_TextView.setText(time);
+        /* RideTime setzen */
+        TextView pauseTime = view.findViewById(R.id.pause_time_value);
+        time = df.format(new Date((record.getTime() - record.getRideTime()) * 1000));
+        pauseTime.setText(time);
 
-        //MaxSpeed setzen
-        TextView max_speed_TextView = view.findViewById(R.id.max_speed_TextView);
-        toSet = (Math.round(maxSpeed * 60 * 60) / 100) / 10.0 + " km/h";
-        max_speed_TextView.setText(toSet);
+        /* MaxSpeed setzen */
+        TextView maxSpeed = view.findViewById(R.id.max_speed_value);
+        toSet = (Math.round(this.maxSpeed * 60 * 60) / 100) / 10.0 + " km/h";
+        maxSpeed.setText(toSet);
 
-        *//*Route anzeigen*//*
-
-        drawRoute();*/
+        /* Route anzeigen */
+        drawRoute();
 
         return view;
     }
@@ -130,13 +142,12 @@ public class RecordDetailsInformationFragment extends Fragment {
         MapController mMapController = (MapController) mMapView.getController();
         mMapController.setZoom(19);
 
-        /*Poliline und Marker erstellen*/
+        /* Poliline und Marker erstellen */
         GeoPoint gPt = new GeoPoint(locations.get(0).getLatitude(), locations.get(0).getLongitude());
         Marker startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
-
 
         gPt = new GeoPoint(locations.get(locations.size() - 1).getLatitude(), locations.get(locations.size() - 1).getLongitude());
         Marker stopMarker = new Marker(mMapView);
