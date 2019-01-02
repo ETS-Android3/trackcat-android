@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.List;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
+import de.mobcom.group3.gotrack.InExport.Export;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.RecordList.SwipeControll.RecordListAdapter;
@@ -93,7 +94,9 @@ public class RecordListFragment extends Fragment {
 
             @Override
             public void onShareClick(int position) {
-                Toast.makeText(getContext(), "Teilen...", Toast.LENGTH_LONG).show();
+                String file= Export.getExport().exportRoute(getContext(), (position+1));
+                Export.getExport().send(getContext(), file);
+                //Toast.makeText(getContext(), "Teilen...", Toast.LENGTH_LONG).show();
             }
         });
 
