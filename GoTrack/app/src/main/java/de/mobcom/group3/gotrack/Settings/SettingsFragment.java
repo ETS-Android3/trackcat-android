@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.*;
 import android.util.Log;
 import android.widget.Toast;
-
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
@@ -18,10 +17,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
-        // Load the Preferences from the XML file
+        /* Einstellungen aus XML Datei laden */
         addPreferencesFromResource(R.xml.fragment_settings);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        /*Anzeigen der Benutzerspezifischen Einstellungen*/
+
+        /* Anzeigen der Benutzerspezifischen Einstellungen */
         CheckBoxPreference help_messages = (CheckBoxPreference) findPreference("help_messages");
         help_messages.setChecked(MainActivity.getHints());
         SwitchPreference theme = (SwitchPreference) findPreference("dark_theme");
@@ -106,6 +106,26 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 /* Nutzer aktualisieren */
                 oldUser.setDarkThemeActive(false);
                 MainActivity.setDarkTheme(false);
+            }
+        } else if (preference instanceof ListPreference){
+            String value = ((ListPreference) preference).getValue();
+            /* Alle Aufnahmen des aktuellen Nutzers exportieren */
+            if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[0])){
+                Toast.makeText(getContext(), "Exportiere alle Aufzeichnungen von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"!", Toast.LENGTH_LONG).show();
+                // TODO: Exportieren aller Aufzeichnungen des derzeit aktiven Nutzers
+                /**
+                 * Die ID des aktuellen Nutzers kann mithilfe der in der MainActivity
+                 * liegenden Methode getActiveUser() ermittelt werden!
+                 */
+            }
+            /* Alle Nutzer exportieren */
+            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[1])){
+                Toast.makeText(getContext(), "Exportiere alle Nutzer!", Toast.LENGTH_LONG).show();
+                // TODO: Exportieren aller Nutzer
+                /**
+                 * Hier würde es am meisten Sinn machen, die Nutzer mit ihren
+                 * Aufzeichnungen zu exportieren, quasi einen DB-Snapshot!
+                 */
             }
         } else {
             Log.d("PREFERENCES", "Unbekannte Aktion ausgeführt!");
