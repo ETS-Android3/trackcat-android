@@ -1,6 +1,11 @@
 package de.mobcom.group3.gotrack.Settings;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.FragmentTransaction;
@@ -21,12 +26,29 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         addPreferencesFromResource(R.xml.fragment_settings);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        /* Anzeigen der Benutzerspezifischen Einstellungen */
+        /* Benutzerspezifischen Einstellungen laden */
         CheckBoxPreference help_messages = (CheckBoxPreference) findPreference("help_messages");
         help_messages.setChecked(MainActivity.getHints());
         SwitchPreference theme = (SwitchPreference) findPreference("dark_theme");
-//        theme.setChecked(MainActivity.getDarkTheme());
+        //theme.setChecked(MainActivity.getDarkTheme());
 
+        /* Aktuelle Version in Einstellungen anzeigen */
+        Preference version = findPreference("current_version");
+        version.setSummary("unknown");
+        try {
+            PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+            version.setSummary(pInfo.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Preference feedback = findPreference("send_feedback");
+        feedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                sendFeedback(getActivity());
+                return true;
+            }
+        });
     }
 
     @Override
@@ -46,8 +68,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         User oldUser = dao.read(MainActivity.getActiveUser());
 
         /* Wechsel beim Anzeigen der Hilfreichen Tipps */
-        if (preference instanceof CheckBoxPreference) {
-
+        if (preference.getKey().equals("help_messages")) {
             if (((CheckBoxPreference) preference).isChecked()) {
                 Toast.makeText(getActivity(), "Hilfreiche Tipps aktiviert!", Toast.LENGTH_LONG).show();
                 /* Nutzer aktualisieren */
@@ -62,11 +83,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 oldUser.setHintsActive(false);
                 MainActivity.setHints(false);
             }
-
-
         }
         /* Wechsel des Themes */
-        else if (preference instanceof SwitchPreference) {
+        else if (preference.getKey().equals("dark_theme")) {
             Log.d("PREFERENCES", "Wechsel des Themes!");
             /* getActivity().finish();
             final Intent intent = getActivity().getIntent();
@@ -107,7 +126,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 oldUser.setDarkThemeActive(false);
                 MainActivity.setDarkTheme(false);
             }
-        } else if (preference instanceof ListPreference){
+        } else if (preference.getKey().equals("global_export_options")){
             String value = ((ListPreference) preference).getValue();
             /* Alle Aufnahmen des aktuellen Nutzers exportieren */
             if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[0])){
@@ -130,7 +149,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         } else {
             Log.d("PREFERENCES", "Unbekannte Aktion ausgeführt!");
         }
-
         dao.update(MainActivity.getActiveUser(), oldUser);
     }
 
@@ -140,5 +158,22 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         //unregister the preference change listener
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    public static void sendFeedback(Context context) {
+        String body = null;
+        try {
+            body = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+            body = "\n\n-----------------------------\nDevice OS: Android \n Device OS version: " +
+                    Build.VERSION.RELEASE + "\n App Version: " + body + "\n Device Brand: " + Build.BRAND +
+                    "\n Device Model: " + Build.MODEL + "\n Device Manufacturer: " + Build.MANUFACTURER;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"contact@androidhive.info"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Query from android app");
+        intent.putExtra(Intent.EXTRA_TEXT, body);
+        context.startActivity(Intent.createChooser(intent, "Wählen Sie Ihren E-Mail Client"));
     }
 }

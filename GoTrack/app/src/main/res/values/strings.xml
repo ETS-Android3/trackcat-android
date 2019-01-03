@@ -18,13 +18,21 @@
     <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
 
-    <!-- TODO: Preferences Page "SettingsFragment" -->
+    <!-- Einstellungen -->
     <string name="category1">Allgemeines</string>
+
     <string name="category2">Exportmöglichkeiten</string>
     <string-array name="export_options">
         <item name="all_records">Alle Aufnahmen des aktiuellen Nutzers</item>
         <item name="all_users">Alle Benutzer</item>
     </string-array>
+
+    <string name="category3">Über GoTrack</string>
+    <string name="aboutGoTrack">GoTrack ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
+    <string name="cVersion_title">Version</string>
+    <string name="cVersion_summary">1.6.7</string>
+    <string name="feedback_title">Feedback geben</string>
+    <string name="feedback_summary">Haben Sie Fragen oder Anmerkungen?</string>
 
     <!-- Menu Toggle -->
     <string name="navigation_drawer_open">Open</string>

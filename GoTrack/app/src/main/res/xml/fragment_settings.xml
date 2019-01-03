@@ -15,11 +15,27 @@
     <PreferenceCategory android:title="@string/category2" >
         <ListPreference
             android:defaultValue="-1"
+            android:key="global_export_options"
             android:entries="@array/export_options"
             android:entryValues="@array/export_options"
-            android:key="global_export_options"
             android:title="Exportieren"
             android:summary="Exportieren Sie hier Nutzer und Aufzeichnungen" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/category3" >
+        <Preference
+            android:selectable="false"
+            android:summary="@string/aboutGoTrack" />
+
+        <Preference
+            android:title="@string/cVersion_title"
+            android:key="current_version"
+            android:summary="@string/cVersion_summary" />
+
+        <Preference
+            android:key="send_feedback"
+            android:summary="@string/feedback_summary"
+            android:title="@string/feedback_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>
