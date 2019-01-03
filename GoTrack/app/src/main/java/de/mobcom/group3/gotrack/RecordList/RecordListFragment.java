@@ -14,7 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
+
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
@@ -51,9 +54,13 @@ public class RecordListFragment extends Fragment implements RecyclerItemTouchHel
         recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(mAdapter);
 
-        /* EventListener definieren */
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+        /* EventListener LEFT definieren */
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallbackLeft = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallbackLeft).attachToRecyclerView(recyclerView);
+
+        /* EventListener RIGHT definieren */
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallbackRight = new RecyclerItemTouchHelper(0, ItemTouchHelper.RIGHT, this);
+        new ItemTouchHelper(itemTouchHelperCallbackRight).attachToRecyclerView(recyclerView);
 
         return view;
     }
@@ -61,33 +68,40 @@ public class RecordListFragment extends Fragment implements RecyclerItemTouchHel
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         if (viewHolder instanceof RecordListAdapter.MyViewHolder) {
-            /* Entfernten Item-Namen zwischenspeichern */
-            String name = records.get(viewHolder.getAdapterPosition()).getName();
+            switch (direction) {
+                case ItemTouchHelper.LEFT:
+                    /* Entfernten Item-Namen zwischenspeichern */
+                    String name = records.get(viewHolder.getAdapterPosition()).getName();
 
-            /* Speichern für Rückgängig machen sichern */
-            final Route deletedItem = records.get(viewHolder.getAdapterPosition());
-            final int deletedIndex = viewHolder.getAdapterPosition();
+                    /* Speichern für Rückgängig machen sichern */
+                    final Route deletedItem = records.get(viewHolder.getAdapterPosition());
+                    final int deletedIndex = viewHolder.getAdapterPosition();
 
-            /* Item aus Recycler View und Datenbank entfernen */
-            mAdapter.removeItem(viewHolder.getAdapterPosition());
-            RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-            dao.delete(deletedItem);
+                    /* Item aus Recycler View und Datenbank entfernen */
+                    mAdapter.removeItem(viewHolder.getAdapterPosition());
+                    RouteDAO dao = new RouteDAO(MainActivity.getInstance());
+                    dao.delete(deletedItem);
 
-            /* Snackbar mit 'Rückgängig' Funbktion anzeigen */
-            Snackbar snackbar = Snackbar.make(mainLayout, "Aufzeichnung \"" + name + "\" wurde entfernt!", Snackbar.LENGTH_LONG);
-            TextView snackbarText = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
-            snackbarText.setTextColor(Color.WHITE);
-            snackbar.setAction("Rückgängig", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    /* Gelöschtes Item wiederherstellen */
-                    mAdapter.restoreItem(deletedItem, deletedIndex);
-                    // TODO: Route sollte wieder an vorher genutzem Index eingefügt werden können
-                    dao.create(deletedItem);
-                }
-            });
-            snackbar.setActionTextColor(Color.YELLOW);
-            snackbar.show();
+                    /* Snackbar mit 'Rückgängig' Funbktion anzeigen */
+                    Snackbar snackbar = Snackbar.make(mainLayout, "Aufzeichnung \"" + name + "\" wurde entfernt!", Snackbar.LENGTH_LONG);
+                    TextView snackbarText = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                    snackbarText.setTextColor(Color.WHITE);
+                    snackbar.setAction("Rückgängig", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            /* Gelöschtes Item wiederherstellen */
+                            mAdapter.restoreItem(deletedItem, deletedIndex);
+                            // TODO: Route sollte wieder an vorher genutzem Index eingefügt werden können
+                            dao.create(deletedItem);
+                        }
+                    });
+                    snackbar.setActionTextColor(Color.YELLOW);
+                    snackbar.show();
+                    break;
+                case ItemTouchHelper.RIGHT:
+                    Toast.makeText(getContext(), "Teilen", Toast.LENGTH_LONG).show();
+                    break;
+            }
         }
     }
 }

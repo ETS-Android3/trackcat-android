@@ -338,7 +338,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Startet RecordFragment nach Ende der Aufzeichnung */
     public void endTracking() {
-        // TODO switch to Statisitcs page
         recordFragment = new RecordFragment();
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
@@ -368,13 +367,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             exitApp = true;
-            Toast.makeText(instance, "Noch einmal klicken, um App zu beenden!", Toast.LENGTH_SHORT).show();
+            if (hints) {
+                Toast.makeText(instance, "Noch einmal klicken, um App zu beenden!", Toast.LENGTH_SHORT).show();
+            }
 
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     exitApp = false;
-                    Toast.makeText(instance, "Zu langsam. Versuche es erneut...", Toast.LENGTH_LONG).show();
+                    if (hints) {
+                        Toast.makeText(instance, "Zu langsam. Versuche es erneut...", Toast.LENGTH_LONG).show();
+                    }
                 }
             }, 3000);
         }

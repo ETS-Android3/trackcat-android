@@ -28,7 +28,7 @@ public class RecordDetailsFragment extends Fragment {
         RecordListDetailsPageViewer recordListDetailsPageViewer = new RecordListDetailsPageViewer();
         recordListDetailsPageViewer.setArguments(bundle);
         FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.chartContainer, recordListDetailsPageViewer, getResources().getString(R.string.fRecordDetailsList));
+        fragTransaction.replace(R.id.pageViewerContainer, recordListDetailsPageViewer, getResources().getString(R.string.fRecordDetailsList));
         fragTransaction.commit();
 
         View view = inflater.inflate(R.layout.fragment_record_details, container, false);

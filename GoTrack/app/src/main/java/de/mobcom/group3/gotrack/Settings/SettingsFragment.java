@@ -22,9 +22,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         addPreferencesFromResource(R.xml.fragment_settings);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         /*Anzeigen der Benutzerspezifischen Einstellungen*/
-        CheckBoxPreference help_messages = (CheckBoxPreference)findPreference("help_messages");
+        CheckBoxPreference help_messages = (CheckBoxPreference) findPreference("help_messages");
         help_messages.setChecked(MainActivity.getHints());
-        SwitchPreference theme = (SwitchPreference)findPreference("dark_theme");
+        SwitchPreference theme = (SwitchPreference) findPreference("dark_theme");
 //        theme.setChecked(MainActivity.getDarkTheme());
 
     }
@@ -55,7 +55,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 MainActivity.setHints(true);
 
             } else {
-                Toast.makeText(getActivity(), "Hilfreiche Tipps deaktiviert!", Toast.LENGTH_LONG).show();
+                if (MainActivity.getHints()) {
+                    Toast.makeText(getActivity(), "Hilfreiche Tipps deaktiviert!", Toast.LENGTH_LONG).show();
+                }
                 /* Nutzer aktualisieren */
                 oldUser.setHintsActive(false);
                 MainActivity.setHints(false);
@@ -88,14 +90,18 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
             //getActivity().recreate();
             if (((SwitchPreference) preference).isChecked()) {
-                Toast.makeText(getActivity(), "DarkTheme aktiviert!", Toast.LENGTH_LONG).show();
+                if (MainActivity.getHints()) {
+                    Toast.makeText(getActivity(), "DarkTheme aktiviert!", Toast.LENGTH_LONG).show();
+                }
                 Log.d("PREFERENCES", "DarkTheme aktiviert!");
                 /* Nutzer aktualisieren */
                 oldUser.setDarkThemeActive(true);
                 MainActivity.setDarkTheme(true);
 
             } else {
-                Toast.makeText(getActivity(), "LightTheme aktiviert!", Toast.LENGTH_LONG).show();
+                if (MainActivity.getHints()) {
+                    Toast.makeText(getActivity(), "LightTheme aktiviert!", Toast.LENGTH_LONG).show();
+                }
                 Log.d("PREFERENCES", "LightTheme aktiviert!");
                 /* Nutzer aktualisieren */
                 oldUser.setDarkThemeActive(false);
