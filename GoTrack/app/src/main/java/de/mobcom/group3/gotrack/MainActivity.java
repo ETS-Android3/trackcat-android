@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
 
-                    fragTransaction.replace(R.id.mainFrame, new RecordDetailsInformationFragment(), getResources().getString(R.string.fRecordlist));
+                    fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
                     fragTransaction.commit();
                 }
                 break;

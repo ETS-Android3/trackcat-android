@@ -44,7 +44,7 @@ public class RecordDetailsInformationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        int id = getArguments().getInt("id");
+        int id = 1;//= getArguments().getInt("id");
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
         /* Auslesen der Werte aus der Datenbank */
@@ -130,6 +130,8 @@ public class RecordDetailsInformationFragment extends Fragment {
 
         /* Route anzeigen */
         drawRoute();
+
+        /*drawRoute();*/
 
         return view;
     }
