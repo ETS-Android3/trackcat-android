@@ -14,14 +14,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
@@ -85,11 +83,11 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View v) {
 
-                /*Daten holen*/
+                /* Daten holen */
                 ArrayList<Location> locations = records.get(position).getLocations();
                 int size;
                 int run;
-                /*Überprüfung ob zu wenig Daten existieren*/
+                /* Überprüfung ob zu wenig Daten existieren */
                 boolean fillArguments = false;
                 if (locations!=null && locations.size() > 60) {
                     size = locations.size() / 10;
@@ -127,7 +125,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 Log.d("Schleifenwerte", "Size: " + size);
                 Log.d("Schleifenwerte", "Locationsize: " + run);
 
-                /*Neues Fragment erstellen*/
+                /* Neues Fragment erstellen */
                 Bundle bundle = new Bundle();
                 bundle.putDoubleArray("altitudeArray", altitudeValues);
                 bundle.putDoubleArray("speedArray", speedValues);
