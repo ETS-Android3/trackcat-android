@@ -29,6 +29,7 @@ import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.Database.Models.User;
+import de.mobcom.group3.gotrack.RecordList.RecordDetailsInformationFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
