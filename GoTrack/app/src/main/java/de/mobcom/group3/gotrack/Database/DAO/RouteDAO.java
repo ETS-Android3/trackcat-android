@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 
 import de.mobcom.group3.gotrack.Database.Models.Route;
 
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,28 +20,11 @@ import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
 
 // toDo: write javaDoc and comments
 
-/*      Parcel ArrayList<Locations> instead of using GSON
-
-        write into a byte[] parceled:
-
-        final Parcel p1 = obtain();
-        p1.writeTypedList(route.getLocations());
-        final byte[] parceled = p1.marshall();
-        p1.recycle();
-
-        read from a byte[] parceled and write into an ArrayList<Location> unParceled:
-
-        final Parcel p2 = obtain();
-        p2.unmarshall(parceled, 0, parceled.length);
-        p2.setDataPosition(0);
-        ArrayList unParceled = p2.createTypedArrayList(Location.CREATOR);
- */
-
 
 public class RouteDAO {
     private final Context context;
-    private Type exImportType = Route.class;
     private Gson gson = new Gson();
+    private Type exImportType = Route.class;
 
     public RouteDAO(Context context) {
         this.context = context;
@@ -225,15 +209,15 @@ public class RouteDAO {
                         parcel.setDataPosition(0);
 
                         result.add(new Route(
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
-                            cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
-                            cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
-                            cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
-                            cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
-                            cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
-                            parcel.createTypedArrayList(Location.CREATOR)));
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
+                                cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
+                                cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                                parcel.createTypedArrayList(Location.CREATOR)));
                         parcel.recycle();
                     } while (cursor.moveToNext());
             }

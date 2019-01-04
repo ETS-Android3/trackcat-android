@@ -65,7 +65,7 @@ import java.util.Objects;
  * Results displayed in this Fragment view
  * */
 
-public class RecordFragment extends Fragment implements IOrientationConsumer, SensorEventListener {
+public class RecordFragment extends Fragment implements SensorEventListener {
 
     /*
      * Statistics
@@ -135,20 +135,27 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
     private float lon = 0f;
     private float alt = 0f;
     private long timeOfFix = 0;
+    private float gpsBearing = 0f;
+
+    private SensorManager sensorManager;
+    private Sensor magnetometer;
 
     /*
      * Model of Route
      * */
     private Route model;
 
-    private Sensor magnetometer;
+
 
     @Override
     public void onPause() {
+        super.onPause();
+
         if (!isTracking) {
             locatorGPS.stopTracking();
         }
-        super.onPause();
+
+        sensorManager.unregisterListener(this);
         mCompassOverlay.disableCompass();
         mCompassOverlay.getOrientationProvider().stopOrientationProvider();
     }
@@ -156,6 +163,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
     @Override
     public void onResume() {
         super.onResume();
+        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
         mCompassOverlay.enableCompass();
         mCompassOverlay.getOrientationProvider().startOrientationProvider(mCompassOverlay);
     }
@@ -163,6 +171,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
     @Override
     public void onDestroy() {
         super.onDestroy();
+        sensorManager.unregisterListener(this);
         mCompassOverlay.onDetach(mMapView);
     }
 
@@ -421,7 +430,7 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
 
         // TODO Sensor setzen
-        SensorManager sensorManager = (SensorManager) MainActivity.getInstance().getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) MainActivity.getInstance().getSystemService(Context.SENSOR_SERVICE);
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
 
@@ -717,13 +726,11 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
         /*
          + declare necessary variables for map orientation
          */
-        float gpsBearing = location.getBearing();
-        float gpsSpeed = location.getSpeed();
+        gpsBearing = location.getBearing();
         lat = (float) location.getLatitude();
         lon = (float) location.getLongitude();
         alt = (float) location.getAltitude();
         timeOfFix = location.getTime();
-        Log.v("GPS-Location: ", location.toString());
 
         /*
          * move Map
@@ -786,14 +793,11 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
 
             /*
-             + this part adjusts the desired values for map rotation based on compass heading,
-             + location heading and gps speed
+             + sets the desired map rotation based on location heading if movement is detected
              */
-            if ((gpsBearing > 0.01) && !northUp) {
+            if ((gpsBearing >= 0.1f) && !northUp) {
                 mMapView.setMapOrientation(-gpsBearing);
             }
-            Log.v("GPS-Bearing: ", String.valueOf(gpsBearing));
-            Log.v("GPS-Speed", String.valueOf(gpsSpeed));
 
             /*
              * updatde OSM Map
@@ -868,64 +872,39 @@ public class RecordFragment extends Fragment implements IOrientationConsumer, Se
 
     /*
      + !!! needs a device with the compass-functionality (magnetometer sensor) to work properly !!!
-     + ToDo: verify if method will be called on event <- does not seem this way
+     + sets the desired map rotation based on location heading if no movement is detected
      */
-    @Override
-    public void onOrientationChanged(final float orientationToMagneticNorth, IOrientationProvider source) {
-        GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
-        float trueNorth = orientationToMagneticNorth + gf.getDeclination();
-        if (trueNorth > 360.0f)
-            trueNorth = trueNorth - 360.0f;
-        //this part adjusts the desired map and compass rotation based on device orientation and compass heading
-        float t = (360 - trueNorth - this.deviceOrientation);
-        if (t < 0)
-            t += 360;
-        if (t > 360)
-            t -= 360;
-        mCompassOverlay.setAzimuthOffset(t);
-
-        if (!northUp) {
-            mMapView.setMapOrientation(-mCompassOverlay.getOrientation());
-        }
-    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
         if (event.sensor == magnetometer) {
-
-            float[] rotationMatrix = new float[9];
-            float[] orientation = new float[3];
-
-            SensorManager.getOrientation(rotationMatrix, orientation);
-
-            GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
-            float trueNorth = orientation[0] + gf.getDeclination();
-            if (trueNorth > 360.0f)
-                trueNorth = trueNorth - 360.0f;
-            //this part adjusts the desired map and compass rotation based on device orientation and compass heading
-            float t = (360 - trueNorth - this.deviceOrientation);
-            if (t < 0)
-                t += 360;
-            if (t > 360)
-                t -= 360;
-            //mCompassOverlay.setAzimuthOffset(t);
-
-            float value = mCompassOverlay.getOrientation();
-            if (value < 0)
-                value += 360;
-            if (value > 360)
-                value -= 360;
-
-            if (!northUp) {
-                mMapView.setMapOrientation(value);
+            if (!northUp && gpsBearing < 0.1f) {
+                mMapView.setMapOrientation(360-mCompassOverlay.getOrientation());
             }
         }
-
     }
 
+    /*
+     + sets offset to the compass to show true north instead of magnetic north
+     + is called when accuracy of the sensor has changed to update alignment of the compass
+    */
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
+        float[] rotationMatrix = new float[9];
+        float[] orientation = new float[3];
+        GeomagneticField gf = new GeomagneticField(lat, lon, alt, timeOfFix);
 
+        SensorManager.getOrientation(rotationMatrix, orientation);
+
+        float trueNorth = orientation[0] + gf.getDeclination();
+        Log.d("goTrack", "onAccuracyChanged north:" + trueNorth);
+        if (trueNorth > 360.0f)
+            trueNorth = trueNorth - 360.0f;
+        float offset = (360 - trueNorth - this.deviceOrientation);
+        if (offset < 0)
+            offset += 360;
+        if (offset > 360)
+            offset -= 360;
+        mCompassOverlay.setAzimuthOffset(offset);
     }
 }
