@@ -165,9 +165,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         String body = null;
         try {
             body = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-            body = "\n\n-----------------------------\nDevice OS: Android \n Device OS version: " +
-                    Build.VERSION.RELEASE + "\n App Version: " + body + "\n Device Brand: " + Build.BRAND +
-                    "\n Device Model: " + Build.MODEL + "\n Device Manufacturer: " + Build.MANUFACTURER;
+            body = "\n\n------------- SYSTEM INFORMATION -------------\nDevice OS: Android \nDevice OS version: " +
+                    Build.VERSION.RELEASE + "\nApp Version: " + body + "\nDevice Brand: " + Build.BRAND +
+                    "\nDevice Model: " + Build.MODEL + "\nDevice Manufacturer: " + Build.MANUFACTURER;
         } catch (PackageManager.NameNotFoundException e) {
         }
         Intent intent = new Intent(Intent.ACTION_SEND);
