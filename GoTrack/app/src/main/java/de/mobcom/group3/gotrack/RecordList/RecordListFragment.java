@@ -94,7 +94,7 @@ public class RecordListFragment extends Fragment {
 
             @Override
             public void onShareClick(int position) {
-                Export.getExport().exportRoute(getContext(), (position+1),true);
+                Export.getExport().exportRoute(getContext(), records.get(position).getId(),true);
             }
         });
 

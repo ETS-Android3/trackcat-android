@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.Gson;
 
@@ -12,6 +13,7 @@ import de.mobcom.group3.gotrack.Database.Models.Route;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.os.Parcel.obtain;
@@ -36,11 +38,32 @@ import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
         ArrayList unParceled = p2.createTypedArrayList(Location.CREATOR);
  */
 
+/* public String[] getInfo(int id) {
+    String[] result = new String[]{};
+    String selection = COL_ID + " = ?";
+    String[] selectionArgs = { String.valueOf(id) };
+    String[] projection = { COL_DATE, COL_TIME, COL_RIDETIME, COL_DISTANCE };
+    Cursor cursor = writableDb.query(
+            TABLE_NAME,
+            projection,
+            selection,
+            selectionArgs,
+            null,
+            null,
+            null
+    );
+    if(cursor.moveToFirst()) {
+        result[0] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
+        result[1] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
+        result[2] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
+        result[3] = String.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
+    }
+    return result;
+}*/
+
 
 public class RouteDAO {
     private final Context context;
-    private Type exImportType = Route.class;
-    private Gson gson = new Gson();
 
     public RouteDAO(Context context) {
         this.context = context;
@@ -269,31 +292,15 @@ public class RouteDAO {
         this.delete(route.getId());
     }
 
-   /* public String[] getInfo(int id) {
-        String[] result = new String[]{};
-        String selection = COL_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(id) };
-        String[] projection = { COL_DATE, COL_TIME, COL_RIDETIME, COL_DISTANCE };
-        Cursor cursor = writableDb.query(
-                TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
-        if(cursor.moveToFirst()) {
-            result[0] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
-            result[1] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
-            result[2] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
-            result[3] = String.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
-        }
-        return result;
-    }*/
-
     public void importRouteFromJSON(String jsonString) {
-        this.create(gson.fromJson(jsonString, exImportType));
+        Gson gson = new Gson();
+        byte[] parceled = gson.fromJson(jsonString, byte[].class);
+        final Parcel p2 = obtain();
+
+        p2.unmarshall(parceled, 0, parceled.length);
+        p2.setDataPosition(0);
+        this.create(p2.readParcelable(Route.class.getClassLoader()));
+        p2.recycle();
     }
 
     public void importRoutesFromJson(List<String> jsonStrings) {
@@ -303,13 +310,19 @@ public class RouteDAO {
     }
 
     public String exportRouteToJson(int id) {
-        return gson.toJson(this.read(id));
+        Gson gson = new Gson();
+        final Parcel p1 = obtain();
+        p1.writeParcelable(this.read(id), 0);
+        final byte[] parceled = p1.marshall();
+        p1.recycle();
+
+        return gson.toJson(parceled, byte[].class);
     }
 
     public List<String> exportRoutesToJson(int userId) {
         List<String> result = new ArrayList<>();
         for (Route route : readAll(userId)) {
-            result.add(gson.toJson(route));
+            result.add(exportRouteToJson(route.getId()));
         }
         return result;
     }

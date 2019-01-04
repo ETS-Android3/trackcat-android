@@ -1,10 +1,13 @@
 package de.mobcom.group3.gotrack.Database.Models;
 
 import android.location.Location;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public class Route {
+public class Route implements Parcelable{
     /*
      + private model attributes
      + modifications via getter and setter
@@ -224,4 +227,48 @@ public class Route {
     public void setType(int type) {
         this.type = type;
     }
+
+
+    /*
+     + Parcelable Stuff
+     */
+    @Override
+    public int describeContents() {
+        return this.hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        System.out.println("Write to parcel has begun");
+        dest.writeInt(this.id);
+        dest.writeInt(this.userId);
+        dest.writeString(this.name);
+        dest.writeLong(this.date);
+        dest.writeLong(this.time);
+        dest.writeLong(this.rideTime);
+        dest.writeDouble(this.distance);
+        dest.writeTypedList(this.locations);
+        locations.get(0).writeToParcel(dest, 0);
+    }
+
+    public Route(Parcel source) {
+        this.id = source.readInt();
+        this.userId = source.readInt();
+        this.name = source.readString();
+        this.date = source.readLong();
+        this.time = source.readLong();
+        this.rideTime = source.readLong();
+        this.distance = source.readDouble();
+        this.locations = source.createTypedArrayList(Location.CREATOR);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Route createFromParcel(Parcel source) {
+            return new Route(source);
+        }
+
+        public Route[] newArray(int size) {
+            return new Route[size];
+        }
+    };
 }
