@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static boolean darkTheme;
     private boolean createInitialUser =false;
     UserDAO userDAO;
-
+    public static Boolean isActiv=false;
     private static final String PREF_DARK_THEME = "dark_theme";
 
     public static MainActivity getInstance() {
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
+        isActiv=false;
         super.onDestroy();
     }
 
@@ -119,7 +120,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Startseite definieren */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        if (isActiv){
+            Toast.makeText(this, "Die App läuft bereits in einer anderen Instanz",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+        else {
+            isActiv =true;
+        }
         /* Instanz für spätere Objekte speichern */
         instance = this;
         recordFragment = new RecordFragment();

@@ -94,9 +94,7 @@ public class RecordListFragment extends Fragment {
 
             @Override
             public void onShareClick(int position) {
-                String file= Export.getExport().exportRoute(getContext(), (position+1));
-                Export.getExport().send(getContext(), file);
-                //Toast.makeText(getContext(), "Teilen...", Toast.LENGTH_LONG).show();
+                Export.getExport().exportRoute(getContext(), (position+1),true);
             }
         });
 
