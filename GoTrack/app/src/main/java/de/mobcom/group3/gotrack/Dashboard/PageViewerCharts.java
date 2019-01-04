@@ -1,7 +1,6 @@
 package de.mobcom.group3.gotrack.Dashboard;
 
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,12 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import org.osmdroid.util.GeoPoint;
-
 import de.mobcom.group3.gotrack.Charts.BarChartFragment;
-import de.mobcom.group3.gotrack.Charts.LineChartFragment;
-import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
-import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.CurrentPageIndicator;
@@ -109,7 +103,7 @@ public class PageViewerCharts extends Fragment {
         LinearLayout mLinearLayout = view.findViewById(R.id.indicator);
 
         /* create Indicator (little buttons) */
-        CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle);
+        CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle_theme_color);
         mIndicator.setPageCount(listFragments.size());
         mIndicator.show();
 

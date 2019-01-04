@@ -131,7 +131,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 bundle.putDoubleArray("speedArray", speedValues);
                 bundle.putInt("id", records.get(position).getId());
 
-                RecordDetailsInformationFragment recordDetailsFragment = new RecordDetailsInformationFragment();
+                RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);

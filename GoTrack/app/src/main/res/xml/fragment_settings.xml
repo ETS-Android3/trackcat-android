@@ -19,7 +19,7 @@
             android:entries="@array/export_options"
             android:entryValues="@array/export_options"
             android:title="Exportieren"
-            android:summary="Exportieren Sie hier Nutzer und Aufzeichnungen" />
+            android:summary="Exportieren Sie hier Ihre Benutzerprofile" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/category3" >

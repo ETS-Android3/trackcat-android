@@ -64,7 +64,7 @@ public class RecordListDetailsPageViewer extends Fragment {
         LinearLayout mLinearLayout = view.findViewById(R.id.indicator);
 
         /* Indikator erstellen (kleine Buttons) */
-        CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle);
+        CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle_theme_color);
         mIndicator.setPageCount(listFragments.size());
         mIndicator.show();
         return view;

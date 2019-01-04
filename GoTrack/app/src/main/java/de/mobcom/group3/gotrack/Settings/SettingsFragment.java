@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.*;
 import android.util.Log;
 import android.widget.Toast;
+
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
@@ -126,10 +127,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 oldUser.setDarkThemeActive(false);
                 MainActivity.setDarkTheme(false);
             }
-        } else if (preference.getKey().equals("global_export_options")){
+        } else if (preference.getKey().equals("global_export_options")) {
             String value = ((ListPreference) preference).getValue();
             /* Alle Aufnahmen des aktuellen Nutzers exportieren */
-            if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[0])){
+            if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[0])) {
                 Toast.makeText(getContext(), "Exportiere alle Aufzeichnungen von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"!", Toast.LENGTH_LONG).show();
                 // TODO: Exportieren aller Aufzeichnungen des derzeit aktiven Nutzers
                 /**
@@ -138,7 +139,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                  */
             }
             /* Alle Nutzer exportieren */
-            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[1])){
+            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[1])) {
                 Toast.makeText(getContext(), "Exportiere alle Nutzer!", Toast.LENGTH_LONG).show();
                 // TODO: Exportieren aller Nutzer
                 /**
@@ -164,15 +165,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         String body = null;
         try {
             body = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-            body = "\n\n-----------------------------\nDevice OS: Android \n Device OS version: " +
-                    Build.VERSION.RELEASE + "\n App Version: " + body + "\n Device Brand: " + Build.BRAND +
-                    "\n Device Model: " + Build.MODEL + "\n Device Manufacturer: " + Build.MANUFACTURER;
+            body = "\n\n------------- SYSTEM INFORMATION -------------\nDevice OS: Android \nDevice OS version: " +
+                    Build.VERSION.RELEASE + "\nApp Version: " + body + "\nDevice Brand: " + Build.BRAND +
+                    "\nDevice Model: " + Build.MODEL + "\nDevice Manufacturer: " + Build.MANUFACTURER;
         } catch (PackageManager.NameNotFoundException e) {
         }
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"contact@androidhive.info"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Query from android app");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"timokramer1@me.com", "yannik-petersen92@t-online.de", "fock.marie@gmail.com", "finnlenz@outlook.de", "kristoff_klan@hotmail.de", "j.petsch95@gmail.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback: GoTrack");
         intent.putExtra(Intent.EXTRA_TEXT, body);
         context.startActivity(Intent.createChooser(intent, "Wählen Sie Ihren E-Mail Client"));
     }

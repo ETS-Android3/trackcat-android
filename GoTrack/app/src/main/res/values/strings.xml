@@ -23,8 +23,8 @@
 
     <string name="category2">Exportmöglichkeiten</string>
     <string-array name="export_options">
-        <item name="all_records">Alle Aufnahmen des aktiuellen Nutzers</item>
-        <item name="all_users">Alle Benutzer</item>
+        <item name="all_records">Daten des aktuellen Benutzers</item>
+        <item name="all_users">Alle Benutzerdaten</item>
     </string-array>
 
     <string name="category3">Über GoTrack</string>
