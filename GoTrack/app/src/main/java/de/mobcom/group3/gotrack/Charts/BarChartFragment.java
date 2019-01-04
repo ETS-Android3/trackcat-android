@@ -2,7 +2,9 @@ package de.mobcom.group3.gotrack.Charts;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import de.mobcom.group3.gotrack.R;
 import java.util.Arrays;
 
 public class BarChartFragment extends Fragment {
+    private static final String PREF_DARK_THEME = "dark_theme";
     private final int UPPER_BOUNDARY_X = 8;
     private final int LOWER_BOUNDARY_X = 0;
     private final int LOWER_BOUNDARY_Y = 0;
@@ -45,7 +48,14 @@ public class BarChartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        view = inflater.inflate(R.layout.fragment_line_chart, container, false);
+        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)) {
+            Log.d("testing", "if");
+            view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
+        }else{
+            view = inflater.inflate(R.layout.fragment_line_chart, container, false);
+            Log.d("testing", "else");
+        }
+
         String title = "Series01";
         String rangeTitle="km/h";
         int color = Color.GRAY;
