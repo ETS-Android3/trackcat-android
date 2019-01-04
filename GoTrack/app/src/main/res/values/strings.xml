@@ -18,32 +18,21 @@
     <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
 
-    <!-- TODO: Preferences Page "SettingsFragment" -->
+    <!-- Einstellungen -->
     <string name="category1">Allgemeines</string>
-    <string name="category2">Sonstiges</string>
-    <string-array name="list">
-        <item name="1">Once a day</item>
-        <item name="7">Once a week</item>
-        <item name="3">Once a year</item>
-        <item name="0">Never (Update maually)</item>
-    </string-array>
-    <string-array name="listValues">
-        <item name="1">1</item>
-        <item name="7">7</item>
-        <item name="30">30</item>
-        <item name="0">0</item>
+
+    <string name="category2">Exportmöglichkeiten</string>
+    <string-array name="export_options">
+        <item name="all_records">Alle Aufnahmen des aktiuellen Nutzers</item>
+        <item name="all_users">Alle Benutzer</item>
     </string-array>
 
-    <string-array name="profile_options">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
-    </string-array>
+    <string name="category3">Über GoTrack</string>
+    <string name="aboutGoTrack">GoTrack ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
+    <string name="cVersion_title">Version</string>
+    <string name="cVersion_summary">1.6.7</string>
+    <string name="feedback_title">Feedback geben</string>
+    <string name="feedback_summary">Haben Sie Fragen oder Anmerkungen?</string>
 
     <!-- Menu Toggle -->
     <string name="navigation_drawer_open">Open</string>
