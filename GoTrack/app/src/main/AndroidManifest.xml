@@ -24,13 +24,44 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter tools:ignore="AppLinkUrlError">
+        </activity>
+        <activity
+            android:name="de.mobcom.group3.gotrack.ImportActivity"
+            android:configChanges="orientation|keyboardHidden">
+            <intent-filter
+                tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:mimeType="text/plain" />
+                <data
+                    android:mimeType="application/octet-stream"
+                    android:host="*"
+                    android:pathPattern=".*\\.gotrack"
+                    />
+                <data
+                    android:mimeType="application/gotrack"
+                    android:host="*"
+                    android:pathPattern=".*\\.gotrack"
+                    />
+                <data
+                    android:host="*"
+                    android:mimeType="*/*"
+                    android:pathPattern=".*\\.gotrack"
+                    android:scheme="content"/>
+            </intent-filter>
+            <intent-filter
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:mimeType="application/octet-stream"
+                    android:host="*"
+                    android:pathPattern=".*\\.gotrack"
+                    />
+                <data
+                    android:mimeType="application/gotrack"
+                    android:host="*"
+                    android:pathPattern=".*\\.gotrack"
+                    />
             </intent-filter>
         </activity>
         <receiver android:name="de.mobcom.group3.gotrack.NotificationActionReciever">

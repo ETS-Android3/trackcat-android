@@ -61,9 +61,9 @@ public class PageViewerCharts extends Fragment {
         // Der Code wird nur ausgeführt wenn es Strecken gibt. Sonst bleibt das Array bei null und somit ein leerer Graph
         if(records.size() > 0) {
             String prevDateString = getDate(records.get(0).getLocations().get(0).getTime(), "dd/MM/yyyy");
-            int prevDay = getWeekDay(records.get(0).getLocations().get(0).getTime());
+            int prevDay = getWeekDay(records.get(0).getDate());
             for (int i = 0; i < records.size(); i++) {
-                long curDate = records.get(i).getLocations().get(0).getTime();
+                long curDate = records.get(i).getDate();
                 double curDistance = records.get(i).getDistance();
                 double curTime = records.get(i).getTime();
                 String curDateString = getDate(curDate, "dd/MM/yyyy");
