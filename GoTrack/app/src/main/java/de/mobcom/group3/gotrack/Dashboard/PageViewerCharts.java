@@ -55,37 +55,44 @@ public class PageViewerCharts extends Fragment {
         double[] timeArrayHours = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         double distance = 0;
         double time = 0;
-        String prevDateString = getDate(records.get(0).getLocations().get(0).getTime(), "dd/MM/yyyy");
         int maxDistance = 0;
         int maxTime = 0;
-        for (int i = 0; i < records.size(); i++) {
-            long curDate = records.get(i).getLocations().get(0).getTime();
-            double curDistance = records.get(i).getDistance();
-            double curTime= records.get(i).getTime();
-            String curDateString = getDate(curDate, "dd/MM/yyyy");
-            int dayOfWeek = getWeekDay(curDate);
 
-            if (curDateString.equals(prevDateString)) {
-                distance = distance + curDistance;
-                time = time + curTime;
+        // Der Code wird nur ausgeführt wenn es Strecken gibt. Sonst bleibt das Array bei null und somit ein leerer Graph
+        if(records.size() > 0) {
+            String prevDateString = getDate(records.get(0).getLocations().get(0).getTime(), "dd/MM/yyyy");
+            for (int i = 0; i < records.size(); i++) {
+                long curDate = records.get(i).getLocations().get(0).getTime();
+                double curDistance = records.get(i).getDistance();
+                double curTime = records.get(i).getTime();
+                String curDateString = getDate(curDate, "dd/MM/yyyy");
+                int dayOfWeek = getWeekDay(curDate);
 
-                if(maxDistance < distance){
-                    maxDistance = (int)distance;
+                if (curDateString.equals(prevDateString)) {
+                    // Wenn es sich bei einem Datensatz ums selbe Datum handelt werden die Variablen aufsummiert
+                    distance = distance + curDistance;
+                    time = time + curTime;
+
+                    // Wenn die neue Zeit oder Distanz größer ist als die alte max werden die variablen überschrieben
+                    if (maxDistance < distance) {
+                        maxDistance = (int) distance;
+                    }
+                    if (maxTime < time) {
+                        maxTime = (int) time;
+                    }
+                    // Die für die Plots notwendigen Arrays werden erstellt
+                    distanceArray[dayOfWeek] = distance;
+                    timeArray[dayOfWeek] = time;
+                    timeArrayMinutes[dayOfWeek] = time / 60;
+                    timeArrayHours[dayOfWeek] = time / (60 * 60);
+                } else {
+                    // Wenn ein neues Datum erreicht wurde, werden die Variablen mit dem ersten Datensatz erstellt
+                    prevDateString = curDateString;
+                    distance = curDistance;
+                    time = curTime;
                 }
-                if(maxTime < time){
-                    maxTime = (int)time;
-                }
 
-                distanceArray[dayOfWeek] = distance;
-                timeArray[dayOfWeek] = time;
-                timeArrayMinutes[dayOfWeek] = time / 60;
-                timeArrayHours[dayOfWeek] = time / (60 * 60);
-            }else{
-                prevDateString = curDateString;
-                distance = curDistance;
-                time = curTime;
             }
-
         }
 
         /* Distanz der Woche */
@@ -95,6 +102,8 @@ public class PageViewerCharts extends Fragment {
         bundleDistance.putInt("color", Color.RED);
         bundleDistance.putString("rangeTitle", "Meter");
 
+        // Die Schrittweise der Plot Range wird an den höchsten Distance Wert angepasst
+        // Dies Verhindert eine überladene UI
         if(maxDistance <= 100){
             bundleDistance.putDouble("stepsY", 10);
         }else if(maxDistance <= 1000){
@@ -111,6 +120,8 @@ public class PageViewerCharts extends Fragment {
         bundleTime.putString("title", "Laufzeit der Woche");
         bundleTime.putInt("color", Color.GREEN);
 
+        // Die Schrittweise der Plot Range wird an den höchsten Time Wert angepasst
+        // Dies Verhindert eine überladene UI
         if(maxTime < 60){
             bundleTime.putDouble("stepsY", 10);
             bundleTime.putString("rangeTitle", "Sekunden");
@@ -175,6 +186,7 @@ public class PageViewerCharts extends Fragment {
         return view;
     }
 
+    // Das Datum wird von Millisekunden als Formatiertes Datum zurückgegeben
     private String getDate(long millis, String dateFormat){
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
@@ -183,6 +195,7 @@ public class PageViewerCharts extends Fragment {
         return formatter.format(calendar.getTime());
     }
 
+    // Der Wochentag der Aktuellen Strecke wird als int zurückgegeben
     private int getWeekDay(long millis){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
