@@ -61,6 +61,7 @@ public class PageViewerCharts extends Fragment {
         // Der Code wird nur ausgeführt wenn es Strecken gibt. Sonst bleibt das Array bei null und somit ein leerer Graph
         if(records.size() > 0) {
             String prevDateString = getDate(records.get(0).getLocations().get(0).getTime(), "dd/MM/yyyy");
+            int prevDay = getWeekDay(records.get(0).getLocations().get(0).getTime());
             for (int i = 0; i < records.size(); i++) {
                 long curDate = records.get(i).getLocations().get(0).getTime();
                 double curDistance = records.get(i).getDistance();
@@ -68,7 +69,8 @@ public class PageViewerCharts extends Fragment {
                 String curDateString = getDate(curDate, "dd/MM/yyyy");
                 int dayOfWeek = getWeekDay(curDate);
 
-                if (curDateString.equals(prevDateString)) {
+                //if (curDateString.equals(prevDateString)) {
+                if(dayOfWeek == prevDay){
                     // Wenn es sich bei einem Datensatz ums selbe Datum handelt werden die Variablen aufsummiert
                     distance = distance + curDistance;
                     time = time + curTime;
@@ -87,7 +89,8 @@ public class PageViewerCharts extends Fragment {
                     timeArrayHours[dayOfWeek] = time / (60 * 60);
                 } else {
                     // Wenn ein neues Datum erreicht wurde, werden die Variablen mit dem ersten Datensatz erstellt
-                    prevDateString = curDateString;
+                    //prevDateString = curDateString;
+                    prevDay = dayOfWeek;
                     distance = curDistance;
                     time = curTime;
                 }

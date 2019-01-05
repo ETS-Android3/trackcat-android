@@ -144,7 +144,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
             // TODO: Acitivty neu starten?
             // Restart Activity
-            //MainActivity.restart();
+            MainActivity.restart();
 
             } else if (preference.getKey().equals("global_export_options")) {
             String value = ((ListPreference) preference).getValue();
