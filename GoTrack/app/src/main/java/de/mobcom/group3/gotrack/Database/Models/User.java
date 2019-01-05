@@ -1,5 +1,7 @@
 package de.mobcom.group3.gotrack.Database.Models;
 
+// toDo: Write javaDoc and comments
+
 public class User {
     /*
      + private model attributes

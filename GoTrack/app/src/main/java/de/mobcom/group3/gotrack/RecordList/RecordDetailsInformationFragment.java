@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -142,7 +143,8 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         /* Route anzeigen */
         drawRoute();
 
-        Button editRouteName = view.findViewById(R.id.editRoute);
+        /* Button zur Bearbeitung von Routen */
+        ImageView editRouteName = view.findViewById(R.id.editRoute);
         editRouteName.setOnClickListener(this);
 
         return view;
@@ -187,10 +189,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.editRoute:
-                if(MainActivity.getHints()) {
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Bearbeiten der Route \"" + record.getName() + "\"", Toast.LENGTH_LONG).show();
-                }
-
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setTitle("Routenname bearbeiten?");
@@ -217,7 +215,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
                         recordName.setText(newName);
                         if(MainActivity.getHints()) {
-                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ändern des Namens in \"" + newName + "\"", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Name erfolgreich bearbeitet!", Toast.LENGTH_LONG).show();
                         }
 
                     }
