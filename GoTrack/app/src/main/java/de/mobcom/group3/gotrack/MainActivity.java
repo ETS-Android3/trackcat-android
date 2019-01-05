@@ -3,6 +3,8 @@ package de.mobcom.group3.gotrack;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -55,6 +57,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     UserDAO userDAO;
 
     private static final String PREF_DARK_THEME = "dark_theme";
+
+    // Restart activity for Theme Switching
+    public static void restart(){
+        Bundle temp_bundle = new Bundle();
+        getInstance().onSaveInstanceState(temp_bundle);
+        Intent intent = new Intent(getInstance(), MainActivity.class);
+        intent.putExtra("bundle", temp_bundle);
+        getInstance().startActivity(intent);
+        getInstance().finish();
+    }
 
     public static MainActivity getInstance() {
         return instance;
@@ -109,12 +121,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public void recreate(){
+        if(Build.VERSION.SDK_INT >= 11){
+            super.recreate();
+        }else{
+            startActivity(getIntent());
+            finish();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Fragt nach noch nicht erteilten Permissions */
         permissionManager.checkAndRequestPermissions(this);
 
         /* Aktuelles Themes aus Einstellungen laden */
         setTheme(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_DARK_THEME, false) ? R.style.AppTheme_Dark : R.style.AppTheme);
+
+        if(getIntent().hasExtra("bundle") && savedInstanceState == null){
+            savedInstanceState = getIntent().getExtras().getBundle("bundle");
+        }
 
         /* Startseite definieren */
         super.onCreate(savedInstanceState);

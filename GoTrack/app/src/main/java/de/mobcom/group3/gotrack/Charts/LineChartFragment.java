@@ -5,6 +5,7 @@ import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.*;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 
 
 public class LineChartFragment extends Fragment {
+    private static final String PREF_DARK_THEME = "dark_theme";
     private final int LOWER_BOUNDARY_X = 0;
     private final int LOWER_BOUNDARY_Y = 0;
     private View view;
@@ -38,7 +40,13 @@ public class LineChartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_line_chart, container, false);
+
+        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)){
+            view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
+        }else{
+            view = inflater.inflate(R.layout.fragment_line_chart, container, false);
+        }
+
         String title = "Series1";
 
         if (getArguments() != null) {
