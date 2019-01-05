@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import com.google.gson.Gson;
+
+import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -143,7 +145,11 @@ public class UserDAO {
 
     public void delete(User user) {
         DbHelper dbHelper = new DbHelper(context);
+        RouteDAO routeDAO = new RouteDAO(context);
         try {
+            for (Route route : routeDAO.readAll(user.getId())) {
+                routeDAO.delete(route.getId());
+            }
             String selection = COL_ID + " LIKE ?";
             String[] selectionArgs = {String.valueOf(user.getId())};
             dbHelper.getWritableDatabase().delete(TABLE_NAME, selection, selectionArgs);

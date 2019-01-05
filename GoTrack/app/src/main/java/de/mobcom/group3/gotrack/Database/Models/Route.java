@@ -1,13 +1,12 @@
 package de.mobcom.group3.gotrack.Database.Models;
 
 import android.location.Location;
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public class Route implements Parcelable{
+public class Route implements Parcelable {
     /*
      + private model attributes
      + modifications via getter and setter
@@ -19,6 +18,7 @@ public class Route implements Parcelable{
     private long date;
     private long time;
     private long rideTime;
+    private boolean isImported;
     private double distance;
     private ArrayList<Location> locations;
 
@@ -38,7 +38,7 @@ public class Route implements Parcelable{
      * @param locations of type array list
      */
     public Route(int id, int userId, String name, long time, long rideTime, double distance,
-                 int type, long date,  ArrayList<Location> locations) {
+                 int type, long date, int isImported, ArrayList<Location> locations) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -48,6 +48,7 @@ public class Route implements Parcelable{
         this.locations =locations;
         this.date = date;
         this.type = type;
+        this.setImportedDB(isImported);
     }
 
     /**
@@ -228,6 +229,45 @@ public class Route implements Parcelable{
         this.type = type;
     }
 
+    /**
+     * Getter for import flag
+     * @return value of type boolean
+     */
+    public boolean isImported() {
+        return isImported;
+    }
+
+    /**
+     * Setter for import flag
+     * @param isImported of type integer
+     */
+    public void setImported(boolean isImported) {
+        this.isImported = isImported;
+    }
+
+    /**
+     * Getter to decide if route is imported or not for database storage purposes.
+     * Integer value is necessary due to SQLite Database constraint.
+     * SQLite does not implement boolean values natively as true or false but only as integer.
+     * @return value of type integer
+     */
+    public int isImportedDB() {
+        if (isImported) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Setter to decide if route is imported or not for database storage purposes.
+     * Integer value is necessary due to SQLite Database constraint.
+     * SQLite does not implement boolean values natively as true or false but only as integer.
+     * @param isImported of type integer
+     */
+    public void setImportedDB(int isImported) {
+        this.isImported = isImported == 1;
+    }
 
     /*
      + Parcelable Stuff

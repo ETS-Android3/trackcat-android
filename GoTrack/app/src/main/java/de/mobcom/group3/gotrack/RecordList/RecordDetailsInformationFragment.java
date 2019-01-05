@@ -1,13 +1,21 @@
 package de.mobcom.group3.gotrack.RecordList;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.icu.text.AlphabeticIndex;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -23,7 +31,7 @@ import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
-public class RecordDetailsInformationFragment extends Fragment {
+public class RecordDetailsInformationFragment extends Fragment implements View.OnClickListener {
     public RecordDetailsInformationFragment() {
     }
 
@@ -39,6 +47,9 @@ public class RecordDetailsInformationFragment extends Fragment {
     private double altitudeDown = 0;
     private double maxSpeed = 0;
     ArrayList<Location> locations;
+    Route record;
+    RouteDAO dao;
+    TextView recordName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,8 +59,8 @@ public class RecordDetailsInformationFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
         /* Auslesen der Werte aus der Datenbank */
-        RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-        Route record = dao.read(id);
+        dao = new RouteDAO(MainActivity.getInstance());
+        record = dao.read(id);
         locations = record.getLocations();
         double prevDistance = 0;
 
@@ -89,7 +100,7 @@ public class RecordDetailsInformationFragment extends Fragment {
         df.setTimeZone(tz);
 
         /* Name setzen */
-        TextView recordName = view.findViewById(R.id.record_name);
+        recordName = view.findViewById(R.id.record_name);
         String toSet = record.getName();
         recordName.setText(toSet);
 
@@ -131,7 +142,8 @@ public class RecordDetailsInformationFragment extends Fragment {
         /* Route anzeigen */
         drawRoute();
 
-        /*drawRoute();*/
+        Button editRouteName = view.findViewById(R.id.editRoute);
+        editRouteName.setOnClickListener(this);
 
         return view;
     }
@@ -169,5 +181,57 @@ public class RecordDetailsInformationFragment extends Fragment {
 
         gPt = new GeoPoint(locations.get(locations.size() / 2).getLatitude(), locations.get(locations.size() / 2).getLongitude());
         mMapController.setCenter(gPt);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.editRoute:
+                if(MainActivity.getHints()) {
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Bearbeiten der Route \"" + record.getName() + "\"", Toast.LENGTH_LONG).show();
+                }
+
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                alert.setTitle("Routenname bearbeiten?");
+
+                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View alertView = inflater.inflate(R.layout.fragment_record_list_edit_route, null, true);
+                TextView edit_record_name= alertView.findViewById(R.id.edit_record_name);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    alert.setView(alertView);
+                    edit_record_name.setText(record.getName());
+
+                } else {
+                    // TODO Implementation für Nutzer mit API <= 16
+                }
+
+                alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String newName= edit_record_name.getText().toString();
+
+                        /* Aktualisieren der Route */
+                        Route newRecord =record;
+                        newRecord.setName(newName);
+                        dao.update(record.getId(),newRecord);
+
+                        recordName.setText(newName);
+                        if(MainActivity.getHints()) {
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ändern des Namens in \"" + newName + "\"", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                });
+
+                alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                alert.show();
+
+                break;
+        }
     }
 }
