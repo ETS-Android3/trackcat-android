@@ -1,8 +1,10 @@
 package de.mobcom.group3.gotrack;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,12 +33,15 @@ import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.Database.Models.User;
+import de.mobcom.group3.gotrack.InExport.Import;
 import de.mobcom.group3.gotrack.RecordList.RecordDetailsInformationFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static boolean darkTheme;
     private boolean createInitialUser =false;
     UserDAO userDAO;
-
+    public static Boolean isActiv=false;
     private static final String PREF_DARK_THEME = "dark_theme";
 
     // Restart activity for Theme Switching
@@ -117,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
+        isActiv=false;
         super.onDestroy();
     }
 
@@ -145,7 +151,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Startseite definieren */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        if (isActiv){
+            Toast.makeText(this, "Die App läuft bereits in einer anderen Instanz",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+        else {
+            isActiv =true;
+        }
         /* Instanz für spätere Objekte speichern */
         instance = this;
         recordFragment = new RecordFragment();
@@ -326,12 +339,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     fragTransaction.commit();
                 }
                 break;
+            case R.id.nav_import:
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("application/*");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(
+                            Intent.createChooser(intent, "Import"),0);
+                }
+                break;
         }
         menuItem.setChecked(true);
         mainDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 0:
+                if (resultCode == RESULT_OK) {
+                    Uri uri = data.getData();
+                    try {
+                        File file = new File(getCacheDir(), "document");
+                        InputStream inputStream = getContentResolver().openInputStream(uri);
+                        Import.getImport().handleSend(this, file, inputStream);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
     /* Stops/pauses Tracking opens App and switch to RecordFragment */
     public void stopTracking() {
         startActivity(getIntent());

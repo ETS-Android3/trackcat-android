@@ -31,45 +31,49 @@ public class Export {
     }
 
     // Export einer einzelnen Route
-    public String exportRoute(Context context, int routeId){
+    public String exportRoute(Context context, int routeId, Boolean forSend){
         RouteDAO rDAO = new RouteDAO(context);
         String fileName = "/"+rDAO.read(routeId).getName();
         Log.i("Export", "Der Export der Route "+rDAO.read(routeId).getName()+
                 " wurde gestartet.");
-        return generateFile(context, fileName, rDAO.exportRouteToJson(routeId));
+        return generateFile(context, fileName,"1<index>"+rDAO.exportRouteToJson(routeId),
+                forSend);
     }
 
     // Export eines Users mit seinen Einstellungen
-    public String exportUserData(Context context, int userId){
+    public String exportUserData(Context context, int userId,Boolean forSend){
         UserDAO uDAO = new UserDAO(context);
         String fileName = "/"+uDAO.read(userId).getFirstName()+uDAO.read(userId).getLastName();
         Log.i("Export", "Der Export des Users "+uDAO.read(userId).getFirstName()+" "+uDAO.
                 read(userId).getLastName()+" wurde gestartet.");
-        return generateFile(context, fileName, uDAO.exportUserToJson(userId));
+        return generateFile(context, fileName,"2<index>"+uDAO.exportUserToJson(userId),
+                forSend);
     }
 
     // Export aller  Routen eines bestimmenten Users
-    public String exportAllRoute(Context context, int userId){
+    public String exportAllRoute(Context context, int userId, Boolean forSend){
         RouteDAO rDAO = new RouteDAO(context);
         UserDAO uDAO = new UserDAO(context);
         String fileName = "/allRouteFrom"+uDAO.read(userId).getFirstName()+uDAO.read(userId).
                 getLastName();
         Log.i("Export", "Der Export aller Routen des Users "+uDAO.read(userId).
                 getFirstName()+" "+uDAO.read(userId).getLastName()+" wurde gestartet.");
-        return generateFile(context, fileName, arrayListToString(rDAO.exportRoutesToJson(userId)));
+        return generateFile(context, fileName,"3<index>"+
+                arrayListToString(rDAO.exportRoutesToJson(userId)), forSend);
     }
 
     // Export aller User mit Ihren Einstellungen
-    public String exportAllUser(Context context){
+    public String exportAllUser(Context context, Boolean forSend){
         RouteDAO rDAO = new RouteDAO(context);
         UserDAO uDAO = new UserDAO(context);
         String fileName = "/allUser";
         Log.i("Export", "Der Export aller User wurde gestartet.");
-        return generateFile(context, fileName, arrayListToString(uDAO.exportUsersToJson()));
+        return generateFile(context, fileName, "4<index>"+
+                arrayListToString(uDAO.exportUsersToJson()), forSend);
     }
 
     // Export eines Nutzers mit allen seinen Einstellungen und Routen
-    public String exportAllUserData(Context context, int userId){
+    public String exportAllUserData(Context context, int userId, Boolean forSend){
         UserDAO uDAO = new UserDAO(context);
         RouteDAO rDAO = new RouteDAO(context);
         String fileContent =uDAO.exportUserToJson(userId) +"<endUser>"+
@@ -77,11 +81,12 @@ public class Export {
         String fileName = "/full"+uDAO.read(userId).getFirstName()+uDAO.read(userId).getLastName();
         Log.i("Export", "Der Export des Users "+uDAO.read(userId).getFirstName()+
                 uDAO.read(userId).getLastName()+" mit allen Routen wurde gestartet.");
-        return generateFile(context, fileName, fileContent);
+        return generateFile(context, fileName, "5<index>"+fileContent, forSend);
     }
 
-    private String generateFile(Context context, String fileNameNoEnd, String fileContent){
-        String fileName = fileNameNoEnd+".txt";
+    private String generateFile(Context context, String fileNameNoEnd, String fileContent,
+                                Boolean forSend){
+        String fileName = fileNameNoEnd+".gotrack";
         String mainFileDirectory =Environment.getExternalStoragePublicDirectory(Environment.
                 DIRECTORY_DOWNLOADS).toString();
         File root = new File(mainFileDirectory, "GoTrack");
@@ -103,10 +108,14 @@ public class Export {
             Toast.makeText(context, "Fehler beim Speichern", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-        return mainFileDirectory+"/GoTrack/"+fileName;
+        String pathFromFile =mainFileDirectory+"/GoTrack/"+fileName;
+        if(forSend){
+            send(context, pathFromFile);
+        }
+        return pathFromFile;
     }
 
-    public void send(Context context, String fileName)
+    private void send(Context context, String fileName)
     {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -118,11 +127,11 @@ public class Export {
         Intent share = new Intent();
         share.setAction(Intent.ACTION_SEND);
         share.putExtra(Intent.EXTRA_STREAM, uri);
-        share.setType("text/plain");
+        share.setType("application/gotrack");
         try{
             context.startActivity(Intent.createChooser(share, "Share via"));
             Log.i("Export", "Der Versand wurde beendet");
-            Toast.makeText(context, "Die Datei wurde versendet", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Die Datei wurde versendet", Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
             Log.e("Export", "Der Versand der Datei "+fileName+" war nicht erfolgreich.");
             Toast.makeText(context, "Fehler beim Versenden", Toast.LENGTH_SHORT).show();
