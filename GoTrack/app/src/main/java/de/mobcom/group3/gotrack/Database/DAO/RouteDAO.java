@@ -83,6 +83,9 @@ public class RouteDAO {
         final byte[] parceled = parcel.marshall();
 
         ContentValues values = new ContentValues();
+        if (route.getId() != 0 && !this.read(route.getId()).equals(route)) {
+            values.put(COL_ID, route.getId());
+        }
         values.put(COL_USER, route.getUserId());
         values.put(COL_NAME, route.getName());
         values.put(COL_TIME, route.getTime());
