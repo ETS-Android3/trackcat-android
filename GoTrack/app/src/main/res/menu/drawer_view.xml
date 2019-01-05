@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_dashboard"
@@ -15,12 +14,12 @@
             android:title="Gespeicherte Aufzeichnungen"
             android:icon="@drawable/menu_recordlist"/>
         <item
-            android:id="@+id/nav_settings"
-            android:title="Einstellungen"
-            android:icon="@drawable/menu_settings"/>
-        <item
             android:id="@+id/nav_import"
             android:title="Import"
+            android:icon="@drawable/menu_import"/>
+        <item
+            android:id="@+id/nav_settings"
+            android:title="Einstellungen"
             android:icon="@drawable/menu_settings"/>
     </group>
 </menu>
