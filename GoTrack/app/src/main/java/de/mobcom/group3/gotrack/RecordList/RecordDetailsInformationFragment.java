@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -142,7 +143,8 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         /* Route anzeigen */
         drawRoute();
 
-        Button editRouteName = view.findViewById(R.id.editRoute);
+        /* Button zur Bearbeitung von Routen */
+        ImageView editRouteName = view.findViewById(R.id.editRoute);
         editRouteName.setOnClickListener(this);
 
         return view;
