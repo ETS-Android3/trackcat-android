@@ -8,7 +8,7 @@
     <!-- LIGHT THEME COLORS -->
     <color name="colorGreenLight">#009688</color>
     <color name="colorGreenDark">#005b52</color>
-    <color name="colorGreenAccent">#E91E63</color>
+    <color name="colorGreenAccent">#e91e63</color>
 
     <!-- DARK THEME COLORS -->
     <color name="colorGreySuperLight">#394b54</color>

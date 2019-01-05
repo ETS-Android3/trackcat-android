@@ -101,11 +101,11 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
             @Override
             public void onClick(View v) {
 
-                /*Daten holen*/
+                /* Daten holen */
                 ArrayList<Location> locations = records.get(position).getLocations();
                 int size;
                 int run;
-                /*Überprüfung ob zu wenig Daten existieren*/
+                /* Überprüfung ob zu wenig Daten existieren */
                 boolean fillArguments = false;
                 if (locations != null && locations.size() > 60) {
                     size = locations.size() / 10;
@@ -130,7 +130,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                     n++;
 
                 }
-                /*Array auffüllen, falls zu wenig Argumente existieren*/
+                /* Array auffüllen, falls zu wenig Argumente existieren */
                 if (fillArguments) {
                     for (int i = n; i <= size; i++) {
                         speedValues[n] = 0.0;
