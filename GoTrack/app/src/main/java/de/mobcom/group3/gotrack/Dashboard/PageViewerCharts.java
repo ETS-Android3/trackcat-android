@@ -11,12 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
 import de.mobcom.group3.gotrack.Charts.BarChartFragment;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.CurrentPageIndicator;
-
 import java.util.ArrayList;
 import java.util.List;
 

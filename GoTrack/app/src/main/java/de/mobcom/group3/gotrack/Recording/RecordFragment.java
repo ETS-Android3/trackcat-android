@@ -102,7 +102,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     private TextView time_TextView;
     private TextView average_speed_TextView;
 
-    private boolean isTracking = false;
+    private static boolean isTracking = false;
+
+    public static boolean isTracking() {
+        return isTracking;
+    }
 
     private View view;
 
