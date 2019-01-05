@@ -122,6 +122,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             Bundle savedInstanceState = new Bundle();
             onSaveInstanceState(savedInstanceState);
             onDestroy();
+            MainActivity.isActiv =false;
             onCreate(savedInstanceState);
 
             //getActivity().recreate();

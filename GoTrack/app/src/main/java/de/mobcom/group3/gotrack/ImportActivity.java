@@ -1,7 +1,10 @@
 package de.mobcom.group3.gotrack;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,8 +48,20 @@ public class ImportActivity extends Activity {
             Toast.makeText(this,"GoTrack läuft bereits", Toast.LENGTH_LONG).show();
             finish();
         } else {
-            Intent start = new Intent(this, MainActivity.class);
-            startActivity(start);
+            openApp(this, "de.mobcom.group3.gotrack");
+            finish();
+            //Intent start = new Intent(this, MainActivity.class);
+            //startActivity(start);
+        }
+    }
+    public void openApp(Context context, String packageName) {
+        PackageManager manager = context.getPackageManager();
+        try {
+            Intent i = manager.getLaunchIntentForPackage(packageName);
+            i.addCategory(Intent.CATEGORY_LAUNCHER);
+            context.startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
