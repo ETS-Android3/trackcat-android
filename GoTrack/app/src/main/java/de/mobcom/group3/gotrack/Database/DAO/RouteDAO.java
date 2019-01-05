@@ -36,10 +36,32 @@ import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
         ArrayList unParceled = p2.createTypedArrayList(Location.CREATOR);
  */
 
+/* public String[] getInfo(int id) {
+    String[] result = new String[]{};
+    String selection = COL_ID + " = ?";
+    String[] selectionArgs = { String.valueOf(id) };
+    String[] projection = { COL_DATE, COL_TIME, COL_RIDETIME, COL_DISTANCE };
+    Cursor cursor = writableDb.query(
+            TABLE_NAME,
+            projection,
+            selection,
+            selectionArgs,
+            null,
+            null,
+            null
+    );
+    if(cursor.moveToFirst()) {
+        result[0] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
+        result[1] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
+        result[2] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
+        result[3] = String.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
+    }
+    return result;
+}*/
+
 
 public class RouteDAO {
     private final Context context;
-    private Type exImportType = Route.class;
 
     public RouteDAO(Context context) {
         this.context = context;
@@ -275,32 +297,17 @@ public class RouteDAO {
         this.delete(route.getId());
     }
 
-   /* public String[] getInfo(int id) {
-        String[] result = new String[]{};
-        String selection = COL_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(id) };
-        String[] projection = { COL_DATE, COL_TIME, COL_RIDETIME, COL_DISTANCE };
-        Cursor cursor = writableDb.query(
-                TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
-        if(cursor.moveToFirst()) {
-            result[0] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
-            result[1] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
-            result[2] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
-            result[3] = String.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
-        }
-        return result;
-    }*/
-
     public void importRouteFromJSON(String jsonString) {
         Gson gson = new Gson();
-        this.create(gson.fromJson(jsonString, exImportType));
+        byte[] parceled = gson.fromJson(jsonString, byte[].class);
+        final Parcel p2 = obtain();
+
+        p2.unmarshall(parceled, 0, parceled.length);
+        p2.setDataPosition(0);
+        Route route = p2.readParcelable(Route.class.getClassLoader());
+        route.setImported(true);
+        this.create(route);
+        p2.recycle();
     }
 
     public void importRoutesFromJson(List<String> jsonStrings) {
@@ -311,14 +318,18 @@ public class RouteDAO {
 
     public String exportRouteToJson(int id) {
         Gson gson = new Gson();
-        return gson.toJson(this.read(id));
+        final Parcel p1 = obtain();
+        p1.writeParcelable(this.read(id), 0);
+        final byte[] parceled = p1.marshall();
+        p1.recycle();
+
+        return gson.toJson(parceled, byte[].class);
     }
 
     public List<String> exportRoutesToJson(int userId) {
-        Gson gson = new Gson();
         List<String> result = new ArrayList<>();
         for (Route route : readAll(userId)) {
-            result.add(gson.toJson(route));
+            result.add(exportRouteToJson(route.getId()));
         }
         return result;
     }
