@@ -5,15 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.Gson;
 
 import de.mobcom.group3.gotrack.Database.Models.Route;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.os.Parcel.obtain;
