@@ -274,7 +274,7 @@ public class RouteDAO {
     public void update(int id, Route route) {
         DbHelper dbHelper = new DbHelper(context);
         String selection = COL_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(route.getUserId()) };
+        String[] selectionArgs = { String.valueOf(id) };
         try {
             dbHelper.getWritableDatabase().update(TABLE_NAME, valueGenerator(route), selection, selectionArgs);
         } finally {
