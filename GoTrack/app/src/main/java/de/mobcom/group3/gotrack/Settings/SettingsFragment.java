@@ -44,7 +44,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         //theme.setChecked(MainActivity.getDarkTheme());
 
         /* Deaktiviere Themewechsel bei laufender Aufzeichnung */
-        if (RecordFragment.isTracking()){
+        if (RecordFragment.isTracking()) {
             theme.setEnabled(false);
             theme.setSummary("Während Aufzeichnung nicht möglich!");
         }
@@ -122,7 +122,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             Bundle savedInstanceState = new Bundle();
             onSaveInstanceState(savedInstanceState);
             onDestroy();
-            MainActivity.isActiv =false;
+            MainActivity.isActiv = false;
             onCreate(savedInstanceState);
 
             //getActivity().recreate();
@@ -148,7 +148,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             // Restart Activity
             MainActivity.restart();
 
-            } else if (preference.getKey().equals("global_export_options")) {
+        } else if (preference.getKey().equals("global_export_options")) {
             String value = ((ListPreference) preference).getValue();
             /* Alle Aufnahmen des aktuellen Nutzers exportieren */
             if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[0])) {
@@ -162,7 +162,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                  */
             }
             /* Nutzer-Einstellung exportieren */
-            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[1])){
+            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[1])) {
                 Toast.makeText(getContext(), "Exportiere Nutzer-Einstellungen!", Toast.LENGTH_LONG).show();
                 Export.getExport().exportUserData(getActivity(), oldUser.getId(), true);
                 // TODO: Exportieren aller Nutzer
@@ -172,7 +172,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                  */
             }
             /* Alle Nutzer exportieren */
-            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[2])){
+            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[2])) {
                 Toast.makeText(getContext(), "Exportiere alle Nutzer!", Toast.LENGTH_LONG).show();
                 // TODO: Exportieren aller Nutzer
                 /**

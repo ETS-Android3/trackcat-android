@@ -13,6 +13,7 @@
     <string name="fRecordOneItem">RECORD_ONE_ITEM</string>
     <string name="fRecordDetailsDashbaord">RECORD_DETAILS_DASHBOARD</string>
     <string name="fRecordDetailsList">RECORD_DETAILS_LIST</string>
+    <string name="fImport">IMPORT</string>
     <string name="fSettings">SETTINGS</string>
     <string name="fPageViewer">PAGE_VIEWER</string>
     <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
