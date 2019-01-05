@@ -9,12 +9,26 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/record_name"
-            style="@style/TextAppearance.AppCompat.Headline"
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name der Aufzeichnung" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/record_name"
+                style="@style/TextAppearance.AppCompat.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name der Aufzeichnung" />
+
+            <Button
+                android:id="@+id/editRoute"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="B" />
+        </LinearLayout>
+
 
         <View
             android:id="@+id/divider"
@@ -128,9 +142,9 @@
 
         <LinearLayout
             android:id="@+id/maxspeed_layout"
+            style="@style/SummaryRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/SummaryRow"
             android:orientation="horizontal">
 
             <ImageView
@@ -155,8 +169,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0"
                 android:gravity="right|center"
-                android:textStyle="bold"
-                android:text="19,67 km/h" />
+                android:text="19,67 km/h"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <View
@@ -167,9 +181,9 @@
 
         <LinearLayout
             android:id="@+id/altimeter_pos_layout"
+            style="@style/FirstPairedSummaryRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/FirstPairedSummaryRow"
             android:orientation="horizontal">
 
             <ImageView
@@ -194,15 +208,15 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0"
                 android:gravity="right|center"
-                android:textStyle="bold"
-                android:text="32 m" />
+                android:text="32 m"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/altimeter_neg_layout"
+            style="@style/LastPairedSummaryRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/LastPairedSummaryRow"
             android:orientation="horizontal">
 
             <ImageView
@@ -227,8 +241,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0"
                 android:gravity="right|center"
-                android:textStyle="bold"
-                android:text="19 m" />
+                android:text="19 m"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <View
@@ -239,9 +253,9 @@
 
         <LinearLayout
             android:id="@+id/pausetime_layout"
+            style="@style/SummaryRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/SummaryRow"
             android:orientation="horizontal">
 
             <ImageView
@@ -266,8 +280,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0"
                 android:gravity="right|center"
-                android:textStyle="bold"
-                android:text="00:02:36" />
+                android:text="00:02:36"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

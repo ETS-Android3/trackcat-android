@@ -92,6 +92,7 @@ public class RouteDAO {
         values.put(COL_TYPE, route.getType());
         values.put(COL_RIDETIME, route.getRideTime());
         values.put(COL_DISTANCE, route.getDistance());
+        values.put(COL_ISIMPORTED, route.isImportedDB());
         values.put(COL_LOCATIONS, parceled);
 
         parcel.recycle();
@@ -114,6 +115,7 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_ISIMPORTED,
                     COL_LOCATIONS };
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
@@ -133,6 +135,7 @@ public class RouteDAO {
                     result.setType(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)));
                     result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
                     result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
+                    result.setImportedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)));
 
                     final byte[] parceled = cursor.getBlob(cursor.getColumnIndexOrThrow(COL_LOCATIONS));
                     parcel.unmarshall(parceled, 0, parceled.length);
@@ -178,6 +181,7 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_ISIMPORTED,
                     COL_LOCATIONS };
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
@@ -203,6 +207,7 @@ public class RouteDAO {
                                 cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
                                 parcel.createTypedArrayList(Location.CREATOR)));
 
                         parcel.recycle();
@@ -229,6 +234,7 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_ISIMPORTED,
                     COL_LOCATIONS };
             long sevenDaysInMillis = 604800000;
             String having = COL_DATE + " >= " + (System.currentTimeMillis() - sevenDaysInMillis);
@@ -256,6 +262,7 @@ public class RouteDAO {
                             cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                             cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                             cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
                             parcel.createTypedArrayList(Location.CREATOR)));
                         parcel.recycle();
                     } while (cursor.moveToNext());
@@ -269,7 +276,7 @@ public class RouteDAO {
     public void update(int id, Route route) {
         DbHelper dbHelper = new DbHelper(context);
         String selection = COL_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(route.getUserId()) };
+        String[] selectionArgs = { String.valueOf(id) };
         try {
             dbHelper.getWritableDatabase().update(TABLE_NAME, valueGenerator(route), selection, selectionArgs);
         } finally {
@@ -277,7 +284,7 @@ public class RouteDAO {
         }
     }
 
-    private void delete(int id) {
+    public void delete(int id) {
         DbHelper dbHelper = new DbHelper(context);
         String selection = COL_ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(id) };
@@ -299,7 +306,9 @@ public class RouteDAO {
 
         p2.unmarshall(parceled, 0, parceled.length);
         p2.setDataPosition(0);
-        this.create(p2.readParcelable(Route.class.getClassLoader()));
+        Route route = p2.readParcelable(Route.class.getClassLoader());
+        route.setImported(true);
+        this.create(route);
         p2.recycle();
     }
 

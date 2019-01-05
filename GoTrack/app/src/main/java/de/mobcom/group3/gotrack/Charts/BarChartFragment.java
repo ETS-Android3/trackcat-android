@@ -2,7 +2,9 @@ package de.mobcom.group3.gotrack.Charts;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import de.mobcom.group3.gotrack.R;
 import java.util.Arrays;
 
 public class BarChartFragment extends Fragment {
+    private static final String PREF_DARK_THEME = "dark_theme";
     private final int UPPER_BOUNDARY_X = 8;
     private final int LOWER_BOUNDARY_X = 0;
     private final int LOWER_BOUNDARY_Y = 0;
@@ -29,7 +32,7 @@ public class BarChartFragment extends Fragment {
     private View view;
     private XYPlot plot;
     private int incrementStepsX = 1;
-    private int incrementStepsY = 1;
+    //private int incrementStepsY = 10;
     private int barWidth = 10;
     private Number[] series1Numbers;
 
@@ -45,16 +48,23 @@ public class BarChartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        view = inflater.inflate(R.layout.fragment_line_chart, container, false);
+        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)) {
+            view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
+        }else{
+            view = inflater.inflate(R.layout.fragment_line_chart, container, false);
+        }
+
         String title = "Series01";
         String rangeTitle="km/h";
         int color = Color.GRAY;
         double[] values = new double[0];
+        double incrementStepsY = 10;
         if (getArguments() != null) {
             values = getArguments().getDoubleArray("array");
             title = getArguments().getString("title");
             color = getArguments().getInt("color");
             rangeTitle = getArguments().getString("rangeTitle");
+            incrementStepsY = getArguments().getDouble("stepsY");
             series1Numbers = new Number[values.length];
             for (int i = 0; i < series1Numbers.length; i++) {
                 series1Numbers[i] = (int) Math.round(values[i]);
@@ -91,7 +101,7 @@ public class BarChartFragment extends Fragment {
         plot.setDomainUpperBoundary(UPPER_BOUNDARY_X, BoundaryMode.FIXED);
         plot.setRangeLowerBoundary(LOWER_BOUNDARY_Y, BoundaryMode.FIXED);
         plot.setDomainStep(StepMode.INCREMENT_BY_VAL, incrementStepsX);
-        plot.setRangeStep(StepMode.INCREMENT_BY_VAL,incrementStepsY);
+        plot.setRangeStep(StepMode.INCREMENT_BY_VAL, incrementStepsY);
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new XLabelFormat());
 
         // Bar Width is set by plots own BarRenderer Instance

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:ap="http://schemas.android.com/apk/res-auto">
+
+
+    <!-- Defined a Bar Chart for various data -->
+    <com.androidplot.xy.XYPlot
+        style="@style/APDefacto"
+        android:id="@+id/barPlot"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        ap:title="BarChart"
+        ap:rangeTitle="Steps"
+        ap:domainLineColor="@color/ap_transparent"
+        ap:rangeLineColor="@color/ap_transparent"
+        ap:domainOriginLineColor="@color/ap_transparent"
+        ap:rangeOriginLineColor="@color/ap_transparent"
+        ap:lineLabelRotationBottom="-45"/>
+
+</FrameLayout>
