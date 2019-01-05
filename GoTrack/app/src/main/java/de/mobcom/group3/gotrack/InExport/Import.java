@@ -11,9 +11,12 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -57,16 +60,11 @@ public class Import {
                 }
 */
     public void incomingImport (Context context, String incomingFile){
-        Toast.makeText(context,"bis hierher1", Toast.LENGTH_LONG).show();
-        Toast.makeText(context, incomingFile, Toast.LENGTH_LONG).show();
         String[] stringArr = incomingFile.split("<index>");
-
         String index =stringArr[0];
-        Toast.makeText(context,index, Toast.LENGTH_LONG).show();
         String content =stringArr[1];
         switch(index){
             case("1"):
-                Toast.makeText(context,"bis hierher2", Toast.LENGTH_LONG).show();
                 importRoute(context, content);
                 break;
             case("2"):
@@ -90,7 +88,6 @@ public class Import {
     // Import einer einzelnen Route
     private void importRoute(Context context, String incomingFile){
         RouteDAO rDAO = new RouteDAO(context);
-        Toast.makeText(context,"bis hierher3", Toast.LENGTH_LONG).show();
         rDAO.importRouteFromJSON(incomingFile);
         Log.i("Import", "Der Import einer Route wurde gestartet.");
     }
@@ -130,8 +127,36 @@ public class Import {
         Log.i("Import", "Der Import eines Users mit allen Routen wurde gestartet.");
     }
 
-    private ArrayList<String> stringToarrayList(String listStr)
-    {
+    public void handleSend(Context context, File file, InputStream inputStream) throws IOException {
+        try {
+            OutputStream output = new FileOutputStream(file);
+            try {
+                byte[] buffer = new byte[4 * 1024];
+                int read;
+                while ((read = inputStream.read(buffer)) != -1) {
+                    output.write(buffer, 0, read);
+                }
+                output.flush();
+            } finally {
+                output.close();
+            }
+        } finally {
+            inputStream.close();
+        }
+        convertFile(context, file);
+    }
+
+    public void convertFile (Context context, File file) throws IOException {
+        FileInputStream is = new FileInputStream(file);
+        int size = is.available();
+        byte[] buffer = new byte[size];
+        is.read(buffer);
+        is.close();
+        String fileText = new String(buffer);
+        Import.getImport().incomingImport(context, fileText);
+    }
+
+    private ArrayList<String> stringToarrayList(String listStr) {
         ArrayList<String> resultList = new ArrayList<String>();
         String[] stringArr = listStr.split("<goTrack>");
         for (String lineStr: stringArr)

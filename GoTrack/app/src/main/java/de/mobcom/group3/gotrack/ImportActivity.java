@@ -20,24 +20,16 @@ public class ImportActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_record_details);
-        Toast.makeText(this,"bis hierher-2", Toast.LENGTH_LONG).show();
+        setContentView(R.layout.import_activity);
         final Intent intent = getIntent();
         final String action = intent.getAction();
 
         if (Intent.ACTION_VIEW.equals(action)) {
             Uri uri = intent.getData();
-            Toast.makeText(this,"bis hierher-1", Toast.LENGTH_LONG).show();
             try {
-                File f = handleSend(uri);
-                FileInputStream is = new FileInputStream(f);
-                int size = is.available();
-                byte[] buffer = new byte[size];
-                is.read(buffer);
-                is.close();
-                String fileText = new String(buffer);
-                Toast.makeText(this,"bis hierher0", Toast.LENGTH_LONG).show();
-                Import.getImport().incomingImport(this, fileText);
+                File file = new File(getCacheDir(), "document");
+                InputStream inputStream=getContentResolver().openInputStream(uri);
+                Import.getImport().handleSend(this, file, inputStream);
                 //Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             }
             catch (Exception ex) {
@@ -49,33 +41,12 @@ public class ImportActivity extends Activity {
         else {
             Log.i("Import", "Der Intent war kein Import : " + action);
         }
-        Toast.makeText(this, "GoTrack Close", Toast.LENGTH_LONG).show();
-        finish();
         if (MainActivity.isActiv) {
+            Toast.makeText(this,"GoTrack läuft bereits", Toast.LENGTH_LONG).show();
             finish();
         } else {
             Intent start = new Intent(this, MainActivity.class);
             startActivity(start);
         }
-    }
-    public File handleSend(Uri imageUri) throws IOException {
-            File file = new File(getCacheDir(), "document");
-            InputStream inputStream=getContentResolver().openInputStream(imageUri);
-            try {
-                OutputStream output = new FileOutputStream(file);
-                try {
-                    byte[] buffer = new byte[4 * 1024];
-                    int read;
-                    while ((read = inputStream.read(buffer)) != -1) {
-                        output.write(buffer, 0, read);
-                    }
-                    output.flush();
-                } finally {
-                    output.close();
-                }
-            } finally {
-                inputStream.close();
-            }
-        return file;
     }
 }

@@ -1,8 +1,10 @@
 package de.mobcom.group3.gotrack;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -29,12 +31,15 @@ import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.Database.Models.User;
+import de.mobcom.group3.gotrack.InExport.Import;
 import de.mobcom.group3.gotrack.RecordList.RecordDetailsInformationFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -308,12 +313,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     fragTransaction.commit();
                 }
                 break;
+            case R.id.nav_import:
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("application/*");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(
+                            Intent.createChooser(intent, "Import"),0);
+                }
+                break;
         }
         menuItem.setChecked(true);
         mainDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 0:
+                if (resultCode == RESULT_OK) {
+                    Uri uri = data.getData();
+                    try {
+                        File file = new File(getCacheDir(), "document");
+                        InputStream inputStream = getContentResolver().openInputStream(uri);
+                        Import.getImport().handleSend(this, file, inputStream);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
     /* Stops/pauses Tracking opens App and switch to RecordFragment */
     public void stopTracking() {
         startActivity(getIntent());
