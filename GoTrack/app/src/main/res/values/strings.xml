@@ -24,6 +24,7 @@
     <string name="category2">Exportmöglichkeiten</string>
     <string-array name="export_options">
         <item name="all_records">Daten des aktuellen Benutzers</item>
+        <item name="all_records">Einstellungen des aktuellen Benutzers</item>
         <item name="all_users">Alle Benutzerdaten</item>
     </string-array>
 

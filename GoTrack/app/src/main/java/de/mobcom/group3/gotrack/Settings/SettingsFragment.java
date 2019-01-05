@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
+import de.mobcom.group3.gotrack.InExport.Export;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
@@ -131,14 +132,26 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             /* Alle Aufnahmen des aktuellen Nutzers exportieren */
             if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[0])){
                 Toast.makeText(getContext(), "Exportiere alle Aufzeichnungen von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"!", Toast.LENGTH_LONG).show();
+                Export.getExport().exportAllUserData(getActivity(), oldUser.getId(), true);
+
                 // TODO: Exportieren aller Aufzeichnungen des derzeit aktiven Nutzers
                 /**
                  * Die ID des aktuellen Nutzers kann mithilfe der in der MainActivity
                  * liegenden Methode getActiveUser() ermittelt werden!
                  */
             }
-            /* Alle Nutzer exportieren */
+            /* Nutzer-Einstellung exportieren */
             else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[1])){
+                Toast.makeText(getContext(), "Exportiere Nutzer-Einstellungen!", Toast.LENGTH_LONG).show();
+                Export.getExport().exportUserData(getActivity(), oldUser.getId(), true);
+                // TODO: Exportieren aller Nutzer
+                /**
+                 * Hier würde es am meisten Sinn machen, die Nutzer mit ihren
+                 * Aufzeichnungen zu exportieren, quasi einen DB-Snapshot!
+                 */
+            }
+            /* Alle Nutzer exportieren */
+            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[2])){
                 Toast.makeText(getContext(), "Exportiere alle Nutzer!", Toast.LENGTH_LONG).show();
                 // TODO: Exportieren aller Nutzer
                 /**
