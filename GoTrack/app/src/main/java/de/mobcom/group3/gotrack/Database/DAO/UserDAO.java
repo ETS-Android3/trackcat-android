@@ -148,7 +148,7 @@ public class UserDAO {
         RouteDAO routeDAO = new RouteDAO(context);
         try {
             for (Route route : routeDAO.readAll(user.getId())) {
-                routeDAO.delete(route);
+                routeDAO.delete(route.getId());
             }
             String selection = COL_ID + " LIKE ?";
             String[] selectionArgs = {String.valueOf(user.getId())};

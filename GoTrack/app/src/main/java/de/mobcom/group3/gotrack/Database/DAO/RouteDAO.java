@@ -260,7 +260,7 @@ public class RouteDAO {
         }
     }
 
-    private void delete(int id) {
+    public void delete(int id) {
         DbHelper dbHelper = new DbHelper(context);
         String selection = COL_ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(id) };
