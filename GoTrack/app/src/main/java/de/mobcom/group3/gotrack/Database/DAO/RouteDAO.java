@@ -36,11 +36,32 @@ import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
         ArrayList unParceled = p2.createTypedArrayList(Location.CREATOR);
  */
 
+/* public String[] getInfo(int id) {
+    String[] result = new String[]{};
+    String selection = COL_ID + " = ?";
+    String[] selectionArgs = { String.valueOf(id) };
+    String[] projection = { COL_DATE, COL_TIME, COL_RIDETIME, COL_DISTANCE };
+    Cursor cursor = writableDb.query(
+            TABLE_NAME,
+            projection,
+            selection,
+            selectionArgs,
+            null,
+            null,
+            null
+    );
+    if(cursor.moveToFirst()) {
+        result[0] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
+        result[1] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
+        result[2] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
+        result[3] = String.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
+    }
+    return result;
+}*/
+
 
 public class RouteDAO {
     private final Context context;
-    private Type exImportType = Route.class;
-    private Gson gson = new Gson();
 
     public RouteDAO(Context context) {
         this.context = context;
@@ -69,6 +90,7 @@ public class RouteDAO {
         values.put(COL_TYPE, route.getType());
         values.put(COL_RIDETIME, route.getRideTime());
         values.put(COL_DISTANCE, route.getDistance());
+        values.put(COL_ISIMPORTED, route.isImportedDB());
         values.put(COL_LOCATIONS, parceled);
 
         parcel.recycle();
@@ -91,6 +113,7 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_ISIMPORTED,
                     COL_LOCATIONS };
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
@@ -110,6 +133,7 @@ public class RouteDAO {
                     result.setType(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)));
                     result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
                     result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
+                    result.setImportedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)));
 
                     final byte[] parceled = cursor.getBlob(cursor.getColumnIndexOrThrow(COL_LOCATIONS));
                     parcel.unmarshall(parceled, 0, parceled.length);
@@ -155,6 +179,7 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_ISIMPORTED,
                     COL_LOCATIONS };
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
@@ -180,6 +205,7 @@ public class RouteDAO {
                                 cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
                                 parcel.createTypedArrayList(Location.CREATOR)));
 
                         parcel.recycle();
@@ -206,6 +232,7 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_ISIMPORTED,
                     COL_LOCATIONS };
             long sevenDaysInMillis = 604800000;
             String having = COL_DATE + " >= " + (System.currentTimeMillis() - sevenDaysInMillis);
@@ -233,6 +260,7 @@ public class RouteDAO {
                             cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                             cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                             cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
                             parcel.createTypedArrayList(Location.CREATOR)));
                         parcel.recycle();
                     } while (cursor.moveToNext());
@@ -246,7 +274,7 @@ public class RouteDAO {
     public void update(int id, Route route) {
         DbHelper dbHelper = new DbHelper(context);
         String selection = COL_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(route.getUserId()) };
+        String[] selectionArgs = { String.valueOf(id) };
         try {
             dbHelper.getWritableDatabase().update(TABLE_NAME, valueGenerator(route), selection, selectionArgs);
         } finally {
@@ -254,7 +282,7 @@ public class RouteDAO {
         }
     }
 
-    private void delete(int id) {
+    public void delete(int id) {
         DbHelper dbHelper = new DbHelper(context);
         String selection = COL_ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(id) };
@@ -269,31 +297,17 @@ public class RouteDAO {
         this.delete(route.getId());
     }
 
-   /* public String[] getInfo(int id) {
-        String[] result = new String[]{};
-        String selection = COL_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(id) };
-        String[] projection = { COL_DATE, COL_TIME, COL_RIDETIME, COL_DISTANCE };
-        Cursor cursor = writableDb.query(
-                TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
-        if(cursor.moveToFirst()) {
-            result[0] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
-            result[1] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
-            result[2] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
-            result[3] = String.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
-        }
-        return result;
-    }*/
-
     public void importRouteFromJSON(String jsonString) {
-        this.create(gson.fromJson(jsonString, exImportType));
+        Gson gson = new Gson();
+        byte[] parceled = gson.fromJson(jsonString, byte[].class);
+        final Parcel p2 = obtain();
+
+        p2.unmarshall(parceled, 0, parceled.length);
+        p2.setDataPosition(0);
+        Route route = p2.readParcelable(Route.class.getClassLoader());
+        route.setImported(true);
+        this.create(route);
+        p2.recycle();
     }
 
     public void importRoutesFromJson(List<String> jsonStrings) {
@@ -303,13 +317,19 @@ public class RouteDAO {
     }
 
     public String exportRouteToJson(int id) {
-        return gson.toJson(this.read(id));
+        Gson gson = new Gson();
+        final Parcel p1 = obtain();
+        p1.writeParcelable(this.read(id), 0);
+        final byte[] parceled = p1.marshall();
+        p1.recycle();
+
+        return gson.toJson(parceled, byte[].class);
     }
 
     public List<String> exportRoutesToJson(int userId) {
         List<String> result = new ArrayList<>();
         for (Route route : readAll(userId)) {
-            result.add(gson.toJson(route));
+            result.add(exportRouteToJson(route.getId()));
         }
         return result;
     }

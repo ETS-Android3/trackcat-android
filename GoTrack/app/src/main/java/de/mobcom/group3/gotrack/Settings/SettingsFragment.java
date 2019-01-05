@@ -18,13 +18,14 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
+import de.mobcom.group3.gotrack.Recording.RecordFragment;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     SharedPreferences sharedPreferences;
@@ -40,6 +41,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         help_messages.setChecked(MainActivity.getHints());
         SwitchPreference theme = (SwitchPreference) findPreference("dark_theme");
         //theme.setChecked(MainActivity.getDarkTheme());
+
+        /* Deaktiviere Themewechsel bei laufender Aufzeichnung */
+        if (RecordFragment.isTracking()){
+            theme.setEnabled(false);
+            theme.setSummary("Während Aufzeichnung nicht möglich!");
+        }
 
         /* Aktuelle Version in Einstellungen anzeigen */
         Preference version = findPreference("current_version");

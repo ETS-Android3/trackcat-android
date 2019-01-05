@@ -2,6 +2,8 @@ package de.mobcom.group3.gotrack.Database.DAO;
 
 import android.provider.BaseColumns;
 
+import de.mobcom.group3.gotrack.Database.Models.Route;
+
 final class DbContract {
     private DbContract() {}
 
@@ -18,6 +20,7 @@ final class DbContract {
                     RouteEntry.COL_TYPE + " INTEGER, " +
                     RouteEntry.COL_RIDETIME + " LONG, " +
                     RouteEntry.COL_DISTANCE + " DOUBLE, " +
+                    RouteEntry.COL_ISIMPORTED + " BOOLEAN, " +
                     RouteEntry.COL_LOCATIONS + " BLOB) ";
 
     static final String SQL_DELETE_ROUTE_TABLE =
@@ -48,6 +51,7 @@ final class DbContract {
         static final String COL_RIDETIME = "rideTime";
         static final String COL_DISTANCE = "distance";
         static final String COL_LOCATIONS = "locations";
+        static final String COL_ISIMPORTED = "imported";
     }
 
     static final class UserEntry implements BaseColumns {
