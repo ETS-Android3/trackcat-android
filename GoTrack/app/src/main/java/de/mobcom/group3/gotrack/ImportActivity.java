@@ -50,8 +50,6 @@ public class ImportActivity extends Activity {
         } else {
             openApp(this, "de.mobcom.group3.gotrack");
             finish();
-            //Intent start = new Intent(this, MainActivity.class);
-            //startActivity(start);
         }
     }
     public void openApp(Context context, String packageName) {
