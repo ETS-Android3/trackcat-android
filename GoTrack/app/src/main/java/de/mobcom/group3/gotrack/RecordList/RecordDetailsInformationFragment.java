@@ -56,7 +56,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        int id = 1;//= getArguments().getInt("id");
+        int id = getArguments().getInt("id");
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
         /* Auslesen der Werte aus der Datenbank */
