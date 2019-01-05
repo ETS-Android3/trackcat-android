@@ -14,12 +14,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
@@ -56,6 +58,14 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         ImageView recordType = recordItem.findViewById(R.id.activity_type);
         recordType.setImageResource(SpeedAverager.getTypeIcon(records.get(position).getType(), true));
 
+        /* Importstatus */
+        ImageView importState = recordItem.findViewById(R.id.imported_state);
+        if (records.get(position).isImported()) {
+            importState.setVisibility(View.VISIBLE);
+        } else {
+            importState.setVisibility(View.INVISIBLE);
+        }
+
         /* Name anzeigen */
         TextView recordName = recordItem.findViewById(R.id.record_name);
         recordName.setText(records.get(position).getName());
@@ -89,12 +99,12 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
                 int run;
                 /* Überprüfung ob zu wenig Daten existieren */
                 boolean fillArguments = false;
-                if (locations!=null && locations.size() > 60) {
+                if (locations != null && locations.size() > 60) {
                     size = locations.size() / 10;
-                    run=locations.size();
+                    run = locations.size();
                 } else {
                     size = 5;
-                    run=0;
+                    run = 0;
                     fillArguments = true;
                 }
                 int n = 0;

@@ -33,7 +33,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView id, name, distance, time;
-        public ImageView type;
+        public ImageView type, importedState;
         public RelativeLayout viewBackground, viewForeground;
 
         public MyViewHolder(View view) {
@@ -41,6 +41,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
             id = view.findViewById(R.id.record_id);
             name = view.findViewById(R.id.record_name);
             type = view.findViewById(R.id.activity_type);
+            importedState = view.findViewById(R.id.imported_state);
             distance = view.findViewById(R.id.record_distance);
             time = view.findViewById(R.id.record_time);
         }
@@ -67,6 +68,13 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 
         /* Typ symbolisieren */
         holder.type.setImageResource(SpeedAverager.getTypeIcon(item.getType(), true));
+
+        /* Importstatus anzeigen */
+        if (records.get(position).isImported()) {
+            holder.importedState.setVisibility(View.VISIBLE);
+        } else {
+            holder.importedState.setVisibility(View.INVISIBLE);
+        }
 
         /* Name anzeigen */
         holder.name.setText(item.getName());
@@ -99,12 +107,12 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                 int run;
                 /*Überprüfung ob zu wenig Daten existieren*/
                 boolean fillArguments = false;
-                if (locations!=null && locations.size() > 60) {
+                if (locations != null && locations.size() > 60) {
                     size = locations.size() / 10;
-                    run=locations.size();
+                    run = locations.size();
                 } else {
                     size = 5;
-                    run=0;
+                    run = 0;
                     fillArguments = true;
                 }
                 int n = 0;
