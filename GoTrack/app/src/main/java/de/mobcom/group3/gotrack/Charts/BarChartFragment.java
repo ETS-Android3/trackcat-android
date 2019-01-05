@@ -32,7 +32,7 @@ public class BarChartFragment extends Fragment {
     private View view;
     private XYPlot plot;
     private int incrementStepsX = 1;
-    private int incrementStepsY = 1;
+    //private int incrementStepsY = 10;
     private int barWidth = 10;
     private Number[] series1Numbers;
 
@@ -49,22 +49,22 @@ public class BarChartFragment extends Fragment {
 
 
         if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)) {
-            Log.d("testing", "if");
             view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
         }else{
             view = inflater.inflate(R.layout.fragment_line_chart, container, false);
-            Log.d("testing", "else");
         }
 
         String title = "Series01";
         String rangeTitle="km/h";
         int color = Color.GRAY;
         double[] values = new double[0];
+        double incrementStepsY = 10;
         if (getArguments() != null) {
             values = getArguments().getDoubleArray("array");
             title = getArguments().getString("title");
             color = getArguments().getInt("color");
             rangeTitle = getArguments().getString("rangeTitle");
+            incrementStepsY = getArguments().getDouble("stepsY");
             series1Numbers = new Number[values.length];
             for (int i = 0; i < series1Numbers.length; i++) {
                 series1Numbers[i] = (int) Math.round(values[i]);
@@ -101,7 +101,7 @@ public class BarChartFragment extends Fragment {
         plot.setDomainUpperBoundary(UPPER_BOUNDARY_X, BoundaryMode.FIXED);
         plot.setRangeLowerBoundary(LOWER_BOUNDARY_Y, BoundaryMode.FIXED);
         plot.setDomainStep(StepMode.INCREMENT_BY_VAL, incrementStepsX);
-        plot.setRangeStep(StepMode.INCREMENT_BY_VAL,incrementStepsY);
+        plot.setRangeStep(StepMode.INCREMENT_BY_VAL, incrementStepsY);
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new XLabelFormat());
 
         // Bar Width is set by plots own BarRenderer Instance

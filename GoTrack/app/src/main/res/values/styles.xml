@@ -31,6 +31,7 @@
         <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorGreyDark</item>
     </style>
 
+
     <!-- Hauptfenster: Geteilte Ansicht (oben Karte unten Main-Fenster) -->
     <style name="Main" parent="">
         <item name="android:background">?attr/colorPrimary</item>

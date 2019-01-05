@@ -5,12 +5,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.preference.*;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
@@ -127,7 +135,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 oldUser.setDarkThemeActive(false);
                 MainActivity.setDarkTheme(false);
             }
-        } else if (preference.getKey().equals("global_export_options")) {
+            // TODO: Acitivty neu starten?
+            // Restart Activity
+            //MainActivity.restart();
+
+            } else if (preference.getKey().equals("global_export_options")) {
             String value = ((ListPreference) preference).getValue();
             /* Alle Aufnahmen des aktuellen Nutzers exportieren */
             if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[0])) {
