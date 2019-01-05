@@ -151,34 +151,34 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         } else if (preference.getKey().equals("global_export_options")) {
             String value = ((ListPreference) preference).getValue();
             /* Alle Aufnahmen des aktuellen Nutzers exportieren */
-            if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[0])) {
-                Toast.makeText(getContext(), "Exportiere alle Aufzeichnungen von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"!", Toast.LENGTH_LONG).show();
+            if (value.equals(getActivity().getResources().
+                    getStringArray(R.array.export_options)[0])) {
+                Toast.makeText(getContext(), "Exportiere alle Aufzeichnungen von \"" +
+                        oldUser.getFirstName() + " " + oldUser.getLastName() +
+                        "\" mit Benutzerdaten!", Toast.LENGTH_LONG).show();
                 Export.getExport().exportAllUserData(getActivity(), oldUser.getId(), true);
 
-                // TODO: Exportieren aller Aufzeichnungen des derzeit aktiven Nutzers
-                /**
-                 * Die ID des aktuellen Nutzers kann mithilfe der in der MainActivity
-                 * liegenden Methode getActiveUser() ermittelt werden!
-                 */
             }
             /* Nutzer-Einstellung exportieren */
-            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[1])) {
-                Toast.makeText(getContext(), "Exportiere Nutzer-Einstellungen!", Toast.LENGTH_LONG).show();
+            else if (value.equals(getActivity().getResources().
+                    getStringArray(R.array.export_options)[1])) {
+                Toast.makeText(getContext(), "Exportiere Nutzer-Einstellungen!",
+                        Toast.LENGTH_LONG).show();
                 Export.getExport().exportUserData(getActivity(), oldUser.getId(), true);
-                // TODO: Exportieren aller Nutzer
-                /**
-                 * Hier würde es am meisten Sinn machen, die Nutzer mit ihren
-                 * Aufzeichnungen zu exportieren, quasi einen DB-Snapshot!
-                 */
+            }
+            /* Alle Routen exportieren */
+            else if (value.equals(getActivity().getResources().
+                    getStringArray(R.array.export_options)[2])) {
+                Toast.makeText(getContext(), "Exportiere alle Nutzer Routen!",
+                        Toast.LENGTH_LONG).show();
+                Export.getExport().exportAllRoute(getActivity(), oldUser.getId(), true);
             }
             /* Alle Nutzer exportieren */
-            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[2])) {
-                Toast.makeText(getContext(), "Exportiere alle Nutzer!", Toast.LENGTH_LONG).show();
-                // TODO: Exportieren aller Nutzer
-                /**
-                 * Hier würde es am meisten Sinn machen, die Nutzer mit ihren
-                 * Aufzeichnungen zu exportieren, quasi einen DB-Snapshot!
-                 */
+            else if (value.equals(getActivity().getResources().
+                    getStringArray(R.array.export_options)[3])) {
+                Toast.makeText(getContext(),
+                        "Exportiere alle Nutzer!", Toast.LENGTH_LONG).show();
+                Export.getExport().exportAllRouteUsers(getActivity(), true);
             }
         } else {
             Log.d("PREFERENCES", "Unbekannte Aktion ausgeführt!");

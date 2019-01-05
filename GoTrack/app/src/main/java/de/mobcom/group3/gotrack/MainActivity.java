@@ -352,13 +352,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
             case R.id.nav_import:
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fImport)) == null) {
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     intent.setType("application/*");
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     startActivityForResult(
                             Intent.createChooser(intent, "Import"),0);
-                }
                 break;
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {

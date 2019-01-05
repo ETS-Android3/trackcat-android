@@ -24,6 +24,7 @@ import java.util.List;
 
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
+import de.mobcom.group3.gotrack.Database.Models.User;
 
 public class Import {
 
@@ -39,26 +40,7 @@ public class Import {
         }
         return importSingleton;
     }
-    //Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-    //  intent.setType("*/*");
-    /*  intent.addCategory(Intent.CATEGORY_OPENABLE);
-    startActivityForResult(Intent.createChooser(intent,"Select file"), 1);
-    setResult(Activity.RESULT_OK);
-                    String fileName = "/time.ser";
-                String fullFileName =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()+fileName;
-                FileInputStream fis = null;
-                ObjectInputStream in = null;
-                User2 p;
-                try {
-                    fis = new FileInputStream(fullFileName);
-                    in = new ObjectInputStream(fis);
-                    p = (User2) in.readObject();
-                    in.close();
-                    showText.setText(p.getUserName());
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-*/
+
     public void incomingImport (Context context, String incomingFile){
         String[] stringArr = incomingFile.split("<index>");
         String index =stringArr[0];
@@ -74,7 +56,7 @@ public class Import {
                 importAllRoute(context, content);
                 break;
             case("4"):
-                importAllUser(context, content);
+                importAllRouteUsers(context, content);
                 break;
             case("5"):
                 importAllUserData(context, content);
@@ -102,17 +84,24 @@ public class Import {
     // Import aller Routen eines bestimmenten Users
     private void importAllRoute(Context context, String incomingFile){
         RouteDAO rDAO = new RouteDAO(context);
-        //UserDAO uDAO = new UserDAO(context);
         rDAO.importRoutesFromJson(stringToarrayList(incomingFile));
         Log.i("Import", "Der Import aller Routen eines Users wurde gestartet.");
     }
 
-    // Import aller User mit Ihren Einstellungen
-    public void importAllUser(Context context, String incomingFile){
+    // Import aller  Routen eines bestimmenten Users
+    public void importAllRouteUsers(Context context, String incomingFile){
         RouteDAO rDAO = new RouteDAO(context);
         UserDAO uDAO = new UserDAO(context);
-        uDAO.importUsersFromJson( stringToarrayList(incomingFile));
-        Log.i("Import", "Der Import aller User wurde gestartet.");
+        String[] stringArr = incomingFile.split("<nextUser>");
+        for(String u: stringArr )
+        {
+            String[] userRoutes= u.split("<route>");
+            String user = userRoutes[0];
+            String routes = userRoutes[1];
+            uDAO.importUserFromJson(user);
+            rDAO.importRoutesFromJson(stringToarrayList(routes));
+        }
+        Log.i("Export", "Der Import aller Routen und aller Users wurde gestartet.");
     }
 
     // Import eines Nutzers mit allen seinen Einstellungen und Routen

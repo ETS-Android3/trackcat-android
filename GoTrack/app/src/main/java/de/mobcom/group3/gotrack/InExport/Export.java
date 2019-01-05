@@ -14,11 +14,13 @@ import java.util.List;
 
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
+import de.mobcom.group3.gotrack.Database.Models.User;
 
 public class Export {
 
     private static Export exportSingleton = null;
 
+    
     private Export(){
     }
 
@@ -62,14 +64,21 @@ public class Export {
                 arrayListToString(rDAO.exportRoutesToJson(userId)), forSend);
     }
 
-    // Export aller User mit Ihren Einstellungen
-    public String exportAllUser(Context context, Boolean forSend){
+    // Export aller Routen eines bestimmenten Users
+    public String exportAllRouteUsers(Context context, Boolean forSend){
         RouteDAO rDAO = new RouteDAO(context);
         UserDAO uDAO = new UserDAO(context);
-        String fileName = "/allUser";
-        Log.i("Export", "Der Export aller User wurde gestartet.");
-        return generateFile(context, fileName, "4<index>"+
-                arrayListToString(uDAO.exportUsersToJson()), forSend);
+        List<User> users = uDAO.readAll();
+        String fileName = "/fullApp";
+        Log.i("GoTrack", "Der Export aller Routen und aller Users wurde gestartet.");
+        String fileContent ="4<index>";
+        for(User u: users )
+        {
+            fileContent =fileContent+uDAO.exportUserToJson(u.getId())+"<route>"+
+                    arrayListToString(rDAO.exportRoutesToJson(u.getId()))+"<nextUser>";
+        }
+
+        return generateFile(context, fileName,fileContent, forSend);
     }
 
     // Export eines Nutzers mit allen seinen Einstellungen und Routen
