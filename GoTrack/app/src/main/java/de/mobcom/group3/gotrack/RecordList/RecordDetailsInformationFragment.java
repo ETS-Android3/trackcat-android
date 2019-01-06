@@ -67,7 +67,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
             GPSData.add(gPt);
 
-            if (i > 1) {
+            if (i > 0) {
                 double difference = location.getAltitude() - record.getLocations().get(i - 1).getAltitude();
 
                 /* Berechnung der Höhenmeter */
