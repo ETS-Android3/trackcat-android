@@ -86,7 +86,7 @@ public class Import {
     // Import einer einzelnen Route
     private void importRoute(Context context, String incomingFile){
         RouteDAO rDAO = new RouteDAO(context);
-        rDAO.importRouteFromJson(incomingFile);
+        rDAO.importRouteFromJson(incomingFile, MainActivity.getActiveUser(), true);
         Log.i("Import", "Der Import einer Route wurde gestartet.");
     }
 
@@ -100,7 +100,7 @@ public class Import {
     // Import aller Routen eines bestimmenten Users
     private void importAllRoute(Context context, String incomingFile){
         RouteDAO rDAO = new RouteDAO(context);
-        rDAO.importRoutesFromJson(stringToarrayList(incomingFile));
+        rDAO.importRoutesFromJson(stringToarrayList(incomingFile), MainActivity.getActiveUser(), true);
         Log.i("Import", "Der Import aller Routen eines Users wurde gestartet.");
     }
 
@@ -125,7 +125,7 @@ public class Import {
             int tempActivUser = deleteDuplexUser(context, importUser);
             MainActivity.setActiveUser(tempActivUser );
             try {
-                rDAO.importRoutesFromJson(stringToarrayList(routes));
+                rDAO.importRoutesFromJson(stringToarrayList(routes), tempActivUser, false);
             }finally {
                 MainActivity.setActiveUser(activUser);
             }
@@ -148,7 +148,7 @@ public class Import {
         int tempActivUser = deleteDuplexUser(context, importUser);
         MainActivity.setActiveUser(tempActivUser);
         try {
-            rDAO.importRoutesFromJson(stringToarrayList(routes));
+            rDAO.importRoutesFromJson(stringToarrayList(routes), tempActivUser, false);
         }finally {
             MainActivity.setActiveUser(activUser);
         }
