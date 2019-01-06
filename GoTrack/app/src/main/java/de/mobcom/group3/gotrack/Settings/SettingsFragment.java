@@ -105,28 +105,18 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         /* Wechsel des Themes */
         else if (preference.getKey().equals("dark_theme")) {
             Log.d("PREFERENCES", "Wechsel des Themes!");
-            /* getActivity().finish();
-            final Intent intent = getActivity().getIntent();
-            intent.putExtra("action", getResources().getString(R.string.fSettings));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            getActivity().startActivity(intent); */
-
-            /* Theme wechseln */
-            getActivity().setTheme(android.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("dark_theme", false) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
             /* Aktuelles Fragment neustarten */
             FragmentTransaction fragTransaction = getActivity().getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
             fragTransaction.commit();
 
-            // TODO: Voll funktionierendes Beenden und Neuerstellen der vorherigen Instanz
             Bundle savedInstanceState = new Bundle();
             onSaveInstanceState(savedInstanceState);
             onDestroy();
             MainActivity.isActiv = false;
             onCreate(savedInstanceState);
 
-            //getActivity().recreate();
             if (((SwitchPreference) preference).isChecked()) {
                 if (MainActivity.getHints()) {
                     Toast.makeText(getActivity(), "DarkTheme aktiviert!", Toast.LENGTH_LONG).show();
@@ -145,7 +135,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 oldUser.setDarkThemeActive(false);
                 MainActivity.setDarkTheme(false);
             }
-            // TODO: Acitivty neu starten?
             // Restart Activity
             MainActivity.restart();
 
@@ -195,7 +184,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             // TODO Implementation für Nutzer mit API <= 16
         }
 
-        alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("Exportieren", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
                 /* Data Access Object (DAO) */
@@ -240,7 +229,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
         });
 
-        alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 

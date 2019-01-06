@@ -89,7 +89,7 @@ public class BarChartFragment extends Fragment {
 
         // create a bar formatter with a red fill color and a white outline:
 
-        BarFormatter bf = new BarFormatter(color, Color.WHITE);
+        BarFormatter bf = new BarFormatter(color, color);
         // Add Series of Values to Plot (Every Value is one Bar)
         plot.addSeries(series1, bf);
 

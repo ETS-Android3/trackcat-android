@@ -6,7 +6,7 @@ import java.text.ParsePosition;
 
 public class XLabelFormat extends Format {
     // Keep first and last Value empty for better Visualization
-    final String[] xLabels = {"", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", ""};
+    final String[] xLabels = {"", "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa", ""};
     @Override
     public StringBuffer format(Object arg0, StringBuffer arg1, FieldPosition arg2) {
         // TODO Auto-generated method stub

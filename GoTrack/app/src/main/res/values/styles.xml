@@ -31,6 +31,50 @@
         <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorGreyDark</item>
     </style>
 
+    <style name="PlotLight" parent="APDefacto">
+        <item name="android:background">@color/colorWhite</item>
+        <item name="backgroundColor">@color/colorWhite</item>
+        <item name="graphBackgroundColor">@color/colorWhite</item>
+        <item name="gridBackgroundColor">@color/off_white</item>
+        <item name="domainLineColor">@color/colorBlack</item>
+        <item name="rangeLineColor">@color/colorBlack</item>
+        <item name="lineLabelTextColorTop">@color/colorBlack</item>
+        <item name="lineLabelTextColorBottom">@color/colorBlack</item>
+        <item name="lineLabelTextColorLeft">@color/colorBlack</item>
+        <item name="lineLabelTextColorRight">@color/colorBlack</item>
+        <item name="domainOriginLineColor">@color/colorBlack</item>
+        <item name="rangeOriginLineColor">@color/colorBlack</item>
+        <item name="titleTextColor">@color/colorBlack</item>
+        <item name="domainTitleTextColor">@color/colorBlack</item>
+        <item name="rangeTitleTextColor">@color/colorBlack</item>
+        <item name="legendTextColor">@color/colorBlack</item>
+
+        <item name="lineLabelInsetLeft">25dp</item>
+        <item name="gridInsetLeft">30dp</item>
+    </style>
+
+
+    <style name="PlotDark" parent="APDefacto">
+        <item name="android:background">@color/colorGreySuperLight</item>
+        <item name="backgroundColor">@color/colorGreySuperLight</item>
+        <item name="graphBackgroundColor">@color/colorGreySuperLight</item>
+        <item name="gridBackgroundColor">@color/colorGreyLight</item>
+        <item name="domainLineColor">@color/colorWhite</item>
+        <item name="rangeLineColor">@color/colorWhite</item>
+        <item name="lineLabelTextColorTop">@color/colorWhite</item>
+        <item name="lineLabelTextColorBottom">@color/colorWhite</item>
+        <item name="lineLabelTextColorLeft">@color/colorWhite</item>
+        <item name="lineLabelTextColorRight">@color/colorWhite</item>
+        <item name="domainOriginLineColor">@color/colorWhite</item>
+        <item name="rangeOriginLineColor">@color/colorWhite</item>
+        <item name="titleTextColor">@color/colorWhite</item>
+        <item name="domainTitleTextColor">@color/colorWhite</item>
+        <item name="rangeTitleTextColor">@color/colorWhite</item>
+        <item name="legendTextColor">@color/colorWhite</item>
+
+        <item name="lineLabelInsetLeft">25dp</item>
+        <item name="gridInsetLeft">30dp</item>
+    </style>
 
     <!-- Hauptfenster: Geteilte Ansicht (oben Karte unten Main-Fenster) -->
     <style name="Main" parent="">

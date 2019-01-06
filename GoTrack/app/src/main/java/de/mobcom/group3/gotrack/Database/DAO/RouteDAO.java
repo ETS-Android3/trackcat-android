@@ -208,23 +208,25 @@ public class RouteDAO {
                     "id  ASC" )) {
                 if (cursor.moveToFirst())
                     do {
-                        final Parcel parcel = obtain();
-                        final byte[] parceled = cursor.getBlob(cursor.getColumnIndexOrThrow(COL_LOCATIONS));
-                        parcel.unmarshall(parceled, 0, parceled.length);
-                        parcel.setDataPosition(0);
-
-                        result.add(new Route(
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
-                            cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
-                            cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
-                            cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
-                            cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
-                            cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                            parcel.createTypedArrayList(Location.CREATOR)));
-                        parcel.recycle();
+                        if (cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)) == 0) {
+                            final Parcel parcel = obtain();
+                            final byte[] parceled = cursor.getBlob(
+                                    cursor.getColumnIndexOrThrow(COL_LOCATIONS));
+                            parcel.unmarshall(parceled, 0, parceled.length);
+                            parcel.setDataPosition(0);
+                            result.add(new Route(
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
+                                    cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
+                                    cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
+                                    cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
+                                    cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
+                                    cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
+                                    parcel.createTypedArrayList(Location.CREATOR)));
+                            parcel.recycle();
+                        }
                     } while (cursor.moveToNext());
             }
         } finally {

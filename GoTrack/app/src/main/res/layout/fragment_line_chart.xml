@@ -7,10 +7,11 @@
 
     <!-- Defined a Line Char for various data -->
     <com.androidplot.xy.XYPlot
-        style="@style/APDefacto.Light"
+        style="@style/PlotLight"
         android:id="@+id/linePlot"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        ap:paddingLeft="5dp"
         ap:title="LineChart"
         ap:rangeTitle="km/h"
         ap:lineLabels="left|bottom"

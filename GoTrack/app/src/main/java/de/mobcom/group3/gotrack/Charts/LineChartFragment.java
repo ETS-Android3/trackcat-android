@@ -4,6 +4,7 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.*;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -26,6 +27,7 @@ public class LineChartFragment extends Fragment {
     private int incrementStepsX = 1;
     private int incrementStepsY = 10;
     private Number[] series1Numbers;
+    Paint mPaint = new Paint();
 
     public LineChartFragment() {
     }
@@ -41,11 +43,7 @@ public class LineChartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)){
-            view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
-        }else{
-            view = inflater.inflate(R.layout.fragment_line_chart, container, false);
-        }
+
 
         String title = "Series1";
 
@@ -54,6 +52,17 @@ public class LineChartFragment extends Fragment {
             title = getArguments().getString("title");
             String rangeTitle = getArguments().getString("rangeTitle");
             double [] values = getArguments().getDoubleArray("array");
+            LineAndPointFormatter series1Format;
+
+            if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)){
+                view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
+                series1Format =
+                        new LineAndPointFormatter(getActivity(), R.xml.line_and_point_formatter_with_labels_dark);
+            }else{
+                view = inflater.inflate(R.layout.fragment_line_chart, container, false);
+                series1Format =
+                        new LineAndPointFormatter(getActivity(), R.xml.line_and_point_formatter_with_labels);
+            }
 
             series1Numbers = new Number[values.length];
             int maxValue=0;
@@ -71,21 +80,11 @@ public class LineChartFragment extends Fragment {
             XYSeries series1 = new SimpleXYSeries(
                     Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, title);
 
-            // Create Formatters with xml defined Format
-            LineAndPointFormatter series1Format;
-            if (title=="Geschwindigkeit"){
-                 series1Format =
-                        new LineAndPointFormatter(getActivity(), R.xml.line_and_point_formatter_with_labels_speed);
-            }else{
-                series1Format =
-                        new LineAndPointFormatter(getActivity(), R.xml.line_and_point_formatter_with_labels_altitude);
-            }
 
             // Smoothing curves
             series1Format.setInterpolationParams(
                     new CatmullRomInterpolator.Params(pointPerSegment, CatmullRomInterpolator.Type.Centripetal));
             series1Format.setPointLabelFormatter(null);
-
 
             // Getting in xml defined Plot
             plot = view.findViewById(R.id.linePlot);
@@ -105,7 +104,7 @@ public class LineChartFragment extends Fragment {
 
             // Create Formatters with xml defined Format
             LineAndPointFormatter series1Format =
-                    new LineAndPointFormatter(getActivity(), R.xml.line_and_point_formatter_with_labels_speed);
+                    new LineAndPointFormatter(getActivity(), R.xml.line_and_point_formatter_with_labels);
 
 
             // Smoothing curves

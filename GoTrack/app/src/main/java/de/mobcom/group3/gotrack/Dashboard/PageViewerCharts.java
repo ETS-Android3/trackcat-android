@@ -1,15 +1,14 @@
 package de.mobcom.group3.gotrack.Dashboard;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +27,8 @@ import java.util.Calendar;
 import java.util.List;
 
 public class PageViewerCharts extends Fragment {
-
-
+    private static final String PREF_DARK_THEME = "dark_theme";
+    private int colorAccent;
     private List<Fragment> listFragments = new ArrayList<>();
 
     public PageViewerCharts() {
@@ -48,24 +47,31 @@ public class PageViewerCharts extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_page_viewer_charts, container, false);
 
+        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)){
+            colorAccent = getResources().getColor(R.color.colorGreyAccent);
+        }else{
+            colorAccent = getResources().getColor(R.color.colorGreenAccent);
+        }
+
         //Daten aus Datenbank auslesen
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         List<Route> records = dao.readLastSevenDays(MainActivity.getActiveUser());
-        double[] distanceArray = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-        double[] timeArray = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-        double[] timeArrayMinutes = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-        double[] timeArrayHours = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-        double distance = 0;
-        double time = 0;
-        double maxDistance = 0;
-        double maxTime = 0;
-        double maxTimeMinutes = 0;
-        double maxTimeHours = 0;
+        double[] distanceArray = {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                distanceArrayKm = {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                timeArray = {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                timeArrayMinutes = {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                timeArrayHours = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        double distance = 0,
+                time = 0,
+                maxDistance = 0,
+                maxDistanceKm = 0,
+                maxTime = 0,
+                maxTimeMinutes = 0,
+                maxTimeHours = 0;
         int prevDay = 0;
 
         // Der Code wird nur ausgeführt wenn es Strecken gibt. Sonst bleibt das Array bei null und somit ein leerer Graph
         if(records.size() > 0) {
-            //int prevDay = getWeekDay(records.get(0).getLocations().get(0).getTime());
             for (int i = 0; i < records.size(); i++) {
                 long curDate = records.get(i).getDate();
                 double curDistance = records.get(i).getDistance();
@@ -84,8 +90,8 @@ public class PageViewerCharts extends Fragment {
                 }
                 // Wenn die neue Zeit oder Distanz größer ist als die alte max werden die variablen überschrieben
                 if (maxDistance < distance) {
-                    //maxDistance = (int) distance;
                     maxDistance = distance;
+                    maxDistanceKm = distance / 1000;
                 }
                 if (maxTime < time) {
                     maxTime = time;
@@ -94,29 +100,27 @@ public class PageViewerCharts extends Fragment {
                 }
                 // Die für die Plots notwendigen Arrays werden erstellt
                 distanceArray[dayOfWeek] = distance;
+                distanceArrayKm[dayOfWeek] = distance / 1000;
+
                 timeArray[dayOfWeek] = time;
                 timeArrayMinutes[dayOfWeek] = time / 60;
                 timeArrayHours[dayOfWeek] = time / (60 * 60);
-
             }
         }
 
         /* Distanz der Woche */
         Bundle bundleDistance = new Bundle();
-        bundleDistance.putDoubleArray("array", distanceArray);
         bundleDistance.putString("title", "Distanz der Woche");
-        bundleDistance.putInt("color", ContextCompat.getColor(getContext(), R.color.colorGreyAccent));
-        bundleDistance.putString("rangeTitle", "Meter");
-        bundleDistance.putDouble("stepsY", maxDistance / 5);
+        bundleDistance.putInt("color", colorAccent);
 
-        // Die Schrittweise der Plot Range wird an den höchsten Distance Wert angepasst
-        // Dies Verhindert eine überladene UI
-        if (maxDistance <= 100) {
-            bundleDistance.putDouble("stepsY", 10);
-        } else if (maxDistance <= 1000) {
-            bundleDistance.putDouble("stepsY", 100);
-        } else if (maxDistance <= 10000) {
-            bundleDistance.putDouble("stepsY", 1000);
+        if(maxDistance < 1000){
+            bundleDistance.putDoubleArray("array", distanceArray);
+            bundleDistance.putString("rangeTitle", "Meter");
+            bundleDistance.putDouble("stepsY", maxDistance / 5);
+        }else{
+            bundleDistance.putDoubleArray("array", distanceArrayKm);
+            bundleDistance.putString("rangeTitle", "Km");
+            bundleDistance.putDouble("stepsY", (maxDistanceKm) / 5);
         }
 
         BarChartFragment barFragDistance = new BarChartFragment();
@@ -125,7 +129,7 @@ public class PageViewerCharts extends Fragment {
         /* Laufzeit der Woche */
         Bundle bundleTime = new Bundle();
         bundleTime.putString("title", "Laufzeit der Woche");
-        bundleTime.putInt("color", ContextCompat.getColor(getContext(), R.color.colorGreenAccent));
+        bundleTime.putInt("color", colorAccent);
 
 
         // Die Schrittweise der Plot Range wird an den höchsten Time Wert angepasst
@@ -134,40 +138,12 @@ public class PageViewerCharts extends Fragment {
             bundleTime.putDouble("stepsY", 10);
             bundleTime.putString("rangeTitle", "Sekunden");
             bundleTime.putDoubleArray("array", timeArray);
-        } else if (maxTime < 300) {
-            bundleTime.putDouble("stepsY", 0.5);
+        }else if(maxDistance < 3600){
+            bundleTime.putDouble("stepsY", maxTimeMinutes / 5);
             bundleTime.putString("rangeTitle", "Minuten");
             bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 600) {
-            bundleTime.putDouble("stepsY", 1);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 1200) {
-            bundleTime.putDouble("stepsY", 2);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 1800) {
-            bundleTime.putDouble("stepsY", 3);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 2400) {
-            bundleTime.putDouble("stepsY", 4);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 3000) {
-            bundleTime.putDouble("stepsY", 5);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 3600) {
-            bundleTime.putDouble("stepsY", 6);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 18000) {
-            bundleTime.putDouble("stepsY", 0.5);
-            bundleTime.putString("rangeTitle", "Stunden");
-            bundleTime.putDoubleArray("array", timeArrayHours);
-        } else if (maxTime >= 18000) {
-            bundleTime.putDouble("stepsY", 1);
+        }else{
+            bundleTime.putDouble("stepsY", maxTimeHours / 5);
             bundleTime.putString("rangeTitle", "Stunden");
             bundleTime.putDoubleArray("array", timeArrayHours);
         }
