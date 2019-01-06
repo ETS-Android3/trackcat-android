@@ -42,6 +42,12 @@ public class DbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * Method to downgrade to an older version of the database
+     * @param db of type SQLiteDatabase
+     * @param oldVersion of type integer
+     * @param newVersion of type integer
+     */
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.w(DbHelper.class.getName(), "Upgrading database from version " + newVersion +
                 " to " + oldVersion + ". Old data will be destroyed");

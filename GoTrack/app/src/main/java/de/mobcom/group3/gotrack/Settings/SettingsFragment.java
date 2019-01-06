@@ -1,6 +1,8 @@
 package de.mobcom.group3.gotrack.Settings;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -18,16 +20,21 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
+import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.Database.Models.User;
+import de.mobcom.group3.gotrack.InExport.Export;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 
-public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener {
     SharedPreferences sharedPreferences;
 
     @Override
@@ -43,7 +50,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         //theme.setChecked(MainActivity.getDarkTheme());
 
         /* Deaktiviere Themewechsel bei laufender Aufzeichnung */
-        if (RecordFragment.isTracking()){
+        if (RecordFragment.isTracking()) {
             theme.setEnabled(false);
             theme.setSummary("Während Aufzeichnung nicht möglich!");
         }
@@ -65,6 +72,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 return true;
             }
         });
+
+        /* ClickListener für den Export von Daten */
+        Preference export = findPreference("global_export_options");
+        export.setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -121,6 +132,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             Bundle savedInstanceState = new Bundle();
             onSaveInstanceState(savedInstanceState);
             onDestroy();
+            MainActivity.isActiv = false;
             onCreate(savedInstanceState);
 
             //getActivity().recreate();
@@ -146,26 +158,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             // Restart Activity
             MainActivity.restart();
 
-            } else if (preference.getKey().equals("global_export_options")) {
-            String value = ((ListPreference) preference).getValue();
-            /* Alle Aufnahmen des aktuellen Nutzers exportieren */
-            if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[0])) {
-                Toast.makeText(getContext(), "Exportiere alle Aufzeichnungen von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"!", Toast.LENGTH_LONG).show();
-                // TODO: Exportieren aller Aufzeichnungen des derzeit aktiven Nutzers
-                /**
-                 * Die ID des aktuellen Nutzers kann mithilfe der in der MainActivity
-                 * liegenden Methode getActiveUser() ermittelt werden!
-                 */
-            }
-            /* Alle Nutzer exportieren */
-            else if (value.equals(getActivity().getResources().getStringArray(R.array.export_options)[1])) {
-                Toast.makeText(getContext(), "Exportiere alle Nutzer!", Toast.LENGTH_LONG).show();
-                // TODO: Exportieren aller Nutzer
-                /**
-                 * Hier würde es am meisten Sinn machen, die Nutzer mit ihren
-                 * Aufzeichnungen zu exportieren, quasi einen DB-Snapshot!
-                 */
-            }
         } else {
             Log.d("PREFERENCES", "Unbekannte Aktion ausgeführt!");
         }
@@ -195,5 +187,75 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback: GoTrack");
         intent.putExtra(Intent.EXTRA_TEXT, body);
         context.startActivity(Intent.createChooser(intent, "Wählen Sie Ihren E-Mail Client"));
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Daten exportieren?");
+
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View alertView = inflater.inflate(R.layout.fragment_settings_export, null, true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            alert.setView(alertView);
+
+        } else {
+            // TODO Implementation für Nutzer mit API <= 16
+        }
+
+        alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                /* Data Access Object (DAO) */
+                UserDAO dao = new UserDAO(getActivity());
+                User oldUser = dao.read(MainActivity.getActiveUser());
+
+                RadioButton rBtn_all_records = alertView.findViewById(R.id.rBtn_all_records);
+                RadioButton rBtn_all_options = alertView.findViewById(R.id.rBtn_all_options);
+                RadioButton rBtn_all_route = alertView.findViewById(R.id.rBtn_all_route);
+                RadioButton rBtn_all_users = alertView.findViewById(R.id.rBtn_all_users);
+                String type = "";
+
+                /* Überprüfung, welche exportoption gewählt wurde */
+
+                /* Alle Aufnahmen des aktuellen Nutzers exportieren */
+                if (rBtn_all_records.isChecked()) {
+                    type = "Alle Daten von \""+ oldUser.getFirstName() + " " + oldUser.getLastName()+"\"";
+                    Export.getExport().exportAllUserData(getActivity(), oldUser.getId(), true);
+
+                /* Nutzer-Einstellung exportieren */
+                } else if (rBtn_all_options.isChecked()) {
+                    type = "Alle Einstellungen von \""+ oldUser.getFirstName() + " " + oldUser.getLastName()+"\"";
+                    Export.getExport().exportUserData(getActivity(), oldUser.getId(), true);
+
+                /* Alle Routen exportieren */
+                } else if (rBtn_all_route.isChecked()) {
+                    type = "Alle Routen von \""+ oldUser.getFirstName() + " " + oldUser.getLastName()+"\"";
+                    Export.getExport().exportAllRoute(getActivity(), oldUser.getId(), true);
+
+                /* Alle Nutzer exportieren */
+                } else if (rBtn_all_users.isChecked()) {
+                    type = "Alle Benutzerdaten";
+                    Export.getExport().exportAllRouteUsers(getActivity(), true);
+                } else {
+                    type = "ungültig";
+                }
+
+
+                if (MainActivity.getHints()) {
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), type + " werden exportiert.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        alert.show();
+        return false;
     }
 }

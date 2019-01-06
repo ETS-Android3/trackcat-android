@@ -2,9 +2,8 @@ package de.mobcom.group3.gotrack.Database.DAO;
 
 import android.provider.BaseColumns;
 
-import de.mobcom.group3.gotrack.Database.Models.Route;
-
 final class DbContract {
+
     private DbContract() {}
 
     static final int DATABASE_VERSION = 1;

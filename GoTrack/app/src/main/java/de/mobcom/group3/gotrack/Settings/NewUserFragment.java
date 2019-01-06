@@ -123,6 +123,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                         User oldUser = dao.read(MainActivity.getActiveUser());
                         oldUser.setActive(false);
                         dao.update(MainActivity.getActiveUser(), oldUser);
+                        MainActivity.setCreateUser(true);
 
                         /* UI-Meldung & Felder löschen */
                         if (MainActivity.getHints()) {

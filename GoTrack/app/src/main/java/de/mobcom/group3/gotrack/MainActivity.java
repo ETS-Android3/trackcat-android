@@ -1,8 +1,10 @@
 package de.mobcom.group3.gotrack;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,12 +33,15 @@ import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.Database.Models.User;
+import de.mobcom.group3.gotrack.InExport.Import;
 import de.mobcom.group3.gotrack.RecordList.RecordDetailsInformationFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,9 +58,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static int activeUser;
     private static boolean hints;
     private static boolean darkTheme;
-    private boolean createInitialUser =false;
+    private static boolean createInitialUser =false;
     UserDAO userDAO;
-
+    public static Boolean isActiv=false;
     private static final String PREF_DARK_THEME = "dark_theme";
 
     // Restart activity for Theme Switching
@@ -96,6 +101,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         darkTheme=activeDarkTheme;
     }
 
+    public static void setCreateUser(boolean createUser) {
+        createInitialUser=createUser;
+    }
+
+    public static void setActiveUser(int newActivUser) { activeUser =newActivUser; }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -117,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
+        isActiv=false;
         super.onDestroy();
     }
 
@@ -145,7 +157,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Startseite definieren */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        if (isActiv){
+            Toast.makeText(this, "Die App läuft bereits in einer anderen Instanz",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+        else {
+            isActiv =true;
+        }
         /* Instanz für spätere Objekte speichern */
         instance = this;
         recordFragment = new RecordFragment();
@@ -184,11 +203,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
         fragTransaction.commit();
+        Log.d("test123", "===========Problem=========");
+        Log.d("test123", "Nach dem deaktivieren der Hints und dem Wechsel zu einem anderen Nutzer ist alles gut. Beim Wechsel zurück, zu dem eben erwähnten Nutzer, werden seine Hints wieder aktiviert");
     }
 
     /* Dynamisches Hinzufügen von Spinner-Items */
     public void addItemsToSpinner() {
-
+        Log.d("test123", "===========in addItemToSpinner=========");
         /* Erstellen der Listen */
         final ArrayList<byte[]> spinnerAccountIcons = new ArrayList<byte[]>();
         ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
@@ -197,12 +218,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int selectedID = 0;
         boolean findActiveUser = false;
         for (int i = 0; i < users.size(); i++) {
+            Log.d("test123", "for Schleife Items hinzufügen: "+users.get(i).getFirstName() + " " + users.get(i).getLastName());
             spinnerAccountEmail.add(users.get(i).getMail());
             spinnerAccountNames.add(users.get(i).getFirstName() + " " + users.get(i).getLastName());
             spinnerAccountIcons.add(users.get(i).getImage());
             if (users.get(i).isActive()) {
+                Log.d("test123", "activer Nutzer gefunden!");
                 activeUser = users.get(i).getId();
                 hints = users.get(i).isHintsActive();
+                Log.d("test123", "hints Variable: "+ hints);
                 darkTheme = users.get(i).isDarkThemeActive();
                 selectedID = i;
                 findActiveUser = true;
@@ -211,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /*Wenn nach dem Löschen eines Users kein neuer aktiver Nutzer gefunden wurde*/
         if (!findActiveUser) {
+            Log.d("test123", "keinen Activen Nutzer gefunden!");
             activeUser = users.get(selectedID).getId();
             User newActiveUser = userDAO.read(activeUser);
             newActiveUser.setActive(true);
@@ -230,56 +255,75 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemSelected(AdapterView<?> adapter, View v,
                                        int position, long id) {
-                /* Auslesen des angeklickten Items */
-                String item = adapter.getItemAtPosition(position).toString();
 
-                /* Wechseln des Profilbildes */
-                byte[] imgRessource = spinnerAccountIcons.get(position);
-                de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.raw.default_profile);
-                if (imgRessource != null && imgRessource.length > 0) {
-                    bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
-                }
-                circleImageView.setImageBitmap(bitmap);
+                /* Überprüfung, ob immoment ein Import aktiv ist */
+                if(Import.getImport().getIsImportActiv()){
+                    if (hints) {
+                        Toast.makeText(getApplicationContext(), "Nutzerwechsel nicht möglich, da im Moment ein Import läuft.", Toast.LENGTH_LONG).show();
+                    }
+                }else {
 
-                /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
-                for (int i = 0; i < users.size(); i++) {
-                    if (adapter.getItemAtPosition(position).equals(users.get(i).getFirstName() + " " + users.get(i).getLastName())) {
-                        /* Ausgewählten Nutzer als aktiven Nutzer setzen */
-                        User user = new User();
-                        user.setFirstName(users.get(i).getFirstName());
-                        user.setLastName(users.get(i).getLastName());
-                        user.setMail(users.get(i).getMail());
-                        user.setImage(users.get(i).getImage());
-                        user.setHintsActive(users.get(i).isHintsActive());
-                        user.setDarkThemeActive(users.get(i).isDarkThemeActive());
-                        user.setActive(true);
-                        userDAO.update(users.get(i).getId(), user);
+                    /* Auslesen des angeklickten Items */
+                    String item = adapter.getItemAtPosition(position).toString();
+                    Log.d("test123", "===========in OneItemSelected=========");
+                    /* Wechseln des Profilbildes */
+                    byte[] imgRessource = spinnerAccountIcons.get(position);
+                    de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.raw.default_profile);
+                    if (imgRessource != null && imgRessource.length > 0) {
+                        bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
+                    }
+                    circleImageView.setImageBitmap(bitmap);
 
-                        /* Alten Nutzer deaktivieren */
-                        if (deactivateOldUser && !createInitialUser) {
-                            User oldUser = userDAO.read(activeUser);
-                            oldUser.setActive(false);
-                            userDAO.update(activeUser, oldUser);
-                        }
+                    /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
+                    for (int i = 0; i < users.size(); i++) {
+                        if (adapter.getItemAtPosition(position).equals(users.get(i).getFirstName() + " " + users.get(i).getLastName())) {
+                            /* Ausgewählten Nutzer als aktiven Nutzer setzen */
+                            Log.d("test123", "===========Nutzerwechsel=========");
+                            Log.d("test123", "User aus Liste: " + users.get(i).getFirstName() + " hints: " + users.get(i).isHintsActive());
+                            User user = new User();
+                            user.setFirstName(users.get(i).getFirstName());
+                            user.setLastName(users.get(i).getLastName());
+                            user.setMail(users.get(i).getMail());
+                            user.setImage(users.get(i).getImage());
+                            user.setHintsActive(users.get(i).isHintsActive());
+                            user.setDarkThemeActive(users.get(i).isDarkThemeActive());
+                            user.setActive(true);
+                            userDAO.update(users.get(i).getId(), user);
+                            Log.d("test123", "neuer User in DB: " + user.getFirstName() + " hints: " + user.isHintsActive());
 
-                        /* Nutzerwechsel in globaler Variable */
-                        activeUser = users.get(i).getId();
-                        hints = users.get(i).isHintsActive();
-                        darkTheme = users.get(i).isDarkThemeActive();
-                        if (hints) {
-                            Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
+                            /* Alten Nutzer deaktivieren */
+                            if (deactivateOldUser && !createInitialUser) {
+                                Log.d("test123", "===========alten Nutzer deaktivieren=========");
+                                Log.d("test123", "alter Activer Nutzer: " + activeUser);
+                                User oldUser = userDAO.read(activeUser);
+                                oldUser.setActive(false);
+                                userDAO.update(activeUser, oldUser);
+                                Log.d("test123", "oldUser: " + oldUser.getFirstName() + " hints: " + oldUser.isHintsActive());
+                            } else {
+                                createInitialUser = false;
+                            }
+
+                            /* Nutzerwechsel in globaler Variable */
+                            activeUser = users.get(i).getId();
+                            hints = users.get(i).isHintsActive();
+                            darkTheme = users.get(i).isDarkThemeActive();
+                            Log.d("test123", "neuer Activer Nutzer: " + activeUser);
+                            Log.d("test123", "Variable: " + hints);
+                            if (hints) {
+                                Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
-                }
 
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
-                    /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
-                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
-                    fragTransaction.commit();
-                    Menu menu = navigationView.getMenu();
-                    menu.findItem(R.id.nav_dashboard).setChecked(true);
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
+                        /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
+                        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+                        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
+                        fragTransaction.commit();
+                        Menu menu = navigationView.getMenu();
+                        menu.findItem(R.id.nav_dashboard).setChecked(true);
+                    }
                 }
             }
 
@@ -318,6 +362,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     fragTransaction.commit();
                 }
                 break;
+            case R.id.nav_import:
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("application/*");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(
+                            Intent.createChooser(intent, "Import"),0);
+                break;
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
                     FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
@@ -331,7 +382,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 0:
+                if (resultCode == RESULT_OK) {
+                    Uri uri = data.getData();
+                    try {
+                        File file = new File(getCacheDir(), "document");
+                        InputStream inputStream = getContentResolver().openInputStream(uri);
+                        Import.getImport().handleSend(this, file, inputStream);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
     /* Stops/pauses Tracking opens App and switch to RecordFragment */
     public void stopTracking() {
         startActivity(getIntent());

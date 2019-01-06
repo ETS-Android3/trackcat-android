@@ -282,10 +282,12 @@ public class Route implements Parcelable {
         System.out.println("Write to parcel has begun");
         dest.writeInt(this.id);
         dest.writeInt(this.userId);
+        dest.writeInt(this.type);
         dest.writeString(this.name);
         dest.writeLong(this.date);
         dest.writeLong(this.time);
         dest.writeLong(this.rideTime);
+        dest.writeInt(this.isImportedDB());
         dest.writeDouble(this.distance);
         dest.writeTypedList(this.locations);
         locations.get(0).writeToParcel(dest, 0);
@@ -294,10 +296,12 @@ public class Route implements Parcelable {
     public Route(Parcel source) {
         this.id = source.readInt();
         this.userId = source.readInt();
+        this.type = source.readInt();
         this.name = source.readString();
         this.date = source.readLong();
         this.time = source.readLong();
         this.rideTime = source.readLong();
+        this.setImportedDB(source.readInt());
         this.distance = source.readDouble();
         this.locations = source.createTypedArrayList(Location.CREATOR);
     }

@@ -1,81 +1,45 @@
-package de.mobcom.group3.gotrack.RecordList.RecyclerView;
+package de.mobcom.group3.gotrack.RecordList;
 
-import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
-import de.mobcom.group3.gotrack.RecordList.RecordDetailsFragment;
 import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 
+public class ShowRecord {
 
-public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.MyViewHolder> {
-    private Context context;
-    private List<Route> records;
+    public static void show(List<Route> records, int position, String TAG, TextView recordId, ImageView recordType, ImageView importState, TextView recordName, TextView recordDostance, TextView recordTime, View recordItem){
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView id, name, distance, time;
-        public ImageView type;
-        public RelativeLayout viewBackground, viewForeground;
-
-        public MyViewHolder(View view) {
-            super(view);
-            id = view.findViewById(R.id.record_id);
-            name = view.findViewById(R.id.record_name);
-            type = view.findViewById(R.id.activity_type);
-            distance = view.findViewById(R.id.record_distance);
-            time = view.findViewById(R.id.record_time);
-
-            viewBackground = view.findViewById(R.id.view_background);
-            viewForeground = view.findViewById(R.id.view_foreground);
-        }
-    }
-
-
-    public RecordListAdapter(Context context, List<Route> cartList) {
-        this.context = context;
-        this.records = cartList;
-    }
-
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.record_list_item, parent, false);
-        return new MyViewHolder(itemView);
-    }
-
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
-        final Route item = records.get(position);
         /* ID anzeigen */
-        holder.id.setText("" + (position + 1));
+        recordId.setText("" + (position + 1));
 
         /* Typ symbolisieren */
-        holder.type.setImageResource(SpeedAverager.getTypeIcon(item.getType(), true));
+        recordType.setImageResource(SpeedAverager.getTypeIcon(records.get(position).getType(), true));
+
+        /* Importstatus */
+        if (records.get(position).isImported()) {
+            importState.setVisibility(View.VISIBLE);
+        } else {
+            importState.setVisibility(View.INVISIBLE);
+        }
 
         /* Name anzeigen */
-        holder.name.setText(item.getName());
+        recordName.setText(records.get(position).getName());
 
         /* Distanz anzeigen */
-        TextView recordDistance = holder.distance;
+        TextView recordDistance = recordItem.findViewById(R.id.record_distance);
         double distance = Math.round(records.get(position).getDistance());
         if (distance >= 1000) {
             String d = "" + distance / 1000L;
@@ -85,29 +49,28 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
         }
 
         /* Zeit anzeigen */
-        TextView recordTime = holder.time;
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         TimeZone tz = TimeZone.getTimeZone("UTC");
         df.setTimeZone(tz);
         String time = df.format(new Date(records.get(position).getTime() * 1000));
         recordTime.setText(time);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        /* Anzeigen der Routendetaills */
+        recordItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                /*Daten holen*/
+                /* Daten holen */
                 ArrayList<Location> locations = records.get(position).getLocations();
                 int size;
                 int run;
-                /*Überprüfung ob zu wenig Daten existieren*/
+                /* Überprüfung ob zu wenig Daten existieren */
                 boolean fillArguments = false;
-                if (locations!=null && locations.size() > 60) {
+                if (locations != null && locations.size() > 60) {
                     size = locations.size() / 10;
-                    run=locations.size();
+                    run = locations.size();
                 } else {
                     size = 5;
-                    run=0;
+                    run = 0;
                     fillArguments = true;
                 }
                 int n = 0;
@@ -143,30 +106,16 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
                 bundle.putDoubleArray("altitudeArray", altitudeValues);
                 bundle.putDoubleArray("speedArray", speedValues);
                 bundle.putInt("id", records.get(position).getId());
+
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsList));
+                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
                 fragTransaction.commit();
                 if (MainActivity.getHints()) {
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName() + "\"", Toast.LENGTH_LONG).show();
                 }
             }
         });
-    }
-
-    @Override
-    public int getItemCount() {
-        return records.size();
-    }
-
-    public void removeItem(int position) {
-        records.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    public void restoreItem(Route item, int position) {
-        records.add(position, item);
-        notifyItemInserted(position);
     }
 }

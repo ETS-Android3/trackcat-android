@@ -2,24 +2,23 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory android:title="@string/category1" >
         <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/settings_theme"
             android:key="dark_theme"
-            android:title="Dunkler Modus"
-            android:defaultValue="false" />
+            android:title="Dunkler Modus" />
         <CheckBoxPreference
             android:defaultValue="true"
+            android:icon="@drawable/settings_help"
             android:key="help_messages"
             android:summary="Zeige allgemeine Hinweise an"
-            android:title="Hilfestellungen" >
-        </CheckBoxPreference>
+            android:title="Hilfestellungen"></CheckBoxPreference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category2" >
-        <ListPreference
-            android:defaultValue="-1"
+        <Preference
+            android:icon="@drawable/settings_export"
             android:key="global_export_options"
-            android:entries="@array/export_options"
-            android:entryValues="@array/export_options"
-            android:title="Exportieren"
-            android:summary="Exportieren Sie hier Ihre Benutzerprofile" />
+            android:summary="Exportieren Sie hier Ihre Benutzerprofile"
+            android:title="Exportieren" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/category3" >
@@ -28,11 +27,13 @@
             android:summary="@string/aboutGoTrack" />
 
         <Preference
-            android:title="@string/cVersion_title"
+            android:icon="@drawable/settings_version"
             android:key="current_version"
-            android:summary="@string/cVersion_summary" />
+            android:summary="@string/cVersion_summary"
+            android:title="@string/cVersion_title" />
 
         <Preference
+            android:icon="@drawable/settings_feedback"
             android:key="send_feedback"
             android:summary="@string/feedback_summary"
             android:title="@string/feedback_title" />

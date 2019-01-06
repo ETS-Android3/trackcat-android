@@ -9,8 +9,8 @@ import android.os.Parcel;
 import com.google.gson.Gson;
 
 import de.mobcom.group3.gotrack.Database.Models.Route;
+import de.mobcom.group3.gotrack.MainActivity;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +83,9 @@ public class RouteDAO {
         final byte[] parceled = parcel.marshall();
 
         ContentValues values = new ContentValues();
+        if (route.getId() != 0 && this.read(route.getId()).equals(new Route())) {
+            values.put(COL_ID, route.getId());
+        }
         values.put(COL_USER, route.getUserId());
         values.put(COL_NAME, route.getName());
         values.put(COL_TIME, route.getTime());
@@ -306,6 +309,7 @@ public class RouteDAO {
         p2.setDataPosition(0);
         Route route = p2.readParcelable(Route.class.getClassLoader());
         route.setImported(true);
+        route.setUserID(MainActivity.getActiveUser());
         this.create(route);
         p2.recycle();
     }

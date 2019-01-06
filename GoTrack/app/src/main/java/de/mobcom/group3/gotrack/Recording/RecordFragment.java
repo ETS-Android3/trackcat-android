@@ -49,8 +49,6 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
-import org.osmdroid.views.overlay.compass.IOrientationConsumer;
-import org.osmdroid.views.overlay.compass.IOrientationProvider;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 
 import java.text.SimpleDateFormat;
@@ -129,18 +127,19 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     private String notificationContent = "";
 
     /*
-     + necessary variables for mapOrientation
+     + declaring necessary variables for mapOrientation
+     + and assign initial values
      */
 
     private boolean northUp = false;
     private int deviceOrientation = 0;
-    private CompassOverlay mCompassOverlay;
     private float lat = 0f;
     private float lon = 0f;
     private float alt = 0f;
     private long timeOfFix = 0;
     private float gpsBearing = 0f;
 
+    private CompassOverlay mCompassOverlay;
     private SensorManager sensorManager;
     private Sensor magnetometer;
 
@@ -159,7 +158,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             locatorGPS.stopTracking();
         }
 
+        /*
+         + stop sensor listening when app will be paused
+         */
         sensorManager.unregisterListener(this);
+        /*
+         + stop compass overlay when app will be paused
+         */
         mCompassOverlay.disableCompass();
         mCompassOverlay.getOrientationProvider().stopOrientationProvider();
     }
@@ -167,7 +172,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     @Override
     public void onResume() {
         super.onResume();
+        /*
+         + start sensor listening when app will be resumed
+         */
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+        /*
+         + start compass overlay when app will be resumed
+         */
         mCompassOverlay.enableCompass();
         mCompassOverlay.getOrientationProvider().startOrientationProvider(mCompassOverlay);
     }
@@ -175,7 +186,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        /*
+         + stop sensor listening when app will be closed
+         */
         sensorManager.unregisterListener(this);
+        /*
+         + stop compass overlay when app will be closed
+         */
         mCompassOverlay.onDetach(mMapView);
     }
 
@@ -287,8 +304,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
          + add compass element
          + !!! needs a device with the compass-functionality to work properly !!!
          */
+
+        /*
+         + Lock the device in current screen orientation
+         */
         if (!"Android-x86".equalsIgnoreCase(Build.BRAND)) {
-            //Lock the device in current screen orientation
             int orientation = Objects.requireNonNull(getActivity()).getRequestedOrientation();
             int rotation = ((WindowManager) Objects.requireNonNull(Objects.requireNonNull(getActivity()).getSystemService(
                     Context.WINDOW_SERVICE))).getDefaultDisplay().getRotation();
@@ -313,9 +333,14 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
             getActivity().setRequestedOrientation(orientation);
         }
-
+        /*
+         + create new compass element
+         */
         mCompassOverlay = new CompassOverlay(Objects.requireNonNull(getContext()),
                 new InternalCompassOrientationProvider(Objects.requireNonNull(getActivity())), mMapView);
+        /*
+         + add compass overlay to the mapView
+         */
         mMapView.getOverlays().add(mCompassOverlay);
 
         /*
@@ -325,10 +350,16 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             @Override
             public void onClick(View v) {
                 if (!northUp) {
+                    /*
+                     + resets map orientation to north and sets repetition to this
+                     */
                     northUp = true;
                     mMapView.setVerticalMapRepetitionEnabled(true);
                     mMapView.setMapOrientation((float) 0.0);
                 } else {
+                    /*
+                     + unset map repetition
+                     */
                     northUp = false;
                     mMapView.setVerticalMapRepetitionEnabled(false);
                 }
@@ -432,9 +463,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
         locatorGPS.startTracking();
 
-
-        // TODO Sensor setzen
+        /*
+         + !!! needs a device with a magnetometer sensor to work properly !!!
+         + make this fragment listening to changes of magnetic sensor
+         */
         sensorManager = (SensorManager) MainActivity.getInstance().getSystemService(Context.SENSOR_SERVICE);
+        assert sensorManager != null;
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
 
@@ -798,6 +832,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
             /*
              + sets the desired map rotation based on location heading if movement is detected
+             + and map is not fixed in north direction
              */
             if ((gpsBearing >= 0.1f) && !northUp) {
                 mMapView.setMapOrientation(-gpsBearing);
@@ -876,9 +911,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
     /*
      + !!! needs a device with the compass-functionality (magnetometer sensor) to work properly !!!
-     + sets the desired map rotation based on location heading if no movement is detected
+     + sets the desired map rotation based on location heading if no movement is detected and
+     + map is not fixed in north direction
+     + is called when sensor registers change of alignment
      */
-
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor == magnetometer) {
@@ -891,7 +927,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     /*
      + sets offset to the compass to show true north instead of magnetic north
      + is called when accuracy of the sensor has changed to update alignment of the compass
-    */
+     */
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
         float[] rotationMatrix = new float[9];

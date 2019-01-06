@@ -64,7 +64,7 @@ public class PageViewerCharts extends Fragment {
         if(records.size() > 0) {
             //int prevDay = getWeekDay(records.get(0).getLocations().get(0).getTime());
             for (int i = 0; i < records.size(); i++) {
-                long curDate = records.get(i).getLocations().get(0).getTime();
+                long curDate = records.get(i).getDate();
                 double curDistance = records.get(i).getDistance();
                 double curTime = records.get(i).getTime();
                 int dayOfWeek = getWeekDay(curDate);

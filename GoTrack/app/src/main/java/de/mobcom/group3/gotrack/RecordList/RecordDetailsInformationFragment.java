@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.icu.text.AlphabeticIndex;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,10 +11,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -42,7 +40,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
     View view;
     ArrayList<GeoPoint> GPSData = new ArrayList<>();
-    private double height = 0;
     private double altitudeUp = 0;
     private double altitudeDown = 0;
     private double maxSpeed = 0;
@@ -55,14 +52,13 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        int id = 1;//= getArguments().getInt("id");
+        int id = getArguments().getInt("id");
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
         /* Auslesen der Werte aus der Datenbank */
         dao = new RouteDAO(MainActivity.getInstance());
         record = dao.read(id);
         locations = record.getLocations();
-        double prevDistance = 0;
 
         /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
@@ -71,27 +67,21 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
             GPSData.add(gPt);
 
-            double distance = 0;
-
-            if (i > 1) {
-                distance = record.getLocations().get(i - 1).getAltitude() - location.getAltitude();
-                if (distance < 0) {
-                    distance = distance * - 1;
-                }
+            if (i > 0) {
+                double difference = location.getAltitude() - record.getLocations().get(i - 1).getAltitude();
 
                 /* Berechnung der Höhenmeter */
-                if (distance > prevDistance) {
-                    altitudeUp = altitudeUp + distance;
-                } else {
-                    altitudeDown = altitudeDown + distance;
+                if (difference > 0) {
+                    altitudeUp += Math.abs(difference);
+                } else if (difference < 0){
+                    altitudeDown += Math.abs(difference);
                 }
-                height = height + distance;
 
+                /* Maximalgeschwindigkeit ausrechnen */
                 if (location.getSpeed() > maxSpeed) {
                     maxSpeed = location.getSpeed();
                 }
             }
-            prevDistance = distance;
         }
 
         /* DateFormat setzen */
@@ -121,7 +111,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
         /* Negative Altimeter setzen */
         TextView negativeAltimeter = view.findViewById(R.id.altimeter_neg_value);
-        toSet = Math.round(altitudeUp) + " m";
+        toSet = Math.round(altitudeDown) + " m";
         negativeAltimeter.setText(toSet);
 
         /* TotalTime setzen */
@@ -142,7 +132,8 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         /* Route anzeigen */
         drawRoute();
 
-        Button editRouteName = view.findViewById(R.id.editRoute);
+        /* Button zur Bearbeitung von Routen */
+        ImageView editRouteName = view.findViewById(R.id.editRoute);
         editRouteName.setOnClickListener(this);
 
         return view;
@@ -187,10 +178,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.editRoute:
-                if(MainActivity.getHints()) {
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Bearbeiten der Route \"" + record.getName() + "\"", Toast.LENGTH_LONG).show();
-                }
-
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setTitle("Routenname bearbeiten?");
@@ -217,7 +204,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
                         recordName.setText(newName);
                         if(MainActivity.getHints()) {
-                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ändern des Namens in \"" + newName + "\"", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Name erfolgreich bearbeitet!", Toast.LENGTH_LONG).show();
                         }
 
                     }

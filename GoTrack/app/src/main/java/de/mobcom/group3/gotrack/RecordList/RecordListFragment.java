@@ -84,7 +84,7 @@ public class RecordListFragment extends Fragment {
                     public void onClick(View view) {
                         /* Gelöschtes Item wiederherstellen */
                         mAdapter.restoreItem(deletedItem, deletedIndex);
-                        // TODO: Route sollte wieder an vorher genutzem Index eingefügt werden können
+                        // TODO: Wiederherstellen der zuvor gelöschten Route
                         dao.create(deletedItem);
                     }
                 });
@@ -94,9 +94,8 @@ public class RecordListFragment extends Fragment {
 
             @Override
             public void onShareClick(int position) {
-                String file= Export.getExport().exportRoute(getContext(), records.get(position).getId());
-                Export.getExport().send(getContext(), file);
-                //Toast.makeText(getContext(), "Teilen...", Toast.LENGTH_LONG).show();
+                String file= Export.getExport().exportRoute(getContext(), records.get(position).getId(),true);
+
             }
         });
 
