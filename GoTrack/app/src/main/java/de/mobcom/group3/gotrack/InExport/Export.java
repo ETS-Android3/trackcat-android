@@ -19,7 +19,6 @@ import de.mobcom.group3.gotrack.Database.Models.User;
 public class Export {
 
     private static Export exportSingleton = null;
-
     
     private Export(){
     }
@@ -38,7 +37,7 @@ public class Export {
         String fileName = "/"+rDAO.read(routeId).getName();
         Log.i("Export", "Der Export der Route "+rDAO.read(routeId).getName()+
                 " wurde gestartet.");
-        return generateFile(context, fileName,"1<index>"+rDAO.exportRouteToJson(routeId),
+        return generateFile(context, fileName,"SingleRoute<index>"+rDAO.exportRouteToJson(routeId),
                 forSend);
     }
 
@@ -48,11 +47,11 @@ public class Export {
         String fileName = "/"+uDAO.read(userId).getFirstName()+uDAO.read(userId).getLastName();
         Log.i("Export", "Der Export des Users "+uDAO.read(userId).getFirstName()+" "+uDAO.
                 read(userId).getLastName()+" wurde gestartet.");
-        return generateFile(context, fileName,"2<index>"+uDAO.exportUserToJson(userId),
+        return generateFile(context, fileName,"UserSettings<index>"+uDAO.exportUserToJson(userId),
                 forSend);
     }
 
-    // Export aller  Routen eines bestimmenten Users
+    // Export aller Routen eines bestimmenten Users
     public String exportAllRoute(Context context, int userId, Boolean forSend){
         RouteDAO rDAO = new RouteDAO(context);
         UserDAO uDAO = new UserDAO(context);
@@ -60,7 +59,7 @@ public class Export {
                 getLastName();
         Log.i("Export", "Der Export aller Routen des Users "+uDAO.read(userId).
                 getFirstName()+" "+uDAO.read(userId).getLastName()+" wurde gestartet.");
-        return generateFile(context, fileName,"3<index>"+
+        return generateFile(context, fileName,"AllRoutes<index>"+
                 arrayListToString(rDAO.exportRoutesToJson(userId)), forSend);
     }
 
@@ -71,13 +70,12 @@ public class Export {
         List<User> users = uDAO.readAll();
         String fileName = "/fullApp";
         Log.i("GoTrack", "Der Export aller Routen und aller Users wurde gestartet.");
-        String fileContent ="4<index>";
+        String fileContent ="AllUsersAllRoutes<index>";
         for(User u: users )
         {
             fileContent =fileContent+uDAO.exportUserToJson(u.getId())+"<route>"+
                     arrayListToString(rDAO.exportRoutesToJson(u.getId()))+"<nextUser>";
         }
-
         return generateFile(context, fileName,fileContent, forSend);
     }
 
@@ -90,7 +88,7 @@ public class Export {
         String fileName = "/full"+uDAO.read(userId).getFirstName()+uDAO.read(userId).getLastName();
         Log.i("Export", "Der Export des Users "+uDAO.read(userId).getFirstName()+
                 uDAO.read(userId).getLastName()+" mit allen Routen wurde gestartet.");
-        return generateFile(context, fileName, "5<index>"+fileContent, forSend);
+        return generateFile(context, fileName, "OneUserAllRoutes<index>"+fileContent, forSend);
     }
 
     private String generateFile(Context context, String fileNameNoEnd, String fileContent,

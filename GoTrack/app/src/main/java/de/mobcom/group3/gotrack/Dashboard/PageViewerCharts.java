@@ -5,12 +5,14 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
 import de.mobcom.group3.gotrack.Charts.BarChartFragment;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
@@ -131,16 +133,44 @@ public class PageViewerCharts extends Fragment {
 
         // Die Schrittweise der Plot Range wird an den höchsten Time Wert angepasst
         // Dies Verhindert eine überladene UI
-        if(maxTime < 60){
+        if (maxTime < 60) {
             bundleTime.putDouble("stepsY", 10);
             bundleTime.putString("rangeTitle", "Sekunden");
             bundleTime.putDoubleArray("array", timeArray);
-        }else if(maxTime < 3600){
-            bundleTime.putDouble("stepsY", maxTimeMinutes / 5);
+        } else if (maxTime < 300) {
+            bundleTime.putDouble("stepsY", 0.5);
             bundleTime.putString("rangeTitle", "Minuten");
             bundleTime.putDoubleArray("array", timeArrayMinutes);
-        }else{
-            bundleTime.putDouble("stepsY", maxTimeHours / 5);
+        } else if (maxTime < 600) {
+            bundleTime.putDouble("stepsY", 1);
+            bundleTime.putString("rangeTitle", "Minuten");
+            bundleTime.putDoubleArray("array", timeArrayMinutes);
+        } else if (maxTime < 1200) {
+            bundleTime.putDouble("stepsY", 2);
+            bundleTime.putString("rangeTitle", "Minuten");
+            bundleTime.putDoubleArray("array", timeArrayMinutes);
+        } else if (maxTime < 1800) {
+            bundleTime.putDouble("stepsY", 3);
+            bundleTime.putString("rangeTitle", "Minuten");
+            bundleTime.putDoubleArray("array", timeArrayMinutes);
+        } else if (maxTime < 2400) {
+            bundleTime.putDouble("stepsY", 4);
+            bundleTime.putString("rangeTitle", "Minuten");
+            bundleTime.putDoubleArray("array", timeArrayMinutes);
+        } else if (maxTime < 3000) {
+            bundleTime.putDouble("stepsY", 5);
+            bundleTime.putString("rangeTitle", "Minuten");
+            bundleTime.putDoubleArray("array", timeArrayMinutes);
+        } else if (maxTime < 3600) {
+            bundleTime.putDouble("stepsY", 6);
+            bundleTime.putString("rangeTitle", "Minuten");
+            bundleTime.putDoubleArray("array", timeArrayMinutes);
+        } else if (maxTime < 18000) {
+            bundleTime.putDouble("stepsY", 0.5);
+            bundleTime.putString("rangeTitle", "Stunden");
+            bundleTime.putDoubleArray("array", timeArrayHours);
+        } else if (maxTime >= 18000) {
+            bundleTime.putDouble("stepsY", 1);
             bundleTime.putString("rangeTitle", "Stunden");
             bundleTime.putDoubleArray("array", timeArrayHours);
         }
@@ -160,15 +190,20 @@ public class PageViewerCharts extends Fragment {
         LinearLayout mLinearLayout = view.findViewById(R.id.indicator);
 
         /* create Indicator (little buttons) */
-        CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle_theme_color);
-        mIndicator.setPageCount(listFragments.size());
-        mIndicator.show();
+        if (Build.VERSION.SDK_INT > 21) {
+            CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle_theme_color);
+            mIndicator.setPageCount(listFragments.size());
+            mIndicator.show();
+        } else {
+            CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle_v21);
+            mIndicator.setPageCount(listFragments.size());
+            mIndicator.show();
+        }
 
         return view;
     }
-
     // Der Wochentag der Aktuellen Strecke wird als int zurückgegeben
-    private int getWeekDay(long millis){
+    private int getWeekDay(long millis) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);

@@ -24,10 +24,10 @@
 
     <string name="category2">Exportmöglichkeiten</string>
 
-        <string name="export_options_all_records">Daten des aktuellen Benutzers</string>
+        <string name="export_options_all_full_user">Aktuelle Nutzerdaten mit Routen</string>
         <string name="export_options_all_options">Einstellungen des aktuellen Benutzers</string>
         <string name="export_options_all_route">Alle Routen des aktuellen Benutzers</string>
-        <string name="export_options_all_users">Alle Benutzerdaten</string>
+        <string name="export_options_all_users">Alle Daten</string>
 
 
     <string name="category3">Über GoTrack</string>

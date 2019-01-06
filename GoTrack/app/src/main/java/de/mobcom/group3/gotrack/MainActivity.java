@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static boolean hints;
     private static boolean darkTheme;
     private static boolean createInitialUser =false;
-    UserDAO userDAO;
+    private UserDAO userDAO;
     public static Boolean isActiv=false;
     private static final String PREF_DARK_THEME = "dark_theme";
 
@@ -99,8 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static void setCreateUser(boolean createUser) {
         createInitialUser=createUser;
     }
-
-    public static void setActiveUser(int newActivUser) { activeUser =newActivUser; }
 
     @Override
     protected void onResume() {

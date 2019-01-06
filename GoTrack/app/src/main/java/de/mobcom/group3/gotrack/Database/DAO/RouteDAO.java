@@ -19,47 +19,6 @@ import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
 
 // toDo: write javaDoc and comments
 
-/*      Parcel ArrayList<Locations> instead of using GSON
-
-        write into a byte[] parceled:
-
-        final Parcel p1 = obtain();
-        p1.writeTypedList(route.getLocations());
-        final byte[] parceled = p1.marshall();
-        p1.recycle();
-
-        read from a byte[] parceled and write into an ArrayList<Location> unParceled:
-
-        final Parcel p2 = obtain();
-        p2.unmarshall(parceled, 0, parceled.length);
-        p2.setDataPosition(0);
-        ArrayList unParceled = p2.createTypedArrayList(Location.CREATOR);
- */
-
-/* public String[] getInfo(int id) {
-    String[] result = new String[]{};
-    String selection = COL_ID + " = ?";
-    String[] selectionArgs = { String.valueOf(id) };
-    String[] projection = { COL_DATE, COL_TIME, COL_RIDETIME, COL_DISTANCE };
-    Cursor cursor = writableDb.query(
-            TABLE_NAME,
-            projection,
-            selection,
-            selectionArgs,
-            null,
-            null,
-            null
-    );
-    if(cursor.moveToFirst()) {
-        result[0] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
-        result[1] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
-        result[2] = String.valueOf(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
-        result[3] = String.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
-    }
-    return result;
-}*/
-
-
 public class RouteDAO {
     private final Context context;
 
@@ -83,7 +42,7 @@ public class RouteDAO {
         final byte[] parceled = parcel.marshall();
 
         ContentValues values = new ContentValues();
-        if (route.getId() != 0 && this.read(route.getId()).equals(new Route())) {
+        if (route.getId() != 0 && this.read(route.getId()).getId() == 0) {
             values.put(COL_ID, route.getId());
         }
         values.put(COL_USER, route.getUserId());
@@ -249,23 +208,25 @@ public class RouteDAO {
                     "id  ASC" )) {
                 if (cursor.moveToFirst())
                     do {
-                        final Parcel parcel = obtain();
-                        final byte[] parceled = cursor.getBlob(cursor.getColumnIndexOrThrow(COL_LOCATIONS));
-                        parcel.unmarshall(parceled, 0, parceled.length);
-                        parcel.setDataPosition(0);
-
-                        result.add(new Route(
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
-                            cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
-                            cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
-                            cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
-                            cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
-                            cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
-                            cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                            parcel.createTypedArrayList(Location.CREATOR)));
-                        parcel.recycle();
+                        if (cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)) == 0) {
+                            final Parcel parcel = obtain();
+                            final byte[] parceled = cursor.getBlob(
+                                    cursor.getColumnIndexOrThrow(COL_LOCATIONS));
+                            parcel.unmarshall(parceled, 0, parceled.length);
+                            parcel.setDataPosition(0);
+                            result.add(new Route(
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
+                                    cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
+                                    cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
+                                    cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)),
+                                    cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
+                                    cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
+                                    parcel.createTypedArrayList(Location.CREATOR)));
+                            parcel.recycle();
+                        }
                     } while (cursor.moveToNext());
             }
         } finally {
@@ -300,7 +261,7 @@ public class RouteDAO {
         this.delete(route.getId());
     }
 
-    public void importRouteFromJSON(String jsonString) {
+    public void importRouteFromJson(String jsonString, int userId, boolean isImported) {
         Gson gson = new Gson();
         byte[] parceled = gson.fromJson(jsonString, byte[].class);
         final Parcel p2 = obtain();
@@ -308,15 +269,15 @@ public class RouteDAO {
         p2.unmarshall(parceled, 0, parceled.length);
         p2.setDataPosition(0);
         Route route = p2.readParcelable(Route.class.getClassLoader());
-        route.setImported(true);
-        route.setUserID(MainActivity.getActiveUser());
+        route.setImported(isImported);
+        route.setUserID(userId);
         this.create(route);
         p2.recycle();
     }
 
-    public void importRoutesFromJson(List<String> jsonStrings) {
+    public void importRoutesFromJson(List<String> jsonStrings, int userId, boolean isImported) {
         for (String jsonString : jsonStrings) {
-            this.importRouteFromJSON(jsonString);
+            this.importRouteFromJson(jsonString, userId, isImported);
         }
     }
 

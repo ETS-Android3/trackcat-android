@@ -7,27 +7,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.preference.*;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
-import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.InExport.Export;
 import de.mobcom.group3.gotrack.MainActivity;
@@ -210,20 +201,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
                 /* Alle Aufnahmen des aktuellen Nutzers exportieren */
                 if (rBtn_all_records.isChecked()) {
-                    type = "Alle Daten von \""+ oldUser.getFirstName() + " " + oldUser.getLastName()+"\"";
+                    type = "Alle Daten von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"";
                     Export.getExport().exportAllUserData(getActivity(), oldUser.getId(), true);
 
-                /* Nutzer-Einstellung exportieren */
+                    /* Nutzer-Einstellung exportieren */
                 } else if (rBtn_all_options.isChecked()) {
-                    type = "Alle Einstellungen von \""+ oldUser.getFirstName() + " " + oldUser.getLastName()+"\"";
+                    type = "Alle Einstellungen von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"";
                     Export.getExport().exportUserData(getActivity(), oldUser.getId(), true);
 
-                /* Alle Routen exportieren */
+                    /* Alle Routen exportieren */
                 } else if (rBtn_all_route.isChecked()) {
-                    type = "Alle Routen von \""+ oldUser.getFirstName() + " " + oldUser.getLastName()+"\"";
+                    type = "Alle Routen von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"";
                     Export.getExport().exportAllRoute(getActivity(), oldUser.getId(), true);
 
-                /* Alle Nutzer exportieren */
+                    /* Alle Nutzer exportieren */
                 } else if (rBtn_all_users.isChecked()) {
                     type = "Alle Benutzerdaten";
                     Export.getExport().exportAllRouteUsers(getActivity(), true);

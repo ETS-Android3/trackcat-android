@@ -1,24 +1,18 @@
 package de.mobcom.group3.gotrack.InExport;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
-import android.widget.Switch;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +26,10 @@ public class Import {
     private static Import importSingleton = null;
 
     private static Boolean isImportActiv = false;
+
+    private Gson gson = new Gson();
+
+    private Type imExportType = User.class;
 
     public Boolean getIsImportActiv () {return isImportActiv;}
 
@@ -52,21 +50,43 @@ public class Import {
             String[] stringArr = incomingFile.split("<index>");
             String index = stringArr[0];
             String content = stringArr[1];
+            RouteDAO rDAO = new RouteDAO(context);
+            UserDAO uDAO = new UserDAO(context);
             switch (index) {
-                case ("1"):
-                    importRoute(context, content);
+                case ("SingleRoute"):
+                    // Import einer einzelnen Route
+                    rDAO.importRouteFromJson(content, MainActivity.getActiveUser(), true);
+                    Log.i("Import", "Der Import einer Route wurde gestartet.");
                     break;
-                case ("2"):
-                    importUserData(context, content);
+                case ("UserSettings"):
+                    // Import eines Users mit seinen Einstellungen
+                    uDAO.importUserFromJson(content);
+                    Log.i("Import", "Der Import eines Users wurde gestartet.");
                     break;
-                case ("3"):
-                    importAllRoute(context, content);
+                case ("AllRoutes"):
+                    // Import aller Routen eines Users
+                    rDAO.importRoutesFromJson(stringToarrayList(content), MainActivity.getActiveUser(), true);
+                    Log.i("Import", "Der Import aller Routen eines Users wurde gestartet.");
                     break;
-                case ("4"):
-                    importAllRouteUsers(context, content);
+                case ("AllUsersAllRoutes"):
+                    // Import aller  Routen und aller User eines bestimmenten Users
+                    String[] stringUsersRoutesArr = content.split("<nextUser>");
+                    for(String userRoutes: stringUsersRoutesArr  )
+                    {
+                        String[] userRoutesArr= userRoutes.split("<route>");
+                        String user = userRoutesArr[0];
+                        String routes = userRoutesArr[1];
+                        createUserwithRoutes(context, user, uDAO, routes, rDAO);
+                    }
+                    Log.i("Export", "Der Import aller Routen und aller Users wurde gestartet.");
                     break;
-                case ("5"):
-                    importAllUserData(context, content);
+                case ("OneUserAllRoutes"):
+                    // Import eines Nutzers mit allen seinen Einstellungen und Routen
+                    String[] stringUserRoutesArr = content.split("<endUser>");
+                    String user = stringUserRoutesArr[0];
+                    String routes = stringUserRoutesArr[1];
+                    createUserwithRoutes(context, user, uDAO, routes, rDAO);
+                    Log.i("Import", "Der Import eines Users mit allen Routen wurde gestartet.");
                     break;
                 default:
                     Toast.makeText(context, "Die Import-Datei war fehlerhaft",
@@ -80,79 +100,6 @@ public class Import {
             isImportActiv =false;
             ex.printStackTrace();
         }
-
-    }
-
-    // Import einer einzelnen Route
-    private void importRoute(Context context, String incomingFile){
-        RouteDAO rDAO = new RouteDAO(context);
-        rDAO.importRouteFromJSON(incomingFile);
-        Log.i("Import", "Der Import einer Route wurde gestartet.");
-    }
-
-    // Import eines Users mit seinen Einstellungen
-    private void importUserData(Context context, String incomingFile){
-        UserDAO uDAO = new UserDAO(context);
-        uDAO.importUserFromJson(incomingFile);
-        Log.i("Import", "Der Import eines Users wurde gestartet.");
-    }
-
-    // Import aller Routen eines bestimmenten Users
-    private void importAllRoute(Context context, String incomingFile){
-        RouteDAO rDAO = new RouteDAO(context);
-        rDAO.importRoutesFromJson(stringToarrayList(incomingFile));
-        Log.i("Import", "Der Import aller Routen eines Users wurde gestartet.");
-    }
-
-    // Import aller  Routen eines bestimmenten Users
-    public void importAllRouteUsers(Context context, String incomingFile){
-        RouteDAO rDAO = new RouteDAO(context);
-        UserDAO uDAO = new UserDAO(context);
-        String[] stringArr = incomingFile.split("<nextUser>");
-        Boolean isFistLoop= true;
-        int importUser = 1;
-        int activUser= MainActivity.getActiveUser();
-        for(String u: stringArr )
-        {
-            String[] userRoutes= u.split("<route>");
-            String user = userRoutes[0];
-            String routes = userRoutes[1];
-            uDAO.importUserFromJson(user);
-            if (isFistLoop) {
-                isFistLoop = false;
-                importUser = getNewestUserID(context);
-            }
-            int tempActivUser = deleteDuplexUser(context, importUser);
-            MainActivity.setActiveUser(tempActivUser );
-            try {
-                rDAO.importRoutesFromJson(stringToarrayList(routes));
-            }finally {
-                MainActivity.setActiveUser(activUser);
-            }
-            importUser +=1;
-        }
-        MainActivity.setActiveUser(activUser);
-        Log.i("Export", "Der Import aller Routen und aller Users wurde gestartet.");
-    }
-
-    // Import eines Nutzers mit allen seinen Einstellungen und Routen
-    private void importAllUserData(Context context, String incomingFile){
-        UserDAO uDAO = new UserDAO(context);
-        RouteDAO rDAO = new RouteDAO(context);
-        String[] stringArr = incomingFile.split("<endUser>");
-        String user = stringArr[0];
-        String routes = stringArr[1];
-        uDAO.importUserFromJson(user);
-        int activUser= MainActivity.getActiveUser();
-        int importUser = getNewestUserID(context);
-        int tempActivUser = deleteDuplexUser(context, importUser);
-        MainActivity.setActiveUser(tempActivUser);
-        try {
-            rDAO.importRoutesFromJson(stringToarrayList(routes));
-        }finally {
-            MainActivity.setActiveUser(activUser);
-        }
-        Log.i("Import", "Der Import eines Users mit allen Routen wurde gestartet.");
     }
 
     public void handleSend(Context context, File file, InputStream inputStream) throws IOException {
@@ -205,38 +152,28 @@ public class Import {
         return result;
     }
 
-    private int deleteDuplexUser(Context context, int newUserID){
-        UserDAO uDAO = new UserDAO(context);
+    private void createUserwithRoutes (Context context,
+                                       String user, UserDAO uDAO, String routes, RouteDAO rDAO){
+        User newUser = gson.fromJson(user, imExportType);
         List<User> users = uDAO.readAll();
-        User newUser =uDAO.read(newUserID);
-        try {
-            Toast.makeText(context, newUser.getId(), Toast.LENGTH_SHORT).show();
-        }catch (Exception e){
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
-        }
-
-        Boolean notFound = true;
-        Boolean shouldDelete = false;
-        int result = newUserID;
+        Boolean exist = false;
+        int userID=0;
         for(User u: users )
         {
-
-            if(newUser.getMail().equals(u.getMail()) && notFound){
-                Toast.makeText(context, newUser.getMail()+u.getMail(), Toast.LENGTH_SHORT).show();
-                notFound = false;
-            }
-            else{
-                Toast.makeText(context, "was here", Toast.LENGTH_SHORT).show();
-
-                shouldDelete = true;
-                result = u.getId();
+            if(newUser.getMail().equals(u.getMail())&&newUser.getFirstName().
+                    equals(u.getFirstName())&&newUser.getLastName().
+                    equals(u.getLastName())){
+                exist= true;
+                userID =u.getId();
+                //Toast.makeText(context, "Nutzer existiert bereits", Toast.LENGTH_SHORT).show();
                 break;
             }
+            //Toast.makeText(context, "Nutzer wird angelgt", Toast.LENGTH_SHORT).show();
         }
-        if(shouldDelete){
-
-            uDAO.delete(newUser);
+        if(!exist) {
+            uDAO.importUserFromJson(user);
+            userID = getNewestUserID(context);
         }
-        return result;
+        rDAO.importRoutesFromJson(stringToarrayList(routes), userID, false);
     }
 }
