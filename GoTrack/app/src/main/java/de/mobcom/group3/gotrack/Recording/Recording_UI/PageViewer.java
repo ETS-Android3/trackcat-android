@@ -1,5 +1,6 @@
 package de.mobcom.group3.gotrack.Recording.Recording_UI;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -51,9 +52,15 @@ public class PageViewer extends Fragment {
         LinearLayout mLinearLayout = view.findViewById(R.id.indicator);
 
         /* create Indicator (little buttons) */
-        CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle);
-        mIndicator.setPageCount(listFragments.size());
-        mIndicator.show();
+        if (Build.VERSION.SDK_INT > 21) {
+            CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle);
+            mIndicator.setPageCount(listFragments.size());
+            mIndicator.show();
+        } else {
+            CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle_v21);
+            mIndicator.setPageCount(listFragments.size());
+            mIndicator.show();
+        }
 
         return view;
     }
