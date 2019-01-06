@@ -138,40 +138,12 @@ public class PageViewerCharts extends Fragment {
             bundleTime.putDouble("stepsY", 10);
             bundleTime.putString("rangeTitle", "Sekunden");
             bundleTime.putDoubleArray("array", timeArray);
-        } else if (maxTime < 300) {
-            bundleTime.putDouble("stepsY", 0.5);
+        }else if(maxDistance < 3600){
+            bundleTime.putDouble("stepsY", maxTimeMinutes / 5);
             bundleTime.putString("rangeTitle", "Minuten");
             bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 600) {
-            bundleTime.putDouble("stepsY", 1);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 1200) {
-            bundleTime.putDouble("stepsY", 2);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 1800) {
-            bundleTime.putDouble("stepsY", 3);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 2400) {
-            bundleTime.putDouble("stepsY", 4);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 3000) {
-            bundleTime.putDouble("stepsY", 5);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 3600) {
-            bundleTime.putDouble("stepsY", 6);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        } else if (maxTime < 18000) {
-            bundleTime.putDouble("stepsY", 0.5);
-            bundleTime.putString("rangeTitle", "Stunden");
-            bundleTime.putDoubleArray("array", timeArrayHours);
-        } else if (maxTime >= 18000) {
-            bundleTime.putDouble("stepsY", 1);
+        }else{
+            bundleTime.putDouble("stepsY", maxTimeHours / 5);
             bundleTime.putString("rangeTitle", "Stunden");
             bundleTime.putDoubleArray("array", timeArrayHours);
         }
