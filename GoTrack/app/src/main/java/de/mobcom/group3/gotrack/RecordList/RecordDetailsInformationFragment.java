@@ -122,7 +122,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
         /* Negative Altimeter setzen */
         TextView negativeAltimeter = view.findViewById(R.id.altimeter_neg_value);
-        toSet = Math.round(altitudeUp) + " m";
+        toSet = Math.round(altitudeDown) + " m";
         negativeAltimeter.setText(toSet);
 
         /* TotalTime setzen */
