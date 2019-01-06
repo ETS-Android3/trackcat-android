@@ -341,10 +341,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_recordlist:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
-                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-
-                    fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
-                    fragTransaction.commit();
+                    loadRecordList();
                 }
                 break;
             case R.id.nav_record:
@@ -361,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     startActivityForResult(
                             Intent.createChooser(intent, "Import"),0);
+                    addItemsToSpinner();
                 break;
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
@@ -445,9 +443,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
             fragTransaction.commit();
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
-            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
-            fragTransaction.commit();
+            loadRecordList();
         } else {
             if (exitApp) {
                 finish();
@@ -471,4 +467,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void loadRecordList(){
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
+        fragTransaction.commit();
+    }
 }

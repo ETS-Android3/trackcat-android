@@ -95,7 +95,6 @@ public class RecordListFragment extends Fragment {
             @Override
             public void onShareClick(int position) {
                 String file= Export.getExport().exportRoute(getContext(), records.get(position).getId(),true);
-
             }
         });
 
@@ -111,4 +110,5 @@ public class RecordListFragment extends Fragment {
 
         return view;
     }
+    // For Update-Button:                 MainActivity.getInstance().loadRecordList();
 }

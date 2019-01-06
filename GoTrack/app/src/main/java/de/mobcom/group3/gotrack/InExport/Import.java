@@ -60,7 +60,7 @@ public class Import {
                     break;
                 case ("UserSettings"):
                     // Import eines Users mit seinen Einstellungen
-                    uDAO.importUserFromJson(content);
+                    createUser(context, content, uDAO);
                     Log.i("Import", "Der Import eines Users wurde gestartet.");
                     break;
                 case ("AllRoutes"):
@@ -76,7 +76,9 @@ public class Import {
                         String[] userRoutesArr= userRoutes.split("<route>");
                         String user = userRoutesArr[0];
                         String routes = userRoutesArr[1];
-                        createUserwithRoutes(context, user, uDAO, routes, rDAO);
+                        int userID = createUser(context, user, uDAO);
+                        rDAO.importRoutesFromJson(stringToarrayList(routes), userID, false);
+
                     }
                     Log.i("Export", "Der Import aller Routen und aller Users wurde gestartet.");
                     break;
@@ -85,7 +87,8 @@ public class Import {
                     String[] stringUserRoutesArr = content.split("<endUser>");
                     String user = stringUserRoutesArr[0];
                     String routes = stringUserRoutesArr[1];
-                    createUserwithRoutes(context, user, uDAO, routes, rDAO);
+                    int userID = createUser(context, user, uDAO);
+                    rDAO.importRoutesFromJson(stringToarrayList(routes), userID, false);
                     Log.i("Import", "Der Import eines Users mit allen Routen wurde gestartet.");
                     break;
                 default:
@@ -151,9 +154,8 @@ public class Import {
         }
         return result;
     }
-
-    private void createUserwithRoutes (Context context,
-                                       String user, UserDAO uDAO, String routes, RouteDAO rDAO){
+    private int createUser (Context context,
+                                       String user, UserDAO uDAO){
         User newUser = gson.fromJson(user, imExportType);
         List<User> users = uDAO.readAll();
         Boolean exist = false;
@@ -174,6 +176,6 @@ public class Import {
             uDAO.importUserFromJson(user);
             userID = getNewestUserID(context);
         }
-        rDAO.importRoutesFromJson(stringToarrayList(routes), userID, false);
+        return userID;
     }
 }
