@@ -206,28 +206,45 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+
+                /* Data Access Object (DAO) */
+                UserDAO dao = new UserDAO(getActivity());
+                User oldUser = dao.read(MainActivity.getActiveUser());
+
                 RadioButton rBtn_all_records = alertView.findViewById(R.id.rBtn_all_records);
                 RadioButton rBtn_all_options = alertView.findViewById(R.id.rBtn_all_options);
                 RadioButton rBtn_all_route = alertView.findViewById(R.id.rBtn_all_route);
                 RadioButton rBtn_all_users = alertView.findViewById(R.id.rBtn_all_users);
                 String type = "";
 
-                /* überprüfung, welche exportoption gewählt wurde */
+                /* Überprüfung, welche exportoption gewählt wurde */
+
+                /* Alle Aufnahmen des aktuellen Nutzers exportieren */
                 if (rBtn_all_records.isChecked()) {
-                    type = "Alle Daten des aktuellen Nutzers";
+                    type = "Alle Daten von \""+ oldUser.getFirstName() + " " + oldUser.getLastName()+"\"";
+                    Export.getExport().exportAllUserData(getActivity(), oldUser.getId(), true);
+
+                /* Nutzer-Einstellung exportieren */
                 } else if (rBtn_all_options.isChecked()) {
-                    type = "Alle Einstellungen des aktuellen Nutzers";
+                    type = "Alle Einstellungen von \""+ oldUser.getFirstName() + " " + oldUser.getLastName()+"\"";
+                    Export.getExport().exportUserData(getActivity(), oldUser.getId(), true);
+
+                /* Alle Routen exportieren */
                 } else if (rBtn_all_route.isChecked()) {
-                    type = "Alle Routen des aktuellen Benutzers";
+                    type = "Alle Routen von \""+ oldUser.getFirstName() + " " + oldUser.getLastName()+"\"";
+                    Export.getExport().exportAllRoute(getActivity(), oldUser.getId(), true);
+
+                /* Alle Nutzer exportieren */
                 } else if (rBtn_all_users.isChecked()) {
                     type = "Alle Benutzerdaten";
+                    Export.getExport().exportAllRouteUsers(getActivity(), true);
                 } else {
                     type = "ungültig";
                 }
 
 
                 if (MainActivity.getHints()) {
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), type + " wurden exportiert.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), type + " werden exportiert.", Toast.LENGTH_LONG).show();
                 }
             }
         });
