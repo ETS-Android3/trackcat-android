@@ -105,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         createInitialUser=createUser;
     }
 
+    public static void setActiveUser(int newActivUser) { activeUser =newActivUser; }
+
     @Override
     protected void onResume() {
         super.onResume();
