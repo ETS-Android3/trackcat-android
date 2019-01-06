@@ -351,7 +351,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             public void onClick(View v) {
                 if (!northUp) {
                     /*
-                     + resets map orientation to north and sets repetition to this
+                     + resets map orientation to north and sets repetition
                      */
                     northUp = true;
                     mMapView.setVerticalMapRepetitionEnabled(true);
@@ -762,7 +762,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
 
         /*
-         + declare necessary variables for map orientation
+         + assign current location values to  necessary variables for map orientation
          */
         gpsBearing = location.getBearing();
         lat = (float) location.getLatitude();
