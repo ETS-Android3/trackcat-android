@@ -255,66 +255,75 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemSelected(AdapterView<?> adapter, View v,
                                        int position, long id) {
-                /* Auslesen des angeklickten Items */
-                String item = adapter.getItemAtPosition(position).toString();
-                Log.d("test123", "===========in OneItemSelected=========");
-                /* Wechseln des Profilbildes */
-                byte[] imgRessource = spinnerAccountIcons.get(position);
-                de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.raw.default_profile);
-                if (imgRessource != null && imgRessource.length > 0) {
-                    bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
-                }
-                circleImageView.setImageBitmap(bitmap);
 
-                /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
-                for (int i = 0; i < users.size(); i++) {
-                    if (adapter.getItemAtPosition(position).equals(users.get(i).getFirstName() + " " + users.get(i).getLastName())) {
-                        /* Ausgewählten Nutzer als aktiven Nutzer setzen */
-                        Log.d("test123", "===========Nutzerwechsel=========");
-                        Log.d("test123", "User aus Liste: " + users.get(i).getFirstName() +" hints: "+users.get(i).isHintsActive());
-                        User user = new User();
-                        user.setFirstName(users.get(i).getFirstName());
-                        user.setLastName(users.get(i).getLastName());
-                        user.setMail(users.get(i).getMail());
-                        user.setImage(users.get(i).getImage());
-                        user.setHintsActive(users.get(i).isHintsActive());
-                        user.setDarkThemeActive(users.get(i).isDarkThemeActive());
-                        user.setActive(true);
-                        userDAO.update(users.get(i).getId(), user);
-                        Log.d("test123", "neuer User in DB: " + user.getFirstName() +" hints: "+ user.isHintsActive());
+                /* Überprüfung, ob immoment ein Import aktiv ist */
+                if(Import.getImport().getIsImportActiv()){
+                    if (hints) {
+                        Toast.makeText(getApplicationContext(), "Nutzerwechsel nicht möglich, da im Moment ein Import läuft.", Toast.LENGTH_LONG).show();
+                    }
+                }else {
 
-                        /* Alten Nutzer deaktivieren */
-                        if (deactivateOldUser && !createInitialUser) {
-                            Log.d("test123", "===========alten Nutzer deaktivieren=========");
-                            Log.d("test123", "alter Activer Nutzer: " + activeUser);
-                            User oldUser = userDAO.read(activeUser);
-                            oldUser.setActive(false);
-                            userDAO.update(activeUser, oldUser);
-                            Log.d("test123", "oldUser: " + oldUser.getFirstName() +" hints: " + oldUser.isHintsActive());
-                        }else{
-                            createInitialUser=false;
-                        }
+                    /* Auslesen des angeklickten Items */
+                    String item = adapter.getItemAtPosition(position).toString();
+                    Log.d("test123", "===========in OneItemSelected=========");
+                    /* Wechseln des Profilbildes */
+                    byte[] imgRessource = spinnerAccountIcons.get(position);
+                    de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.raw.default_profile);
+                    if (imgRessource != null && imgRessource.length > 0) {
+                        bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
+                    }
+                    circleImageView.setImageBitmap(bitmap);
 
-                        /* Nutzerwechsel in globaler Variable */
-                        activeUser = users.get(i).getId();
-                        hints = users.get(i).isHintsActive();
-                        darkTheme = users.get(i).isDarkThemeActive();
-                        Log.d("test123", "neuer Activer Nutzer: " + activeUser);
-                        Log.d("test123", "Variable: " + hints);
-                        if (hints) {
-                            Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
+                    /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
+                    for (int i = 0; i < users.size(); i++) {
+                        if (adapter.getItemAtPosition(position).equals(users.get(i).getFirstName() + " " + users.get(i).getLastName())) {
+                            /* Ausgewählten Nutzer als aktiven Nutzer setzen */
+                            Log.d("test123", "===========Nutzerwechsel=========");
+                            Log.d("test123", "User aus Liste: " + users.get(i).getFirstName() + " hints: " + users.get(i).isHintsActive());
+                            User user = new User();
+                            user.setFirstName(users.get(i).getFirstName());
+                            user.setLastName(users.get(i).getLastName());
+                            user.setMail(users.get(i).getMail());
+                            user.setImage(users.get(i).getImage());
+                            user.setHintsActive(users.get(i).isHintsActive());
+                            user.setDarkThemeActive(users.get(i).isDarkThemeActive());
+                            user.setActive(true);
+                            userDAO.update(users.get(i).getId(), user);
+                            Log.d("test123", "neuer User in DB: " + user.getFirstName() + " hints: " + user.isHintsActive());
+
+                            /* Alten Nutzer deaktivieren */
+                            if (deactivateOldUser && !createInitialUser) {
+                                Log.d("test123", "===========alten Nutzer deaktivieren=========");
+                                Log.d("test123", "alter Activer Nutzer: " + activeUser);
+                                User oldUser = userDAO.read(activeUser);
+                                oldUser.setActive(false);
+                                userDAO.update(activeUser, oldUser);
+                                Log.d("test123", "oldUser: " + oldUser.getFirstName() + " hints: " + oldUser.isHintsActive());
+                            } else {
+                                createInitialUser = false;
+                            }
+
+                            /* Nutzerwechsel in globaler Variable */
+                            activeUser = users.get(i).getId();
+                            hints = users.get(i).isHintsActive();
+                            darkTheme = users.get(i).isDarkThemeActive();
+                            Log.d("test123", "neuer Activer Nutzer: " + activeUser);
+                            Log.d("test123", "Variable: " + hints);
+                            if (hints) {
+                                Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
-                }
 
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
-                    /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
-                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
-                    fragTransaction.commit();
-                    Menu menu = navigationView.getMenu();
-                    menu.findItem(R.id.nav_dashboard).setChecked(true);
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
+                        /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
+                        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+                        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
+                        fragTransaction.commit();
+                        Menu menu = navigationView.getMenu();
+                        menu.findItem(R.id.nav_dashboard).setChecked(true);
+                    }
                 }
             }
 
