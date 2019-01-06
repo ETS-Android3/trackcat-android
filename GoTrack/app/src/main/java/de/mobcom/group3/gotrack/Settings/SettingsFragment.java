@@ -184,7 +184,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             // TODO Implementation für Nutzer mit API <= 16
         }
 
-        alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("Exportieren", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
                 /* Data Access Object (DAO) */
@@ -229,7 +229,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
         });
 
-        alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
