@@ -23,12 +23,12 @@
     <string name="category1">Allgemeines</string>
 
     <string name="category2">Exportmöglichkeiten</string>
-    <string-array name="export_options">
-        <item name="all_records">Daten des aktuellen Benutzers</item>
-        <item name="all_options">Einstellungen des aktuellen Benutzers</item>
-        <item name="all_route">Alle Routen des aktuellen Benutzers</item>
-        <item name="all_users">Alle Benutzerdaten</item>
-    </string-array>
+
+        <string name="export_options_all_records">Daten des aktuellen Benutzers</string>
+        <string name="export_options_all_options">Einstellungen des aktuellen Benutzers</string>
+        <string name="export_options_all_route">Alle Routen des aktuellen Benutzers</string>
+        <string name="export_options_all_users">Alle Benutzerdaten</string>
+
 
     <string name="category3">Über GoTrack</string>
     <string name="aboutGoTrack">GoTrack ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
