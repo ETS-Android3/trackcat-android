@@ -1,11 +1,9 @@
 package de.mobcom.group3.gotrack;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,12 +27,9 @@ import android.widget.Toast;
 import com.karan.churi.PermissionManager.PermissionManager;
 
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
-import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
-import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.InExport.Import;
-import de.mobcom.group3.gotrack.RecordList.RecordDetailsInformationFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
@@ -59,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static boolean hints;
     private static boolean darkTheme;
     private static boolean createInitialUser =false;
-    UserDAO userDAO;
+    private UserDAO userDAO;
     public static Boolean isActiv=false;
     private static final String PREF_DARK_THEME = "dark_theme";
 
@@ -104,8 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static void setCreateUser(boolean createUser) {
         createInitialUser=createUser;
     }
-
-    public static void setActiveUser(int newActivUser) { activeUser =newActivUser; }
 
     @Override
     protected void onResume() {
