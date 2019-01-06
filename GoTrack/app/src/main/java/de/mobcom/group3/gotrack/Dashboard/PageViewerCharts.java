@@ -1,13 +1,12 @@
 package de.mobcom.group3.gotrack.Dashboard;
 
-import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +24,8 @@ import java.util.Calendar;
 import java.util.List;
 
 public class PageViewerCharts extends Fragment {
-
-
+    private static final String PREF_DARK_THEME = "dark_theme";
+    private int colorAccent;
     private List<Fragment> listFragments = new ArrayList<>();
 
     public PageViewerCharts() {
@@ -45,6 +44,12 @@ public class PageViewerCharts extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_page_viewer_charts, container, false);
 
+        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)){
+            colorAccent = getResources().getColor(R.color.colorGreyAccent);
+        }else{
+            colorAccent = getResources().getColor(R.color.colorGreenAccent);
+        }
+
         //Daten aus Datenbank auslesen
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         List<Route> records = dao.readLastSevenDays(MainActivity.getActiveUser());
@@ -62,7 +67,6 @@ public class PageViewerCharts extends Fragment {
 
         // Der Code wird nur ausgeführt wenn es Strecken gibt. Sonst bleibt das Array bei null und somit ein leerer Graph
         if(records.size() > 0) {
-            //int prevDay = getWeekDay(records.get(0).getLocations().get(0).getTime());
             for (int i = 0; i < records.size(); i++) {
                 long curDate = records.get(i).getDate();
                 double curDistance = records.get(i).getDistance();
@@ -102,7 +106,7 @@ public class PageViewerCharts extends Fragment {
         Bundle bundleDistance = new Bundle();
         bundleDistance.putDoubleArray("array", distanceArray);
         bundleDistance.putString("title", "Distanz der Woche");
-        bundleDistance.putInt("color", Color.RED);
+        bundleDistance.putInt("color", colorAccent);
         bundleDistance.putString("rangeTitle", "Meter");
         bundleDistance.putDouble("stepsY", maxDistance / 5);
 
@@ -112,7 +116,7 @@ public class PageViewerCharts extends Fragment {
         /* Laufzeit der Woche */
         Bundle bundleTime = new Bundle();
         bundleTime.putString("title", "Laufzeit der Woche");
-        bundleTime.putInt("color", Color.GREEN);
+        bundleTime.putInt("color", colorAccent);
 
 
         // Die Schrittweise der Plot Range wird an den höchsten Time Wert angepasst
