@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -62,7 +60,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
         fieldEmail = view.findViewById(R.id.user_email);
         imageView = view.findViewById(R.id.profile_image_upload);
 
-
+        /* Werte in Inputfelder schreiben */
         if (btnText == "Speichern") {
             fieldFirstName.setText(getArguments().getString("etitFistName"));
             fieldLastName.setText(getArguments().getString("etitLastName"));
@@ -144,7 +142,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                     }
 
                     MainActivity.getInstance().addItemsToSpinner();
-                    /*Dashboard anzeigen*/
+                    /* Dashboard anzeigen */
                     swapFragment();
 
                 } else {
@@ -184,7 +182,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    /*Funktion die das Fragment zu Dashboard wechselt*/
+    /* Funktion die das Fragment zu Dashboard wechselt */
     public void swapFragment() {
         DashboardFragment dashboardFragment = new DashboardFragment();
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
