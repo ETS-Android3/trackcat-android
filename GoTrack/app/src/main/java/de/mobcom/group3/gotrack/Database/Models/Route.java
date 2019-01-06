@@ -52,27 +52,6 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Constructor to create a route to write to the database
-     * @param userId of type integer
-     * @param name of type string
-     * @param time of type long
-     * @param rideTime of type long
-     * @param distance of type double
-     * @param locations of type array list
-     */
-    public Route(int userId, String name, long time, long rideTime, double distance, int type,
-                 ArrayList<Location> locations) {
-        this.userId = userId;
-        this.name = name;
-        this.time = time;
-        this.rideTime = rideTime;
-        this.distance = distance;
-        this.locations = locations;
-        this.date = System.currentTimeMillis();
-        this.type = type;
-    }
-
-    /**
      * Getter for the id
      * @return value of type integer
      */

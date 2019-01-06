@@ -86,7 +86,7 @@ public class Import {
     // Import einer einzelnen Route
     private void importRoute(Context context, String incomingFile){
         RouteDAO rDAO = new RouteDAO(context);
-        rDAO.importRouteFromJSON(incomingFile);
+        rDAO.importRouteFromJson(incomingFile);
         Log.i("Import", "Der Import einer Route wurde gestartet.");
     }
 
@@ -208,7 +208,7 @@ public class Import {
     private int deleteDuplexUser(Context context, int newUserID){
         UserDAO uDAO = new UserDAO(context);
         List<User> users = uDAO.readAll();
-        User newUser =uDAO.read(newUserID);
+        User newUser = uDAO.read(newUserID);
         try {
             Toast.makeText(context, newUser.getId(), Toast.LENGTH_SHORT).show();
         }catch (Exception e){
@@ -220,7 +220,6 @@ public class Import {
         int result = newUserID;
         for(User u: users )
         {
-
             if(newUser.getMail().equals(u.getMail()) && notFound){
                 Toast.makeText(context, newUser.getMail()+u.getMail(), Toast.LENGTH_SHORT).show();
                 notFound = false;
