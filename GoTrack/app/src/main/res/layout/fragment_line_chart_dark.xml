@@ -11,6 +11,7 @@
         android:id="@+id/linePlot"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        ap:paddingLeft="5dp"
         ap:title="LineChart"
         ap:rangeTitle="km/h"
         ap:lineLabels="left|bottom"

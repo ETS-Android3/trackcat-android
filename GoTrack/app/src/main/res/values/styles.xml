@@ -71,6 +71,9 @@
         <item name="domainTitleTextColor">@color/colorWhite</item>
         <item name="rangeTitleTextColor">@color/colorWhite</item>
         <item name="legendTextColor">@color/colorWhite</item>
+
+        <item name="lineLabelInsetLeft">25dp</item>
+        <item name="gridInsetLeft">30dp</item>
     </style>
 
     <!-- Hauptfenster: Geteilte Ansicht (oben Karte unten Main-Fenster) -->
