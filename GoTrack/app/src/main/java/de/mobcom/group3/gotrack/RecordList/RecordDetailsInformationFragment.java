@@ -72,9 +72,9 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
                 /* Berechnung der Höhenmeter */
                 if (difference > 0) {
-                    altitudeUp += Math.abs(location.getAltitude());
+                    altitudeUp += Math.abs(difference);
                 } else if (difference < 0){
-                    altitudeDown += Math.abs(location.getAltitude());
+                    altitudeDown += Math.abs(difference);
                 }
 
                 /* Maximalgeschwindigkeit ausrechnen */
