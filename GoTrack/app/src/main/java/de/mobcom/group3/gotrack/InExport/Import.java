@@ -118,16 +118,17 @@ public class Import {
             String user = userRoutes[0];
             String routes = userRoutes[1];
             uDAO.importUserFromJson(user);
-            if (isFistLoop){
-                isFistLoop =false;
+            if (isFistLoop) {
+                isFistLoop = false;
                 importUser = getNewestUserID(context);
-                MainActivity.setActiveUser(importUser);
-            }else {
-                MainActivity.setActiveUser(importUser);
-
             }
-            rDAO.importRoutesFromJson(stringToarrayList(routes));
-            deleteDuplexUser(context, importUser);
+            int tempActivUser = deleteDuplexUser(context, importUser);
+            MainActivity.setActiveUser(tempActivUser );
+            try {
+                rDAO.importRoutesFromJson(stringToarrayList(routes));
+            }finally {
+                MainActivity.setActiveUser(activUser);
+            }
             importUser +=1;
         }
         MainActivity.setActiveUser(activUser);
@@ -144,10 +145,13 @@ public class Import {
         uDAO.importUserFromJson(user);
         int activUser= MainActivity.getActiveUser();
         int importUser = getNewestUserID(context);
-        MainActivity.setActiveUser(importUser);
-        rDAO.importRoutesFromJson(stringToarrayList(routes));
-        deleteDuplexUser(context, importUser);
-        MainActivity.setActiveUser(activUser);
+        int tempActivUser = deleteDuplexUser(context, importUser);
+        MainActivity.setActiveUser(tempActivUser);
+        try {
+            rDAO.importRoutesFromJson(stringToarrayList(routes));
+        }finally {
+            MainActivity.setActiveUser(activUser);
+        }
         Log.i("Import", "Der Import eines Users mit allen Routen wurde gestartet.");
     }
 
@@ -201,24 +205,38 @@ public class Import {
         return result;
     }
 
-    private void deleteDuplexUser(Context context, int newUserID){
+    private int deleteDuplexUser(Context context, int newUserID){
         UserDAO uDAO = new UserDAO(context);
         List<User> users = uDAO.readAll();
         User newUser =uDAO.read(newUserID);
+        try {
+            Toast.makeText(context, newUser.getId(), Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+
         Boolean notFound = true;
         Boolean shouldDelete = false;
+        int result = newUserID;
         for(User u: users )
         {
-            if(newUser.getMail().equals(newUser.getMail()) && notFound){
+
+            if(newUser.getMail().equals(u.getMail()) && notFound){
+                Toast.makeText(context, newUser.getMail()+u.getMail(), Toast.LENGTH_SHORT).show();
                 notFound = false;
             }
             else{
+                Toast.makeText(context, "was here", Toast.LENGTH_SHORT).show();
+
                 shouldDelete = true;
+                result = u.getId();
                 break;
             }
         }
         if(shouldDelete){
+
             uDAO.delete(newUser);
         }
+        return result;
     }
 }
