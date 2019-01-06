@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.icu.text.AlphabeticIndex;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,11 +11,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
@@ -43,7 +40,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
     View view;
     ArrayList<GeoPoint> GPSData = new ArrayList<>();
-    private double height = 0;
     private double altitudeUp = 0;
     private double altitudeDown = 0;
     private double maxSpeed = 0;
@@ -63,7 +59,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         dao = new RouteDAO(MainActivity.getInstance());
         record = dao.read(id);
         locations = record.getLocations();
-        double prevDistance = 0;
 
         /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
@@ -72,27 +67,21 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
             GPSData.add(gPt);
 
-            double distance = 0;
-
             if (i > 1) {
-                distance = record.getLocations().get(i - 1).getAltitude() - location.getAltitude();
-                if (distance < 0) {
-                    distance = distance * - 1;
-                }
+                double difference = location.getAltitude() - record.getLocations().get(i - 1).getAltitude();
 
                 /* Berechnung der Höhenmeter */
-                if (distance > prevDistance) {
-                    altitudeUp = altitudeUp + distance;
-                } else {
-                    altitudeDown = altitudeDown + distance;
+                if (difference > 0) {
+                    altitudeUp += Math.abs(location.getAltitude());
+                } else if (difference < 0){
+                    altitudeDown += Math.abs(location.getAltitude());
                 }
-                height = height + distance;
 
+                /* Maximalgeschwindigkeit ausrechnen */
                 if (location.getSpeed() > maxSpeed) {
                     maxSpeed = location.getSpeed();
                 }
             }
-            prevDistance = distance;
         }
 
         /* DateFormat setzen */
