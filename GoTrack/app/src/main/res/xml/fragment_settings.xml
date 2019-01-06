@@ -14,10 +14,7 @@
             android:title="Hilfestellungen"></CheckBoxPreference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category2" >
-        <ListPreference
-            android:defaultValue="-1"
-            android:entries="@array/export_options"
-            android:entryValues="@array/export_options"
+        <Preference
             android:icon="@drawable/settings_export"
             android:key="global_export_options"
             android:summary="Exportieren Sie hier Ihre Benutzerprofile"
