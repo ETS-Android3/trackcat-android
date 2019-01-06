@@ -56,12 +56,16 @@ public class LineChartFragment extends Fragment {
             double [] values = getArguments().getDoubleArray("array");
 
             series1Numbers = new Number[values.length];
+            int maxValue=0;
             for (int i = 0; i < series1Numbers.length; i++) {
                 series1Numbers[i] = (int) Math.round(values[i]);
+                if ((int) Math.round(values[i])> maxValue){
+                    maxValue=(int) Math.round(values[i]);
+                }
             }
 
             pointPerSegment = series1Numbers.length;
-            incrementStepsY = series1Numbers.length;
+            incrementStepsY = maxValue/5;
             incrementStepsX = series1Numbers.length/5;
 
             XYSeries series1 = new SimpleXYSeries(

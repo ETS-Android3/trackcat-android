@@ -3,7 +3,6 @@ package de.mobcom.group3.gotrack.RecordList;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -81,25 +80,16 @@ public class ShowRecord {
                     Location location = locations.get(i);
                     speedValues[n] = location.getSpeed() * 3.931;
                     altitudeValues[n] = location.getAltitude();
-
-                    Log.d("Schleifenwerte", "Speed: " + speedValues[n]);
-                    Log.d("Schleifenwerte", "SpeedOriginal: " + location.getSpeed());
-                    Log.d("Schleifenwerte", "Altitude: " + location.getAltitude());
                     n++;
 
                 }
-                /*Array auffüllen, falls zu wenig Argumente existieren*/
+                /* Array auffüllen, falls zu wenig Argumente existieren */
                 if (fillArguments) {
                     for (int i = n; i <= size; i++) {
                         speedValues[n] = 0.0;
                         altitudeValues[n] = 0.0;
-                        Log.d("Schleifenwerte", "Zusatzspeed: " + speedValues[n]);
-                        Log.d("Schleifenwerte", "Zusatzaltitude: " + altitudeValues[n]);
                     }
                 }
-
-                Log.d("Schleifenwerte", "Size: " + size);
-                Log.d("Schleifenwerte", "Locationsize: " + run);
 
                 /* Neues Fragment erstellen */
                 Bundle bundle = new Bundle();
