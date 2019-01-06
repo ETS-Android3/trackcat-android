@@ -48,6 +48,9 @@
         <item name="domainTitleTextColor">@color/colorBlack</item>
         <item name="rangeTitleTextColor">@color/colorBlack</item>
         <item name="legendTextColor">@color/colorBlack</item>
+
+        <item name="lineLabelInsetLeft">25dp</item>
+        <item name="gridInsetLeft">30dp</item>
     </style>
 
 
