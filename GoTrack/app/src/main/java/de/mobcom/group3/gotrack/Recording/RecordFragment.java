@@ -275,6 +275,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mMapController = (MapController) mMapView.getController();
         mMapController.setZoom(18);
 
+        mMapView.setBuiltInZoomControls(false);
+
         /*
          * add Marker and Polyline
          * */

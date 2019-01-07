@@ -124,11 +124,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             recordFragment.stopTimer();
             recordFragment = null;
         } catch (NullPointerException e) {
-            
+
         }
         MainActivity.getInstance().stopService(new Intent(MainActivity.getInstance(), Locator.class));
 
         isActiv = false;
+
+        android.os.Process.killProcess(android.os.Process.myPid());
         super.onDestroy();
     }
 
