@@ -64,4 +64,10 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
         records.add(position, item);
         notifyItemInserted(position);
     }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        records.clear();
+        notifyDataSetChanged();
+    }
 }
