@@ -165,8 +165,16 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             });
         }
 
+
         LinearLayout profileItem = view.findViewById(R.id.profile_layout_list);
 
+        /* Padding beim ersten Element setzen */
+        if (position == 0) {
+            int padding_in_dp = 20;
+            final float scale = MainActivity.getInstance().getResources().getDisplayMetrics().density;
+            int padding_in_px = (int) (padding_in_dp * scale + 0.5f);
+            profileItem.setPadding(padding_in_px,padding_in_px/2,padding_in_px,padding_in_px/2);
+        }
         /* Profilbilder anzeigen */
         ImageView profileImage = profileItem.findViewById(R.id.profile_image);
         byte[] imgRessource = listImages.get(position);
