@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         isActiv = false;
 
-        if(!isRestart) {
+        if (!isRestart) {
             android.os.Process.killProcess(android.os.Process.myPid());
         }
         isRestart = false;
@@ -212,13 +212,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* Startseite festlegen - Erster Aufruf */
         loadDashboard();
-        Log.d("test123", "===========Problem=========");
-        Log.d("test123", "Nach dem deaktivieren der Hints und dem Wechsel zu einem anderen Nutzer ist alles gut. Beim Wechsel zurück, zu dem eben erwähnten Nutzer, werden seine Hints wieder aktiviert");
     }
 
     /* Dynamisches Hinzufügen von Spinner-Items */
     public void addItemsToSpinner() {
-        Log.d("test123", "===========in addItemToSpinner=========");
+
         /* Erstellen der Listen */
         final ArrayList<byte[]> spinnerAccountIcons = new ArrayList<byte[]>();
         ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
@@ -227,15 +225,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int selectedID = 0;
         boolean findActiveUser = false;
         for (int i = 0; i < users.size(); i++) {
-            Log.d("test123", "for Schleife Items hinzufügen: " + users.get(i).getFirstName() + " " + users.get(i).getLastName());
             spinnerAccountEmail.add(users.get(i).getMail());
             spinnerAccountNames.add(users.get(i).getFirstName() + " " + users.get(i).getLastName());
             spinnerAccountIcons.add(users.get(i).getImage());
             if (users.get(i).isActive()) {
-                Log.d("test123", "activer Nutzer gefunden!");
                 activeUser = users.get(i).getId();
                 hints = users.get(i).isHintsActive();
-                Log.d("test123", "hints Variable: " + hints);
                 darkTheme = users.get(i).isDarkThemeActive();
                 selectedID = i;
                 findActiveUser = true;
@@ -244,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /*Wenn nach dem Löschen eines Users kein neuer aktiver Nutzer gefunden wurde*/
         if (!findActiveUser) {
-            Log.d("test123", "keinen Activen Nutzer gefunden!");
             activeUser = users.get(selectedID).getId();
             User newActiveUser = userDAO.read(activeUser);
             newActiveUser.setActive(true);
@@ -274,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     /* Auslesen des angeklickten Items */
                     String item = adapter.getItemAtPosition(position).toString();
-                    Log.d("test123", "===========in OneItemSelected=========");
+
                     /* Wechseln des Profilbildes */
                     byte[] imgRessource = spinnerAccountIcons.get(position);
                     de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
@@ -284,27 +278,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                     circleImageView.setImageBitmap(bitmap);
 
+                    /* Durchlaufen der Nutzer */
                     List<User> users = userDAO.readAll();
-                    /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
                     for (int i = 0; i < users.size(); i++) {
                         if (adapter.getItemAtPosition(position).equals(users.get(i).getFirstName() + " " + users.get(i).getLastName())) {
                             /* Ausgewählten Nutzer als aktiven Nutzer setzen */
-                            Log.d("test123", "===========Nutzerwechsel=========");
-                            Log.d("test123", "User aus Liste: " + users.get(i).getFirstName() + " hints: " + users.get(i).isHintsActive());
                             User user = userDAO.read(users.get(i).getId());
                             user.setActive(true);
                             userDAO.update(user.getId(), user);
 
-                            Log.d("test123", "neuer User in DB: " + user.getFirstName() + " hints: " + user.isHintsActive());
-
                             /* Alten Nutzer deaktivieren */
                             if (deactivateOldUser && !createInitialUser) {
-                                Log.d("test123", "===========alten Nutzer deaktivieren=========");
-                                Log.d("test123", "alter Activer Nutzer: " + activeUser);
                                 User oldUser = userDAO.read(activeUser);
                                 oldUser.setActive(false);
                                 userDAO.update(activeUser, oldUser);
-                                Log.d("test123", "oldUser: " + oldUser.getFirstName() + " hints: " + oldUser.isHintsActive());
                             } else {
                                 createInitialUser = false;
                             }
@@ -313,8 +300,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             activeUser = users.get(i).getId();
                             hints = users.get(i).isHintsActive();
                             darkTheme = users.get(i).isDarkThemeActive();
-                            Log.d("test123", "neuer Activer Nutzer: " + activeUser);
-                            Log.d("test123", "Variable: " + hints);
                             if (hints) {
                                 Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
                             }
@@ -468,14 +453,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /* Laden des Dashboard-Fragments */
-    public void loadDashboard(){
+    public void loadDashboard() {
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
         fragTransaction.commit();
     }
 
     /* Laden des Aufnahme-Fragments */
-    public void loadRecord(){
+    public void loadRecord() {
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
         fragTransaction.commit();
@@ -489,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /* Laden des Einstellung-Fragments */
-    public void loadSettings(){
+    public void loadSettings() {
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
         fragTransaction.commit();

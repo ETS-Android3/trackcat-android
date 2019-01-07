@@ -106,6 +106,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                     user.setFirstName(firstName);
                     user.setLastName(lastName);
                     user.setMail(email);
+                    user.setHintsActive(true);
                     user.setActive(true);
                     user.setImage(imageBytes);
 
