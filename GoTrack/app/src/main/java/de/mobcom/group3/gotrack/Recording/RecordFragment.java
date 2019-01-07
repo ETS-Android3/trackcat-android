@@ -149,13 +149,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     private Route model;
 
 
-
     @Override
     public void onPause() {
         super.onPause();
 
         if (!isTracking) {
-            locatorGPS.stopTracking();
+            stopGPS();
         }
 
         /*
@@ -209,12 +208,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
          */
         handler = new Handler() {
             @Override
-            public void handleMessage(android.os.Message msg) {
+            public void handleMessage(Message msg) {
                 if (msg.what == 0) {
                     /*
                      * set Time in TextView
                      * */
                     String toSetTime = msg.obj + "";
+
                     String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
 
                     try {
@@ -226,18 +226,16 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
 
                     } catch (NullPointerException e) {
-                        Log.v("GOREACK", e.toString());
+                        Log.v("GOTRACK", e.toString());
                     }
 
                     try {
                         notificationContent = toSetTime + "   " + toSetDistance;
 
-                        // todo Noftification Time/Distance String editable
                         issueNotification(notificationContent);
                     } catch (Exception e) {
                         Log.v("TEST", e.toString());
                     }
-
 
                     /*
                      * recalculate average Speed
@@ -250,24 +248,17 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                         Log.v("GOREACK", e.toString());
 
                     }
-                } else if (msg.what == 1) {
+                } else if (msg.what == 2) {
 
                     /*
-                    TODO
-                    setRideTime((String) msg.obj);
-                    */
+                    * recieved Lcoation
+                    * */
+                    updateLocation((Location) msg.obj);
                 }
             }
         };
 
-        /*
-         *------------------------------------------------------------------------------------------
-         *Inflate the layout for this fragment
-         *
-         * */
-
-        // TODO version 21
-        if (android.os.Build.VERSION.SDK_INT > 21) {
+        if (Build.VERSION.SDK_INT > 21) {
             view = inflater.inflate(R.layout.fragment_record_main, container, false);
         } else {
             view = inflater.inflate(R.layout.fragment_record_main_api_less_21, container, false);
@@ -279,12 +270,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mMapView = view.findViewById(R.id.mapview);
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 
-        // kackhässliche ZoomControls----------------------------------------------------------------> für abgabe AUS!!!!!!todo
-        mMapView.setBuiltInZoomControls(false);
 
         mMapView.setMultiTouchControls(true);
         mMapController = (MapController) mMapView.getController();
         mMapController.setZoom(18);
+
+        mMapView.setBuiltInZoomControls(false);
 
         /*
          * add Marker and Polyline
@@ -449,19 +440,19 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         fragTransaction.replace(R.id.pageViewerContainer, new PageViewer(), "PageViewer");
         fragTransaction.commit();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            stopGPS();
+            MainActivity.getInstance().startForegroundService(new Intent(MainActivity.getInstance(), Locator.class));
+        } else {
+            if (locatorGPS == null) {
+                locatorGPS = new Locator();
+            }
+        }
 
-        /*start Tracking*/// TODO: 02.11.2018
         //startTracking();
         if (timer != null) {
             timer.sendTime();
         }
-
-        if (locatorGPS == null) {
-            // start Locator
-            locatorGPS = new Locator(MainActivity.getInstance(), this);
-        }
-
-        locatorGPS.startTracking();
 
         /*
          + !!! needs a device with a magnetometer sensor to work properly !!!
@@ -471,6 +462,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         assert sensorManager != null;
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+
+        MainActivity.getInstance().setRecordFragment(this);
 
         return view;
     }
@@ -611,8 +604,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 killTimer();
                 progressBar.setProgress(0);
                 vibe.vibrate(20);
-
-                // todo start show statistics
             }
         };
         countdownTimer.start();
@@ -705,7 +696,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 .setContentTitle("Laufende Aufzeichnung")
                 .setContentText(content)
                 .setSound(null)
-                .setOngoing(false) // TODO vielleich komisch weil Notification kann gelöscht werden
+                .setOngoing(false)
                 .setContentIntent(intent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
@@ -808,83 +799,87 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             Log.v("GOREACK", e.toString());
         }
 
-        if (isTracking) {
-            // add Location to Model
-            model.addLocation(location);
+        try {
+            if (isTracking) {
+                // add Location to Model
+                model.addLocation(location);
 
-            // add to List
-            GPSData.add(gPt);
+                // add to List
+                GPSData.add(gPt);
 
-            // add Distance
-            kmCounter.addKm(location);
+                // add Distance
+                kmCounter.addKm(location);
 
-            try {
-                /*
-                 * set Polyline
-                 * */
-                mPath.setPoints(GPSData);
-                mPath.setColor(Color.RED);
-                mPath.setWidth(4);
-            } catch (NullPointerException e) {
-                Log.v("GOREACK", e.toString());
-            }
+                try {
+                    /*
+                     * set Polyline
+                     * */
+                    mPath.setPoints(GPSData);
+                    mPath.setColor(Color.RED);
+                    mPath.setWidth(4);
+                } catch (NullPointerException e) {
+                    Log.v("GOREACK", e.toString());
+                }
 
 
             /*
              + sets the desired map rotation based on location heading if movement is detected
              + and map is not fixed in north direction
              */
-            if ((gpsBearing >= 0.1f) && !northUp) {
-                mMapView.setMapOrientation(-gpsBearing);
+                if ((gpsBearing >= 0.1f) && !northUp) {
+                    mMapView.setMapOrientation(-gpsBearing);
+                }
+
+                /*
+                 * updatde OSM Map
+                 * */
+                mMapView.invalidate();
+
+                /*
+                 * add Location to Statistics
+                 * */
+
+                // count ridetime
+                if (!rideTimer.getActive() && location.getSpeed() > 0) {
+                    rideTimer.startTimer();
+                } else if (rideTimer.getActive() && location.getSpeed() == 0) {
+                    rideTimer.stopTimer();
+                }
+
+                kmhAverager.calcAvgSpeed();
+
+                /*
+                 *
+                 * Set Values in Satistics
+                 *
+                 *
+                 * */
+
+                /* set Speed value in TextView */
+                try {
+                    kmh_TextView = view.findViewById(R.id.kmh_TextView);
+                    String toSet = (Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
+                    kmh_TextView.setText(toSet);
+                } catch (NullPointerException e) {
+                    Log.v("GOREACK", e.toString());
+                }
+                try {
+                    TextView distance_TextView = view.findViewById(R.id.distance_TextView);
+                    String toSet = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
+                    distance_TextView.setText(toSet);
+                } catch (NullPointerException e) {
+                    Log.v("GOREACK", e.toString());
+                }
+                try {
+                    TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
+                    String toSet = Math.round(location.getAltitude()) + " m";
+                    altimeter_TextView.setText(toSet);
+                } catch (NullPointerException e) {
+                    Log.v("GOREACK", e.toString());
+                }
             }
-
-            /*
-             * updatde OSM Map
-             * */
-            mMapView.invalidate();
-
-            /*
-             * add Location to Statistics
-             * */
-
-            // count ridetime
-            if (!rideTimer.getActive() && location.getSpeed() > 0) {
-                rideTimer.startTimer();
-            } else if (rideTimer.getActive() && location.getSpeed() == 0) {
-                rideTimer.stopTimer();
-            }
-
-            kmhAverager.calcAvgSpeed();
-
-            /*
-             *
-             * Set Values in Satistics
-             *
-             *
-             * */
-
-            /* set Speed value in TextView */
-            try {
-                kmh_TextView = view.findViewById(R.id.kmh_TextView);
-                String toSet = (Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
-                kmh_TextView.setText(toSet);
-            } catch (NullPointerException e) {
-                Log.v("GOREACK", e.toString());
-            }
-            try {
-                TextView distance_TextView = view.findViewById(R.id.distance_TextView);
-                String toSet = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
-                distance_TextView.setText(toSet);
-            } catch (NullPointerException e) {
-                Log.v("GOREACK", e.toString());
-            }
-            try {
-                TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
-                String toSet = Math.round(location.getAltitude()) + " m";
-                altimeter_TextView.setText(toSet);
-            } catch (NullPointerException e) {
-                Log.v("GOREACK", e.toString());
-            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
@@ -894,7 +889,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     public void stopTracking() {
         timer.stopTimer();
         rideTimer.stopTimer();
-        //locatorGPS.stopTracking();
+
+        stopGPS();
+
         isTracking = false;
 
         try {
@@ -909,6 +906,14 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
     }
 
+    private void stopGPS() {
+        if (locatorGPS != null) {
+            locatorGPS.stopTracking();
+        } else {
+            MainActivity.getInstance().stopService(new Intent(MainActivity.getInstance(), Locator.class));
+        }
+    }
+
     /*
      + !!! needs a device with the compass-functionality (magnetometer sensor) to work properly !!!
      + sets the desired map rotation based on location heading if no movement is detected and
@@ -919,7 +924,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor == magnetometer) {
             if (!northUp && gpsBearing < 0.1f) {
-                mMapView.setMapOrientation(360-mCompassOverlay.getOrientation());
+                mMapView.setMapOrientation(360 - mCompassOverlay.getOrientation());
             }
         }
     }
@@ -946,5 +951,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         if (offset > 360)
             offset -= 360;
         mCompassOverlay.setAzimuthOffset(offset);
+    }
+
+    public void stopTimer() {
+        timer.stopTimer();
+        timer = null;
+        rideTimer.stopTimer();
+        rideTimer = null;
     }
 }

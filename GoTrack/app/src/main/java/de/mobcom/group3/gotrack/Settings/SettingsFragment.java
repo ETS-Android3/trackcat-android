@@ -179,12 +179,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         View alertView = inflater.inflate(R.layout.fragment_settings_export, null, true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             alert.setView(alertView);
-
         } else {
-            // TODO Implementation für Nutzer mit API <= 16
+            alert.setMessage("Hier würden normalerweise die Daten Ihrer Aufzeichnung stehen.\nLeider ist Ihre Android-Version dafür zu alt!");
         }
 
-        alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("Exportieren", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
                 /* Data Access Object (DAO) */
@@ -200,36 +199,34 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 /* Überprüfung, welche exportoption gewählt wurde */
 
                 /* Alle Aufnahmen des aktuellen Nutzers exportieren */
+                String fullName = oldUser.getFirstName() + " " + oldUser.getLastName();
                 if (rBtn_all_records.isChecked()) {
-                    type = "Alle Daten von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"";
+                    type = "Gesamtes Profil \"" + fullName + "\" exportiert!";
                     Export.getExport().exportAllUserData(getActivity(), oldUser.getId(), true);
 
-                    /* Nutzer-Einstellung exportieren */
+                /* Nutzer-Einstellung exportieren */
                 } else if (rBtn_all_options.isChecked()) {
-                    type = "Alle Einstellungen von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"";
+                    type = "Profileinstellungen von \"" + fullName + "\" exportiert!";
                     Export.getExport().exportUserData(getActivity(), oldUser.getId(), true);
 
-                    /* Alle Routen exportieren */
+                /* Alle Routen exportieren */
                 } else if (rBtn_all_route.isChecked()) {
-                    type = "Alle Routen von \"" + oldUser.getFirstName() + " " + oldUser.getLastName() + "\"";
+                    type = "Alle Routen von \"" + fullName + "\" exportiert!";
                     Export.getExport().exportAllRoute(getActivity(), oldUser.getId(), true);
 
-                    /* Alle Nutzer exportieren */
+                /* Alle Nutzer exportieren */
                 } else if (rBtn_all_users.isChecked()) {
-                    type = "Alle Benutzerdaten";
+                    type = "App Backup erstellt!";
                     Export.getExport().exportAllRouteUsers(getActivity(), true);
-                } else {
-                    type = "ungültig";
                 }
 
-
                 if (MainActivity.getHints()) {
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), type + " werden exportiert.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), type, Toast.LENGTH_LONG).show();
                 }
             }
         });
 
-        alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 

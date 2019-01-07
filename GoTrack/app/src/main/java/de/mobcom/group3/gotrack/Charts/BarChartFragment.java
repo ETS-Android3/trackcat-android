@@ -17,6 +17,7 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
+
 import de.mobcom.group3.gotrack.Charts.Formats.XLabelFormat;
 import de.mobcom.group3.gotrack.R;
 
@@ -28,7 +29,6 @@ public class BarChartFragment extends Fragment {
     private final int UPPER_BOUNDARY_X = 8;
     private final int LOWER_BOUNDARY_X = 0;
     private final int LOWER_BOUNDARY_Y = 0;
-
     private View view;
     private XYPlot plot;
     private int incrementStepsX = 1;
@@ -56,7 +56,7 @@ public class BarChartFragment extends Fragment {
         /* Checks current Theme and uses the correct xml */
         if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)) {
             view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
-        }else{
+        } else {
             view = inflater.inflate(R.layout.fragment_line_chart, container, false);
         }
 
@@ -121,6 +121,4 @@ public class BarChartFragment extends Fragment {
 
         return view;
     }
-
-
 }

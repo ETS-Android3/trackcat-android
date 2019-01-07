@@ -4,7 +4,6 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.*;
 
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import de.mobcom.group3.gotrack.R;
 
 import java.util.Arrays;
-
 
 public class LineChartFragment extends Fragment {
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -108,5 +106,4 @@ public class LineChartFragment extends Fragment {
 
         return view;
     }
-
 }
