@@ -107,14 +107,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intent intent = getIntent();
         String action = intent.getStringExtra("action");
-        if (action != null && !action.equalsIgnoreCase(getResources().getString(R.string.fRecord))) {
-            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
-            fragTransaction.commit();
+        if (action != null && action.equalsIgnoreCase(getResources().getString(R.string.fRecord))) {
+            loadRecord();
         } else if (action != null && action.equalsIgnoreCase(getResources().getString(R.string.fSettings))) {
-            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
-            fragTransaction.commit();
+            loadSettings();
         }
     }
 
@@ -197,9 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         addItemsToSpinner();
 
         /* Startseite festlegen - Erster Aufruf */
-        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
-        fragTransaction.commit();
+        loadDashboard();
         Log.d("test123", "===========Problem=========");
         Log.d("test123", "Nach dem deaktivieren der Hints und dem Wechsel zu einem anderen Nutzer ist alles gut. Beim Wechsel zurück, zu dem eben erwähnten Nutzer, werden seine Hints wieder aktiviert");
     }
@@ -314,9 +308,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                     /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
-                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
-                    fragTransaction.commit();
+                    loadDashboard();
                     Menu menu = navigationView.getMenu();
                     menu.findItem(R.id.nav_dashboard).setChecked(true);
                 }
@@ -335,10 +327,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (menuItem.getItemId()) {
             case R.id.nav_dashboard:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
-                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-
-                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
-                    fragTransaction.commit();
+                    loadDashboard();
                 }
                 break;
             case R.id.nav_recordlist:
@@ -348,10 +337,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_record:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
-                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-
-                    fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
-                    fragTransaction.commit();
+                    loadRecord();
                 }
                 break;
             case R.id.nav_import:
@@ -360,15 +346,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     startActivityForResult(
                             Intent.createChooser(intent, "Import"),0);
-                    addItemsToSpinner();
-                    loadRecordList();
                 break;
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
-                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-
-                    fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
-                    fragTransaction.commit();
+                    loadSettings();
                 }
                 break;
         }
@@ -387,6 +368,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         File file = new File(getCacheDir(), "document");
                         InputStream inputStream = getContentResolver().openInputStream(uri);
                         Import.getImport().handleSend(this, file, inputStream);
+                        addItemsToSpinner();
+                        loadDashboard();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -400,9 +383,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void stopTracking() {
         startActivity(getIntent());
         try {
-            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
-            fragTransaction.commit();
+            loadRecord();
         } catch (RuntimeException e) {
             Log.v("Fehler beim Stoppen: ", e.toString());
         }
@@ -418,9 +399,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recordFragment.startTracking();
         startActivity(getIntent());
         try {
-            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
-            fragTransaction.commit();
+            loadRecord();
         } catch (RuntimeException e) {
 
         }
@@ -429,9 +408,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /* Startet RecordFragment nach Ende der Aufzeichnung */
     public void endTracking() {
         recordFragment = new RecordFragment();
-        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
-        fragTransaction.commit();
+        loadRecord();
     }
 
     public RecordFragment getRecordFragment() {
@@ -444,9 +421,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null) {
-            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
-            fragTransaction.commit();
+            loadDashboard();
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
             loadRecordList();
         } else {
@@ -472,11 +447,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void loadDashboard(){
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
+        fragTransaction.commit();
+    }
+
+    public void loadRecord(){
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
+        fragTransaction.commit();
+    }
+
     public void loadRecordList() {
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
         fragTransaction.commit();
     }
+
+    public void loadSettings(){
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
+        fragTransaction.commit();
+    }
+
+
    
     // set the RecordFragment wich is in use
     public void setRecordFragment(RecordFragment recordFragment) {

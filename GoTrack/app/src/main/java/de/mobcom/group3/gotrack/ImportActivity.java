@@ -43,7 +43,6 @@ public class ImportActivity extends Activity {
         if (MainActivity.isActiv) {
             Toast.makeText(this,"GoTrack läuft bereits", Toast.LENGTH_LONG).show();
             MainActivity.getInstance().addItemsToSpinner();
-            MainActivity.getInstance().loadRecordList();
             finish();
         } else {
             openApp(this, "de.mobcom.group3.gotrack");
