@@ -123,11 +123,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
 
-
         recordFragment.stopTimer();
         recordFragment = null;
-
-
 
         isActiv=false;
         super.onDestroy();

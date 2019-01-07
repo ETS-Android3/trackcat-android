@@ -214,30 +214,28 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                      * set Time in TextView
                      * */
                     String toSetTime = msg.obj + "";
+
+                    String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
+
                     try {
-                        String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
+                        time_TextView = view.findViewById(R.id.time_TextView);
+                        time_TextView.setText(toSetTime);
 
-                        try {
-                            time_TextView = view.findViewById(R.id.time_TextView);
-                            time_TextView.setText(toSetTime);
-
-                            TextView distance_TextView = view.findViewById(R.id.distance_TextView);
-                            distance_TextView.setText(toSetDistance);
+                        TextView distance_TextView = view.findViewById(R.id.distance_TextView);
+                        distance_TextView.setText(toSetDistance);
 
 
-                        } catch (NullPointerException e) {
-                            Log.v("GOREACK", e.toString());
-                        }
+                    } catch (NullPointerException e) {
+                        Log.v("GOTRACK", e.toString());
+                    }
 
-                        try {
-                            notificationContent = toSetTime + "   " + toSetDistance;
+                    try {
+                        notificationContent = toSetTime + "   " + toSetDistance;
 
-                            // todo Noftification Time/Distance String editable
-                            issueNotification(notificationContent);
-                        } catch (Exception e) {
-                            Log.v("TEST", e.toString());
-                        }
-                    }catch (NullPointerException e){}
+                        issueNotification(notificationContent);
+                    } catch (Exception e) {
+                        Log.v("TEST", e.toString());
+                    }
 
                     /*
                      * recalculate average Speed
@@ -252,28 +250,16 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     }
                 } else if (msg.what == 2) {
 
-                    updateLocation((Location) msg.obj);
                     /*
-                    TODO
-                    setRideTime((String) msg.obj);
-                    */
+                    * recieved Lcoation
+                    * */
+                    updateLocation((Location) msg.obj);
                 }
             }
         };
 
-        /*
-         *------------------------------------------------------------------------------------------
-         *Inflate the layout for this fragment
-         *
-         * */
-
-
-
-        // TODO version 21
         if (Build.VERSION.SDK_INT > 21) {
             view = inflater.inflate(R.layout.fragment_record_main, container, false);
-           // view = getView() != null ? getView() :
-             //       inflater.inflate(R.layout.fragment_record_main, container, false);
         } else {
             view = inflater.inflate(R.layout.fragment_record_main_api_less_21, container, false);
         }
@@ -284,8 +270,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mMapView = view.findViewById(R.id.mapview);
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 
-        // kackhässliche ZoomControls----------------------------------------------------------------> für abgabe AUS!!!!!!todo
-        mMapView.setBuiltInZoomControls(false);
 
         mMapView.setMultiTouchControls(true);
         mMapController = (MapController) mMapView.getController();
@@ -463,18 +447,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             }
         }
 
-        /*start Tracking*/// TODO: 02.11.2018
         //startTracking();
         if (timer != null) {
             timer.sendTime();
         }
-
-        if (locatorGPS == null) {
-            // start Locator
-            //locatorGPS = new Locator(MainActivity.getInstance(), this);
-        }
-
-        //locatorGPS.startTracking();
 
         /*
          + !!! needs a device with a magnetometer sensor to work properly !!!
@@ -626,8 +602,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 killTimer();
                 progressBar.setProgress(0);
                 vibe.vibrate(20);
-
-                // todo start show statistics
             }
         };
         countdownTimer.start();
@@ -720,7 +694,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 .setContentTitle("Laufende Aufzeichnung")
                 .setContentText(content)
                 .setSound(null)
-                .setOngoing(false) // TODO vielleich komisch weil Notification kann gelöscht werden
+                .setOngoing(false)
                 .setContentIntent(intent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
@@ -902,7 +876,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     Log.v("GOREACK", e.toString());
                 }
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
