@@ -106,16 +106,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         else if (preference.getKey().equals("dark_theme")) {
             Log.d("PREFERENCES", "Wechsel des Themes!");
 
-            /* Aktuelles Fragment neustarten */
-            FragmentTransaction fragTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
-            fragTransaction.commit();
-
-            Bundle savedInstanceState = new Bundle();
-            onSaveInstanceState(savedInstanceState);
-            onDestroy();
             MainActivity.isActiv = false;
-            onCreate(savedInstanceState);
 
             if (((SwitchPreference) preference).isChecked()) {
                 if (MainActivity.getHints()) {
