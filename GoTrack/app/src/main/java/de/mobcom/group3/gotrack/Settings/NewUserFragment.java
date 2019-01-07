@@ -133,7 +133,13 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                         imageView.setImageResource(R.raw.no_image);
                     } else {
                         /* An Datenbank senden */
-                        dao.update(MainActivity.getActiveUser(), user);
+                        User newUser = dao.read(MainActivity.getActiveUser());
+                        newUser.setFirstName(firstName);
+                        newUser.setLastName(lastName);
+                        newUser.setMail(email);
+                        newUser.setActive(true);
+                        newUser.setImage(imageBytes);
+                        dao.update(MainActivity.getActiveUser(), newUser);
 
                         /* UI-Meldung */
                         if (MainActivity.getHints()) {

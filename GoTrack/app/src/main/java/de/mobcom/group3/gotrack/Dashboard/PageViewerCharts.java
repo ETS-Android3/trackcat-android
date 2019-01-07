@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,6 @@ import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Recording_UI.CurrentPageIndicator;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -32,7 +32,7 @@ public class PageViewerCharts extends Fragment {
     private List<Fragment> listFragments = new ArrayList<>();
 
     public PageViewerCharts() {
-        // Required empty public constructor
+        /* Required empty public constructor */
     }
 
 
@@ -44,109 +44,78 @@ public class PageViewerCharts extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
+        /* Inflate the layout for this fragment */
         View view = inflater.inflate(R.layout.fragment_page_viewer_charts, container, false);
 
+        /* Get AccentColor for current Theme */
         if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)){
             colorAccent = getResources().getColor(R.color.colorGreyAccent);
         }else{
             colorAccent = getResources().getColor(R.color.colorGreenAccent);
         }
 
-        //Daten aus Datenbank auslesen
+        /* Read Last seven Days from DB and init various Variables */
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         List<Route> records = dao.readLastSevenDays(MainActivity.getActiveUser());
-        double[] distanceArray = {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                distanceArrayKm = {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                timeArray = {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                timeArrayMinutes = {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        double[] distanceArrayKm = {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 timeArrayHours = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         double distance = 0,
                 time = 0,
-                maxDistance = 0,
                 maxDistanceKm = 0,
-                maxTime = 0,
-                maxTimeMinutes = 0,
                 maxTimeHours = 0;
         int prevDay = 0;
 
-        // Der Code wird nur ausgeführt wenn es Strecken gibt. Sonst bleibt das Array bei null und somit ein leerer Graph
+        /* If the list has routes, this will be handled. If not, the Graph will be empty */
         if(records.size() > 0) {
             for (int i = 0; i < records.size(); i++) {
                 long curDate = records.get(i).getDate();
-                double curDistance = records.get(i).getDistance();
+                double curDistanceKm = records.get(i).getDistance() / 1000;
                 double curTime = records.get(i).getTime();
+                double curTimeHours = curTime / 3600;
                 int dayOfWeek = getWeekDay(curDate);
 
+                /* If the weekDay (e.g. Sat / 7) is equal to previous Date, the variables add up */
                 if(dayOfWeek == prevDay){
-                    // Wenn es sich bei einem Datensatz ums selbe Datum handelt werden die Variablen aufsummiert
-                    distance = distance + curDistance;
-                    time = time + curTime;
+                    distance = distance + curDistanceKm;
+                    time = time + curTimeHours;
+                /* If the Weekday is not equal, the variables will be reset with new values */
                 } else {
-                    // Wenn ein neues Datum erreicht wurde, werden die Variablen mit dem ersten Datensatz erstellt
                     prevDay = dayOfWeek;
-                    distance = curDistance;
-                    time = curTime;
+                    distance = curDistanceKm;
+                    time = curTimeHours;
                 }
-                // Wenn die neue Zeit oder Distanz größer ist als die alte max werden die variablen überschrieben
-                if (maxDistance < distance) {
-                    maxDistance = distance;
-                    maxDistanceKm = distance / 1000;
+                /* If a distance or time is greater than befores maxVal, this variable will be overwritten */
+                if (maxDistanceKm < distance) {
+                    maxDistanceKm = distance;
                 }
-                if (maxTime < time) {
-                    maxTime = time;
-                    maxTimeMinutes = time /(60);
-                    maxTimeHours = time /(60 * 60);
+                if (maxTimeHours < time) {
+                    maxTimeHours = time;
                 }
-                // Die für die Plots notwendigen Arrays werden erstellt
-                distanceArray[dayOfWeek] = distance;
-                distanceArrayKm[dayOfWeek] = distance / 1000;
 
-                timeArray[dayOfWeek] = time;
-                timeArrayMinutes[dayOfWeek] = time / 60;
-                timeArrayHours[dayOfWeek] = time / (60 * 60);
+                /* Each time the loop iterates, the current time and distance are written to these arrays on dayOfWeek position */
+                distanceArrayKm[dayOfWeek] = distance;
+                timeArrayHours[dayOfWeek] = time;
             }
         }
-
-        /* Distanz der Woche */
+        /* Bundle for the distance Graph */
         Bundle bundleDistance = new Bundle();
         bundleDistance.putString("title", "Distanz der Woche");
         bundleDistance.putInt("color", colorAccent);
-
-        if(maxDistance < 1000){
-            bundleDistance.putDoubleArray("array", distanceArray);
-            bundleDistance.putString("rangeTitle", "Meter");
-            bundleDistance.putDouble("stepsY", maxDistance / 5);
-        }else{
-            bundleDistance.putDoubleArray("array", distanceArrayKm);
-            bundleDistance.putString("rangeTitle", "Km");
-            bundleDistance.putDouble("stepsY", (maxDistanceKm) / 5);
-        }
+        bundleDistance.putDoubleArray("array", distanceArrayKm);
+        bundleDistance.putString("rangeTitle", "Km");
+        bundleDistance.putDouble("stepsY", (maxDistanceKm) / 5);
 
         BarChartFragment barFragDistance = new BarChartFragment();
         barFragDistance.setArguments(bundleDistance);
 
-        /* Laufzeit der Woche */
+        /* Bundle for the time Graph */
         Bundle bundleTime = new Bundle();
         bundleTime.putString("title", "Laufzeit der Woche");
         bundleTime.putInt("color", colorAccent);
-
-
-        // Die Schrittweise der Plot Range wird an den höchsten Time Wert angepasst
-        // Dies Verhindert eine überladene UI
-        if (maxTime < 60) {
-            bundleTime.putDouble("stepsY", 10);
-            bundleTime.putString("rangeTitle", "Sekunden");
-            bundleTime.putDoubleArray("array", timeArray);
-        }else if(maxDistance < 3600){
-            bundleTime.putDouble("stepsY", maxTimeMinutes / 5);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        }else{
-            bundleTime.putDouble("stepsY", maxTimeHours / 5);
-            bundleTime.putString("rangeTitle", "Stunden");
-            bundleTime.putDoubleArray("array", timeArrayHours);
-        }
+        bundleTime.putDouble("stepsY", maxTimeHours / 5);
+        bundleTime.putString("rangeTitle", "Stunden");
+        bundleTime.putDoubleArray("array", timeArrayHours);
 
         BarChartFragment barFragTime = new BarChartFragment();
         barFragTime.setArguments(bundleTime);
@@ -154,7 +123,7 @@ public class PageViewerCharts extends Fragment {
         listFragments.add(barFragDistance);
         listFragments.add(barFragTime);
 
-        // Instantiate a ViewPager and a PagerAdapter.
+        /* Instantiate a ViewPager and a PagerAdapter. */
         ViewPager mPager = view.findViewById(R.id.pager);
         PagerAdapter mPagerAdapter = new PageViewerCharts.ScreenSlidePagerAdapter(MainActivity.getInstance().getSupportFragmentManager());
 
@@ -175,13 +144,12 @@ public class PageViewerCharts extends Fragment {
 
         return view;
     }
-    // Der Wochentag der Aktuellen Strecke wird als int zurückgegeben
+    /* The weekDay of a date in millis will be returned as int (1 / Sunday to 7 / Saturday */
+    /* Date can't be before 1. January 1970 */
     private int getWeekDay(long millis) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-
-
 
         return dayOfWeek;
     }

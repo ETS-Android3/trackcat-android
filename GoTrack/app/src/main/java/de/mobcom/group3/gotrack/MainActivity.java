@@ -283,21 +283,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                     circleImageView.setImageBitmap(bitmap);
 
+                    List<User> users = userDAO.readAll();
                     /* Überprüfung, ob Nutzerwechsel oder Nutzer bearbeiten */
                     for (int i = 0; i < users.size(); i++) {
                         if (adapter.getItemAtPosition(position).equals(users.get(i).getFirstName() + " " + users.get(i).getLastName())) {
                             /* Ausgewählten Nutzer als aktiven Nutzer setzen */
                             Log.d("test123", "===========Nutzerwechsel=========");
                             Log.d("test123", "User aus Liste: " + users.get(i).getFirstName() + " hints: " + users.get(i).isHintsActive());
-                            User user = new User();
-                            user.setFirstName(users.get(i).getFirstName());
-                            user.setLastName(users.get(i).getLastName());
-                            user.setMail(users.get(i).getMail());
-                            user.setImage(users.get(i).getImage());
-                            user.setHintsActive(users.get(i).isHintsActive());
-                            user.setDarkThemeActive(users.get(i).isDarkThemeActive());
+                            User user = userDAO.read(users.get(i).getId());
                             user.setActive(true);
-                            userDAO.update(users.get(i).getId(), user);
+                            userDAO.update(user.getId(), user);
+
                             Log.d("test123", "neuer User in DB: " + user.getFirstName() + " hints: " + user.isHintsActive());
 
                             /* Alten Nutzer deaktivieren */
