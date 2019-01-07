@@ -351,12 +351,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
             case R.id.nav_import:
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("application/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivityForResult(
-                        Intent.createChooser(intent, "Import"), 0);
-                addItemsToSpinner();
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("application/*");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(
+                            Intent.createChooser(intent, "Import"),0);
+                    addItemsToSpinner();
+                    loadRecordList();
                 break;
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {

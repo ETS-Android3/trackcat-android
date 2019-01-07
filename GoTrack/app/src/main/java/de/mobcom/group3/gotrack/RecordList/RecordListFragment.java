@@ -110,5 +110,4 @@ public class RecordListFragment extends Fragment {
 
         return view;
     }
-    // For Update-Button:                 MainActivity.getInstance().loadRecordList();
 }
