@@ -10,11 +10,10 @@ public class Timer {
     private long time = 0;
 
     private java.util.Timer timer;
-    int type;
+    private int type;
     private boolean isRunning;
 
-    public Timer() {
-
+    Timer() {
     }
 
     /*
@@ -34,11 +33,7 @@ public class Timer {
     /*
      * create and Send readable Message String
      * */
-    public void sendTime()
-
-    {
-
-
+    void sendTime() {
         // send message to View
         Message msg = new Message();
         msg.what = type;
@@ -49,9 +44,7 @@ public class Timer {
     /*
     * build Readable String from Seconds
     * */
-
-
-    public String secToString(double secs) {
+    String secToString(double secs) {
         // create readable String
         int hours = (int) Math.floor((secs / 60) / 60);
 
@@ -78,7 +71,7 @@ public class Timer {
      * 0 = Total Timer
      * 1 = Timer counts while speed > 0
      * */
-    public Timer(int typeSet) {
+    Timer(int typeSet) {
         type = typeSet;
 
         if (type != 1) {
@@ -95,7 +88,7 @@ public class Timer {
     /*
      * stops Timer
      * */
-    public void stopTimer() {
+    void stopTimer() {
         if (isRunning) {
             timer.cancel();
             timer = null;
@@ -106,7 +99,7 @@ public class Timer {
     /*
      * starts Timer
      * */
-    public void startTimer() {
+    void startTimer() {
         if (!isRunning) {
             /* initialise Timer */
             timer = new java.util.Timer();
@@ -117,7 +110,7 @@ public class Timer {
     }
 
     // return state of Timer
-    public boolean getActive() {
+    boolean getActive() {
         return isRunning;
     }
 }
