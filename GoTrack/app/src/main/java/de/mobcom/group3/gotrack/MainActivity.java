@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
     private Boolean shouldRestart = false;
+    public Boolean firstRun=false;
     private static Spinner spinner;
     private static int activeUser;
     private static boolean hints;
@@ -219,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             userDAO.create(initialUser);
             createInitialUser = true;
         }
+        firstRun=true;
 
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         addItemsToSpinner();
@@ -302,12 +304,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             userDAO.update(user.getId(), user);
 
                             /* Alten Nutzer deaktivieren */
-                            if (deactivateOldUser && !createInitialUser) {
+                            if (deactivateOldUser && !createInitialUser && !firstRun) {
+                                Log.d("TEST123", "IN SCHLEIFE");
                                 User oldUser = userDAO.read(activeUser);
                                 oldUser.setActive(false);
                                 userDAO.update(activeUser, oldUser);
                             } else {
                                 createInitialUser = false;
+                                firstRun=false;
                             }
 
                             /* Nutzerwechsel in globaler Variable */
