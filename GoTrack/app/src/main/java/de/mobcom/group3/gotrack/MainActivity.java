@@ -464,30 +464,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void loadDashboard() {
+    /* Laden des Dashboard-Fragments */
+    public void loadDashboard(){
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
         fragTransaction.commit();
     }
 
-    public void loadRecord() {
+    /* Laden des Aufnahme-Fragments */
+    public void loadRecord(){
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
         fragTransaction.commit();
     }
 
+    /* Laden des Listen-Fragments */
     public void loadRecordList() {
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
         fragTransaction.commit();
     }
 
-    public void loadSettings() {
+    /* Laden des Einstellung-Fragments */
+    public void loadSettings(){
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
         fragTransaction.commit();
     }
-
 
     // set the RecordFragment wich is in use
     public void setRecordFragment(RecordFragment recordFragment) {
