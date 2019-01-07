@@ -19,6 +19,7 @@ import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 
 import de.mobcom.group3.gotrack.Charts.Formats.XLabelFormat;
+import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
 import java.text.DecimalFormat;
@@ -54,7 +55,7 @@ public class BarChartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         /* Checks current Theme and uses the correct xml */
-        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)) {
+        if(MainActivity.getDarkTheme()) {
             view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
         } else {
             view = inflater.inflate(R.layout.fragment_line_chart, container, false);
