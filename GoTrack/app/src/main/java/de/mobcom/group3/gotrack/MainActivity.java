@@ -118,7 +118,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
-        isActiv = false;
+
+
+        recordFragment.stopTimer();
+        recordFragment = null;
+
+
+
+        isActiv=false;
         super.onDestroy();
     }
 
@@ -468,4 +475,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+   
+    // set the RecordFragment wich is in use
+    public void setRecordFragment(RecordFragment recordFragment) {
+        this.recordFragment = recordFragment;
+    }
 }
