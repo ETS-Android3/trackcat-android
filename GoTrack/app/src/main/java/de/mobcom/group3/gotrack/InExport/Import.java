@@ -75,10 +75,13 @@ public class Import {
                     {
                         String[] userRoutesArr= userRoutes.split("<route>");
                         String user = userRoutesArr[0];
-                        String routes = userRoutesArr[1];
                         int userID = createUser(context, user, uDAO);
-                        rDAO.importRoutesFromJson(stringToarrayList(routes), userID, false);
-
+                        try {
+                            String routes = userRoutesArr[1];
+                            rDAO.importRoutesFromJson(stringToarrayList(routes), userID, false);
+                        }catch (ArrayIndexOutOfBoundsException ex){
+                            ex.printStackTrace();
+                        }
                     }
                     Log.i("Export", "Der Import aller Routen und aller Users wurde gestartet.");
                     break;
@@ -86,9 +89,13 @@ public class Import {
                     // Import eines Nutzers mit allen seinen Einstellungen und Routen
                     String[] stringUserRoutesArr = content.split("<endUser>");
                     String user = stringUserRoutesArr[0];
-                    String routes = stringUserRoutesArr[1];
                     int userID = createUser(context, user, uDAO);
-                    rDAO.importRoutesFromJson(stringToarrayList(routes), userID, false);
+                    try {
+                        String routes = stringUserRoutesArr[1];
+                        rDAO.importRoutesFromJson(stringToarrayList(routes), userID, false);
+                    }catch (ArrayIndexOutOfBoundsException ex){
+                        ex.printStackTrace();
+                    }
                     Log.i("Import", "Der Import eines Users mit allen Routen wurde gestartet.");
                     break;
                 default:
