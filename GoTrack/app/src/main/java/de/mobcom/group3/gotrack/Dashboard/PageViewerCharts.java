@@ -57,17 +57,11 @@ public class PageViewerCharts extends Fragment {
         //Daten aus Datenbank auslesen
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         List<Route> records = dao.readLastSevenDays(MainActivity.getActiveUser());
-        double[] distanceArray = {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                distanceArrayKm = {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                timeArray = {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                timeArrayMinutes = {0, 0, 0, 0, 0, 0, 0, 0, 0},
+        double[] distanceArrayKm = {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 timeArrayHours = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         double distance = 0,
                 time = 0,
-                maxDistance = 0,
                 maxDistanceKm = 0,
-                maxTime = 0,
-                maxTimeMinutes = 0,
                 maxTimeHours = 0;
         int prevDay = 0;
 
@@ -75,60 +69,43 @@ public class PageViewerCharts extends Fragment {
         if(records.size() > 0) {
             for (int i = 0; i < records.size(); i++) {
                 long curDate = records.get(i).getDate();
-                double curDistance = records.get(i).getDistance();
+                double curDistanceKm = records.get(i).getDistance() / 1000;
                 double curTime = records.get(i).getTime();
+                double curTimeHours = curTime / 3600;
                 int dayOfWeek = getWeekDay(curDate);
 
                 if(dayOfWeek == prevDay){
                     // Wenn es sich bei einem Datensatz ums selbe Datum handelt werden die Variablen aufsummiert
-                    distance = distance + curDistance;
-                    time = time + curTime;
+                    distance = distance + curDistanceKm;
+                    time = time + curTimeHours;
                 } else {
                     // Wenn ein neues Datum erreicht wurde, werden die Variablen mit dem ersten Datensatz erstellt
                     prevDay = dayOfWeek;
-                    distance = curDistance;
-                    time = curTime;
+                    distance = curDistanceKm;
+                    time = curTimeHours;
                 }
-                // Wenn die neue Zeit oder Distanz größer ist als die alte max werden die variablen überschrieben
-                if (maxDistance < distance) {
-                    maxDistance = distance;
-                    maxDistanceKm = distance / 1000;
-                }
-                if (maxTime < time) {
-                    maxTime = time;
-                    maxTimeMinutes = time /(60);
-                    maxTimeHours = time /(60 * 60);
-                }
-                // Die für die Plots notwendigen Arrays werden erstellt
-                distanceArray[dayOfWeek] = distance;
-                distanceArrayKm[dayOfWeek] = distance / 1000;
 
-                timeArray[dayOfWeek] = time;
-                timeArrayMinutes[dayOfWeek] = time / 60;
-                timeArrayHours[dayOfWeek] = time / (60 * 60);
+                // Wenn die neue Zeit oder Distanz größer ist als die alte max werden die variablen überschrieben
+                if (maxDistanceKm < distance) {
+                    maxDistanceKm = distance;
+                }
+                if (maxTimeHours < time) {
+                    maxTimeHours = time;
+                }
+
+                // Die für die Plots notwendigen Arrays werden erstellt
+                distanceArrayKm[dayOfWeek] = distance;
+
+                timeArrayHours[dayOfWeek] = time;
             }
         }
-
-        Log.d("TESTING", "" + maxDistance + "m");
-        Log.d("TESTING", "" + maxDistanceKm + "km");
-        Log.d("TESTING", "" + maxTime + "sek");
-        Log.d("TESTING", "" + maxTimeMinutes + "min");
-        Log.d("TESTING", "" + maxTimeHours + "std");
-
         /* Distanz der Woche */
         Bundle bundleDistance = new Bundle();
         bundleDistance.putString("title", "Distanz der Woche");
         bundleDistance.putInt("color", colorAccent);
-
-        if(maxDistance < 1000){
-            bundleDistance.putDoubleArray("array", distanceArray);
-            bundleDistance.putString("rangeTitle", "Meter");
-            bundleDistance.putDouble("stepsY", maxDistance / 5);
-        }else{
-            bundleDistance.putDoubleArray("array", distanceArrayKm);
-            bundleDistance.putString("rangeTitle", "Km");
-            bundleDistance.putDouble("stepsY", (maxDistanceKm) / 5);
-        }
+        bundleDistance.putDoubleArray("array", distanceArrayKm);
+        bundleDistance.putString("rangeTitle", "Km");
+        bundleDistance.putDouble("stepsY", (maxDistanceKm) / 5);
 
         BarChartFragment barFragDistance = new BarChartFragment();
         barFragDistance.setArguments(bundleDistance);
@@ -137,23 +114,9 @@ public class PageViewerCharts extends Fragment {
         Bundle bundleTime = new Bundle();
         bundleTime.putString("title", "Laufzeit der Woche");
         bundleTime.putInt("color", colorAccent);
-
-
-        // Die Schrittweise der Plot Range wird an den höchsten Time Wert angepasst
-        // Dies Verhindert eine überladene UI
-        if (maxTime < 60) {
-            bundleTime.putDouble("stepsY", 10);
-            bundleTime.putString("rangeTitle", "Sekunden");
-            bundleTime.putDoubleArray("array", timeArray);
-        }else if(maxDistance < 3600){
-            bundleTime.putDouble("stepsY", maxTimeMinutes / 5);
-            bundleTime.putString("rangeTitle", "Minuten");
-            bundleTime.putDoubleArray("array", timeArrayMinutes);
-        }else{
-            bundleTime.putDouble("stepsY", maxTimeHours / 5);
-            bundleTime.putString("rangeTitle", "Stunden");
-            bundleTime.putDoubleArray("array", timeArrayHours);
-        }
+        bundleTime.putDouble("stepsY", maxTimeHours / 5);
+        bundleTime.putString("rangeTitle", "Stunden");
+        bundleTime.putDoubleArray("array", timeArrayHours);
 
         BarChartFragment barFragTime = new BarChartFragment();
         barFragTime.setArguments(bundleTime);

@@ -21,6 +21,7 @@ import com.androidplot.xy.XYSeries;
 import de.mobcom.group3.gotrack.Charts.Formats.XLabelFormat;
 import de.mobcom.group3.gotrack.R;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class BarChartFragment extends Fragment {
@@ -32,9 +33,15 @@ public class BarChartFragment extends Fragment {
     private View view;
     private XYPlot plot;
     private int incrementStepsX = 1;
-    //private int incrementStepsY = 10;
     private int barWidth = 10;
+
     private Number[] series1Numbers;
+    String title;
+    String rangeTitle;
+    int color;
+    double incrementStepsY;
+
+    double[] values = new double[0];
 
     public BarChartFragment(){}
 
@@ -47,30 +54,33 @@ public class BarChartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        // Checks current Theme and uses the correct xml
         if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)) {
             view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
         }else{
             view = inflater.inflate(R.layout.fragment_line_chart, container, false);
         }
 
-        String title = "Series01";
-        String rangeTitle="km/h";
-        int color = Color.GRAY;
-        double[] values = new double[0];
-        double incrementStepsY = 10;
         if (getArguments() != null) {
+            // Gets all Arguments from Bundle
             values = getArguments().getDoubleArray("array");
             title = getArguments().getString("title");
             color = getArguments().getInt("color");
             rangeTitle = getArguments().getString("rangeTitle");
             incrementStepsY = getArguments().getDouble("stepsY");
+
+            // Gets Every value from bundle in number Array
             series1Numbers = new Number[values.length];
             for (int i = 0; i < series1Numbers.length; i++) {
                 series1Numbers[i] = values[i];
             }
 
         } else {
+            // Setting default vals, if plot is not used with bundle arguments
+            title = "Series01";
+            rangeTitle="km/h";
+            color = Color.GRAY;
+            incrementStepsY = 10;
             series1Numbers = new Number[]{0, 1, 2, 3, 4, 5, 6, 7, 0};
         }
 
@@ -78,7 +88,6 @@ public class BarChartFragment extends Fragment {
         plot = view.findViewById(R.id.linePlot);
         plot.setTitle(title);
         plot.setRangeLabel(rangeTitle);
-
 
         // Turning Arrays to XYSeries
         XYSeries series1 = new SimpleXYSeries(
@@ -99,6 +108,13 @@ public class BarChartFragment extends Fragment {
         plot.setDomainStep(StepMode.INCREMENT_BY_VAL, incrementStepsX);
         plot.setRangeStep(StepMode.INCREMENT_BY_VAL, incrementStepsY);
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new XLabelFormat());
+
+        // If Steps are to small to show in 0.0 Format, it will be set as 0.00 for Range
+        if(incrementStepsY < 0.01){
+            plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("0.000"));
+        }else if(incrementStepsY < 0.1){
+            plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("0.00"));
+        }
 
         // Bar Width is set by plots own BarRenderer Instance
         BarRenderer renderer = plot.getRenderer(BarRenderer.class);
