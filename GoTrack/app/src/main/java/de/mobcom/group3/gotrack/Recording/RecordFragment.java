@@ -587,16 +587,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 minLong -= 0.001;
 
                 BoundingBox box = new BoundingBox();
-                box.set(maxLat, maxLong,minLat,minLong);//55.000, 9.000,54.000,8.000);
+                box.set(maxLat, maxLong,minLat,minLong);
 
-
-                //maxLat, maxLong,minLat,minLong);
-                // BoundingBox boundingBox = new BoundingBox(maxLat, maxLong, minLat, minLong);
                 zomable.zoomToBoundingBox(box, false);
 
-                double test = zomable.getZoomLevelDouble();
+                double zoomLvl = zomable.getZoomLevelDouble();
 
-                zomable.getController().setZoom(test-0.3);
+                zomable.getController().setZoom(zoomLvl-0.3);
             }
         });
 

@@ -7,23 +7,31 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowInsets;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
+
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
@@ -43,6 +51,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     private double altitudeUp = 0;
     private double altitudeDown = 0;
     private double maxSpeed = 0;
+    private MapView mMapView = null;
     ArrayList<Location> locations;
     Route record;
     RouteDAO dao;
@@ -73,7 +82,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                 /* Berechnung der Höhenmeter */
                 if (difference > 0) {
                     altitudeUp += Math.abs(difference);
-                } else if (difference < 0){
+                } else if (difference < 0) {
                     altitudeDown += Math.abs(difference);
                 }
 
@@ -136,11 +145,50 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         ImageView editRouteName = view.findViewById(R.id.editRoute);
         editRouteName.setOnClickListener(this);
 
+
+        view.setTag(view.getVisibility());
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                    double minLat = Double.MAX_VALUE;
+                    double maxLat = Double.MIN_VALUE;
+                    double minLong = Double.MAX_VALUE;
+                    double maxLong = Double.MIN_VALUE;
+
+
+                    for (GeoPoint point : GPSData) {
+                        if (point.getLatitude() < minLat)
+                            minLat = point.getLatitude();
+                        if (point.getLatitude() > maxLat)
+                            maxLat = point.getLatitude();
+                        if (point.getLongitude() < minLong)
+                            minLong = point.getLongitude();
+                        if (point.getLongitude() > maxLong)
+                            maxLong = point.getLongitude();
+                    }
+
+                    maxLat += 0.001;
+                    maxLong += 0.001;
+                    minLat -= 0.001;
+                    minLong -= 0.001;
+
+                    BoundingBox box = new BoundingBox();
+                    box.set(maxLat, maxLong, minLat, minLong);
+
+                    mMapView.zoomToBoundingBox(box, false);
+
+                    double zoomLvl = mMapView.getZoomLevelDouble();
+
+                    mMapView.getController().setZoom(zoomLvl - 0.3);
+                }
+        });
+
         return view;
     }
 
     private void drawRoute() {
-        MapView mMapView = view.findViewById(R.id.mapview);
+        mMapView = view.findViewById(R.id.mapview);
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
         mMapView.setBuiltInZoomControls(false);
         mMapView.setMultiTouchControls(true);
@@ -184,7 +232,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View alertView = inflater.inflate(R.layout.fragment_record_list_edit_route, null, true);
-                TextView edit_record_name= alertView.findViewById(R.id.edit_record_name);
+                TextView edit_record_name = alertView.findViewById(R.id.edit_record_name);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     alert.setView(alertView);
                     edit_record_name.setText(record.getName());
@@ -195,15 +243,15 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
                 alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        String newName= edit_record_name.getText().toString();
+                        String newName = edit_record_name.getText().toString();
 
                         /* Aktualisieren der Route */
-                        Route newRecord =record;
+                        Route newRecord = record;
                         newRecord.setName(newName);
-                        dao.update(record.getId(),newRecord);
+                        dao.update(record.getId(), newRecord);
 
                         recordName.setText(newName);
-                        if(MainActivity.getHints()) {
+                        if (MainActivity.getHints()) {
                             Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Name erfolgreich bearbeitet!", Toast.LENGTH_LONG).show();
                         }
 
