@@ -83,14 +83,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         /* Data Access Object (DAO) */
         UserDAO dao = new UserDAO(getActivity());
-        User oldUser = dao.read(MainActivity.getActiveUser());
+        User currentUser = dao.read(MainActivity.getActiveUser());
 
         /* Wechsel beim Anzeigen der Hilfreichen Tipps */
         if (preference.getKey().equals("help_messages")) {
             if (((CheckBoxPreference) preference).isChecked()) {
                 Toast.makeText(getActivity(), "Hilfreiche Tipps aktiviert!", Toast.LENGTH_LONG).show();
                 /* Nutzer aktualisieren */
-                oldUser.setHintsActive(true);
+                currentUser.setHintsActive(true);
                 MainActivity.setHints(true);
 
             } else {
@@ -98,7 +98,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                     Toast.makeText(getActivity(), "Hilfreiche Tipps deaktiviert!", Toast.LENGTH_LONG).show();
                 }
                 /* Nutzer aktualisieren */
-                oldUser.setHintsActive(false);
+                currentUser.setHintsActive(false);
                 MainActivity.setHints(false);
             }
         }
@@ -123,7 +123,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 }
                 Log.d("PREFERENCES", "DarkTheme aktiviert!");
                 /* Nutzer aktualisieren */
-                oldUser.setDarkThemeActive(true);
+                currentUser.setDarkThemeActive(true);
                 MainActivity.setDarkTheme(true);
 
             } else {
@@ -132,7 +132,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 }
                 Log.d("PREFERENCES", "LightTheme aktiviert!");
                 /* Nutzer aktualisieren */
-                oldUser.setDarkThemeActive(false);
+                currentUser.setDarkThemeActive(false);
                 MainActivity.setDarkTheme(false);
             }
             // Restart Activity
@@ -141,7 +141,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         } else {
             Log.d("PREFERENCES", "Unbekannte Aktion ausgeführt!");
         }
-        dao.update(MainActivity.getActiveUser(), oldUser);
+        dao.update(MainActivity.getActiveUser(), currentUser);
     }
 
     @Override
@@ -188,7 +188,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
                 /* Data Access Object (DAO) */
                 UserDAO dao = new UserDAO(getActivity());
-                User oldUser = dao.read(MainActivity.getActiveUser());
+                User currentUser = dao.read(MainActivity.getActiveUser());
 
                 RadioButton rBtn_all_records = alertView.findViewById(R.id.rBtn_all_records);
                 RadioButton rBtn_all_options = alertView.findViewById(R.id.rBtn_all_options);
@@ -199,20 +199,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 /* Überprüfung, welche exportoption gewählt wurde */
 
                 /* Alle Aufnahmen des aktuellen Nutzers exportieren */
-                String fullName = oldUser.getFirstName() + " " + oldUser.getLastName();
+                String fullName = currentUser.getFirstName() + " " + currentUser.getLastName();
                 if (rBtn_all_records.isChecked()) {
                     type = "Gesamtes Profil \"" + fullName + "\" exportiert!";
-                    Export.getExport().exportAllUserData(getActivity(), oldUser.getId(), true);
+                    Export.getExport().exportAllUserData(getActivity(), currentUser.getId(), true);
 
                 /* Nutzer-Einstellung exportieren */
                 } else if (rBtn_all_options.isChecked()) {
                     type = "Profileinstellungen von \"" + fullName + "\" exportiert!";
-                    Export.getExport().exportUserData(getActivity(), oldUser.getId(), true);
+                    Export.getExport().exportUserData(getActivity(), currentUser.getId(), true);
 
                 /* Alle Routen exportieren */
                 } else if (rBtn_all_route.isChecked()) {
                     type = "Alle Routen von \"" + fullName + "\" exportiert!";
-                    Export.getExport().exportAllRoute(getActivity(), oldUser.getId(), true);
+                    Export.getExport().exportAllRoute(getActivity(), currentUser.getId(), true);
 
                 /* Alle Nutzer exportieren */
                 } else if (rBtn_all_users.isChecked()) {
