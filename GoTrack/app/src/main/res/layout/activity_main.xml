@@ -28,16 +28,6 @@
             </FrameLayout>
         </LinearLayout>
 
-        <Button
-            android:visibility="gone"
-            android:id="@+id/button4"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@drawable/round_button"
-            android:hapticFeedbackEnabled="true"
-            android:text="Button" />
-
     </FrameLayout>
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
     <android.support.design.widget.NavigationView

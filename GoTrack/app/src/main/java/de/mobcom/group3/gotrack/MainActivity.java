@@ -1,5 +1,6 @@
 package de.mobcom.group3.gotrack;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,6 +42,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -349,6 +353,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.show_help, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.nav_help:
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.getInstance());
+                alert.setTitle("Hilfe");
+
+                if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null){
+                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - Dashboard", Toast.LENGTH_LONG).show();
+                }else if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null){
+                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - RecordList", Toast.LENGTH_LONG).show();
+                }else if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null){
+                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - Aufnahme", Toast.LENGTH_LONG).show();
+                }else if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null){
+                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - Einstellungen", Toast.LENGTH_LONG).show();
+                }
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

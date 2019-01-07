@@ -12,14 +12,15 @@
         <item
             android:id="@+id/nav_recordlist"
             android:title="Gespeicherte Aufzeichnungen"
-            android:icon="@drawable/menu_recordlist"/>
+            android:icon="@drawable/menu_recordlist" />
         <item
             android:id="@+id/nav_import"
             android:title="Import"
-            android:icon="@drawable/menu_import"/>
+            android:icon="@drawable/menu_import" />
         <item
             android:id="@+id/nav_settings"
             android:title="Einstellungen"
-            android:icon="@drawable/menu_settings"/>
+            android:icon="@drawable/menu_settings" />
+
     </group>
 </menu>
