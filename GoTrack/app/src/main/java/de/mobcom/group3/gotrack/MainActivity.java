@@ -31,6 +31,7 @@ import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.InExport.Import;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
+import de.mobcom.group3.gotrack.Recording.Locator;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
 import de.mobcom.group3.gotrack.Settings.CustomSpinnerAdapter;
 import de.mobcom.group3.gotrack.Settings.SettingsFragment;
@@ -119,10 +120,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
 
-        recordFragment.stopTimer();
-        recordFragment = null;
+        try {
+            recordFragment.stopTimer();
+            recordFragment = null;
+        } catch (NullPointerException e) {
+            
+        }
+        MainActivity.getInstance().stopService(new Intent(MainActivity.getInstance(), Locator.class));
 
-        isActiv=false;
+        isActiv = false;
         super.onDestroy();
     }
 
@@ -341,11 +347,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
             case R.id.nav_import:
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("application/*");
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    startActivityForResult(
-                            Intent.createChooser(intent, "Import"),0);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("application/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(
+                        Intent.createChooser(intent, "Import"), 0);
                 break;
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
@@ -447,13 +453,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void loadDashboard(){
+    public void loadDashboard() {
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
         fragTransaction.commit();
     }
 
-    public void loadRecord(){
+    public void loadRecord() {
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
         fragTransaction.commit();
@@ -465,14 +471,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.commit();
     }
 
-    public void loadSettings(){
+    public void loadSettings() {
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
         fragTransaction.commit();
     }
 
 
-   
     // set the RecordFragment wich is in use
     public void setRecordFragment(RecordFragment recordFragment) {
         this.recordFragment = recordFragment;
