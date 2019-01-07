@@ -290,6 +290,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Log.d("test123", "===========Nutzerwechsel=========");
                             Log.d("test123", "User aus Liste: " + users.get(i).getFirstName() + " hints: " + users.get(i).isHintsActive());
                             User user = new User();
+                            user.setId(users.get(i).getId());
                             user.setFirstName(users.get(i).getFirstName());
                             user.setLastName(users.get(i).getLastName());
                             user.setMail(users.get(i).getMail());
