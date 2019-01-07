@@ -42,7 +42,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private PermissionManager permissionManager = new PermissionManager() {};
+    private PermissionManager permissionManager = new PermissionManager() {
+    };
     final int NOTIFICATION_ID = 100;
     private DrawerLayout mainDrawer;
     private NavigationView navigationView;
@@ -53,13 +54,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static int activeUser;
     private static boolean hints;
     private static boolean darkTheme;
-    private static boolean createInitialUser =false;
+    private static boolean createInitialUser = false;
     private UserDAO userDAO;
-    public static Boolean isActiv=false;
+    public static Boolean isActiv = false;
     private static final String PREF_DARK_THEME = "dark_theme";
 
     // Restart activity for Theme Switching
-    public static void restart(){
+    public static void restart() {
         Bundle temp_bundle = new Bundle();
         getInstance().onSaveInstanceState(temp_bundle);
         Intent intent = new Intent(getInstance(), MainActivity.class);
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public static void setHints(boolean activeHints) {
-        hints=activeHints;
+        hints = activeHints;
     }
 
     public static boolean getDarkTheme() {
@@ -93,11 +94,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public static void setDarkTheme(boolean activeDarkTheme) {
-        darkTheme=activeDarkTheme;
+        darkTheme = activeDarkTheme;
     }
 
     public static void setCreateUser(boolean createUser) {
-        createInitialUser=createUser;
+        createInitialUser = createUser;
     }
 
     @Override
@@ -121,15 +122,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
-        isActiv=false;
+        isActiv = false;
         super.onDestroy();
     }
 
     @Override
-    public void recreate(){
-        if(Build.VERSION.SDK_INT >= 11){
+    public void recreate() {
+        if (Build.VERSION.SDK_INT >= 11) {
             super.recreate();
-        }else{
+        } else {
             startActivity(getIntent());
             finish();
         }
@@ -143,20 +144,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Aktuelles Themes aus Einstellungen laden */
         setTheme(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_DARK_THEME, false) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
-        if(getIntent().hasExtra("bundle") && savedInstanceState == null){
+        if (getIntent().hasExtra("bundle") && savedInstanceState == null) {
             savedInstanceState = getIntent().getExtras().getBundle("bundle");
         }
 
         /* Startseite definieren */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (isActiv){
+        if (isActiv) {
             Toast.makeText(this, "Die App läuft bereits in einer anderen Instanz",
                     Toast.LENGTH_LONG).show();
             finish();
-        }
-        else {
-            isActiv =true;
+        } else {
+            isActiv = true;
         }
         /* Instanz für spätere Objekte speichern */
         instance = this;
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             initialUser.setActive(true);
             initialUser.setHintsActive(true);
             userDAO.create(initialUser);
-            createInitialUser=true;
+            createInitialUser = true;
         }
 
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int selectedID = 0;
         boolean findActiveUser = false;
         for (int i = 0; i < users.size(); i++) {
-            Log.d("test123", "for Schleife Items hinzufügen: "+users.get(i).getFirstName() + " " + users.get(i).getLastName());
+            Log.d("test123", "for Schleife Items hinzufügen: " + users.get(i).getFirstName() + " " + users.get(i).getLastName());
             spinnerAccountEmail.add(users.get(i).getMail());
             spinnerAccountNames.add(users.get(i).getFirstName() + " " + users.get(i).getLastName());
             spinnerAccountIcons.add(users.get(i).getImage());
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.d("test123", "activer Nutzer gefunden!");
                 activeUser = users.get(i).getId();
                 hints = users.get(i).isHintsActive();
-                Log.d("test123", "hints Variable: "+ hints);
+                Log.d("test123", "hints Variable: " + hints);
                 darkTheme = users.get(i).isDarkThemeActive();
                 selectedID = i;
                 findActiveUser = true;
@@ -250,11 +250,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                        int position, long id) {
 
                 /* Überprüfung, ob immoment ein Import aktiv ist */
-                if(Import.getImport().getIsImportActiv()){
+                if (Import.getImport().getIsImportActiv()) {
                     if (hints) {
                         Toast.makeText(getApplicationContext(), "Nutzerwechsel nicht möglich, da im Moment ein Import läuft.", Toast.LENGTH_LONG).show();
                     }
-                }else {
+                } else {
 
                     /* Auslesen des angeklickten Items */
                     String item = adapter.getItemAtPosition(position).toString();
@@ -309,14 +309,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     }
 
-                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
-                        /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
-                        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-                        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
-                        fragTransaction.commit();
-                        Menu menu = navigationView.getMenu();
-                        menu.findItem(R.id.nav_dashboard).setChecked(true);
-                    }
+                    /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
+                    FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+                    fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
+                    fragTransaction.commit();
+                    Menu menu = navigationView.getMenu();
+                    menu.findItem(R.id.nav_dashboard).setChecked(true);
                 }
             }
 
@@ -353,12 +351,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
             case R.id.nav_import:
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("application/*");
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    startActivityForResult(
-                            Intent.createChooser(intent, "Import"),0);
-                    addItemsToSpinner();
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("application/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(
+                        Intent.createChooser(intent, "Import"), 0);
+                addItemsToSpinner();
                 break;
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
@@ -373,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -383,8 +382,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         File file = new File(getCacheDir(), "document");
                         InputStream inputStream = getContentResolver().openInputStream(uri);
                         Import.getImport().handleSend(this, file, inputStream);
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -392,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     /* Stops/pauses Tracking opens App and switch to RecordFragment */
     public void stopTracking() {
         startActivity(getIntent());
@@ -436,6 +435,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* BackPressed Listener */
     private boolean exitApp = false;
+
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null) {
@@ -467,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void loadRecordList(){
+    public void loadRecordList() {
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
         fragTransaction.commit();
