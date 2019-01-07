@@ -86,7 +86,6 @@ public class RecordListFragment extends Fragment {
                     public void onClick(View view) {
                         /* Gelöschtes Item wiederherstellen */
                         mAdapter.restoreItem(deletedItem, deletedIndex);
-                        // TODO: Wiederherstellen der zuvor gelöschten Route
                         dao.create(deletedItem);
                     }
                 });
