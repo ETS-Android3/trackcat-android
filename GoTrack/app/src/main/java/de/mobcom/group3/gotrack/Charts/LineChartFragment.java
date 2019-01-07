@@ -4,9 +4,11 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.*;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +19,10 @@ import java.util.Arrays;
 
 public class LineChartFragment extends Fragment {
     private static final String PREF_DARK_THEME = "dark_theme";
-    private final int LOWER_BOUNDARY_X = 0;
     private final int LOWER_BOUNDARY_Y = 0;
     private View view;
     private XYPlot plot;
     private int pointPerSegment = 10;
-    private int incrementStepsX = 1;
     private double incrementStepsY = 10;
     private Number[] series1Numbers;
     private double[] values;
@@ -70,16 +70,19 @@ public class LineChartFragment extends Fragment {
         series1Numbers = new Number[values.length];
         double maxValue=0;
         for (int i = 0; i < series1Numbers.length; i++) {
-            series1Numbers[i] = (int) Math.round(values[i]);
+            /* 0 Values where shown a little bit on the graph on the x/y 0/0 position. */
+            /* So this value is transformed to -1 to hide the graphs line for 0 values */
+            if (values[i] == 0.0) {
+                values[i] = -1;
+            }
+            series1Numbers[i] = values[i];
             if (maxValue < values[i]){
                 maxValue = values[i];
             }
         }
 
         /* Incrementing Steps are created dynamically */
-        pointPerSegment = series1Numbers.length;
         incrementStepsY = maxValue / 5;
-        incrementStepsX = series1Numbers.length/5;
 
         /* Turning Arrays to XYSeries */
         XYSeries series1 = new SimpleXYSeries(
@@ -99,9 +102,9 @@ public class LineChartFragment extends Fragment {
         plot.addSeries(series1, series1Format);
 
         /* Lower Boundaries are set to 0 as defined in final Variables */
-        plot.setDomainLowerBoundary(LOWER_BOUNDARY_X, BoundaryMode.FIXED);
+        plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).getPaint().setColor(Color.TRANSPARENT);
         plot.setRangeLowerBoundary(LOWER_BOUNDARY_Y, BoundaryMode.FIXED);
-        plot.setDomainStep(StepMode.INCREMENT_BY_VAL, incrementStepsX);
+        plot.setRangeUpperBoundary(maxValue, BoundaryMode.FIXED);
         plot.setRangeStep(StepMode.INCREMENT_BY_VAL, incrementStepsY);
 
         return view;
