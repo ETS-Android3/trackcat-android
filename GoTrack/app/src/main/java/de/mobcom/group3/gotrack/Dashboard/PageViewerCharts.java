@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +108,12 @@ public class PageViewerCharts extends Fragment {
                 timeArrayHours[dayOfWeek] = time / (60 * 60);
             }
         }
+
+        Log.d("TESTING", "" + maxDistance + "m");
+        Log.d("TESTING", "" + maxDistanceKm + "km");
+        Log.d("TESTING", "" + maxTime + "sek");
+        Log.d("TESTING", "" + maxTimeMinutes + "min");
+        Log.d("TESTING", "" + maxTimeHours + "std");
 
         /* Distanz der Woche */
         Bundle bundleDistance = new Bundle();

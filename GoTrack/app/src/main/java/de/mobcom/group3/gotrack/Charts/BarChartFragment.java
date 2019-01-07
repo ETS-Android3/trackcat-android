@@ -67,7 +67,7 @@ public class BarChartFragment extends Fragment {
             incrementStepsY = getArguments().getDouble("stepsY");
             series1Numbers = new Number[values.length];
             for (int i = 0; i < series1Numbers.length; i++) {
-                series1Numbers[i] = (int) Math.round(values[i]);
+                series1Numbers[i] = values[i];
             }
 
         } else {
@@ -80,15 +80,11 @@ public class BarChartFragment extends Fragment {
         plot.setRangeLabel(rangeTitle);
 
 
-        // Arrays for the Plot
-        // Keep first and last Value 0 for better Visualization
-
         // Turning Arrays to XYSeries
         XYSeries series1 = new SimpleXYSeries(
                 Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, title);
 
-        // create a bar formatter with a red fill color and a white outline:
-
+        // create a bar formatter with a fill color and outline:
         BarFormatter bf = new BarFormatter(color, color);
         // Add Series of Values to Plot (Every Value is one Bar)
         plot.addSeries(series1, bf);
