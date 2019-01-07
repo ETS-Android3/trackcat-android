@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static MainActivity instance;
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
+    private Boolean shouldRestart =false;
     private static Spinner spinner;
     private static int activeUser;
     private static boolean hints;
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             android.os.Process.killProcess(android.os.Process.myPid());
         }
         isRestart = false;
-        
+
         super.onDestroy();
     }
 
@@ -324,6 +325,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     loadDashboard();
                     Menu menu = navigationView.getMenu();
                     menu.findItem(R.id.nav_dashboard).setChecked(true);
+                    if(shouldRestart){
+                        shouldRestart =false;
+                        restart();
+                    }else {
+                        shouldRestart =true;
+                    }
                 }
             }
 
