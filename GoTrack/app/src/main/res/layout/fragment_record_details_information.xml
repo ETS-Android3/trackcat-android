@@ -7,9 +7,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,260 +30,270 @@
                 android:src="@drawable/ic_edit" />
         </LinearLayout>
 
-
-        <View
-            android:id="@+id/divider"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="15dp"
-            android:background="?android:attr/listDivider" />
-
-        <!-- KARTE -->
-
-        <de.mobcom.group3.gotrack.MyMap
-            android:id="@+id/mapview"
-            android:layout_width="fill_parent"
-            android:layout_height="200dp"
-            android:clickable="true" />
-
-        <!-- HAUPTEIGENSCHAFTEN -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/distance_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/distance_value"
+                <View
+                    android:id="@+id/divider"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="1,24"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="?android:attr/listDivider" />
 
-                <TextView
-                    android:id="@+id/distance_title"
+                <!-- KARTE -->
+
+                <de.mobcom.group3.gotrack.MyMap
+                    android:id="@+id/mapview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="200dp"
+                    android:clickable="true" />
+
+                <!-- HAUPTEIGENSCHAFTEN -->
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Distanz (km)"
-                    android:textSize="12sp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
 
+                    <LinearLayout
+                        android:id="@+id/distance_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/distance_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="1,24"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/distance_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Distanz (km)"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/total_time_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/total_time_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="00:06:56"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/total_time_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Dauer"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/average_speed_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/average_speed_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="14,76"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/average_speed_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Ø Geschw."
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- WEITERE DETAILS -->
+
+                <LinearLayout
+                    android:id="@+id/maxspeed_layout"
+                    style="@style/SummaryRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/max_speed_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/summary_maxspeed" />
+
+                    <TextView
+                        android:id="@+id/max_speed_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:gravity="center"
+                        android:text="Max. Geschw." />
+
+                    <TextView
+                        android:id="@+id/max_speed_value"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:gravity="right|center"
+                        android:text="19,67 km/h"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <LinearLayout
+                    android:id="@+id/altimeter_pos_layout"
+                    style="@style/FirstPairedSummaryRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/altimeter_pos_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/summary_altimeter_pos" />
+
+                    <TextView
+                        android:id="@+id/altimeter_pos_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:gravity="center"
+                        android:text="Höhenmeter aufwärts" />
+
+                    <TextView
+                        android:id="@+id/altimeter_pos_value"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:gravity="right|center"
+                        android:text="32 m"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/altimeter_neg_layout"
+                    style="@style/LastPairedSummaryRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/altimeter_neg_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/summary_altimeter_neg" />
+
+                    <TextView
+                        android:id="@+id/altimeter_neg_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:gravity="center"
+                        android:text="Höhenmeter abwärts" />
+
+                    <TextView
+                        android:id="@+id/altimeter_neg_value"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:gravity="right|center"
+                        android:text="19 m"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <LinearLayout
+                    android:id="@+id/pausetime_layout"
+                    style="@style/SummaryRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/pause_time_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/summary_pausetime" />
+
+                    <TextView
+                        android:id="@+id/pause_time_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:gravity="center"
+                        android:text="Pausezeit" />
+
+                    <TextView
+                        android:id="@+id/pause_time_value"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:gravity="right|center"
+                        android:text="00:02:36"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/total_time_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/total_time_value"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="00:06:56"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/total_time_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Dauer"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/average_speed_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/average_speed_value"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="14,76"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/average_speed_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Ø Geschw."
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- WEITERE DETAILS -->
-
-        <LinearLayout
-            android:id="@+id/maxspeed_layout"
-            style="@style/SummaryRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/max_speed_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_weight="0"
-                app:srcCompat="@drawable/summary_maxspeed" />
-
-            <TextView
-                android:id="@+id/max_speed_title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:gravity="center"
-                android:text="Max. Geschw." />
-
-            <TextView
-                android:id="@+id/max_speed_value"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:gravity="right|center"
-                android:text="19,67 km/h"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <View
-            android:id="@+id/divider1"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
-
-        <LinearLayout
-            android:id="@+id/altimeter_pos_layout"
-            style="@style/FirstPairedSummaryRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/altimeter_pos_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_weight="0"
-                app:srcCompat="@drawable/summary_altimeter_pos" />
-
-            <TextView
-                android:id="@+id/altimeter_pos_title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:gravity="center"
-                android:text="Höhenmeter aufwärts" />
-
-            <TextView
-                android:id="@+id/altimeter_pos_value"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:gravity="right|center"
-                android:text="32 m"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/altimeter_neg_layout"
-            style="@style/LastPairedSummaryRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/altimeter_neg_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_weight="0"
-                app:srcCompat="@drawable/summary_altimeter_neg" />
-
-            <TextView
-                android:id="@+id/altimeter_neg_title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:gravity="center"
-                android:text="Höhenmeter abwärts" />
-
-            <TextView
-                android:id="@+id/altimeter_neg_value"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:gravity="right|center"
-                android:text="19 m"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <View
-            android:id="@+id/divider2"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
-
-        <LinearLayout
-            android:id="@+id/pausetime_layout"
-            style="@style/SummaryRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/pause_time_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_weight="0"
-                app:srcCompat="@drawable/summary_pausetime" />
-
-            <TextView
-                android:id="@+id/pause_time_title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:gravity="center"
-                android:text="Pausezeit" />
-
-            <TextView
-                android:id="@+id/pause_time_value"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:gravity="right|center"
-                android:text="00:02:36"
-                android:textStyle="bold" />
-        </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 </FrameLayout>
 
