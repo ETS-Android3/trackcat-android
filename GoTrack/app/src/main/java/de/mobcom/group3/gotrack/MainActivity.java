@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intent intent = getIntent();
         String action = intent.getStringExtra("action");
-        if (action != null && action.equalsIgnoreCase(getResources().getString(R.string.fRecord))) {
+        if (action != null && !action.equalsIgnoreCase(getResources().getString(R.string.fRecord))) {
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
             fragTransaction.commit();
@@ -123,6 +123,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
+
+
+        recordFragment.stopTimer();
+        recordFragment = null;
+
+
+
         isActiv=false;
         super.onDestroy();
     }
@@ -473,4 +480,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    // set the RecordFragment wich is in use
+    public void setRecordFragment(RecordFragment recordFragment) {
+        this.recordFragment = recordFragment;
+    }
 }
