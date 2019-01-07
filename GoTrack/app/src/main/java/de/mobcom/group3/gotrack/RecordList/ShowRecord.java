@@ -100,7 +100,7 @@ public class ShowRecord {
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
+                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsDashbaord));
                 fragTransaction.commit();
                 if (MainActivity.getHints()) {
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName() + "\"", Toast.LENGTH_LONG).show();

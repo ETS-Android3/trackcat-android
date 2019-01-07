@@ -18,6 +18,7 @@
     <string name="fPageViewer">PAGE_VIEWER</string>
     <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
+    <string name="fNewUser">NEW_USER</string>
 
     <!-- Einstellungen -->
     <string name="category1">Allgemeines</string>
@@ -27,7 +28,6 @@
     <string name="export_options_all_full_user">Aktueller Benutzer (mit Routen) </string>
     <string name="export_options_all_route">Routen des aktuellen Benutzers</string>
     <string name="export_options_all_users">Alle Daten (alle Benutzer mit allen Routen)</string>
-
 
     <string name="category3">Über GoTrack</string>
     <string name="aboutGoTrack">GoTrack ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
@@ -44,6 +44,24 @@
     <string name="newUserTitle">Neues Profil</string>
     <string name="editUserTitle">Profil bearbeiten</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hallo ich bin ein leeres Fragment</string>
+    <!-- Help Menu -->
+    <string name="help_dashboard">Das Dashboard dient zur Übersicht über Ihre vergangenen Aktivitäten. Unter den  \"Letzten Aktivitäten\"
+        finden sich Ihre letzten zwei Aufzeichnungen, wenn Sie mehr sehen wollen, können Sie dies über den Link \"Mehr anzeigen\" tun.\n\nIm unteren
+        Teil der Seite finden Sie eine Übersicht der letzten Woche (Distanz und Zeit).</string>
+    <string name="help_record">Hier können Sie Ihre Aktivität aufzeichnen.\n\nStarten, sowie pausieren können Sie Ihre Aufnahme, indem Sie auf den
+        entsprechenden Play-Button klicken.\n\nZum Beenden der laufenden Aufnahme halten Sie den Pause-Button für 2 Skunden gedrückt, anschließend
+        haben Sie die Möglichkeit die eben aufgezeichnete Strecke zu verwerfen oder zu speichern.</string>
+    <string name="help_record_list">Hier finden Sie die gesamte Liste Ihrer Aufzeichnungen.\n\nZum Öffnen der Detailansicht klicken Sie auf die
+        entsprechende Aufzeichnung.Zum Löschen ziehen Sie die entsprechende Aufzeichnung nach links.\n\nZum Teilen einer Aufzeichnung ziehen Sie
+        diese nach rechts.</string>
+    <string name="help_settings">Hier haben Sie die Möglichkeit benutzerdefinierte Einstellungen vorzunehmen. Durch einfaches Togglen, Aktivieren oder
+        Deaktivieren, lassen sich z.B. das Theme der App ändern oder Hilfestellungen aktivieren bzw. deaktivieren.\n\nZum Exportieren Ihrer Daten, klicken
+        Sie einfach auf \"Exportieren\" und wählen Sie die vorzunehmende Option.\n\nNäheres zur von Ihnen verwendeten Version finden Sie unter \"Version\".</string>
+    <string name="help_record_details">Hier können Sie alle Daten Ihrer gewählten Aufzeichnung einsehen. Durch das Wischen nach links erhalten Sie Diagramme
+        über den Verlauf Ihrer Gescwindigkeit sowie die hinterlegten Höhenmeter in Relation zur Zeit.\n\nZum Bearbeiten des Namens klicken Sie einfach auf das
+        \"Edit\"-Icon, neben dem derzeit verwendeten Namen.</string>
+    <string name="help_new_user">Hier können Sie einen neuen Benutzer anlegen. Alle Felder müssen ausgefüllt werden. Wenn ein Profilbild gewünscht ist, kann
+        dieses durch Klicken auf das Bild ausgewählt und festgelegt werden.</string>
+    <string name="help_edit_user">Hier haben Sie die Möglichkeit Ihr Profil zu bearbeiten. Durch Klicken auf das aktuelle Profilbild lässt sich dieses
+        ebenfalls ändern.</string>
 </resources>

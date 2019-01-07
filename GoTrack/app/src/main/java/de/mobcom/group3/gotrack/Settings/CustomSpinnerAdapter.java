@@ -75,7 +75,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                 public void onClick(View v) {
                     /* Titel und BtnText bearbeiten */
                     Bundle bundle = new Bundle();
-                    bundle.putString("title", "Profil bearbeiten");
+                    bundle.putString("title", MainActivity.getInstance().getResources().getString(R.string.editUserTitle));
                     bundle.putString("btnText", "Speichern");
 
                     /* Aktiven Nutzer ermitteln und Text ausgeben */
@@ -89,7 +89,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     newUserFragment.setArguments(bundle);
 
                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, newUserFragment, "EDITUSER");
+                    fragTransaction.replace(R.id.mainFrame, newUserFragment, MainActivity.getInstance().getResources().getString(R.string.fNewUser));
                     fragTransaction.commit();
 
                     /* Ausblenden des Spinners */
@@ -111,13 +111,13 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                 public void onClick(View v) {
                     /* Titel und BtnText bearbeiten */
                     Bundle bundle = new Bundle();
-                    bundle.putString("title", "Profil erstellen");
+                    bundle.putString("title", MainActivity.getInstance().getResources().getString(R.string.newUserTitle));
                     bundle.putString("btnText", "Erstellen");
                     NewUserFragment newUserFragment = new NewUserFragment();
                     newUserFragment.setArguments(bundle);
 
                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, newUserFragment, "NEWUSER");
+                    fragTransaction.replace(R.id.mainFrame, newUserFragment, MainActivity.getInstance().getResources().getString(R.string.fNewUser));
                     fragTransaction.commit();
 
                     /* Ausblenden des Spinners */

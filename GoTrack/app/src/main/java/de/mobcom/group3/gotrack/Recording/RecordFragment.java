@@ -43,6 +43,7 @@ import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 import de.mobcom.group3.gotrack.Statistics.mCounter;
 
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
@@ -492,6 +493,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         alert.setTitle("Aufnahme speichern?");
 
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        MapView mapViewZoom = null;
+        ImageView typeIcon = null;
+
         View alertView = inflater.inflate(R.layout.fragment_record_list_one_item, null, true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             alert.setView(alertView);
@@ -499,8 +504,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             /* Route auf Karte zeichnen */
             drawRoute(alertView);
 
+            mapViewZoom = alertView.findViewById(R.id.mapview);
+
             /* Typ festlegen */
-            ImageView typeIcon = alertView.findViewById(R.id.fabButton);
+            typeIcon = alertView.findViewById(R.id.fabButton);
             typeIcon.setImageResource(SpeedAverager.getTypeIcon(type, false));
 
             /* Placeholder festlegen */
@@ -525,6 +532,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             // TODO Implementation für Nutzer mit API <= 16
         }
 
+
+
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 TextView recordName = alertView.findViewById(R.id.record_name);
@@ -538,7 +547,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 dao.create(model);
 
                 MainActivity.getInstance().endTracking();
-            }
+                }
         });
 
         alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
@@ -547,7 +556,48 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 MainActivity.getInstance().endTracking();
             }
         });
-        alert.show();
+
+        final MapView zomable = mapViewZoom;
+
+        final AlertDialog alertDialog = alert.create();
+
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                double minLat = Double.MAX_VALUE;
+                double maxLat = Double.MIN_VALUE;
+                double minLong = Double.MAX_VALUE;
+                double maxLong = Double.MIN_VALUE;
+
+
+                for (GeoPoint point : GPSData) {
+                    if (point.getLatitude() < minLat)
+                        minLat = point.getLatitude();
+                    if (point.getLatitude() > maxLat)
+                        maxLat = point.getLatitude();
+                    if (point.getLongitude() < minLong)
+                        minLong = point.getLongitude();
+                    if (point.getLongitude() > maxLong)
+                        maxLong = point.getLongitude();
+                }
+
+                maxLat += 0.001;
+                maxLong += 0.001;
+                minLat -= 0.001;
+                minLong -= 0.001;
+
+                BoundingBox box = new BoundingBox();
+                box.set(maxLat, maxLong,minLat,minLong);
+
+                zomable.zoomToBoundingBox(box, false);
+
+                double zoomLvl = zomable.getZoomLevelDouble();
+
+                zomable.getController().setZoom(zoomLvl-0.3);
+            }
+        });
+
+        alertDialog.show();
     }
 
     private void drawRoute(View alertView) {
@@ -556,7 +606,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mMapView.setBuiltInZoomControls(false);
         mMapView.setMultiTouchControls(true);
         MapController mMapController = (MapController) mMapView.getController();
-        mMapController.setZoom(19);
+
 
         /* Marker und Polyline zeichnen */
         GeoPoint gPt = new GeoPoint(model.getLocations().get(0).getLatitude(), model.getLocations().get(0).getLongitude());
@@ -585,8 +635,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mPath.setColor(Color.RED);
         mPath.setWidth(4);
 
-        gPt = new GeoPoint(model.getLocations().get(model.getLocations().size() / 2).getLatitude(), model.getLocations().get(model.getLocations().size() / 2).getLongitude());
-        mMapController.setCenter(gPt);
     }
 
     /*

@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.karan.churi.PermissionManager.PermissionManager;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
     private Boolean shouldRestart = false;
-    public Boolean firstRun=false;
+    public Boolean firstRun = false;
     private static Spinner spinner;
     private static int activeUser;
     private static boolean hints;
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void getCurrentUserInformation(){
+    public void getCurrentUserInformation() {
         userDAO = new UserDAO(this);
         List<User> users = userDAO.readAll();
         for (int i = 0; i < users.size(); i++) {
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             userDAO.create(initialUser);
             createInitialUser = true;
         }
-        firstRun=true;
+        firstRun = true;
 
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
         addItemsToSpinner();
@@ -314,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 userDAO.update(activeUser, oldUser);
                             } else {
                                 createInitialUser = false;
-                                firstRun=false;
+                                firstRun = false;
                             }
 
                             /* Nutzerwechsel in globaler Variable */
@@ -360,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         inflater.inflate(R.menu.show_help, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -369,15 +371,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.getInstance());
                 alert.setTitle("Hilfe");
 
-                if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null){
-                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - Dashboard", Toast.LENGTH_LONG).show();
-                }else if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null){
-                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - RecordList", Toast.LENGTH_LONG).show();
-                }else if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null){
-                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - Aufnahme", Toast.LENGTH_LONG).show();
-                }else if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null){
-                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - Einstellungen", Toast.LENGTH_LONG).show();
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
+                    alert.setMessage(getResources().getString(R.string.help_dashboard));
+                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
+                    alert.setMessage(getResources().getString(R.string.help_record));
+                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
+                    alert.setMessage(getResources().getString(R.string.help_record_list));
+                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
+                    alert.setMessage(getResources().getString(R.string.help_settings));
+                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null) {
+                    alert.setMessage(getResources().getString(R.string.help_record_details));
+                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fNewUser)) != null) {
+                    String title = ((TextView) (findViewById(R.id.user_settings_title))).getText().toString();
+                    if (title.equals(getResources().getString(R.string.newUserTitle))) {
+                        alert.setMessage(getResources().getString(R.string.help_new_user));
+                    } else if (title.equals(getResources().getString(R.string.editUserTitle))) {
+                        alert.setMessage(getResources().getString(R.string.help_edit_user));
+                    }
                 }
+                alert.setNegativeButton("Schließen", null);
+                alert.show();
                 return true;
 
             default:
