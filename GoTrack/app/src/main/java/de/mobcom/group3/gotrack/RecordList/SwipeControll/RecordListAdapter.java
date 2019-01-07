@@ -65,7 +65,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
         notifyItemInserted(position);
     }
 
-    // Clean all elements of the recycler
+    /* SwipeRefresh - alle Einträge entfernen */
     public void clear() {
         records.clear();
         notifyDataSetChanged();
