@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
-
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.InExport.Export;
@@ -179,9 +178,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         View alertView = inflater.inflate(R.layout.fragment_settings_export, null, true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             alert.setView(alertView);
-
         } else {
-            // TODO Implementation für Nutzer mit API <= 16
+            alert.setMessage("Hier würden normalerweise die Daten Ihrer Aufzeichnung stehen.\nLeider ist Ihre Android-Version dafür zu alt!");
         }
 
         alert.setPositiveButton("Exportieren", new DialogInterface.OnClickListener() {
