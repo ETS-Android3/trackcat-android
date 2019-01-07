@@ -49,7 +49,7 @@ public class PageViewerCharts extends Fragment {
         View view = inflater.inflate(R.layout.fragment_page_viewer_charts, container, false);
 
         /* Get AccentColor for current Theme */
-        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)){
+        if(MainActivity.getDarkTheme()){
             colorAccent = getResources().getColor(R.color.colorGreyAccent);
         }else{
             colorAccent = getResources().getColor(R.color.colorGreenAccent);
