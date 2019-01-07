@@ -10,14 +10,12 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.*;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
-
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.InExport.Export;
@@ -46,6 +44,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             theme.setSummary("Während Aufzeichnung nicht möglich!");
         }
 
+        /* Export von Daten */
+        Preference export = findPreference("global_export_options");
+        export.setOnPreferenceClickListener(this);
+
         /* Aktuelle Version in Einstellungen anzeigen */
         Preference version = findPreference("current_version");
         version.setSummary("unknown");
@@ -55,18 +57,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        version.setOnPreferenceClickListener(this);
 
+        /* Feedback senden */
         Preference feedback = findPreference("send_feedback");
-        feedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                sendFeedback(getActivity());
-                return true;
-            }
-        });
-
-        /* ClickListener für den Export von Daten */
-        Preference export = findPreference("global_export_options");
-        export.setOnPreferenceClickListener(this);
+        feedback.setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -143,6 +138,85 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        if (preference.getKey().equals("global_export_options")) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Daten exportieren?");
+
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View alertView = inflater.inflate(R.layout.fragment_settings_export, null, true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                alert.setView(alertView);
+
+                alert.setPositiveButton("Exportieren", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+                        /* Data Access Object (DAO) */
+                        UserDAO dao = new UserDAO(getActivity());
+                        User currentUser = dao.read(MainActivity.getActiveUser());
+
+                        RadioButton rBtn_all_records = alertView.findViewById(R.id.rBtn_all_records);
+                        RadioButton rBtn_all_options = alertView.findViewById(R.id.rBtn_all_options);
+                        RadioButton rBtn_all_route = alertView.findViewById(R.id.rBtn_all_route);
+                        RadioButton rBtn_all_users = alertView.findViewById(R.id.rBtn_all_users);
+                        String type = "";
+
+                        /* Überprüfung, welche exportoption gewählt wurde */
+
+                        /* Alle Aufnahmen des aktuellen Nutzers exportieren */
+                        String fullName = currentUser.getFirstName() + " " + currentUser.getLastName();
+                        if (rBtn_all_records.isChecked()) {
+                            type = "Gesamtes Profil \"" + fullName + "\" exportiert!";
+                            Export.getExport().exportAllUserData(getActivity(), currentUser.getId(), true);
+
+                            /* Nutzer-Einstellung exportieren */
+                        } else if (rBtn_all_options.isChecked()) {
+                            type = "Profileinstellungen von \"" + fullName + "\" exportiert!";
+                            Export.getExport().exportUserData(getActivity(), currentUser.getId(), true);
+
+                            /* Alle Routen exportieren */
+                        } else if (rBtn_all_route.isChecked()) {
+                            type = "Alle Routen von \"" + fullName + "\" exportiert!";
+                            Export.getExport().exportAllRoute(getActivity(), currentUser.getId(), true);
+
+                            /* Alle Nutzer exportieren */
+                        } else if (rBtn_all_users.isChecked()) {
+                            type = "App Backup erstellt!";
+                            Export.getExport().exportAllRouteUsers(getActivity(), true);
+                        }
+
+                        if (MainActivity.getHints()) {
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), type, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+                alert.setNegativeButton("Abbruch", null);
+            } else {
+                alert.setMessage("Ihre Android-Version ist zu alt für diese Funktion!");
+            }
+            alert.show();
+        } else if (preference.getKey().equals("current_version")) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+            String version = "\"unknown\"";
+            try {
+                PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+                version = pInfo.versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            alert.setTitle("GoTrack v" + version);
+            alert.setMessage("Entwickler:\nTimo Kramer, Marie Fock, Finn Lenz, Yannik Petersen, Kristoff Klan, Jenö Petsch");
+            alert.setNegativeButton("Schließen", null);
+            alert.show();
+        } else if (preference.getKey().equals("send_feedback")){
+            sendFeedback(getActivity());
+        }
+        return false;
+    }
+
     public static void sendFeedback(Context context) {
         String body = null;
         try {
@@ -158,72 +232,5 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback: GoTrack");
         intent.putExtra(Intent.EXTRA_TEXT, body);
         context.startActivity(Intent.createChooser(intent, "Wählen Sie Ihren E-Mail Client"));
-    }
-
-    @Override
-    public boolean onPreferenceClick(Preference preference) {
-
-        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-        alert.setTitle("Daten exportieren?");
-
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View alertView = inflater.inflate(R.layout.fragment_settings_export, null, true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            alert.setView(alertView);
-        } else {
-            alert.setMessage("Hier würden normalerweise die Daten Ihrer Aufzeichnung stehen.\nLeider ist Ihre Android-Version dafür zu alt!");
-        }
-
-        alert.setPositiveButton("Exportieren", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-
-                /* Data Access Object (DAO) */
-                UserDAO dao = new UserDAO(getActivity());
-                User currentUser = dao.read(MainActivity.getActiveUser());
-
-                RadioButton rBtn_all_records = alertView.findViewById(R.id.rBtn_all_records);
-                RadioButton rBtn_all_options = alertView.findViewById(R.id.rBtn_all_options);
-                RadioButton rBtn_all_route = alertView.findViewById(R.id.rBtn_all_route);
-                RadioButton rBtn_all_users = alertView.findViewById(R.id.rBtn_all_users);
-                String type = "";
-
-                /* Überprüfung, welche exportoption gewählt wurde */
-
-                /* Alle Aufnahmen des aktuellen Nutzers exportieren */
-                String fullName = currentUser.getFirstName() + " " + currentUser.getLastName();
-                if (rBtn_all_records.isChecked()) {
-                    type = "Gesamtes Profil \"" + fullName + "\" exportiert!";
-                    Export.getExport().exportAllUserData(getActivity(), currentUser.getId(), true);
-
-                /* Nutzer-Einstellung exportieren */
-                } else if (rBtn_all_options.isChecked()) {
-                    type = "Profileinstellungen von \"" + fullName + "\" exportiert!";
-                    Export.getExport().exportUserData(getActivity(), currentUser.getId(), true);
-
-                /* Alle Routen exportieren */
-                } else if (rBtn_all_route.isChecked()) {
-                    type = "Alle Routen von \"" + fullName + "\" exportiert!";
-                    Export.getExport().exportAllRoute(getActivity(), currentUser.getId(), true);
-
-                /* Alle Nutzer exportieren */
-                } else if (rBtn_all_users.isChecked()) {
-                    type = "App Backup erstellt!";
-                    Export.getExport().exportAllRouteUsers(getActivity(), true);
-                }
-
-                if (MainActivity.getHints()) {
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), type, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        alert.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-        alert.show();
-        return false;
     }
 }
