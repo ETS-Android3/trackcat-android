@@ -67,6 +67,7 @@
         <receiver android:name="de.mobcom.group3.gotrack.NotificationActionReciever">
 
         </receiver>
+        <service android:name=".Recording.Locator" android:enabled="true"/>
     </application>
 
 </manifest>
