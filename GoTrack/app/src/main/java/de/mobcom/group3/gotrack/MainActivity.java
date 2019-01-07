@@ -1,5 +1,6 @@
 package de.mobcom.group3.gotrack;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,6 +42,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -363,7 +366,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.nav_help:
-                Toast.makeText(getApplicationContext(), "Hilfe anzeigen", Toast.LENGTH_LONG).show();
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.getInstance());
+                alert.setTitle("Hilfe");
+
+                if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null){
+                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - Dashboard", Toast.LENGTH_LONG).show();
+                }else if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null){
+                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - RecordList", Toast.LENGTH_LONG).show();
+                }else if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null){
+                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - Aufnahme", Toast.LENGTH_LONG).show();
+                }else if(getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null){
+                    Toast.makeText(getApplicationContext(), "Hilfe anzeigen - Einstellungen", Toast.LENGTH_LONG).show();
+                }
                 return true;
 
             default:
