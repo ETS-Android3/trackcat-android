@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     style="@style/VerticalThemeLayoutInputs">
-
+    <!-- Diese Activity wird bei einem Import aus einer externen App verwendet -->
     <FrameLayout
         android:id="@+id/pageViewerContainer"
         android:layout_width="match_parent"

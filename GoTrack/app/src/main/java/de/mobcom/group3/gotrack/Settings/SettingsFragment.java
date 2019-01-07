@@ -165,29 +165,36 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                         /* Überprüfung, welche exportoption gewählt wurde */
 
                         /* Alle Aufnahmen des aktuellen Nutzers exportieren */
-                        String fullName = currentUser.getFirstName() + " " + currentUser.getLastName();
+                        String fullName = currentUser.getFirstName() + " " +
+                                currentUser.getLastName();
                         if (rBtn_all_records.isChecked()) {
                             type = "Gesamtes Profil \"" + fullName + "\" exportiert!";
-                            Export.getExport().exportAllUserData(getActivity(), currentUser.getId(), true);
+                            Export.getExport().exportAllUserData(getActivity(), currentUser.getId(),
+                                    true);
 
                             /* Nutzer-Einstellung exportieren */
                         } else if (rBtn_all_options.isChecked()) {
                             type = "Profileinstellungen von \"" + fullName + "\" exportiert!";
-                            Export.getExport().exportUserData(getActivity(), currentUser.getId(), true);
+                            Export.getExport().exportUserData(getActivity(), currentUser.getId(),
+                                    true);
 
                             /* Alle Routen exportieren */
                         } else if (rBtn_all_route.isChecked()) {
                             type = "Alle Routen von \"" + fullName + "\" exportiert!";
-                            Export.getExport().exportAllRoute(getActivity(), currentUser.getId(), true);
+                            Export.getExport().exportAllRoute(getActivity(), currentUser.getId(),
+                                    true);
 
                             /* Alle Nutzer exportieren */
                         } else if (rBtn_all_users.isChecked()) {
                             type = "App Backup erstellt!";
-                            Export.getExport().exportAllRouteUsers(getActivity(), true);
+                            Export.getExport().exportAllRouteUsers(getActivity(),
+                                    true);
                         }
 
                         if (MainActivity.getHints()) {
-                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), type, Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), type,
+                                    Toast.LENGTH_LONG).show();
+                            Log.i("GoTrack-Export", type);
                         }
                     }
                 });

@@ -25,6 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Diese "activity" wird verwendet um Dateien zu importieren, durch die Intent-Filter
+        können Dateien, welche die Endung .gotrack haben, dirket in diese App gelesen werden -->
         <activity
             android:name="de.mobcom.group3.gotrack.ImportActivity"
             android:configChanges="orientation|keyboardHidden">

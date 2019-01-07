@@ -21,6 +21,7 @@ import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
 
+/* Mit dieser Klasse können exportierte Nutzer und Routen, aus einer Datei, eingelesen werden. */
 public class Import {
 
     private static Import importSingleton = null;
@@ -33,17 +34,20 @@ public class Import {
 
     public Boolean getIsImportActiv () {return isImportActiv;}
 
+    /* Konstruktor */
     private Import(){
     }
 
+    /* Mit dieser Methode wird eine Instanz der Klasse zurügegeben */
     public static Import getImport (){
         if(importSingleton == null){
-            Log.i("Import", "Es wurde eine Import-Instanz erstellt.");
+            Log.i("GoTrack-Import", "Es wurde eine Import-Instanz erstellt.");
             importSingleton = new Import();
         }
         return importSingleton;
     }
 
+    /* Diese Methode verwertet eingekommende Import-Dateien */
     public void incomingImport (Context context, String incomingFile){
         try {
             isImportActiv =true;
@@ -54,22 +58,24 @@ public class Import {
             UserDAO uDAO = new UserDAO(context);
             switch (index) {
                 case ("SingleRoute"):
-                    // Import einer einzelnen Route
+                    /* Import einer einzelnen Route */
                     rDAO.importRouteFromJson(content, MainActivity.getActiveUser(), true);
-                    Log.i("Import", "Der Import einer Route wurde gestartet.");
+                    Log.i("GoTrack-Import", "Der Import einer Route wurde gestartet.");
                     break;
                 case ("UserSettings"):
-                    // Import eines Users mit seinen Einstellungen
+                    /* Import eines Users mit seinen Einstellungen */
                     createUser(context, content, uDAO);
-                    Log.i("Import", "Der Import eines Users wurde gestartet.");
+                    Log.i("GoTrack-Import", "Der Import eines Users wurde gestartet.");
                     break;
                 case ("AllRoutes"):
-                    // Import aller Routen eines Users
-                    rDAO.importRoutesFromJson(stringToarrayList(content), MainActivity.getActiveUser(), true);
-                    Log.i("Import", "Der Import aller Routen eines Users wurde gestartet.");
+                    /* Import aller Routen eines Users, ohne den User */
+                    rDAO.importRoutesFromJson(stringToarrayList(content),
+                            MainActivity.getActiveUser(), true);
+                    Log.i("GoTrack-Import",
+                            "Der Import aller Routen eines Users wurde gestartet.");
                     break;
                 case ("AllUsersAllRoutes"):
-                    // Import aller  Routen und aller User eines bestimmenten Users
+                    /* Import aller  Routen und aller User */
                     String[] stringUsersRoutesArr = content.split("<nextUser>");
                     for(String userRoutes: stringUsersRoutesArr  )
                     {
@@ -78,40 +84,48 @@ public class Import {
                         int userID = createUser(context, user, uDAO);
                         try {
                             String routes = userRoutesArr[1];
-                            rDAO.importRoutesFromJson(stringToarrayList(routes), userID, false);
+                            rDAO.importRoutesFromJson(stringToarrayList(routes),
+                                    userID, false);
                         }catch (ArrayIndexOutOfBoundsException ex){
                             ex.printStackTrace();
                         }
                     }
-                    Log.i("Export", "Der Import aller Routen und aller Users wurde gestartet.");
+                    Log.i("GoTrack-Import",
+                            "Der Import aller Routen und aller Users wurde gestartet.");
                     break;
                 case ("OneUserAllRoutes"):
-                    // Import eines Nutzers mit allen seinen Einstellungen und Routen
+                    /* Import eines Nutzers mit allen seinen Einstellungen und Routen */
                     String[] stringUserRoutesArr = content.split("<endUser>");
                     String user = stringUserRoutesArr[0];
                     int userID = createUser(context, user, uDAO);
                     try {
                         String routes = stringUserRoutesArr[1];
-                        rDAO.importRoutesFromJson(stringToarrayList(routes), userID, false);
+                        rDAO.importRoutesFromJson(stringToarrayList(routes),
+                                userID, false);
                     }catch (ArrayIndexOutOfBoundsException ex){
                         ex.printStackTrace();
                     }
-                    Log.i("Import", "Der Import eines Users mit allen Routen wurde gestartet.");
+                    Log.i("GoTrack-Import",
+                            "Der Import eines Users mit allen Routen wurde gestartet.");
                     break;
                 default:
+                    Log.e("GoTrack-Import",
+                            "Die Import-Datei war fehlerhaft.");
                     Toast.makeText(context, "Die Import-Datei war fehlerhaft",
                             Toast.LENGTH_LONG).show();
             }
-            isImportActiv =false;
         }
         catch (Exception ex){
             Toast.makeText(context, "Die Import-Datei war fehlerhaft",
                     Toast.LENGTH_LONG).show();
-            isImportActiv =false;
             ex.printStackTrace();
+        }
+        finally {
+            isImportActiv =false;
         }
     }
 
+    /* Diese Methode holt aus einer Datei den Inhalt als String */
     public void handleSend(Context context, File file, InputStream inputStream) throws IOException {
         try {
             OutputStream output = new FileOutputStream(file);
@@ -128,10 +142,6 @@ public class Import {
         } finally {
             inputStream.close();
         }
-        convertFile(context, file);
-    }
-
-    public void convertFile (Context context, File file) throws IOException {
         FileInputStream is = new FileInputStream(file);
         int size = is.available();
         byte[] buffer = new byte[size];
@@ -141,6 +151,8 @@ public class Import {
         Import.getImport().incomingImport(context, fileText);
     }
 
+    /* Diese Methode konvertiert einen String mit Elementen in ein Liste damit
+    diese in die Datenbank geschrieben werden kann*/
     private ArrayList<String> stringToarrayList(String listStr) {
         ArrayList<String> resultList = new ArrayList<String>();
         String[] stringArr = listStr.split("<goTrack>");
@@ -151,6 +163,8 @@ public class Import {
         return resultList;
     }
 
+    /* Diese Methode gibt zuletzt erstellten User zurück damit Ihm seine Routen zugewiesen
+     werden können */
     private int getNewestUserID(Context context){
         UserDAO uDAO = new UserDAO(context);
         List<User> users = uDAO.readAll();
@@ -161,6 +175,8 @@ public class Import {
         }
         return result;
     }
+
+    /* Diese Methode legt einen importierten User in der Datenbank, sofern er nicht existiert */
     private int createUser (Context context,
                                        String user, UserDAO uDAO){
         User newUser = gson.fromJson(user, imExportType);
@@ -174,10 +190,12 @@ public class Import {
                     equals(u.getLastName())){
                 exist= true;
                 userID =u.getId();
-                //Toast.makeText(context, "Nutzer existiert bereits", Toast.LENGTH_SHORT).show();
+                Log.i("GoTrack-Import",
+                        "Der User "+ u.getMail()+" existiert bereits.");
                 break;
             }
-            //Toast.makeText(context, "Nutzer wird angelgt", Toast.LENGTH_SHORT).show();
+            Log.i("GoTrack-Import",
+                    "Der User "+ u.getMail()+" wurde angelegt.");
         }
         if(!exist) {
             uDAO.importUserFromJson(user);

@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
@@ -406,6 +405,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
             case R.id.nav_import:
+                /* In diesem Bereich können gotrack-Datei direkt in der App importiert werden */
+                Log.i("GoTrack-Import", "Der Import wurde aus der App herausgestartet.");
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("application/*");
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -514,29 +515,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Laden des Dashboard-Fragments */
     public void loadDashboard() {
+        Log.i("GoTrack-Fragment", "Das Dashboard-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(), getResources().getString(R.string.fDashboard));
+        fragTransaction.replace(R.id.mainFrame, new DashboardFragment(),
+                getResources().getString(R.string.fDashboard));
         fragTransaction.commit();
     }
 
     /* Laden des Aufnahme-Fragments */
     public void loadRecord() {
+        Log.i("GoTrack-Fragment", "Das Aufnahme-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, recordFragment, getResources().getString(R.string.fRecord));
+        fragTransaction.replace(R.id.mainFrame, recordFragment,
+                getResources().getString(R.string.fRecord));
         fragTransaction.commit();
     }
 
     /* Laden des Listen-Fragments */
     public void loadRecordList() {
+        Log.i("GoTrack-Fragment", "Das Listen-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
+        fragTransaction.replace(R.id.mainFrame, new RecordListFragment(),
+                getResources().getString(R.string.fRecordlist));
         fragTransaction.commit();
     }
 
     /* Laden des Einstellung-Fragments */
     public void loadSettings() {
+        Log.i("GoTrack-Fragment", "Das Einstellung-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new SettingsFragment(), getResources().getString(R.string.fSettings));
+        fragTransaction.replace(R.id.mainFrame, new SettingsFragment(),
+                getResources().getString(R.string.fSettings));
         fragTransaction.commit();
     }
 

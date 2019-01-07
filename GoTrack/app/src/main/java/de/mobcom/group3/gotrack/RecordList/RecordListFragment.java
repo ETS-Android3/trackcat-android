@@ -92,10 +92,11 @@ public class RecordListFragment extends Fragment {
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
             }
-
+            /* Versenden einer Route */
             @Override
             public void onShareClick(int position) {
-                String file= Export.getExport().exportRoute(getContext(), records.get(position).getId(),true);
+                Export.getExport().exportRoute(getContext(), records.get(position).getId(),
+                        true);
             }
         });
 
