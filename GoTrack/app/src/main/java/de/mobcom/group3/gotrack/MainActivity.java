@@ -60,12 +60,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static Boolean isActiv = false;
     private static final String PREF_DARK_THEME = "dark_theme";
 
+    private static boolean isRestart = false;
+
     // Restart activity for Theme Switching
     public static void restart() {
         Bundle temp_bundle = new Bundle();
         getInstance().onSaveInstanceState(temp_bundle);
         Intent intent = new Intent(getInstance(), MainActivity.class);
         intent.putExtra("bundle", temp_bundle);
+
+        isRestart = true;
+
         getInstance().startActivity(intent);
         getInstance().finish();
     }
@@ -130,7 +135,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         isActiv = false;
 
-        android.os.Process.killProcess(android.os.Process.myPid());
+        if(!isRestart) {
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
+        isRestart = false;
+        
         super.onDestroy();
     }
 
