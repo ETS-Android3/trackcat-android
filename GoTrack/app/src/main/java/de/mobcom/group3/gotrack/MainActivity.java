@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static MainActivity instance;
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
-    private Boolean shouldRestart =false;
+    private Boolean shouldRestart = false;
     private static Spinner spinner;
     private static int activeUser;
     private static boolean hints;
@@ -154,13 +154,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void getCurrentUserInformation(){
+        userDAO = new UserDAO(this);
+        List<User> users = userDAO.readAll();
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).isActive()) {
+                activeUser = users.get(i).getId();
+                hints = users.get(i).isHintsActive();
+                darkTheme = users.get(i).isDarkThemeActive();
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /* Fragt nach noch nicht erteilten Permissions */
         permissionManager.checkAndRequestPermissions(this);
 
+        getCurrentUserInformation();
         /* Aktuelles Themes aus Einstellungen laden */
-        setTheme(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_DARK_THEME, false) ? R.style.AppTheme_Dark : R.style.AppTheme);
+        setTheme(getDarkTheme() ? R.style.AppTheme_Dark : R.style.AppTheme);
 
         if (getIntent().hasExtra("bundle") && savedInstanceState == null) {
             savedInstanceState = getIntent().getExtras().getBundle("bundle");
@@ -278,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                     circleImageView.setImageBitmap(bitmap);
 
+                    boolean oldUserTheme = true;
                     /* Durchlaufen der Nutzer */
                     List<User> users = userDAO.readAll();
                     for (int i = 0; i < users.size(); i++) {
@@ -299,6 +313,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             /* Nutzerwechsel in globaler Variable */
                             activeUser = users.get(i).getId();
                             hints = users.get(i).isHintsActive();
+
+                            oldUserTheme = darkTheme;
                             darkTheme = users.get(i).isDarkThemeActive();
                             if (hints) {
                                 Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
@@ -310,12 +326,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     loadDashboard();
                     Menu menu = navigationView.getMenu();
                     menu.findItem(R.id.nav_dashboard).setChecked(true);
-                    if(shouldRestart){
-                        shouldRestart =false;
-                        restart();
-                    }else {
-                        shouldRestart =true;
+
+                    if (shouldRestart) {
+                        shouldRestart = false;
+                        if (oldUserTheme != darkTheme) {
+                            MainActivity.isActiv = false;
+                            restart();
+                        }
+                    } else {
+                        shouldRestart = true;
                     }
+
                 }
             }
 

@@ -38,7 +38,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         CheckBoxPreference help_messages = (CheckBoxPreference) findPreference("help_messages");
         help_messages.setChecked(MainActivity.getHints());
         SwitchPreference theme = (SwitchPreference) findPreference("dark_theme");
-        //theme.setChecked(MainActivity.getDarkTheme());
+        theme.setChecked(MainActivity.getDarkTheme());
 
         /* Deaktiviere Themewechsel bei laufender Aufzeichnung */
         if (RecordFragment.isTracking()) {
