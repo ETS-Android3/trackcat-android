@@ -3,28 +3,53 @@ package de.mobcom.group3.gotrack.Database.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Parcel;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import de.mobcom.group3.gotrack.CustomElements.CustomLocation;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.os.Parcel.obtain;
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
 
-// toDo: write javaDoc and comments
-
+/**
+ * Data access object for routes.
+ * Alters database content via CRUD methods.
+ * Creates im- and exportable routes as JSON.
+ */
 public class RouteDAO {
+    /*
+     + attribute to store activity context global
+     + the context is needed by the DbHelper and will be handed over by creating an instance
+     */
     private final Context context;
 
+    private Gson gson = new Gson();
+    private Type listType = new TypeToken<ArrayList<CustomLocation>>() {}.getType();
+    private Type exImportType = Route.class;
+
+    /**
+     * Constructor to create instance of data access object.
+     *
+     * @param context of type context from calling activity
+     */
     public RouteDAO(Context context) {
         this.context = context;
     }
 
+    /**
+     * Inserts a new route into the database.
+     *
+     * @param route of type route to be stored in the database
+     *
+     * <p>
+     *      Sets the database id to the model.
+     * </p>
+     */
     public void create(Route route) {
         DbHelper dbHelper = new DbHelper(context);
         try {
@@ -35,11 +60,19 @@ public class RouteDAO {
         }
     }
 
+    /**
+     * Method to generate content values.
+     *
+     * @param route of type route
+     * @return content values to be inserted into database
+     *
+     * <p>
+     *     Maps the attributes of the route model to content values based on columns
+     *     where they have to be inserted. This type of prepared statement should prevent SQL
+     *     injections.
+     * </p>
+     */
     private ContentValues valueGenerator(Route route) {
-        final Parcel parcel = obtain();
-        parcel.writeTypedList(route.getLocations());
-        final byte[] parceled = parcel.marshall();
-
         ContentValues values = new ContentValues();
         if (route.getId() != 0 && this.read(route.getId()).getId() == 0) {
             values.put(COL_ID, route.getId());
@@ -52,13 +85,17 @@ public class RouteDAO {
         values.put(COL_RIDETIME, route.getRideTime());
         values.put(COL_DISTANCE, route.getDistance());
         values.put(COL_ISIMPORTED, route.isImportedDB());
-        values.put(COL_LOCATIONS, parceled);
-
-        parcel.recycle();
+        values.put(COL_LOCATIONS, gson.toJson(route.getLocations(), listType));
 
         return values;
     }
 
+    /**
+     * Reads a specific route from database, which has matching id.
+     *
+     * @param id of type integer of which route has to be selected
+     * @return route from database, if matching id was found else an empty route object
+     */
     public Route read(int id) {
         Route result = new Route();
         DbHelper dbHelper = new DbHelper(context);
@@ -85,7 +122,6 @@ public class RouteDAO {
                     null,
                     null )) {
                 if (cursor.moveToFirst()) {
-                    final Parcel parcel = obtain();
                     result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
                     result.setUserID(cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)));
                     result.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
@@ -95,14 +131,8 @@ public class RouteDAO {
                     result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
                     result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
                     result.setImportedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)));
-
-                    final byte[] parceled = cursor.getBlob(cursor.getColumnIndexOrThrow(COL_LOCATIONS));
-                    parcel.unmarshall(parceled, 0, parceled.length);
-                    parcel.setDataPosition(0);
-
-                    result.setLocations(parcel.createTypedArrayList(CustomLocation.CREATOR));
-
-                    parcel.recycle();
+                    result.setLocations(gson.fromJson(cursor.getString(
+                            cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType));
                 }
             }
         } finally {
@@ -112,18 +142,25 @@ public class RouteDAO {
     }
 
     /**
-     * @param userId id of specific user of whom routes have to be selected
-     * @return List of all routes belong to specific user in database sorted descending after id
+     * Reads all routes of a specific user.
+     *
+     * @param userId id of specific user of whom routes has to be selected
+     * @return List of all routes belong to specific user in database sorted ascending after id,
+     *         if routes with matching userId was found else an empty List
      */
     public List<Route> readAll(int userId) {
         return this.readAll(userId, new String[]{"id", "ASC"});
     }
 
     /**
-     * @param userId    id of specific user of whom routes have to be selected
+     * Reads all routes of a specific user.
+     *
+     * @param userId id of specific user of whom routes has to be selected
      * @param orderArgs String[] { column to sort, ASC / DESC }
-     *                  use COL_ID, COL_NAME, COL_TIME or COL_DISTANCE as columns
-     * @return List of all users in database
+     *                  use COL_ID, COL_NAME, COL_TIME or COL_DISTANCE etc from DbContract
+     *                  as columns and ASC for ascending or DESC for descending order
+     * @return List of all routes belong to specific user in database sorted after
+     *         orderArgs, if routes with matching userId was found else an empty List
      */
     private List<Route> readAll(int userId, String[] orderArgs) {
         DbHelper dbHelper = new DbHelper(context);
@@ -152,11 +189,6 @@ public class RouteDAO {
                     orderArgs[0] + " " + orderArgs[1] )) {
                 if (cursor.moveToFirst())
                     do {
-                        final Parcel parcel = obtain();
-                        final byte[] parceled = cursor.getBlob(cursor.getColumnIndexOrThrow(COL_LOCATIONS));
-                        parcel.unmarshall(parceled, 0, parceled.length);
-                        parcel.setDataPosition(0);
-
                         result.add(new Route(
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
@@ -167,9 +199,8 @@ public class RouteDAO {
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                                parcel.createTypedArrayList(CustomLocation.CREATOR)));
-
-                        parcel.recycle();
+                                gson.fromJson(cursor.getString(
+                                        cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
                     } while (cursor.moveToNext());
             }
         } finally {
@@ -178,6 +209,13 @@ public class RouteDAO {
         return result;
     }
 
+    /**
+     * Reads all routes of a specific user which are recorded within the last seven days.
+     *
+     * @param userId id of specific user of whom routes has to be selected
+     * @return List of all routes belong to specific user in database sorted descending after
+     *         date, if routes with matching userId was found else an empty List
+     */
     public List<Route> readLastSevenDays(int userId) {
         DbHelper dbHelper = new DbHelper(context);
         List<Route> result = new ArrayList<>();
@@ -204,15 +242,10 @@ public class RouteDAO {
                     selectionArgs,
                     COL_DATE,
                     having,
-                    "id  ASC" )) {
+                    COL_DATE +  " DESC" )) {
                 if (cursor.moveToFirst())
                     do {
                         if (cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)) == 0) {
-                            final Parcel parcel = obtain();
-                            final byte[] parceled = cursor.getBlob(
-                                    cursor.getColumnIndexOrThrow(COL_LOCATIONS));
-                            parcel.unmarshall(parceled, 0, parceled.length);
-                            parcel.setDataPosition(0);
                             result.add(new Route(
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
@@ -223,8 +256,8 @@ public class RouteDAO {
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                                    parcel.createTypedArrayList(CustomLocation.CREATOR)));
-                            parcel.recycle();
+                                    gson.fromJson(cursor.getString(
+                                            cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
                         }
                     } while (cursor.moveToNext());
             }
@@ -234,6 +267,12 @@ public class RouteDAO {
         return result;
     }
 
+    /**
+     * Updates a specific route in database with handed over route, which has matching id.
+     *
+     * @param id of type integer of which route has to be updated
+     * @param route of type route which would override route with defined id in database
+     */
     public void update(int id, Route route) {
         DbHelper dbHelper = new DbHelper(context);
         String selection = COL_ID + " = ?";
@@ -245,7 +284,12 @@ public class RouteDAO {
         }
     }
 
-    public void delete(int id) {
+    /**
+     * Deletes a specific route from database, which has matching id.
+     *
+     * @param id of type integer of which route has to be deleted
+     */
+    void delete(int id) {
         DbHelper dbHelper = new DbHelper(context);
         String selection = COL_ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(id) };
@@ -256,40 +300,71 @@ public class RouteDAO {
         }
     }
 
+    /**
+     * Deletes a specific route from database, which has matching id.
+     *
+     * @param route of type route which has to be deleted
+     */
     public void delete(Route route) {
         this.delete(route.getId());
     }
 
+    /**
+     * Imports a single route from handed over JSON.
+     *
+     * @param jsonString of type string which defines the route to be imported
+     * @param userId of type integer to define the user to whom the route would be associated
+     * @param isImported of type boolean to define if the route is a restore from a backup
+     *                   (case false) or if it is an imported route received by an other user
+     *                   (case true)
+     *
+     * <p>
+     *      Creates a route with the attributes which were defined in JSON
+     * </p>
+     */
     public void importRouteFromJson(String jsonString, int userId, boolean isImported) {
-        Gson gson = new Gson();
-        byte[] parceled = gson.fromJson(jsonString, byte[].class);
-        final Parcel p2 = obtain();
-
-        p2.unmarshall(parceled, 0, parceled.length);
-        p2.setDataPosition(0);
-        Route route = p2.readParcelable(Route.class.getClassLoader());
+        Route route = gson.fromJson(jsonString, exImportType);
         route.setImported(isImported);
         route.setUserID(userId);
         this.create(route);
-        p2.recycle();
     }
 
+    /**
+     * Imports all routes from handed over JSON List.
+     *
+     * @param jsonStrings of type List<String> which inherits the routes to be imported
+     * @param userId of type integer to define the user to whom the route would be associated
+     * @param isImported of type boolean to define if the route is a restore from a backup
+     *                   (case false) or if it is an imported route received by an other user
+     *                   (case true)
+     *
+     * <p>
+     *      Creates a route for each entry with the attributes which were defined in JSON
+     * </p>
+     */
     public void importRoutesFromJson(List<String> jsonStrings, int userId, boolean isImported) {
         for (String jsonString : jsonStrings) {
             this.importRouteFromJson(jsonString, userId, isImported);
         }
     }
 
+    /**
+     * Creates a JSON string which defines a route object and its attributes.
+     *
+     * @param id of type integer of which route has to be exported
+     * @return a JSON string
+     */
     public String exportRouteToJson(int id) {
-        Gson gson = new Gson();
-        final Parcel p1 = obtain();
-        p1.writeParcelable(this.read(id), 0);
-        final byte[] parceled = p1.marshall();
-        p1.recycle();
-
-        return gson.toJson(parceled, byte[].class);
+        return gson.toJson(this.read(id), exImportType);
     }
 
+    /**
+     * Creates a List of JSON strings which defines all route objects and its attributes
+     * of a specific user.
+     *
+     * @param userId of type integer of which user routes has to be exported
+     * @return a List of JSON strings
+     */
     public List<String> exportRoutesToJson(int userId) {
         List<String> result = new ArrayList<>();
         for (Route route : readAll(userId)) {

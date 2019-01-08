@@ -2,13 +2,25 @@ package de.mobcom.group3.gotrack.Database.DAO;
 
 import android.provider.BaseColumns;
 
+/*
+ + class to provide database configuration
+ */
 final class DbContract {
 
+    /*
+     + private constructor to prevent instantiating this class
+     */
     private DbContract() {}
 
+    /*
+     + defining standard database constants for creation
+     */
     static final int DATABASE_VERSION = 1;
     static final String DATABASE_NAME = "GoTrack.db";
 
+    /*
+     + string to create table where routes where stored in
+     */
     static final String SQL_CREATE_ROUTE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + RouteEntry.TABLE_NAME + " ( " +
                     RouteEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -20,11 +32,16 @@ final class DbContract {
                     RouteEntry.COL_RIDETIME + " LONG, " +
                     RouteEntry.COL_DISTANCE + " DOUBLE, " +
                     RouteEntry.COL_ISIMPORTED + " BOOLEAN, " +
-                    RouteEntry.COL_LOCATIONS + " BLOB) ";
+                    RouteEntry.COL_LOCATIONS + " TEXT) ";
 
-    static final String SQL_DELETE_ROUTE_TABLE =
-            "DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME;
+    /*
+     + string to delete route table
+     */
+    static final String SQL_DELETE_ROUTE_TABLE = "DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME;
 
+    /*
+     + string to create table where users where stored in
+     */
     static final String SQL_CREATE_USER_TABLE =
             "CREATE TABLE IF NOT EXISTS " + UserEntry.TABLE_NAME + " ( " +
                     UserEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -36,9 +53,14 @@ final class DbContract {
                     UserEntry.COL_MAIL + " TEXT, " +
                     UserEntry.COL_IMAGE + " BLOB) ";
 
-    static final String SQL_DELETE_USER_TABLE =
-            "DROP TABLE IF EXISTS " + UserEntry.TABLE_NAME;
+    /*
+     + string to delete user table
+     */
+    static final String SQL_DELETE_USER_TABLE = "DROP TABLE IF EXISTS " + UserEntry.TABLE_NAME;
 
+    /*
+     + class to declare columns for route table
+     */
     static final class RouteEntry implements BaseColumns {
         static final String TABLE_NAME = "route_table";
         static final String COL_ID = "id";
@@ -52,7 +74,9 @@ final class DbContract {
         static final String COL_LOCATIONS = "locations";
         static final String COL_ISIMPORTED = "imported";
     }
-
+    /*
+     + class to declare columns for user table
+     */
     static final class UserEntry implements BaseColumns {
         static final String TABLE_NAME = "user_table";
         static final String COL_ID = "id";

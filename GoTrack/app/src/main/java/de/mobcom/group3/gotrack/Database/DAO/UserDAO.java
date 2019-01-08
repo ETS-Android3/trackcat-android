@@ -12,17 +12,40 @@ import java.util.ArrayList;
 import java.util.List;
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.UserEntry.*;
 
-// toDo: write javaDoc and comments
-
+/**
+ * Data access object for users.
+ * Alters database content via CRUD methods.
+ * Creates im- and exportable users as JSON.
+ */
 public class UserDAO {
+    /*
+     + attribute to store activity context global
+     + the context is needed by the DbHelper and will be handed over by creating an instance
+     */
     private final Context context;
+    // global GSON object to convert user object into JSON
     private Gson gson = new Gson();
+    // type to define in or from which object would be converted by GSON
     private Type imExportType = User.class;
 
+    /**
+     * Constructor to create instance of data access object.
+     *
+     * @param context of type context from calling activity
+     */
     public UserDAO(Context context) {
         this.context = context;
     }
 
+    /**
+     * Inserts a new user into the database.
+     *
+     * @param user of type user to be stored in the database
+     *
+     * <p>
+     *      Sets the database id to the model.
+     * </p>
+     */
     public void create(User user) {
         DbHelper dbHelper = new DbHelper(context);
         try {
@@ -32,6 +55,36 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Method to generate content values.
+     *
+     * @param user of type user
+     * @return content values to be inserted into database
+     *
+     * <p>
+     *     Maps the attributes of the user model to content values based on columns
+     *     where they have to be inserted. This type of prepared statement should prevent SQL
+     *     injections.
+     * </p>
+     */
+    private ContentValues valueGenerator(User user) {
+        ContentValues values = new ContentValues();
+        values.put(COL_FIRSTNAME, user.getFirstName());
+        values.put(COL_LASTNAME, user.getLastName());
+        values.put(COL_MAIL, user.getMail());
+        values.put(COL_ISACTIVE, user.isActiveForDB());
+        values.put(COL_HINT, user.isHintsActiveDB());
+        values.put(COL_THEME, user.isDarkThemeActiveDB());
+        values.put(COL_IMAGE, user.getImage());
+        return values;
+    }
+
+    /**
+     * Reads a specific user from database, which has matching id.
+     *
+     * @param id of type integer of which user has to be selected
+     * @return user from database, if matching id was found else an empty user object
+     */
     public User read(int id) {
         DbHelper dbHelper = new DbHelper(context);
         User result = new User();
@@ -72,12 +125,20 @@ public class UserDAO {
         return result;
     }
 
+    /**
+     * Reads all users from database.
+     *
+     * @return List of all users in database sorted descending after id,
+     */
     public List<User> readAll() {
         return this.readAll(new String[]{COL_ID, "DESC"});
     }
 
     /**
-     * @param orderArgs String[] { column to sort, ASC / DESC } use COL_ID or COL_NAME as columns
+     * Reads all users from database.
+     *
+     * @param orderArgs String[] { column to sort, ASC / DESC } use COL_ID or COL_NAME from
+     *                  DbContract as columns and ASC for ascending or DESC for descending order
      * @return List of all users in database
      */
     private List<User> readAll(String[] orderArgs) {
@@ -120,6 +181,12 @@ public class UserDAO {
         return result;
     }
 
+    /**
+     * Updates a specific user in database with handed over user, which has matching id.
+     *
+     * @param id of type integer of which route has to be updated
+     * @param user of type user which would override user with defined id in database
+     */
     public void update(int id, User user) {
         DbHelper dbHelper = new DbHelper(context);
         try {
@@ -131,18 +198,11 @@ public class UserDAO {
         }
     }
 
-    private ContentValues valueGenerator(User user) {
-        ContentValues values = new ContentValues();
-        values.put(COL_FIRSTNAME, user.getFirstName());
-        values.put(COL_LASTNAME, user.getLastName());
-        values.put(COL_MAIL, user.getMail());
-        values.put(COL_ISACTIVE, user.isActiveForDB());
-        values.put(COL_HINT, user.isHintsActiveDB());
-        values.put(COL_THEME, user.isDarkThemeActiveDB());
-        values.put(COL_IMAGE, user.getImage());
-        return values;
-    }
-
+    /**
+     * Deletes a specific user and all of its routes from database, which has matching id.
+     *
+     * @param user of type user which has to be deleted
+     */
     public void delete(User user) {
         DbHelper dbHelper = new DbHelper(context);
         RouteDAO routeDAO = new RouteDAO(context);
@@ -158,20 +218,49 @@ public class UserDAO {
         }
     }
 
+    /**
+     * Imports a single user from handed over JSON.
+     *
+     * @param jsonString of type string which defines the route to be imported
+     *
+     * <p>
+     *      Creates a user with the attributes which were defined in JSON
+     * </p>
+     */
     public void importUserFromJson(String jsonString) {
         this.create(gson.fromJson(jsonString, imExportType));
     }
 
+    /**
+     * Imports all users from handed over JSON List.
+     *
+     * @param jsonStrings of type List<String> which inherits the routes to be imported
+     *
+     * <p>
+     *      Creates a user for each entry with the attributes which were defined in JSON
+     * </p>
+     */
     public void importUsersFromJson(ArrayList<String> jsonStrings) {
         for (String jsonString : jsonStrings) {
             this.importUserFromJson(jsonString);
         }
     }
 
+    /**
+     * Creates a JSON string which defines a user object and its attributes.
+     *
+     * @param id of type integer of which user has to be exported
+     * @return a JSON string
+     */
     public String exportUserToJson(int id) {
         return gson.toJson(this.read(id));
     }
 
+    /**
+     * Creates a List of JSON strings which defines all user objects and its attributes.
+     *
+     * @return a List of JSON strings
+     */
     public ArrayList<String> exportUsersToJson() {
         ArrayList<String> result = new ArrayList<>();
         for (User user : this.readAll(new String[]{COL_ID, "DESC"})) {

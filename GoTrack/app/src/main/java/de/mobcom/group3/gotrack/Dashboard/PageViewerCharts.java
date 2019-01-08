@@ -2,14 +2,11 @@ package de.mobcom.group3.gotrack.Dashboard;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +24,9 @@ import java.util.Calendar;
 import java.util.List;
 
 public class PageViewerCharts extends Fragment {
-    private static final String PREF_DARK_THEME = "dark_theme";
     private int colorAccent;
     private List<Fragment> listFragments = new ArrayList<>();
+
 
     public PageViewerCharts() {
         /* Required empty public constructor */
@@ -68,6 +65,7 @@ public class PageViewerCharts extends Fragment {
                 maxTime = 0,
                 maxTimeHours = 0;
         int prevDay = 0;
+        int curDay = getWeekDay(System.currentTimeMillis());
 
         /* If the list has routes, this will be handled. If not, the Graph will be empty */
         if(records.size() > 0) {
@@ -77,10 +75,29 @@ public class PageViewerCharts extends Fragment {
                 double curTime = records.get(i).getTime();
                 int dayOfWeek = getWeekDay(curDate);
 
-                /* If the weekDay (e.g. Sat / 7) is equal to previous Date, the variables add up */
+                /* Dependinng on the Current day of Week,
+                   this will shift the data in the array to the correct index for the corresponding Labels */
+                if(curDay == 1){
+                    dayOfWeek = dayOfWeek + 6;
+                }else if(curDay == 2){
+                    dayOfWeek = dayOfWeek + 5;
+                }else if(curDay == 3){
+                    dayOfWeek = dayOfWeek + 4;
+                }else if(curDay == 4){
+                    dayOfWeek = dayOfWeek + 3;
+                }else if(curDay == 5){
+                    dayOfWeek = dayOfWeek + 2;
+                }else if(curDay == 6){
+                    dayOfWeek = dayOfWeek + 1;
+                }
+                /* if a value exceeds 7, it will substract 7 to start from 0 with the exceeding value */
+                if(dayOfWeek > 7){
+                    dayOfWeek = dayOfWeek - 7;
+                }
+
+                /* If the weekDay is equal to previous Date, the variables add up */
                 if(dayOfWeek == prevDay){
                     distance = distance + curDistanceKm;
-                    //time = time + curTimeHours;
                     time += curTime;
                 /* If the Weekday is not equal, the variables will be reset with new values */
                 } else {
@@ -110,6 +127,7 @@ public class PageViewerCharts extends Fragment {
         bundleDistance.putDoubleArray("array", distanceArrayKm);
         bundleDistance.putString("rangeTitle", "Km");
         bundleDistance.putDouble("stepsY", (maxDistanceKm) / 5);
+        bundleDistance.putInt("curDay", curDay);
 
         BarChartFragment barFragDistance = new BarChartFragment();
         barFragDistance.setArguments(bundleDistance);
@@ -133,6 +151,8 @@ public class PageViewerCharts extends Fragment {
             bundleTime.putString("rangeTitle", "Stunden");
             bundleTime.putDoubleArray("array", timeArrayHours);
         }
+
+        bundleTime.putInt("curDay", curDay);
 
         BarChartFragment barFragTime = new BarChartFragment();
         barFragTime.setArguments(bundleTime);
@@ -169,6 +189,12 @@ public class PageViewerCharts extends Fragment {
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
         return dayOfWeek;
+    }
+
+    /* Returns the mod of every given number */
+    private int mod(int x, int mod){
+        int result = x % mod;
+        return result < 0 ? result + mod : result;
     }
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {

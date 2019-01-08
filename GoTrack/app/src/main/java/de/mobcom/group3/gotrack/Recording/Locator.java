@@ -23,17 +23,14 @@ import de.mobcom.group3.gotrack.MainActivity;
 
 public class Locator extends Service {
 
-    final private int MIN_DISTANCE = 1;
-    final private int MIN_TIME = 10;
-
-    // Standardwerte für die Abfrage der Berechtigungen
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    // standard value for requesting permissions
+    private static final int MY_PERMISSIONS_REQUEST = 1;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
 
 
-    /* called when Froeground Service is started */
+    /* called when foreground service is started */
     @Override
     public void onCreate() {
         startForeground(12345678, getNotification());
@@ -42,8 +39,8 @@ public class Locator extends Service {
     }
 
     /*
-     * initialize Locator and start Tracking
-     * callend when Oreo or higher
+     * initialize locator and start tracking
+     * called when oreo or higher
      * */
     public Locator() {
         init();
@@ -52,13 +49,13 @@ public class Locator extends Service {
 
     private void init() {
         /*
-         * initialize Locationlistener
+         * initialize locationListener
          * */
         locationManager = (LocationManager) MainActivity.getInstance().getSystemService(Context.LOCATION_SERVICE);
 
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
+                // called when a new location is found by the network location provider.
 
                 // send message to View
                 Message msg = new Message();
@@ -78,12 +75,12 @@ public class Locator extends Service {
             }
         };
 
-        /* start Locating */
+        /* start locating */
         startTracking();
     }
 
     /*
-    * create Notification for Foreground Service
+    * create notification for foreground service
     * */
     private Notification getNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -94,8 +91,9 @@ public class Locator extends Service {
                         NotificationManager.IMPORTANCE_DEFAULT
                 );
                 NotificationManager notificationManager = getSystemService(NotificationManager.class);
+                assert notificationManager != null;
                 notificationManager.createNotificationChannel(channel);
-                Notification.Builder builder = null;
+                Notification.Builder builder;
 
                 builder = new Notification.Builder(getApplicationContext(), "channel_01");
 
@@ -105,35 +103,33 @@ public class Locator extends Service {
         return null;
     }
 
-
-
-
     /*
-     * starts GPS Tracking
+     * starts GPS tracking
      * */
     protected void startTracking() {
-
         /*
-         + Check if permissions granted for GPS service and storage access
-         + toDo: verify why location and storage permissions aren't requested simultaneously
+         + checks if permissions granted for GPS service and storage access
          */
-        // For GPS:
+        // for GPS:
         if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.getInstance(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                    MY_PERMISSIONS_REQUEST);
+        // for external storage
         } else if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.getInstance(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                    MY_PERMISSIONS_REQUEST);
         } else {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME,
-                    MIN_DISTANCE, locationListener); // via GPS
+            int minDistance = 1;
+            int minTime = 10;
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime,
+                    minDistance, locationListener); // via GPS
         }
     }
 
     /*
-     * stops GPS Tracking
+     * stops GPS tracking
      * */
     public void stopTracking() {
         locationManager.removeUpdates(locationListener);
