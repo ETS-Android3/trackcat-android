@@ -1,8 +1,13 @@
-package de.mobcom.group3.gotrack;
+package de.mobcom.group3.gotrack.CustomElements;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/*
+ * Replacement for android Location Class because of small differences in
+ * different api levels
+ * needed for examlpe when sending Route from Samsung Galaxy S5 to S9
+ * */
 public class CustomLocation implements Parcelable {
     private double altitude;
     private double latitude;
@@ -27,7 +32,8 @@ public class CustomLocation implements Parcelable {
         dest.writeLong(time);
     }
 
-    public CustomLocation(){}
+    public CustomLocation() {
+    }
 
     @Override
     public int describeContents() {

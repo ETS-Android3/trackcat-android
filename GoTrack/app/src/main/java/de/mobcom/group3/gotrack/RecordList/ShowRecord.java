@@ -1,9 +1,7 @@
 package de.mobcom.group3.gotrack.RecordList;
 
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import de.mobcom.group3.gotrack.CustomLocation;
+import de.mobcom.group3.gotrack.CustomElements.CustomLocation;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;

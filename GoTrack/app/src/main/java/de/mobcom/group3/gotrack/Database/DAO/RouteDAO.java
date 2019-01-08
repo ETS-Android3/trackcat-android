@@ -3,14 +3,12 @@ package de.mobcom.group3.gotrack.Database.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.location.Location;
 import android.os.Parcel;
 
 import com.google.gson.Gson;
 
-import de.mobcom.group3.gotrack.CustomLocation;
+import de.mobcom.group3.gotrack.CustomElements.CustomLocation;
 import de.mobcom.group3.gotrack.Database.Models.Route;
-import de.mobcom.group3.gotrack.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;

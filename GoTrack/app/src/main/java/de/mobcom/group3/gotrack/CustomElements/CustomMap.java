@@ -1,4 +1,4 @@
-package de.mobcom.group3.gotrack;
+package de.mobcom.group3.gotrack.CustomElements;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,8 +6,8 @@ import android.view.MotionEvent;
 
 import org.osmdroid.views.MapView;
 
-public class MyMap extends MapView{
-    public MyMap(Context context, AttributeSet attrs) {
+public class CustomMap extends MapView{
+    public CustomMap(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
