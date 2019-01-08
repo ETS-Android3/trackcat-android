@@ -28,6 +28,7 @@ import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
+import de.mobcom.group3.gotrack.Recording.RecordFragment;
 
 /* Custom Adapter for Spinner */
 public class CustomSpinnerAdapter extends ArrayAdapter<String> {
@@ -75,33 +76,39 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             editUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /* Titel und BtnText bearbeiten */
-                    Bundle bundle = new Bundle();
-                    bundle.putString("title", MainActivity.getInstance().getResources().getString(R.string.editUserTitle));
-                    bundle.putString("btnText", "Speichern");
+                    if (!RecordFragment.isTracking()) {
+                        /* Titel und BtnText bearbeiten */
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", MainActivity.getInstance().getResources().getString(R.string.editUserTitle));
+                        bundle.putString("btnText", "Speichern");
 
-                    /* Aktiven Nutzer ermitteln und Text ausgeben */
-                    User user = userDAO.read(MainActivity.getActiveUser());
-                    bundle.putString("etitFistName", user.getFirstName());
-                    bundle.putString("etitLastName", user.getLastName());
-                    bundle.putString("etitEmail", user.getMail());
-                    bundle.putByteArray("currentImage", user.getImage());
+                        /* Aktiven Nutzer ermitteln und Text ausgeben */
+                        User user = userDAO.read(MainActivity.getActiveUser());
+                        bundle.putString("etitFistName", user.getFirstName());
+                        bundle.putString("etitLastName", user.getLastName());
+                        bundle.putString("etitEmail", user.getMail());
+                        bundle.putByteArray("currentImage", user.getImage());
 
-                    NewUserFragment newUserFragment = new NewUserFragment();
-                    newUserFragment.setArguments(bundle);
+                        NewUserFragment newUserFragment = new NewUserFragment();
+                        newUserFragment.setArguments(bundle);
 
-                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, newUserFragment, MainActivity.getInstance().getResources().getString(R.string.fNewUser));
-                    fragTransaction.commit();
+                        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                        fragTransaction.replace(R.id.mainFrame, newUserFragment, MainActivity.getInstance().getResources().getString(R.string.fNewUser));
+                        fragTransaction.commit();
 
-                    /* Ausblenden des Spinners */
-                    DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
-                    mainDrawer.closeDrawer(GravityCompat.START);
-                    try {
-                        Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
-                        method.setAccessible(true);
-                        method.invoke(MainActivity.getInstance().getSpinner());
-                    } catch (Exception e) {
+                        /* Ausblenden des Spinners */
+                        DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
+                        mainDrawer.closeDrawer(GravityCompat.START);
+                        try {
+                            Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
+                            method.setAccessible(true);
+                            method.invoke(MainActivity.getInstance().getSpinner());
+                        } catch (Exception e) {
+                        }
+                    } else {
+                        if (MainActivity.getHints()) {
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Bearbeitung des Nutzers nicht möglich, da im Moment eine Aufzeichnung läuft.", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             });
@@ -111,25 +118,31 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             addUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /* Titel und BtnText bearbeiten */
-                    Bundle bundle = new Bundle();
-                    bundle.putString("title", MainActivity.getInstance().getResources().getString(R.string.newUserTitle));
-                    bundle.putString("btnText", "Erstellen");
-                    NewUserFragment newUserFragment = new NewUserFragment();
-                    newUserFragment.setArguments(bundle);
+                    if (!RecordFragment.isTracking()) {
+                        /* Titel und BtnText bearbeiten */
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", MainActivity.getInstance().getResources().getString(R.string.newUserTitle));
+                        bundle.putString("btnText", "Erstellen");
+                        NewUserFragment newUserFragment = new NewUserFragment();
+                        newUserFragment.setArguments(bundle);
 
-                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, newUserFragment, MainActivity.getInstance().getResources().getString(R.string.fNewUser));
-                    fragTransaction.commit();
+                        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                        fragTransaction.replace(R.id.mainFrame, newUserFragment, MainActivity.getInstance().getResources().getString(R.string.fNewUser));
+                        fragTransaction.commit();
 
-                    /* Ausblenden des Spinners */
-                    DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
-                    mainDrawer.closeDrawer(GravityCompat.START);
-                    try {
-                        Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
-                        method.setAccessible(true);
-                        method.invoke(MainActivity.getInstance().getSpinner());
-                    } catch (Exception e) {
+                        /* Ausblenden des Spinners */
+                        DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
+                        mainDrawer.closeDrawer(GravityCompat.START);
+                        try {
+                            Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
+                            method.setAccessible(true);
+                            method.invoke(MainActivity.getInstance().getSpinner());
+                        } catch (Exception e) {
+                        }
+                    } else {
+                        if (MainActivity.getHints()) {
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Nutzererstellung nicht möglich, da im Moment eine Aufzeichnung läuft.", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             });
@@ -139,34 +152,39 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             deleteUserLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    List<User> users = userDAO.readAll();
-                    User user = userDAO.read(MainActivity.getActiveUser());
-                    boolean removeLastUser = false;
-                    if (users.size() > 1) {
-                        userDAO.delete(user);
-                        if (MainActivity.getHints()) {
-                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Löschen von: " + user.getFirstName() + " " + user.getLastName(), Toast.LENGTH_LONG).show();
-                            removeLastUser = false;
+                    if (!RecordFragment.isTracking()) {
+                        List<User> users = userDAO.readAll();
+                        User user = userDAO.read(MainActivity.getActiveUser());
+                        boolean removeLastUser = false;
+                        if (users.size() > 1) {
+                            userDAO.delete(user);
+                            if (MainActivity.getHints()) {
+                                Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Löschen von: " + user.getFirstName() + " " + user.getLastName(), Toast.LENGTH_LONG).show();
+                                removeLastUser = false;
+                            }
+                        } else {
+                            if (MainActivity.getHints()) {
+                                Toast.makeText(MainActivity.getInstance().getApplicationContext(), "" + user.getFirstName() + " " + user.getLastName() + " konnte nicht gelöscht werden, da sonst keine Nutzer mehr existieren.", Toast.LENGTH_LONG).show();
+                                removeLastUser = true;
+                            }
+                        }
+                        /* Ausblenden des Spinners */
+                        DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
+                        mainDrawer.closeDrawer(GravityCompat.START);
+                        try {
+                            Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
+                            method.setAccessible(true);
+                            method.invoke(MainActivity.getInstance().getSpinner());
+                        } catch (Exception e) {
+                        }
+                        /*Aktualisieren des Spinners*/
+                        if (!removeLastUser) {
+                            MainActivity.getInstance().addItemsToSpinner();
                         }
                     } else {
                         if (MainActivity.getHints()) {
-                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "" + user.getFirstName() + " " + user.getLastName() + " konnte nicht gelöscht werden, da sonst keine Nutzer mehr existieren.", Toast.LENGTH_LONG).show();
-                            removeLastUser = true;
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Löschen des Nutzers nicht möglich, da im Moment eine Aufzeichnung läuft.", Toast.LENGTH_LONG).show();
                         }
-                    }
-                    /* Ausblenden des Spinners */
-                    DrawerLayout mainDrawer = MainActivity.getInstance().findViewById(R.id.drawer_layout);
-                    mainDrawer.closeDrawer(GravityCompat.START);
-                    try {
-                        Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
-                        method.setAccessible(true);
-                        method.invoke(MainActivity.getInstance().getSpinner());
-                    } catch (Exception e) {
-                    }
-                    /*Aktualisieren des Spinners*/
-                    if (!removeLastUser) {
-                        MainActivity.getInstance().addItemsToSpinner();
                     }
                 }
             });
