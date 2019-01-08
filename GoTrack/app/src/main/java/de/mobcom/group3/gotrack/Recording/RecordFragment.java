@@ -33,6 +33,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.karan.churi.PermissionManager.PermissionManager;
+
 import de.mobcom.group3.gotrack.CustomElements.CustomLocation;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
@@ -197,12 +199,18 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mCompassOverlay.onDetach(mMapView);
     }
 
+    private PermissionManager permissionManager = new PermissionManager() {
+    };
 
     @TargetApi(Build.VERSION_CODES.N)
     @SuppressLint({"HandlerLeak", "ClickableViewAccessibility"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        /* Fragt nach noch nicht erteilten Permissions */
+        permissionManager.checkAndRequestPermissions(MainActivity.getInstance());
+
         /* ----------------------------------------------------------------------------------handler
          * recieves messages from another thread
          *
@@ -303,7 +311,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
          */
         if (!"Android-x86".equalsIgnoreCase(Build.BRAND)) {
             int orientation = Objects.requireNonNull(getActivity()).getRequestedOrientation();
-            int rotation = ((WindowManager) Objects.requireNonNull(Objects.requireNonNull(getActivity()).getSystemService(
+            int rotation = ((WindowManager) Objects.requireNonNull(
+                    Objects.requireNonNull(getActivity()).getSystemService(
                     Context.WINDOW_SERVICE))).getDefaultDisplay().getRotation();
             switch (rotation) {
                 case Surface.ROTATION_0:
@@ -326,11 +335,14 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
             getActivity().setRequestedOrientation(orientation);
         }
+
         /*
          + create new compass element
          */
         mCompassOverlay = new CompassOverlay(Objects.requireNonNull(getContext()),
-                new InternalCompassOrientationProvider(Objects.requireNonNull(getActivity())), mMapView);
+                new InternalCompassOrientationProvider(Objects.requireNonNull(getActivity())),
+                mMapView);
+
         /*
          + add compass overlay to the mapView
          */
@@ -358,6 +370,16 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 }
             }
         });
+
+        /*
+         + !!! needs a device with a magnetometer sensor to work properly !!!
+         + make this fragment listening to changes of magnetic sensor
+         */
+        sensorManager = (SensorManager) MainActivity.getInstance().getSystemService(
+                Context.SENSOR_SERVICE);
+        assert sensorManager != null;
+        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
 
         /*
          * Initialize for Notification
@@ -432,6 +454,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             playPause.setImageResource(R.drawable.record_pausebtn_white);
         } else {
             playPause.setImageResource(R.drawable.record_playbtn_white);
+            if(locatorGPS != null){
+                locatorGPS.startTracking();
+            }
         }
 
 
@@ -456,23 +481,15 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             timer.sendTime();
         }
 
-        /*
-         + !!! needs a device with a magnetometer sensor to work properly !!!
-         + make this fragment listening to changes of magnetic sensor
-         */
-        sensorManager = (SensorManager) MainActivity.getInstance().getSystemService(Context.SENSOR_SERVICE);
-        assert sensorManager != null;
-        magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
-
         MainActivity.getInstance().setRecordFragment(this);
 
         return view;
     }
 
     /*
-     * end Tracking ans switch to Statistics for dismisss or save
+     * end Tracking and switch to statistics for dismiss or save
      * */
+    @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void endTracking() {
         stopTracking();
@@ -486,6 +503,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         model.setUserID(MainActivity.getActiveUser());
         model.setDate(System.currentTimeMillis());
         Date currentTime = Calendar.getInstance().getTime();
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm:ss");
         String dateStr = simpleDateFormat.format(currentTime);
         String defaultName = "Rec_" + dateStr;
@@ -493,16 +511,18 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setTitle("Aufnahme speichern?");
 
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         MapView mapViewZoom = null;
-        ImageView typeIcon = null;
+        ImageView typeIcon;
 
-        View alertView = inflater.inflate(R.layout.fragment_record_list_one_item, null, true);
+        @SuppressLint("InflateParams")
+        View alertView = inflater != null ? inflater.inflate(R.layout.fragment_record_list_one_item, null, true) : null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             alert.setView(alertView);
 
             /* Route auf Karte zeichnen */
+            assert alertView != null;
             drawRoute(alertView);
 
             mapViewZoom = alertView.findViewById(R.id.mapview);
@@ -529,18 +549,17 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             TextView total_time_TextView = alertView.findViewById(R.id.total_time_TextView);
             Timer timerForCalc = new Timer();
             total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
-        } else {
-            // TODO Implementation für Nutzer mit API <= 16
         }
+        // TODO Implementation für Nutzer mit API <= 16
 
 
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                TextView recordName = alertView.findViewById(R.id.record_name);
-                if (recordName.getText().toString().equals("")) {
+                TextView recordName = alertView != null ? alertView.findViewById(R.id.record_name) : null;
+                if (recordName != null && recordName.getText().toString().equals("")) {
                     model.setName(defaultName);
                 } else {
-                    model.setName(recordName.getText().toString());
+                    model.setName(recordName != null ? recordName.getText().toString() : null);
                 }
 
                 RouteDAO dao = new RouteDAO(MainActivity.getInstance());
@@ -589,6 +608,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 BoundingBox box = new BoundingBox();
                 box.set(maxLat, maxLong, minLat, minLong);
 
+                assert zomable != null;
                 zomable.zoomToBoundingBox(box, false);
 
                 double zoomLvl = zomable.getZoomLevelDouble();
@@ -605,8 +625,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
         mMapView.setBuiltInZoomControls(false);
         mMapView.setMultiTouchControls(true);
-        MapController mMapController = (MapController) mMapView.getController();
-
 
         /* Marker und Polyline zeichnen */
         GeoPoint gPt = new GeoPoint(model.getLocations().get(0).getLatitude(), model.getLocations().get(0).getLongitude());
@@ -971,9 +989,17 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         }
     }
 
+
+    public void stopTimer() {
+        timer.stopTimer();
+        timer = null;
+        rideTimer.stopTimer();
+        rideTimer = null;
+    }
+
     /*
      + !!! needs a device with the compass-functionality (magnetometer sensor) to work properly !!!
-     + sets the desired map rotation based on location heading if no movement is detected and
+     + sets the desired map rotation based on sensor heading if no movement is detected and
      + map is not fixed in north direction
      + is called when sensor registers change of alignment
      */
@@ -1008,12 +1034,5 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         if (offset > 360)
             offset -= 360;
         mCompassOverlay.setAzimuthOffset(offset);
-    }
-
-    public void stopTimer() {
-        timer.stopTimer();
-        timer = null;
-        rideTimer.stopTimer();
-        rideTimer = null;
     }
 }

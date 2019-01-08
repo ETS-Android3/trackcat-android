@@ -61,11 +61,15 @@ public class Import {
                     /* Import einer einzelnen Route */
                     rDAO.importRouteFromJson(content, MainActivity.getActiveUser(), true);
                     Log.i("GoTrack-Import", "Der Import einer Route wurde gestartet.");
+                    Toast.makeText(context, "Die Datei wird importiert",
+                            Toast.LENGTH_LONG).show();
                     break;
                 case ("UserSettings"):
                     /* Import eines Users mit seinen Einstellungen */
                     createUser(context, content, uDAO);
                     Log.i("GoTrack-Import", "Der Import eines Users wurde gestartet.");
+                    Toast.makeText(context, "Die Datei wird importiert",
+                            Toast.LENGTH_LONG).show();
                     break;
                 case ("AllRoutes"):
                     /* Import aller Routen eines Users, ohne den User */
@@ -73,6 +77,8 @@ public class Import {
                             MainActivity.getActiveUser(), true);
                     Log.i("GoTrack-Import",
                             "Der Import aller Routen eines Users wurde gestartet.");
+                    Toast.makeText(context, "Die Datei wird importiert",
+                            Toast.LENGTH_LONG).show();
                     break;
                 case ("AllUsersAllRoutes"):
                     /* Import aller  Routen und aller User */
@@ -87,11 +93,13 @@ public class Import {
                             rDAO.importRoutesFromJson(stringToarrayList(routes),
                                     userID, false);
                         }catch (ArrayIndexOutOfBoundsException ex){
-                            ex.printStackTrace();
+                            Log.e("GoTrack-Import", ex.toString());
                         }
                     }
                     Log.i("GoTrack-Import",
                             "Der Import aller Routen und aller Users wurde gestartet.");
+                    Toast.makeText(context, "Die Datei wird importiert",
+                            Toast.LENGTH_LONG).show();
                     break;
                 case ("OneUserAllRoutes"):
                     /* Import eines Nutzers mit allen seinen Einstellungen und Routen */
@@ -103,10 +111,12 @@ public class Import {
                         rDAO.importRoutesFromJson(stringToarrayList(routes),
                                 userID, false);
                     }catch (ArrayIndexOutOfBoundsException ex){
-                        ex.printStackTrace();
+                        Log.e("GoTrack-Import", ex.toString());
                     }
                     Log.i("GoTrack-Import",
                             "Der Import eines Users mit allen Routen wurde gestartet.");
+                    Toast.makeText(context, "Die Datei wird importiert",
+                            Toast.LENGTH_LONG).show();
                     break;
                 default:
                     Log.e("GoTrack-Import",
@@ -118,7 +128,7 @@ public class Import {
         catch (Exception ex){
             Toast.makeText(context, "Die Import-Datei war fehlerhaft",
                     Toast.LENGTH_LONG).show();
-            ex.printStackTrace();
+            Log.e("GoTrack-Import", ex.toString());
         }
         finally {
             isImportActiv =false;

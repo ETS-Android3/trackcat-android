@@ -1,13 +1,13 @@
 package de.mobcom.group3.gotrack.Database.Models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.ArrayList;
 
 import de.mobcom.group3.gotrack.CustomElements.CustomLocation;
 
-public class Route implements Parcelable {
+/**
+ * Model to define an route object
+ */
+public class Route {
     /*
      + private model attributes
      + modifications via getter and setter
@@ -24,12 +24,13 @@ public class Route implements Parcelable {
     private ArrayList<CustomLocation> locations;
 
     /**
-     * empty constructor
+     * Empty constructor, modifications via getter and setter
      */
     public Route() {}
 
     /**
      * Constructor to save route information from database read.
+     *
      * @param id of type integer
      * @param userId of type integer
      * @param name of type string
@@ -53,7 +54,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Getter for the id
+     * Getter for the id.
+     *
      * @return value of type integer
      */
     public int getId() {
@@ -61,7 +63,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter for the id
+     * Setter for the id.
+     *
      * @param id of type integer
      */
     public void setId(int id) {
@@ -69,7 +72,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Getter for the user id
+     * Getter for the user id.
+     *
      * @return value of type integer
      */
     public int getUserId() {
@@ -77,7 +81,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter for the user id
+     * Setter for the user id.
+     *
      * @param userId of type integer
      */
     public void setUserID(int userId) {
@@ -85,7 +90,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Getter for the name of the route
+     * Getter for the name of the route.
+     *
      * @return value of type string
      */
     public String getName() {
@@ -93,7 +99,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter for the name of the route
+     * Setter for the name of the route.
+     *
      * @param name value of type string
      */
     public void setName(String name) {
@@ -101,7 +108,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Getter for the time
+     * Getter for the time.
+     *
      * @return value of type long
      */
     public long getTime() {
@@ -109,7 +117,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter for the time
+     * Setter for the time.
+     *
      * @param time of type long
      */
     public void setTime(long time) {
@@ -117,7 +126,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Getter for the distance
+     * Getter for the distance.
+     *
      * @return value of type double
      */
     public double getDistance() {
@@ -125,7 +135,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter for the distance
+     * Setter for the distance.
+     *
      * @param distance of type double
      */
     public void setDistance(double distance) {
@@ -133,7 +144,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Getter for the locations
+     * Getter for the locations.
+     *
      * @return value of type array list
      */
     public ArrayList<CustomLocation> getLocations() {
@@ -141,7 +153,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter for the locations
+     * Setter for the locations.
+     *
      * @param locations of type array list
      */
     public void setLocations(ArrayList<CustomLocation> locations) {
@@ -151,7 +164,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter to add a single location to the other route locations
+     * Setter to add a single location to the other route locations.
+     *
      * @param location of type location
      */
     public void addLocation(CustomLocation location) {
@@ -162,7 +176,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Getter for the ride time
+     * Getter for the ride time.
+     *
      * @return value of type long
      */
     public long getRideTime() {
@@ -170,7 +185,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter for the ride time
+     * Setter for the ride time.
+     *
      * @param rideTime of type long
      */
     public void setRideTime(long rideTime) {
@@ -178,7 +194,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Getter for the date
+     * Getter for the date.
+     *
      * @return value of type long (millis since Jan. 1, 1970)
      */
     public long getDate() {
@@ -186,7 +203,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter for the date
+     * Setter for the date.
+     *
      * @param date of type long
      */
     public void setDate(long date) {
@@ -194,7 +212,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Getter for the type
+     * Getter for the type.
+     *
      * @return value of type integer
      */
     public int getType() {
@@ -202,7 +221,8 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter for the type
+     * Setter for the type.
+     *
      * @param type of type integer
      */
     public void setType(int type) {
@@ -210,26 +230,43 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Getter for import flag
+     * Getter for import flag.
+     *
      * @return value of type boolean
+     *
+     * <p>
+     *     Returns true if the route is imported or false if it isn't.
+     * </p>
      */
     public boolean isImported() {
         return isImported;
     }
 
     /**
-     * Setter for import flag
+     * Setter for import flag.
+     *
      * @param isImported of type integer
+     *
+     * <p>
+     *     Hand over true to define that the route is imported or false to define that it isn't.
+     * </p>
      */
     public void setImported(boolean isImported) {
         this.isImported = isImported;
     }
 
     /**
-     * Getter to decide if route is imported or not for database storage purposes.
-     * Integer value is necessary due to SQLite Database constraint.
-     * SQLite does not implement boolean values natively as true or false but only as integer.
+     * Getter to define if route is imported or not for database storage purposes.
+     *
      * @return value of type integer
+     *
+     * <p>
+     *      Integer value is necessary due to SQLite Database constraint.
+     *      SQLite does not implement boolean values natively as true or false but only as integer.
+     * </p>
+     * <p>
+     *     Returns "1" if the route is imported or "0" if it isn't.
+     * </p>
      */
     public int isImportedDB() {
         if (isImported) {
@@ -240,59 +277,19 @@ public class Route implements Parcelable {
     }
 
     /**
-     * Setter to decide if route is imported or not for database storage purposes.
-     * Integer value is necessary due to SQLite Database constraint.
-     * SQLite does not implement boolean values natively as true or false but only as integer.
-     * @param isImported of type integer
+     * Getter to define if route is imported or not for database storage purposes.
+     *
+     * @param isImported value of type integer
+     *
+     * <p>
+     *      Integer value is necessary due to SQLite Database constraint.
+     *      SQLite does not implement boolean values natively as true or false but only as integer.
+     * </p>
+     * <p>
+     *     Hand over "1" to define that the route is imported or "0" to define that it isn't.
+     * </p>
      */
     public void setImportedDB(int isImported) {
         this.isImported = isImported == 1;
     }
-
-    /*
-     + Parcelable Stuff
-     */
-    @Override
-    public int describeContents() {
-        return this.hashCode();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        System.out.println("Write to parcel has begun");
-        dest.writeInt(this.id);
-        dest.writeInt(this.userId);
-        dest.writeInt(this.type);
-        dest.writeString(this.name);
-        dest.writeLong(this.date);
-        dest.writeLong(this.time);
-        dest.writeLong(this.rideTime);
-        dest.writeInt(this.isImportedDB());
-        dest.writeDouble(this.distance);
-        dest.writeTypedList(this.locations);
-        locations.get(0).writeToParcel(dest, 0);
-    }
-
-    public Route(Parcel source) {
-        this.id = source.readInt();
-        this.userId = source.readInt();
-        this.type = source.readInt();
-        this.name = source.readString();
-        this.date = source.readLong();
-        this.time = source.readLong();
-        this.rideTime = source.readLong();
-        this.setImportedDB(source.readInt());
-        this.distance = source.readDouble();
-        this.locations = source.createTypedArrayList(CustomLocation.CREATOR);
-    }
-
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public Route createFromParcel(Parcel source) {
-            return new Route(source);
-        }
-
-        public Route[] newArray(int size) {
-            return new Route[size];
-        }
-    };
 }

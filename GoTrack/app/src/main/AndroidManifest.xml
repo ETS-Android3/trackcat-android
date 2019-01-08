@@ -44,26 +44,20 @@
                     android:host="*"
                     android:pathPattern=".*\\.gotrack"
                     />
-                <data
-                    android:host="*"
-                    android:mimeType="*/*"
-                    android:pathPattern=".*\\.gotrack"
-                    android:scheme="content"/>
             </intent-filter>
-            <intent-filter
-                tools:ignore="AppLinkUrlError">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
                     android:mimeType="application/octet-stream"
                     android:host="*"
-                    android:pathPattern=".*\\.gotrack"
-                    />
+                    android:pathPattern=".*.gotrack"
+                    android:scheme="content" />
                 <data
                     android:mimeType="application/gotrack"
                     android:host="*"
-                    android:pathPattern=".*\\.gotrack"
-                    />
+                    android:pathPattern=".*.gotrack"
+                    android:scheme="content" />
             </intent-filter>
         </activity>
         <receiver android:name="de.mobcom.group3.gotrack.NotificationActionReciever">

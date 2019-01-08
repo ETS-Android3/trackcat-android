@@ -76,8 +76,7 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
                 menu.findItem(R.id.nav_recordlist).setChecked(true);
                 break;
             case R.id.create_first_record:
-                fragTransaction.replace(R.id.mainFrame, new RecordFragment(), getResources().getString(R.string.fRecord));
-                fragTransaction.commit();
+                MainActivity.getInstance().loadRecord();
 
                 /* Aktuell ausgewählten Menüpunkt markieren */
                 menu.findItem(R.id.nav_record).setChecked(true);

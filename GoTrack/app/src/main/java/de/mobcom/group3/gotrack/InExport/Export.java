@@ -2,9 +2,11 @@ package de.mobcom.group3.gotrack.InExport;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,6 +17,10 @@ import java.util.List;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
+import de.mobcom.group3.gotrack.MainActivity;
+import de.mobcom.group3.gotrack.R;
+
+import static de.mobcom.group3.gotrack.MainActivity.getInstance;
 
 public class Export {
 
@@ -99,31 +105,48 @@ public class Export {
      sie im Ordner GoTrack im Download-Ordner ab */
     private String generateFile(Context context, String fileNameNoEnd, String fileContent,
                                 Boolean forSend){
-        String fileName = fileNameNoEnd+".gotrack";
-        String mainFileDirectory =Environment.getExternalStoragePublicDirectory(Environment.
-                DIRECTORY_DOWNLOADS).toString();
-        File root = new File(mainFileDirectory, "GoTrack");
-        if (!root.exists()) {
-            Log.i("GoTrack-Export", "Der Ordner GoTrack wurde in Download erstellt.");
-            root.mkdirs();
+        /* Fragt nach noch nicht erteilten Permissions */
+        MainActivity.getInstance().getPermissionManager().
+                checkAndRequestPermissions(MainActivity.getInstance());
+
+        String permissionFile = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        int resFile = MainActivity.getInstance().checkCallingOrSelfPermission(permissionFile);
+
+        String permissionGPS = android.Manifest.permission.ACCESS_FINE_LOCATION;
+        MainActivity.getInstance().checkCallingOrSelfPermission(permissionGPS);
+
+        String pathFromFile="";
+        if(resFile == PackageManager.PERMISSION_GRANTED){
+            String fileName = fileNameNoEnd+".gotrack";
+            String mainFileDirectory =Environment.getExternalStoragePublicDirectory(Environment.
+                    DIRECTORY_DOWNLOADS).toString();
+            File root = new File(mainFileDirectory, "GoTrack");
+            if (!root.exists()) {
+                Log.i("GoTrack-Export", "Der Ordner GoTrack wurde in Download erstellt.");
+                root.mkdirs();
+            }
+            try{
+                File file = new File(root, fileName);
+                FileWriter writer = new FileWriter(file);
+                writer.append(fileContent);
+                writer.flush();
+                writer.close();
+                Log.i("GoTrack-Export", "Die Datei wurde erfolgreich erstellt.");
+                Toast.makeText(context, "Speichern erfolgreich", Toast.LENGTH_SHORT).show();
+            }
+            catch (Exception ex) {
+                Log.e("GoTrack-Export", "Die Datei konnte nicht erstellt werden.");
+                Toast.makeText(context, "Fehler beim Speichern", Toast.LENGTH_SHORT).show();
+                Log.e("GoTrack-Import", ex.toString());
+            }
+            pathFromFile =mainFileDirectory+"/GoTrack/"+fileName;
+            if(forSend){
+                send(context, pathFromFile);
+            }
         }
-        try{
-            File file = new File(root, fileName);
-            FileWriter writer = new FileWriter(file);
-            writer.append(fileContent);
-            writer.flush();
-            writer.close();
-            Log.i("GoTrack-Export", "Die Datei wurde erfolgreich erstellt.");
-            Toast.makeText(context, "Speichern erfolgreich", Toast.LENGTH_SHORT).show();
-        }
-        catch (Exception e) {
-            Log.e("GoTrack-Export", "Die Datei konnte nicht erstellt werden.");
-            Toast.makeText(context, "Fehler beim Speichern", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-        String pathFromFile =mainFileDirectory+"/GoTrack/"+fileName;
-        if(forSend){
-            send(context, pathFromFile);
+        else {
+            Toast.makeText(context, "Bitte erlaube den Speicher-Zugriff",
+                    Toast.LENGTH_SHORT).show();
         }
         return pathFromFile;
     }
@@ -148,7 +171,7 @@ public class Export {
         } catch (Exception ex) {
             Log.e("Export", "Der Versand der Datei "+fileName+" war nicht erfolgreich.");
             Toast.makeText(context, "Fehler beim Versenden", Toast.LENGTH_SHORT).show();
-            ex.printStackTrace();
+            Log.e("GoTrack-Import", ex.toString());
         }
     }
 

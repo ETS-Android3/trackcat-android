@@ -1,7 +1,9 @@
 package de.mobcom.group3.gotrack;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -10,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.GravityCompat;
@@ -87,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         getInstance().startActivity(intent);
         getInstance().finish();
+    }
+
+    public PermissionManager getPermissionManager() {
+        return permissionManager;
     }
 
     public static MainActivity getInstance() {
@@ -335,6 +342,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (hints) {
                         Toast.makeText(getApplicationContext(), "Nutzerwechsel nicht möglich, da im Moment ein Import läuft.", Toast.LENGTH_LONG).show();
                     }
+                } else if (RecordFragment.isTracking()) {
+                    if (hints) {
+                        Toast.makeText(getApplicationContext(), "Nutzerwechsel nicht möglich, da im Moment eine Aufzeichnung läuft.", Toast.LENGTH_LONG).show();
+                    }
                 } else {
 
                     /* Auslesen des angeklickten Items */
@@ -402,6 +413,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
             }
+
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
@@ -594,11 +606,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Laden des Aufnahme-Fragments */
     public void loadRecord() {
-        Log.i("GoTrack-Fragment", "Das Aufnahme-Fragment wird geladen.");
-        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, recordFragment,
-                getResources().getString(R.string.fRecord));
-        fragTransaction.commit();
+        /* Fragt nach noch nicht erteilten Permissions */
+        permissionManager.checkAndRequestPermissions(MainActivity.getInstance());
+
+        String permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        int res = getInstance().checkCallingOrSelfPermission(permission);
+
+        String permissionGPS = android.Manifest.permission.ACCESS_FINE_LOCATION;
+        int resGPS = getInstance().checkCallingOrSelfPermission(permissionGPS);
+
+        if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED) {
+            Log.i("GoTrack-Fragment", "Das Aufnahme-Fragment wird geladen.");
+            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+            fragTransaction.replace(R.id.mainFrame, recordFragment,
+                    getResources().getString(R.string.fRecord));
+            fragTransaction.commit();
+        }
     }
 
     /* Laden des Listen-Fragments */

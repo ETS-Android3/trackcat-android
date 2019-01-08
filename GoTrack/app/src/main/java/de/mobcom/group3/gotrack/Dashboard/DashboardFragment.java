@@ -51,10 +51,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 if (MainActivity.getHints()) {
                     Toast.makeText(getContext(), "Wechseln auf Aufnahme", Toast.LENGTH_LONG).show();
                 }
-                RecordFragment recordFragment = MainActivity.getInstance().getRecordFragment();
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.mainFrame, recordFragment);
-                fragmentTransaction.commit();
+
+                MainActivity.getInstance().loadRecord();
 
                 NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                 Menu menu = navigationView.getMenu();

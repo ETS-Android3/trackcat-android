@@ -44,8 +44,9 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         TextView recordName = recordItem.findViewById(R.id.record_name);
         TextView recordDistance = recordItem.findViewById(R.id.record_distance);
         TextView recordTime = recordItem.findViewById(R.id.record_time);
+        TextView recordDate = recordItem.findViewById(R.id.record_date);
 
-        ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsDashbaord), recordId, recordType, importState, recordName, recordDistance, recordTime, recordItem);
+        ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsDashbaord), recordId, recordType, importState, recordName, recordDistance, recordTime, recordItem, recordDate);
         return view;
     }
 }
