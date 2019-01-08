@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static int activeUser;
     private static boolean hints;
     private static boolean darkTheme;
+    boolean currentThemeDark;
     private static boolean createInitialUser = false;
     private UserDAO userDAO;
     public static Boolean isActiv = false;
@@ -174,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 activeUser = users.get(i).getId();
                 hints = users.get(i).isHintsActive();
                 darkTheme = users.get(i).isDarkThemeActive();
+                currentThemeDark=darkTheme;
             }
         }
     }
@@ -285,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /* Dynamisches Hinzufügen von Spinner-Items */
     public void addItemsToSpinner() {
 
+
         /* Erstellen der Listen */
         final ArrayList<byte[]> spinnerAccountIcons = new ArrayList<byte[]>();
         ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
@@ -347,6 +350,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     circleImageView.setImageBitmap(bitmap);
 
                     boolean oldUserTheme = true;
+                    boolean newUserTheme = true;
                     /* Durchlaufen der Nutzer */
                     List<User> users = userDAO.readAll();
                     for (int i = 0; i < users.size(); i++) {
@@ -372,28 +376,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             hints = users.get(i).isHintsActive();
 
                             oldUserTheme = darkTheme;
-                            darkTheme = users.get(i).isDarkThemeActive();
+                            newUserTheme = users.get(i).isDarkThemeActive();
+
                             if (hints) {
                                 Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
                             }
                         }
                     }
 
-                    /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
-                    loadDashboard();
-                    Menu menu = navigationView.getMenu();
-                    menu.findItem(R.id.nav_dashboard).setChecked(true);
-
+                    /* Überprüfung, ob die MainActivity neu gestartet wird */
                     if (shouldRestart) {
-                        shouldRestart = false;
-                        if (oldUserTheme != darkTheme) {
+
+                        if (oldUserTheme != newUserTheme || currentThemeDark!=newUserTheme) {
                             MainActivity.isActiv = false;
                             restart();
+                            shouldRestart = false;
+                        }else{
+                            /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
+                            loadDashboard();
+                            Menu menu = navigationView.getMenu();
+                            menu.findItem(R.id.nav_dashboard).setChecked(true);
                         }
                     } else {
                         shouldRestart = true;
                     }
-
                 }
             }
 
