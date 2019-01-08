@@ -32,7 +32,7 @@ final class DbContract {
                     RouteEntry.COL_RIDETIME + " LONG, " +
                     RouteEntry.COL_DISTANCE + " DOUBLE, " +
                     RouteEntry.COL_ISIMPORTED + " BOOLEAN, " +
-                    RouteEntry.COL_LOCATIONS + " BLOB) ";
+                    RouteEntry.COL_LOCATIONS + " TEXT) ";
 
     /*
      + string to delete route table

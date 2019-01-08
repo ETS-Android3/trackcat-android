@@ -3,17 +3,17 @@ package de.mobcom.group3.gotrack.Database.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Parcel;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import de.mobcom.group3.gotrack.CustomElements.CustomLocation;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.os.Parcel.obtain;
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.RouteEntry.*;
 
 /**
@@ -27,6 +27,10 @@ public class RouteDAO {
      + the context is needed by the DbHelper and will be handed over by creating an instance
      */
     private final Context context;
+
+    private Gson gson = new Gson();
+    private Type listType = new TypeToken<ArrayList<CustomLocation>>() {}.getType();
+    private Type exImportType = Route.class;
 
     /**
      * Constructor to create instance of data access object.
@@ -69,10 +73,6 @@ public class RouteDAO {
      * </p>
      */
     private ContentValues valueGenerator(Route route) {
-        final Parcel parcel = obtain();
-        parcel.writeTypedList(route.getLocations());
-        final byte[] parceled = parcel.marshall();
-
         ContentValues values = new ContentValues();
         if (route.getId() != 0 && this.read(route.getId()).getId() == 0) {
             values.put(COL_ID, route.getId());
@@ -85,9 +85,7 @@ public class RouteDAO {
         values.put(COL_RIDETIME, route.getRideTime());
         values.put(COL_DISTANCE, route.getDistance());
         values.put(COL_ISIMPORTED, route.isImportedDB());
-        values.put(COL_LOCATIONS, parceled);
-
-        parcel.recycle();
+        values.put(COL_LOCATIONS, gson.toJson(route.getLocations(), listType));
 
         return values;
     }
@@ -124,7 +122,6 @@ public class RouteDAO {
                     null,
                     null )) {
                 if (cursor.moveToFirst()) {
-                    final Parcel parcel = obtain();
                     result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
                     result.setUserID(cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)));
                     result.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)));
@@ -134,14 +131,8 @@ public class RouteDAO {
                     result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
                     result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
                     result.setImportedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)));
-
-                    final byte[] parceled = cursor.getBlob(cursor.getColumnIndexOrThrow(COL_LOCATIONS));
-                    parcel.unmarshall(parceled, 0, parceled.length);
-                    parcel.setDataPosition(0);
-
-                    result.setLocations(parcel.createTypedArrayList(CustomLocation.CREATOR));
-
-                    parcel.recycle();
+                    result.setLocations(gson.fromJson(cursor.getString(
+                            cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType));
                 }
             }
         } finally {
@@ -198,11 +189,6 @@ public class RouteDAO {
                     orderArgs[0] + " " + orderArgs[1] )) {
                 if (cursor.moveToFirst())
                     do {
-                        final Parcel parcel = obtain();
-                        final byte[] parceled = cursor.getBlob(cursor.getColumnIndexOrThrow(COL_LOCATIONS));
-                        parcel.unmarshall(parceled, 0, parceled.length);
-                        parcel.setDataPosition(0);
-
                         result.add(new Route(
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
@@ -213,9 +199,8 @@ public class RouteDAO {
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                                parcel.createTypedArrayList(CustomLocation.CREATOR)));
-
-                        parcel.recycle();
+                                gson.fromJson(cursor.getString(
+                                        cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
                     } while (cursor.moveToNext());
             }
         } finally {
@@ -261,11 +246,6 @@ public class RouteDAO {
                 if (cursor.moveToFirst())
                     do {
                         if (cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)) == 0) {
-                            final Parcel parcel = obtain();
-                            final byte[] parceled = cursor.getBlob(
-                                    cursor.getColumnIndexOrThrow(COL_LOCATIONS));
-                            parcel.unmarshall(parceled, 0, parceled.length);
-                            parcel.setDataPosition(0);
                             result.add(new Route(
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_USER)),
@@ -276,8 +256,8 @@ public class RouteDAO {
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                                    parcel.createTypedArrayList(CustomLocation.CREATOR)));
-                            parcel.recycle();
+                                    gson.fromJson(cursor.getString(
+                                            cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
                         }
                     } while (cursor.moveToNext());
             }
@@ -343,18 +323,10 @@ public class RouteDAO {
      * </p>
      */
     public void importRouteFromJson(String jsonString, int userId, boolean isImported) {
-        Gson gson = new Gson();
-        byte[] parceled = gson.fromJson(jsonString, byte[].class);
-        final Parcel p2 = obtain();
-
-        p2.unmarshall(parceled, 0, parceled.length);
-        p2.setDataPosition(0);
-        Route route = p2.readParcelable(Route.class.getClassLoader());
-        assert route != null;
+        Route route = gson.fromJson(jsonString, exImportType);
         route.setImported(isImported);
         route.setUserID(userId);
         this.create(route);
-        p2.recycle();
     }
 
     /**
@@ -383,13 +355,7 @@ public class RouteDAO {
      * @return a JSON string
      */
     public String exportRouteToJson(int id) {
-        Gson gson = new Gson();
-        final Parcel p1 = obtain();
-        p1.writeParcelable(this.read(id), 0);
-        final byte[] parceled = p1.marshall();
-        p1.recycle();
-
-        return gson.toJson(parceled, byte[].class);
+        return gson.toJson(this.read(id), exImportType);
     }
 
     /**
