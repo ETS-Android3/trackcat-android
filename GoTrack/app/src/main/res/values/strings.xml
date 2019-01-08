@@ -45,20 +45,20 @@
     <string name="editUserTitle">Profil bearbeiten</string>
 
     <!-- Help Menu -->
-    <string name="help_dashboard">Das Dashboard dient zur Übersicht über Ihre vergangenen Aktivitäten. Unter den  \"Letzten Aktivitäten\"
+    <string name="help_dashboard">Das Dashboard dient zur Übersicht über Ihre vergangenen Aktivitäten. Unter den  \"Letzte Aktivitäten\"
         finden sich Ihre letzten zwei Aufzeichnungen, wenn Sie mehr sehen wollen, können Sie dies über den Link \"Mehr anzeigen\" tun.\n\nIm unteren
         Teil der Seite finden Sie eine Übersicht der letzten Woche (Distanz und Zeit).\n\nZusätzlich haben Sie die Möglichkeit mit dem Shortcut-Button direkt zur Aufnahme zu kommen.</string>
     <string name="help_record">Hier können Sie Ihre Aktivität aufzeichnen.\n\nStarten, sowie pausieren können Sie Ihre Aufnahme, indem Sie auf den
         entsprechenden Play-Button klicken.\n\nZum Beenden der laufenden Aufnahme halten Sie den Pause-Button für 2 Skunden gedrückt, anschließend
         haben Sie die Möglichkeit die eben aufgezeichnete Strecke zu verwerfen oder zu speichern.</string>
     <string name="help_record_list">Hier finden Sie die gesamte Liste Ihrer Aufzeichnungen.\n\nZum Öffnen der Detailansicht klicken Sie auf die
-        entsprechende Aufzeichnung.Zum Löschen ziehen Sie die entsprechende Aufzeichnung nach links.\n\nZum Teilen einer Aufzeichnung ziehen Sie
+        entsprechende Aufzeichnung. Zum Löschen ziehen Sie die entsprechende Aufzeichnung nach links.\n\nZum Teilen einer Aufzeichnung ziehen Sie
         diese nach rechts.</string>
     <string name="help_settings">Hier haben Sie die Möglichkeit benutzerdefinierte Einstellungen vorzunehmen. Durch einfaches Togglen, Aktivieren oder
         Deaktivieren, lassen sich z.B. das Theme der App ändern oder Hilfestellungen aktivieren bzw. deaktivieren.\n\nZum Exportieren Ihrer Daten, klicken
         Sie einfach auf \"Exportieren\" und wählen Sie die vorzunehmende Option.\n\nNäheres zur von Ihnen verwendeten Version finden Sie unter \"Version\".</string>
     <string name="help_record_details">Hier können Sie alle Daten Ihrer gewählten Aufzeichnung einsehen. Durch das Wischen nach links erhalten Sie Diagramme
-        über den Verlauf Ihrer Gescwindigkeit sowie die hinterlegten Höhenmeter in Relation zur Zeit.\n\nZum Bearbeiten des Namens klicken Sie einfach auf das
+        über den Verlauf Ihrer Geschwindigkeit sowie die hinterlegten Höhenmeter in Relation zur Zeit.\n\nZum Bearbeiten des Namens klicken Sie einfach auf das
         \"Edit\"-Icon, neben dem derzeit verwendeten Namen.</string>
     <string name="help_new_user">Hier können Sie einen neuen Benutzer anlegen. Alle Felder müssen ausgefüllt werden. Wenn ein Profilbild gewünscht ist, kann
         dieses durch Klicken auf das Bild ausgewählt und festgelegt werden.</string>
