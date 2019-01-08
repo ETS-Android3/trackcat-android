@@ -607,10 +607,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
         int res = getInstance().checkCallingOrSelfPermission(permission);
 
-
         String permissionGPS = android.Manifest.permission.ACCESS_FINE_LOCATION;
         int resGPS = getInstance().checkCallingOrSelfPermission(permissionGPS);
-
 
         if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED) {
             Log.i("GoTrack-Fragment", "Das Aufnahme-Fragment wird geladen.");
