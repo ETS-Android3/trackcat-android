@@ -298,6 +298,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     circleImageView.setImageBitmap(bitmap);
 
                     boolean oldUserTheme = true;
+                    boolean newUserTheme = true;
                     /* Durchlaufen der Nutzer */
                     List<User> users = userDAO.readAll();
                     for (int i = 0; i < users.size(); i++) {
@@ -323,23 +324,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             hints = users.get(i).isHintsActive();
 
                             oldUserTheme = darkTheme;
-                            darkTheme = users.get(i).isDarkThemeActive();
+                            newUserTheme = users.get(i).isDarkThemeActive();
+
                             if (hints) {
                                 Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
                             }
                         }
                     }
 
-                    /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
-                    loadDashboard();
-                    Menu menu = navigationView.getMenu();
-                    menu.findItem(R.id.nav_dashboard).setChecked(true);
-
+                    /* Überprüfung, ob die MainActivity neu gestartet wird */
                     if (shouldRestart) {
                         shouldRestart = false;
-                        if (oldUserTheme != darkTheme) {
+                        if (oldUserTheme != newUserTheme) {
                             MainActivity.isActiv = false;
                             restart();
+                        }else{
+                            /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
+                            loadDashboard();
+                            Menu menu = navigationView.getMenu();
+                            menu.findItem(R.id.nav_dashboard).setChecked(true);
                         }
                     } else {
                         shouldRestart = true;
