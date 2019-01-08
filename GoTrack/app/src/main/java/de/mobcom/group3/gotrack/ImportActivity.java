@@ -33,7 +33,7 @@ public class ImportActivity extends Activity {
                 InputStream inputStream=getContentResolver().openInputStream(uri);
                 Import.getImport().handleSend(this, file, inputStream);
                 Log.i("GoTrack-Import", "Import einer Datei gestartet.");
-                Toast.makeText(this,"Import wird ausgefürt", Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Import wird ausgeführt", Toast.LENGTH_LONG).show();
             }
             catch (Exception ex) {
                 Toast.makeText(this,
