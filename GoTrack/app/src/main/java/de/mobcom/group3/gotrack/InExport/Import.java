@@ -178,10 +178,12 @@ public class Import {
     private int getNewestUserID(Context context){
         UserDAO uDAO = new UserDAO(context);
         List<User> users = uDAO.readAll();
-        int result=1;
+        int result=-1;
         for(User u: users )
         {
-            result=u.getId();
+            if(u.getId()>result){
+                result=u.getId();
+            }
         }
         return result;
     }
@@ -204,10 +206,11 @@ public class Import {
                         "Der User "+ u.getMail()+" existiert bereits.");
                 break;
             }
-            Log.i("GoTrack-Import",
-                    "Der User "+ u.getMail()+" wurde angelegt.");
+
         }
         if(!exist) {
+            Log.i("GoTrack-Import",
+                    "Der User "+ newUser.getMail()+" wurde angelegt.");
             uDAO.importUserFromJson(user);
             userID = getNewestUserID(context);
         }

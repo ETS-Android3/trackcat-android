@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,9 +17,6 @@ import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
-import de.mobcom.group3.gotrack.R;
-
-import static de.mobcom.group3.gotrack.MainActivity.getInstance;
 
 public class Export {
 
@@ -71,7 +67,7 @@ public class Export {
                 arrayListToString(rDAO.exportRoutesToJson(userId)), forSend);
     }
 
-    /* Export aller Routen und aller Users mit dem User */
+    /* Export aller Routen und aller Users */
     public String exportAllRouteUsers(Context context, Boolean forSend){
         RouteDAO rDAO = new RouteDAO(context);
         UserDAO uDAO = new UserDAO(context);
