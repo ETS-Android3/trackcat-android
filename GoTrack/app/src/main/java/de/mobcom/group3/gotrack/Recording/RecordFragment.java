@@ -33,6 +33,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.karan.churi.PermissionManager.PermissionManager;
+
 import de.mobcom.group3.gotrack.CustomElements.CustomLocation;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
@@ -197,12 +199,18 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mCompassOverlay.onDetach(mMapView);
     }
 
+    private PermissionManager permissionManager = new PermissionManager() {
+    };
 
     @TargetApi(Build.VERSION_CODES.N)
     @SuppressLint({"HandlerLeak", "ClickableViewAccessibility"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        /* Fragt nach noch nicht erteilten Permissions */
+        permissionManager.checkAndRequestPermissions(MainActivity.getInstance());
+
         /* ----------------------------------------------------------------------------------handler
          * recieves messages from another thread
          *
