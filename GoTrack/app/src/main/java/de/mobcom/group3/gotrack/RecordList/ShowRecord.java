@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
+import de.mobcom.group3.gotrack.CustomLocation;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
@@ -60,7 +62,7 @@ public class ShowRecord {
             @Override
             public void onClick(View v) {
                 /* get Location Data */
-                ArrayList<Location> locations = records.get(position).getLocations();
+                ArrayList<CustomLocation> locations = records.get(position).getLocations();
                 int size;
                 int run;
                 int step;
@@ -96,7 +98,7 @@ public class ShowRecord {
                 double[] speedValues = new double[size + 1];
                 double[] altitudeValues = new double[size + 1];
                 for (int i = 0; i < run; i += step) {
-                    Location location = locations.get(i);
+                    CustomLocation location = locations.get(i);
                     speedValues[n] = location.getSpeed() * 3.931;
                     altitudeValues[n] = location.getAltitude();
                     n++;
