@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -20,7 +21,7 @@ import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
 
 public class ShowRecord {
 
-    public static void show(List<Route> records, int position, String TAG, TextView recordId, ImageView recordType, ImageView importState, TextView recordName, TextView recordDostance, TextView recordTime, View recordItem){
+    public static void show(List<Route> records, int position, String TAG, TextView recordId, ImageView recordType, ImageView importState, TextView recordName, TextView recordDostance, TextView recordTime, View recordItem, TextView recordDate){
 
         /* show ID */
         recordId.setText("" + (position + 1));
@@ -55,6 +56,11 @@ public class ShowRecord {
         String time = df.format(new Date(records.get(position).getTime() * 1000));
         recordTime.setText(time);
 
+        /* Show Date */
+        long curDate = records.get(position).getDate();
+        String curDateString = getDate(curDate, "dd.MM.yyyy");
+        recordDate.setText(" | "+curDateString);
+
         /* Shows details of routes */
         recordItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,28 +72,13 @@ public class ShowRecord {
                 int step;
 
                 /* defines Steps and amount of values depending on available locations */
-                if (locations != null && locations.size() > 6000) {
-                    size = (locations.size() / 1000);
-                    run = locations.size();
-                    step = 1000;
-                }else if (locations != null && locations.size() > 600) {
-                    size = (locations.size() / 100);
-                    run = locations.size();
-                    step = 100;
-                }else if (locations != null && locations.size() > 60) {
+
+                if (locations != null && locations.size() > 100) {
                     size = (locations.size() / 10);
                     run = locations.size();
                     step = 10;
-                } else if(locations != null && locations.size() > 30){
-                    size = (locations.size() / 5);
-                    run = locations.size();
-                    step = 5;
-                }else if ( locations != null && locations.size() > 10){
-                    size = (locations.size() / 2);
-                    run = locations.size();
-                    step = 2;
                 }else{
-                    size = locations.size() - 1;
+                    size = locations.size();
                     run = locations.size();
                     step = 1;
                 }
@@ -118,5 +109,14 @@ public class ShowRecord {
                 }
             }
         });
+    }
+
+    /* Das Datum wird von Millisekunden als Formatiertes Datum zurückgegeben */
+    private static String getDate(long millis, String dateFormat){
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millis);
+        return formatter.format(calendar.getTime());
     }
 }

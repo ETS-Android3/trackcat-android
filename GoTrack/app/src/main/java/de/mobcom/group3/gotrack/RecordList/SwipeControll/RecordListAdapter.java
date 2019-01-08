@@ -19,7 +19,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
     private List<Route> records;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView id, name, distance, time;
+        public TextView id, name, distance, time, date;
         public ImageView type, importedState;
 
         public MyViewHolder(View view) {
@@ -30,6 +30,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
             importedState = view.findViewById(R.id.imported_state);
             distance = view.findViewById(R.id.record_distance);
             time = view.findViewById(R.id.record_time);
+            date = view.findViewById(R.id.record_date);
         }
     }
 
@@ -47,7 +48,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsList), holder.id, holder.type, holder. importedState, holder.name, holder.distance, holder.time, holder.itemView);
+        ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsList), holder.id, holder.type, holder. importedState, holder.name, holder.distance, holder.time, holder.itemView, holder.date);
     }
 
     @Override
