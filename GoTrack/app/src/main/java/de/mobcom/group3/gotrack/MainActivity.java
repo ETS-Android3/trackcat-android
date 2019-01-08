@@ -337,10 +337,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     /* Überprüfung, ob die MainActivity neu gestartet wird */
                     if (shouldRestart) {
-                        shouldRestart = false;
+
                         if (oldUserTheme != newUserTheme || currentThemeDark!=newUserTheme) {
                             MainActivity.isActiv = false;
                             restart();
+                            shouldRestart = false;
                         }else{
                             /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
                             loadDashboard();
@@ -350,7 +351,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } else {
                         shouldRestart = true;
                     }
-
                 }
             }
 
