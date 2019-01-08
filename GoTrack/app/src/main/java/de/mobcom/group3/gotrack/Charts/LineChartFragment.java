@@ -70,11 +70,6 @@ public class LineChartFragment extends Fragment {
         series1Numbers = new Number[values.length];
         double maxValue=0;
         for (int i = 0; i < series1Numbers.length; i++) {
-            /* 0 Values where shown a little bit on the graph on the x/y 0/0 position. */
-            /* So this value is transformed to -1 to hide the graphs line for 0 values */
-            if (values[i] == 0.0) {
-                values[i] = -1;
-            }
             series1Numbers[i] = values[i];
             if (maxValue < values[i]){
                 maxValue = values[i];
@@ -106,6 +101,8 @@ public class LineChartFragment extends Fragment {
         plot.setRangeLowerBoundary(LOWER_BOUNDARY_Y, BoundaryMode.FIXED);
         plot.setRangeUpperBoundary(maxValue, BoundaryMode.FIXED);
         plot.setRangeStep(StepMode.INCREMENT_BY_VAL, incrementStepsY);
+
+
 
         return view;
     }

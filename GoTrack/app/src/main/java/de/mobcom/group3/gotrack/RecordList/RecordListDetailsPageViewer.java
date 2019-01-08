@@ -49,6 +49,7 @@ public class RecordListDetailsPageViewer extends Fragment {
         /* Anzeige der Charts */
         double[] speedValues = getArguments().getDoubleArray("speedArray");
         double[] altitudeValues = getArguments().getDoubleArray("altitudeArray");
+
         Bundle bundleCharts = new Bundle();
         bundleCharts.putDoubleArray("speedArray", speedValues);
         bundleCharts.putDoubleArray("altitudeArray", altitudeValues);
