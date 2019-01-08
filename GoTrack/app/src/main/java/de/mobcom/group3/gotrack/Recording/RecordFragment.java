@@ -33,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import de.mobcom.group3.gotrack.CustomLocation;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
@@ -252,8 +253,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 } else if (msg.what == 2) {
 
                     /*
-                    * recieved Lcoation
-                    * */
+                     * recieved Lcoation
+                     * */
                     updateLocation((Location) msg.obj);
                 }
             }
@@ -533,7 +534,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         }
 
 
-
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 TextView recordName = alertView.findViewById(R.id.record_name);
@@ -547,7 +547,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 dao.create(model);
 
                 MainActivity.getInstance().endTracking();
-                }
+            }
         });
 
         alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
@@ -587,13 +587,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 minLong -= 0.001;
 
                 BoundingBox box = new BoundingBox();
-                box.set(maxLat, maxLong,minLat,minLong);
+                box.set(maxLat, maxLong, minLat, minLong);
 
                 zomable.zoomToBoundingBox(box, false);
 
                 double zoomLvl = zomable.getZoomLevelDouble();
 
-                zomable.getController().setZoom(zoomLvl-0.3);
+                zomable.getController().setZoom(zoomLvl - 0.3);
             }
         });
 
@@ -849,8 +849,17 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
         try {
             if (isTracking) {
+
+                CustomLocation toSave = new CustomLocation();
+                toSave.setAltitude(location.getAltitude());
+                toSave.setLatitude(location.getLatitude());
+                toSave.setLongitude(location.getLongitude());
+                toSave.setSpeed(location.getSpeed());
+                toSave.setTime(location.getTime());
+
+
                 // add Location to Model
-                model.addLocation(location);
+                model.addLocation(toSave);
 
                 // add to List
                 GPSData.add(gPt);

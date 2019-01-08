@@ -8,6 +8,7 @@ import android.os.Parcel;
 
 import com.google.gson.Gson;
 
+import de.mobcom.group3.gotrack.CustomLocation;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 
@@ -101,7 +102,7 @@ public class RouteDAO {
                     parcel.unmarshall(parceled, 0, parceled.length);
                     parcel.setDataPosition(0);
 
-                    result.setLocations(parcel.createTypedArrayList(Location.CREATOR));
+                    result.setLocations(parcel.createTypedArrayList(CustomLocation.CREATOR));
 
                     parcel.recycle();
                 }
@@ -168,7 +169,7 @@ public class RouteDAO {
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                                parcel.createTypedArrayList(Location.CREATOR)));
+                                parcel.createTypedArrayList(CustomLocation.CREATOR)));
 
                         parcel.recycle();
                     } while (cursor.moveToNext());
@@ -224,7 +225,7 @@ public class RouteDAO {
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                                    parcel.createTypedArrayList(Location.CREATOR)));
+                                    parcel.createTypedArrayList(CustomLocation.CREATOR)));
                             parcel.recycle();
                         }
                     } while (cursor.moveToNext());

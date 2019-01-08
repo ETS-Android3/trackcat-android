@@ -6,6 +6,8 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
+import de.mobcom.group3.gotrack.CustomLocation;
+
 public class Route implements Parcelable {
     /*
      + private model attributes
@@ -20,7 +22,7 @@ public class Route implements Parcelable {
     private long rideTime;
     private boolean isImported;
     private double distance;
-    private ArrayList<Location> locations;
+    private ArrayList<CustomLocation> locations;
 
     /**
      * empty constructor
@@ -38,7 +40,7 @@ public class Route implements Parcelable {
      * @param locations of type array list
      */
     public Route(int id, int userId, String name, long time, long rideTime, double distance,
-                 int type, long date, int isImported, ArrayList<Location> locations) {
+                 int type, long date, int isImported, ArrayList<CustomLocation> locations) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -135,7 +137,7 @@ public class Route implements Parcelable {
      * Getter for the locations
      * @return value of type array list
      */
-    public ArrayList<Location> getLocations() {
+    public ArrayList<CustomLocation> getLocations() {
         return this.locations;
     }
 
@@ -143,7 +145,7 @@ public class Route implements Parcelable {
      * Setter for the locations
      * @param locations of type array list
      */
-    public void setLocations(ArrayList<Location> locations) {
+    public void setLocations(ArrayList<CustomLocation> locations) {
         this.locations = locations;
         if(!locations.isEmpty())
             this.date = locations.get(0).getTime();
@@ -153,7 +155,7 @@ public class Route implements Parcelable {
      * Setter to add a single location to the other route locations
      * @param location of type location
      */
-    public void addLocation(Location location) {
+    public void addLocation(CustomLocation location) {
         if(this.locations == null){
             this.locations = new ArrayList<>();
         }
@@ -282,7 +284,7 @@ public class Route implements Parcelable {
         this.rideTime = source.readLong();
         this.setImportedDB(source.readInt());
         this.distance = source.readDouble();
-        this.locations = source.createTypedArrayList(Location.CREATOR);
+        this.locations = source.createTypedArrayList(CustomLocation.CREATOR);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
