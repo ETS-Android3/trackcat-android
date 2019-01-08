@@ -152,9 +152,7 @@ public class Export {
     {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        String fullFileName =fileName;
-        String PLACEHOLDER = fullFileName;
-        File file = new File(PLACEHOLDER);
+        File file = new File(fileName);
         Uri uri = Uri.fromFile(file);
         Log.i("GoTrack-Export", "Der Versand der Datei "+fileName+" wurde gestartet.");
         Intent share = new Intent();
@@ -162,7 +160,7 @@ public class Export {
         share.putExtra(Intent.EXTRA_STREAM, uri);
         share.setType("application/gotrack");
         try{
-            context.startActivity(Intent.createChooser(share, "Share via"));
+            context.startActivity(Intent.createChooser(share, "Teilen mit"));
             Log.i("Export", "Der Versand wurde beendet");
         } catch (Exception ex) {
             Log.e("Export", "Der Versand der Datei "+fileName+" war nicht erfolgreich.");
