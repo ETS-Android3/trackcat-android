@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getInstance().finish();
     }
 
-    public PermissionManager getPermissionManager(){
+    public PermissionManager getPermissionManager() {
         return permissionManager;
     }
 
@@ -342,6 +342,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (hints) {
                         Toast.makeText(getApplicationContext(), "Nutzerwechsel nicht möglich, da im Moment ein Import läuft.", Toast.LENGTH_LONG).show();
                     }
+                } else if (RecordFragment.isTracking()) {
+                    if (hints) {
+                        Toast.makeText(getApplicationContext(), "Nutzerwechsel nicht möglich, da im Moment eine Aufzeichnung läuft.", Toast.LENGTH_LONG).show();
+                    }
                 } else {
 
                     /* Auslesen des angeklickten Items */
@@ -409,6 +413,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
             }
+
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
