@@ -59,7 +59,7 @@ public class ShowRecord {
         /* Show Date */
         long curDate = records.get(position).getDate();
         String curDateString = getDate(curDate, "dd.MM.yyyy");
-        recordDate.setText(" | "+curDateString);
+        recordDate.setText(curDateString);
 
         /* Shows details of routes */
         recordItem.setOnClickListener(new View.OnClickListener() {
