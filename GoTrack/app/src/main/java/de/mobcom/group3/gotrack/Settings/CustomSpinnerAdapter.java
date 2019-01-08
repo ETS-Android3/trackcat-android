@@ -2,12 +2,14 @@ package de.mobcom.group3.gotrack.Settings;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -203,13 +205,25 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
     /* Anzeige des ausgewählten Profils (hier ohne Profilbild) */
     public View getSelectedProfile(int position, ViewGroup parent) {
         View view = inflater.inflate(R.layout.spinner_profile_selected, parent, false);
+        int month = Calendar.getInstance().getTime().getMonth() + 1;
+        int defaultColor = Color.WHITE;
+        switch (MainActivity.randomImg) {
+            case 8:
+            case 9:
+            case 10:
+            case 12:
+                defaultColor = Color.BLACK;
+                break;
+        }
 
         LinearLayout selectedProfile = view.findViewById(R.id.profile_layout_selected);
         TextView profileName = selectedProfile.findViewById(R.id.profile_name);
         profileName.setText(listNames.get(position));
+        profileName.setTextColor(defaultColor);
 
         TextView profileEmail = selectedProfile.findViewById(R.id.profile_email);
         profileEmail.setText(listEmails.get(position));
+        profileEmail.setTextColor(defaultColor);
 
         return view;
     }
