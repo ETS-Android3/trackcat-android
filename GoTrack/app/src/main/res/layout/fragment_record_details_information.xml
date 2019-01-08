@@ -48,7 +48,7 @@
 
                 <!-- KARTE -->
 
-                <de.mobcom.group3.gotrack.MyMap
+                <de.mobcom.group3.gotrack.CustomElements.CustomMap
                     android:id="@+id/mapview"
                     android:layout_width="fill_parent"
                     android:layout_height="200dp"

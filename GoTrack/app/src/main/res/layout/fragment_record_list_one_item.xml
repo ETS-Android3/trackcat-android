@@ -26,7 +26,7 @@
                     android:orientation="vertical"
                     android:layout_marginTop="20dp">
 
-                    <de.mobcom.group3.gotrack.MyMap
+                    <de.mobcom.group3.gotrack.CustomElements.CustomMap
                         android:id="@+id/mapview"
                         android:layout_width="fill_parent"
                         android:layout_height="300dp"
