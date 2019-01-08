@@ -2,9 +2,7 @@ package de.mobcom.group3.gotrack.Charts;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +25,6 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class BarChartFragment extends Fragment {
-    private static final String PREF_DARK_THEME = "dark_theme";
     private final int UPPER_BOUNDARY_X = 8;
     private final int LOWER_BOUNDARY_X = 0;
     private final int LOWER_BOUNDARY_Y = 0;
@@ -35,6 +32,7 @@ public class BarChartFragment extends Fragment {
     private XYPlot plot;
     private int incrementStepsX = 1;
     private int barWidth = 10;
+    private int curDay = 0;
 
     private Number[] series1Numbers;
     String title;
@@ -70,6 +68,7 @@ public class BarChartFragment extends Fragment {
             color = getArguments().getInt("color");
             rangeTitle = getArguments().getString("rangeTitle");
             incrementStepsY = getArguments().getDouble("stepsY");
+            curDay = getArguments().getInt("curDay");
             max = incrementStepsY * 5;
             /* Gets Every value from bundle in number Array */
             series1Numbers = new Number[values.length];
@@ -109,7 +108,7 @@ public class BarChartFragment extends Fragment {
         plot.setRangeLowerBoundary(LOWER_BOUNDARY_Y, BoundaryMode.FIXED);
         plot.setDomainStep(StepMode.INCREMENT_BY_VAL, incrementStepsX);
         plot.setRangeStep(StepMode.INCREMENT_BY_VAL, incrementStepsY);
-        plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new XLabelFormat());
+        plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new XLabelFormat(curDay));
 
         /* If Steps are to small to show in 0.0 Format, it will be set as 0.00 or 0.000 for Range */
         if(rangeTitle.equals("Km") && max < 1){

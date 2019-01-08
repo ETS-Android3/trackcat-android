@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
     public static int randomImg = (int) (Math.random() * ((13 - 0) + 1)) + 0;
 
-    // Restart activity for Theme Switching
+    /* Restart activity for Theme Switching */
     public static void restart() {
         Bundle temp_bundle = new Bundle();
         getInstance().onSaveInstanceState(temp_bundle);
