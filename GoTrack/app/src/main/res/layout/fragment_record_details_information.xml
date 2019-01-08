@@ -150,6 +150,45 @@
                 <!-- WEITERE DETAILS -->
 
                 <LinearLayout
+                    android:id="@+id/date_layout"
+                    style="@style/SummaryRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/date_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="0"
+                        app:srcCompat="@drawable/summary_date" />
+
+                    <TextView
+                        android:id="@+id/date_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:gravity="center"
+                        android:text="Datum" />
+
+                    <TextView
+                        android:id="@+id/date_value"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:gravity="right|center"
+                        android:text="01.01.2019"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <LinearLayout
                     android:id="@+id/maxspeed_layout"
                     style="@style/SummaryRow"
                     android:layout_width="match_parent"
@@ -183,7 +222,7 @@
                 </LinearLayout>
 
                 <View
-                    android:id="@+id/divider1"
+                    android:id="@+id/divider2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="?android:attr/listDivider" />
@@ -255,7 +294,7 @@
                 </LinearLayout>
 
                 <View
-                    android:id="@+id/divider2"
+                    android:id="@+id/divider3"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="?android:attr/listDivider" />
