@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +79,7 @@ public class BarChartFragment extends Fragment {
         } else {
             /* Setting default vals, if plot is not used with bundle arguments */
             title = "Series01";
-            rangeTitle="km/h";
+            rangeTitle="range";
             color = Color.GRAY;
             incrementStepsY = 10;
             series1Numbers = new Number[]{0, 1, 2, 3, 4, 5, 6, 7, 0};
@@ -110,10 +111,8 @@ public class BarChartFragment extends Fragment {
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new XLabelFormat());
 
         /* If Steps are to small to show in 0.0 Format, it will be set as 0.00 or 0.000 for Range */
-        if(incrementStepsY < 0.01){
+        if(rangeTitle.equals("Km")){
             plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("0.000"));
-        }else if(incrementStepsY < 0.1){
-            plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("0.00"));
         }
 
         /* Bar Width is set by plots own BarRenderer Instance */

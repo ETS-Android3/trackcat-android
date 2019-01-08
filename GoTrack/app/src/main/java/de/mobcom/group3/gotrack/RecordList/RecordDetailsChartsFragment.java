@@ -21,13 +21,13 @@ public class RecordDetailsChartsFragment extends Fragment {
         double[] altitudeValues = getArguments().getDoubleArray("altitudeArray");
 
         /* Höhenmeterchart */
-        Bundle bundleAltitide = new Bundle();
-        bundleAltitide.putDoubleArray("array", altitudeValues);
-        bundleAltitide.putString("title", "Höhenmeter");
-        bundleAltitide.putString("rangeTitle", "m");
+        Bundle bundleAltitude = new Bundle();
+        bundleAltitude.putDoubleArray("array", altitudeValues);
+        bundleAltitude.putString("title", "Höhenmeter");
+        bundleAltitude.putString("rangeTitle", "m");
 
         LineChartFragment lineFragAltitude = new LineChartFragment();
-        lineFragAltitude.setArguments(bundleAltitide);
+        lineFragAltitude.setArguments(bundleAltitude);
 
         /* Speedchart */
         Bundle bundleSpeed = new Bundle();

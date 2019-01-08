@@ -6,19 +6,17 @@ import com.androidplot.xy.*;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 
 import java.util.Arrays;
 
 public class LineChartFragment extends Fragment {
-    private static final String PREF_DARK_THEME = "dark_theme";
     private final int LOWER_BOUNDARY_Y = 0;
     private View view;
     private XYPlot plot;
@@ -44,7 +42,7 @@ public class LineChartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         /* Checks current Theme and uses the correct xml and formatter */
-        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREF_DARK_THEME, false)){
+        if(MainActivity.getDarkTheme()){
             view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
             series1Format =
                     new LineAndPointFormatter(getActivity(), R.xml.line_and_point_formatter_with_labels_dark);
@@ -70,11 +68,6 @@ public class LineChartFragment extends Fragment {
         series1Numbers = new Number[values.length];
         double maxValue=0;
         for (int i = 0; i < series1Numbers.length; i++) {
-            /* 0 Values where shown a little bit on the graph on the x/y 0/0 position. */
-            /* So this value is transformed to -1 to hide the graphs line for 0 values */
-            if (values[i] == 0.0) {
-                values[i] = -1;
-            }
             series1Numbers[i] = values[i];
             if (maxValue < values[i]){
                 maxValue = values[i];
@@ -106,6 +99,8 @@ public class LineChartFragment extends Fragment {
         plot.setRangeLowerBoundary(LOWER_BOUNDARY_Y, BoundaryMode.FIXED);
         plot.setRangeUpperBoundary(maxValue, BoundaryMode.FIXED);
         plot.setRangeStep(StepMode.INCREMENT_BY_VAL, incrementStepsY);
+
+
 
         return view;
     }
