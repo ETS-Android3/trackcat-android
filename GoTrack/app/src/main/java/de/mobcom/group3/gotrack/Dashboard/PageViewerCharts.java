@@ -121,9 +121,9 @@ public class PageViewerCharts extends Fragment {
 
         /* Determines if seconds, minutes or hours should be displayed. Prevents too long decimals */
         if(maxTime < 60){
-            bundleTime.putDouble("stepsY", (maxTime) / 5);
+            bundleTime.putDouble("stepsY", maxTime / 5);
             bundleTime.putString("rangeTitle", "Sekunden");
-            bundleTime.putDoubleArray("array", timeArrayHours);
+            bundleTime.putDoubleArray("array", timeArray);
         }else if(maxTime < 3600){
             bundleTime.putDouble("stepsY", (maxTime / 60) / 5);
             bundleTime.putString("rangeTitle", "Minuten");
