@@ -87,7 +87,7 @@ public class Import {
                             rDAO.importRoutesFromJson(stringToarrayList(routes),
                                     userID, false);
                         }catch (ArrayIndexOutOfBoundsException ex){
-                            ex.printStackTrace();
+                            Log.e("GoTrack-Import", ex.toString());
                         }
                     }
                     Log.i("GoTrack-Import",
@@ -103,7 +103,7 @@ public class Import {
                         rDAO.importRoutesFromJson(stringToarrayList(routes),
                                 userID, false);
                     }catch (ArrayIndexOutOfBoundsException ex){
-                        ex.printStackTrace();
+                        Log.e("GoTrack-Import", ex.toString());
                     }
                     Log.i("GoTrack-Import",
                             "Der Import eines Users mit allen Routen wurde gestartet.");
@@ -118,7 +118,7 @@ public class Import {
         catch (Exception ex){
             Toast.makeText(context, "Die Import-Datei war fehlerhaft",
                     Toast.LENGTH_LONG).show();
-            ex.printStackTrace();
+            Log.e("GoTrack-Import", ex.toString());
         }
         finally {
             isImportActiv =false;
