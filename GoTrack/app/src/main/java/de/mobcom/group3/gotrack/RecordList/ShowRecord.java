@@ -68,28 +68,13 @@ public class ShowRecord {
                 int step;
 
                 /* defines Steps and amount of values depending on available locations */
-                if (locations != null && locations.size() > 6000) {
-                    size = (locations.size() / 1000);
-                    run = locations.size();
-                    step = 1000;
-                }else if (locations != null && locations.size() > 600) {
-                    size = (locations.size() / 100);
-                    run = locations.size();
-                    step = 100;
-                }else if (locations != null && locations.size() > 60) {
+
+                if (locations != null && locations.size() > 100) {
                     size = (locations.size() / 10);
                     run = locations.size();
                     step = 10;
-                } else if(locations != null && locations.size() > 30){
-                    size = (locations.size() / 5);
-                    run = locations.size();
-                    step = 5;
-                }else if ( locations != null && locations.size() > 10){
-                    size = (locations.size() / 2);
-                    run = locations.size();
-                    step = 2;
                 }else{
-                    size = locations.size() - 1;
+                    size = locations.size();
                     run = locations.size();
                     step = 1;
                 }
