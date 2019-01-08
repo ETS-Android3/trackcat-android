@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
+import de.mobcom.group3.gotrack.CustomLocation;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
@@ -52,7 +54,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     private double altitudeDown = 0;
     private double maxSpeed = 0;
     private MapView mMapView = null;
-    ArrayList<Location> locations;
+    ArrayList<CustomLocation> locations;
     Route record;
     RouteDAO dao;
     TextView recordName;
@@ -71,7 +73,8 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
         /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
-            Location location = record.getLocations().get(i);
+            Log.v("iiiiiii------------", i+"");
+            CustomLocation location = locations.get(i);
 
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
             GPSData.add(gPt);
@@ -91,6 +94,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                     maxSpeed = location.getSpeed();
                 }
             }
+
         }
 
         /* DateFormat setzen */
@@ -151,37 +155,37 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
             @Override
             public void onGlobalLayout() {
 
-                    double minLat = Double.MAX_VALUE;
-                    double maxLat = Double.MIN_VALUE;
-                    double minLong = Double.MAX_VALUE;
-                    double maxLong = Double.MIN_VALUE;
+                double minLat = Double.MAX_VALUE;
+                double maxLat = Double.MIN_VALUE;
+                double minLong = Double.MAX_VALUE;
+                double maxLong = Double.MIN_VALUE;
 
 
-                    for (GeoPoint point : GPSData) {
-                        if (point.getLatitude() < minLat)
-                            minLat = point.getLatitude();
-                        if (point.getLatitude() > maxLat)
-                            maxLat = point.getLatitude();
-                        if (point.getLongitude() < minLong)
-                            minLong = point.getLongitude();
-                        if (point.getLongitude() > maxLong)
-                            maxLong = point.getLongitude();
-                    }
-
-                    maxLat += 0.001;
-                    maxLong += 0.001;
-                    minLat -= 0.001;
-                    minLong -= 0.001;
-
-                    BoundingBox box = new BoundingBox();
-                    box.set(maxLat, maxLong, minLat, minLong);
-
-                    mMapView.zoomToBoundingBox(box, false);
-
-                    double zoomLvl = mMapView.getZoomLevelDouble();
-
-                    mMapView.getController().setZoom(zoomLvl - 0.3);
+                for (GeoPoint point : GPSData) {
+                    if (point.getLatitude() < minLat)
+                        minLat = point.getLatitude();
+                    if (point.getLatitude() > maxLat)
+                        maxLat = point.getLatitude();
+                    if (point.getLongitude() < minLong)
+                        minLong = point.getLongitude();
+                    if (point.getLongitude() > maxLong)
+                        maxLong = point.getLongitude();
                 }
+
+                maxLat += 0.001;
+                maxLong += 0.001;
+                minLat -= 0.001;
+                minLong -= 0.001;
+
+                BoundingBox box = new BoundingBox();
+                box.set(maxLat, maxLong, minLat, minLong);
+
+                mMapView.zoomToBoundingBox(box, false);
+
+                double zoomLvl = mMapView.getZoomLevelDouble();
+
+                mMapView.getController().setZoom(zoomLvl - 0.3);
+            }
         });
 
         return view;
@@ -218,8 +222,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         mPath.setColor(Color.RED);
         mPath.setWidth(4);
 
-        gPt = new GeoPoint(locations.get(locations.size() / 2).getLatitude(), locations.get(locations.size() / 2).getLongitude());
-        mMapController.setCenter(gPt);
     }
 
     @Override
