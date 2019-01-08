@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static boolean isRestart = false;
 
     /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
-    public static int randomImg = (int)(Math.random() * ((13 - 0) + 1)) + 0;
+    public static int randomImg = (int) (Math.random() * ((13 - 0) + 1)) + 0;
 
     // Restart activity for Theme Switching
     public static void restart() {
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 activeUser = users.get(i).getId();
                 hints = users.get(i).isHintsActive();
                 darkTheme = users.get(i).isDarkThemeActive();
-                currentThemeDark=darkTheme;
+                currentThemeDark = darkTheme;
             }
         }
     }
@@ -387,11 +387,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     /* Überprüfung, ob die MainActivity neu gestartet wird */
                     if (shouldRestart) {
 
-                        if (oldUserTheme != newUserTheme || currentThemeDark!=newUserTheme) {
+                        if (oldUserTheme != newUserTheme || currentThemeDark != newUserTheme) {
                             MainActivity.isActiv = false;
                             restart();
                             shouldRestart = false;
-                        }else{
+                        } else {
                             /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
                             loadDashboard();
                             Menu menu = navigationView.getMenu();
@@ -419,35 +419,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+        /* OptionItems Listener */
         switch (item.getItemId()) {
             case R.id.nav_help:
-
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.getInstance());
                 alert.setTitle("Hilfe");
 
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
-                    alert.setMessage(getResources().getString(R.string.help_dashboard));
-                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
-                    alert.setMessage(getResources().getString(R.string.help_record));
-                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
-                    alert.setMessage(getResources().getString(R.string.help_record_list));
-                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
-                    alert.setMessage(getResources().getString(R.string.help_settings));
-                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null) {
-                    alert.setMessage(getResources().getString(R.string.help_record_details));
-                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fNewUser)) != null) {
-                    String title = ((TextView) (findViewById(R.id.user_settings_title))).getText().toString();
-                    if (title.equals(getResources().getString(R.string.newUserTitle))) {
-                        alert.setMessage(getResources().getString(R.string.help_new_user));
-                    } else if (title.equals(getResources().getString(R.string.editUserTitle))) {
-                        alert.setMessage(getResources().getString(R.string.help_edit_user));
+                if (MainActivity.getHints()) {
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_dashboard));
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_record));
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_record_list));
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_settings));
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_record_details));
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fNewUser)) != null) {
+                        String title = ((TextView) (findViewById(R.id.user_settings_title))).getText().toString();
+                        if (title.equals(getResources().getString(R.string.newUserTitle))) {
+                            alert.setMessage(getResources().getString(R.string.help_new_user));
+                        } else if (title.equals(getResources().getString(R.string.editUserTitle))) {
+                            alert.setMessage(getResources().getString(R.string.help_edit_user));
+                        }
                     }
+                    alert.setNegativeButton("Schließen", null);
+                    alert.show();
+                } else {
+                    Toast.makeText(instance, "Diese Funktion muss zunächst in den Einstellungen aktiviert werden!", Toast.LENGTH_LONG).show();
                 }
-                alert.setNegativeButton("Schließen", null);
-                alert.show();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
