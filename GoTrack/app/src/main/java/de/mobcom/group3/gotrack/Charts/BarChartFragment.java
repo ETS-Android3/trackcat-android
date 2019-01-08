@@ -86,8 +86,6 @@ public class BarChartFragment extends Fragment {
             series1Numbers = new Number[]{0, 1, 2, 3, 4, 5, 6, 7, 0};
         }
 
-        Log.d("TESTING", "steps: " + incrementStepsY);
-
         /* Getting in xml defined Plot */
         plot = view.findViewById(R.id.linePlot);
         plot.setTitle(title);
