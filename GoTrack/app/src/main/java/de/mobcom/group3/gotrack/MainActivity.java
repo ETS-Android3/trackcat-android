@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,8 +42,12 @@ import de.mobcom.group3.gotrack.Settings.SettingsFragment;
 
 import java.io.File;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import static java.security.AccessController.getContext;
 
@@ -65,9 +71,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static boolean createInitialUser = false;
     private UserDAO userDAO;
     public static Boolean isActiv = false;
-    private static final String PREF_DARK_THEME = "dark_theme";
-
     private static boolean isRestart = false;
+
+    /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
+    public static int randomImg = (int)(Math.random() * ((13 - 0) + 1)) + 0;
 
     // Restart activity for Theme Switching
     public static void restart() {
@@ -206,6 +213,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        /* Header anhand des aktuellen Monats wählen */
+        LinearLayout header_img = navigationView.getHeaderView(0).findViewById(R.id.header_img);
+        int month = Calendar.getInstance().getTime().getMonth() + 1;
+        switch (randomImg) {
+            case 1:
+                header_img.setBackgroundResource(R.raw.bg_january);
+                break;
+            case 2:
+                header_img.setBackgroundResource(R.raw.bg_february);
+                break;
+            case 3:
+                header_img.setBackgroundResource(R.raw.bg_march);
+                break;
+            case 4:
+                header_img.setBackgroundResource(R.raw.bg_april);
+                break;
+            case 5:
+                header_img.setBackgroundResource(R.raw.bg_may);
+                break;
+            case 6:
+                header_img.setBackgroundResource(R.raw.bg_june);
+                break;
+            case 7:
+                header_img.setBackgroundResource(R.raw.bg_july);
+                break;
+            case 8:
+                header_img.setBackgroundResource(R.raw.bg_august);
+                break;
+            case 9:
+                header_img.setBackgroundResource(R.raw.bg_september);
+                break;
+            case 10:
+                header_img.setBackgroundResource(R.raw.bg_october);
+                break;
+            case 11:
+                header_img.setBackgroundResource(R.raw.bg_november);
+                break;
+            case 12:
+                header_img.setBackgroundResource(R.raw.bg_december);
+                break;
+        }
 
         /* Menu Toggle */
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
