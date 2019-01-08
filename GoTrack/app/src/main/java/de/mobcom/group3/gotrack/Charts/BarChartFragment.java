@@ -41,6 +41,7 @@ public class BarChartFragment extends Fragment {
     String rangeTitle;
     int color;
     double incrementStepsY;
+    double max;
 
     double[] values = new double[0];
 
@@ -69,7 +70,7 @@ public class BarChartFragment extends Fragment {
             color = getArguments().getInt("color");
             rangeTitle = getArguments().getString("rangeTitle");
             incrementStepsY = getArguments().getDouble("stepsY");
-
+            max = incrementStepsY * 5;
             /* Gets Every value from bundle in number Array */
             series1Numbers = new Number[values.length];
             for (int i = 0; i < series1Numbers.length; i++) {
@@ -111,7 +112,7 @@ public class BarChartFragment extends Fragment {
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new XLabelFormat());
 
         /* If Steps are to small to show in 0.0 Format, it will be set as 0.00 or 0.000 for Range */
-        if(rangeTitle.equals("Km")){
+        if(rangeTitle.equals("Km") && max < 1){
             plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("0.000"));
         }
 
