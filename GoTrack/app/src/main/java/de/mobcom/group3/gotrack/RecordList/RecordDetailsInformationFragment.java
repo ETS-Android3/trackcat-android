@@ -26,6 +26,7 @@ import org.osmdroid.views.overlay.Polyline;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -137,6 +138,12 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         TextView maxSpeed = view.findViewById(R.id.max_speed_value);
         toSet = (Math.round(this.maxSpeed * 60 * 60) / 100) / 10.0 + " km/h";
         maxSpeed.setText(toSet);
+
+        /* Datum setzen */
+        TextView recordDate = view.findViewById(R.id.date_value);
+        long curDate = record.getDate();
+        String curDateString = getDate(curDate, "dd.MM.yyyy");
+        recordDate.setText(curDateString);
 
         /* Route anzeigen */
         drawRoute();
@@ -266,5 +273,14 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
                 break;
         }
+    }
+
+    /* Das Datum wird von Millisekunden als Formatiertes Datum zurückgegeben */
+    private static String getDate(long millis, String dateFormat){
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millis);
+        return formatter.format(calendar.getTime());
     }
 }

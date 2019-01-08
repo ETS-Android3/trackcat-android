@@ -440,6 +440,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             playPause.setImageResource(R.drawable.record_pausebtn_white);
         } else {
             playPause.setImageResource(R.drawable.record_playbtn_white);
+            if(locatorGPS != null){
+                locatorGPS.startTracking();
+            }
         }
 
 
