@@ -1,12 +1,11 @@
 package de.mobcom.group3.gotrack.Database.Models;
 
-import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-import de.mobcom.group3.gotrack.CustomLocation;
+import de.mobcom.group3.gotrack.CustomElements.CustomLocation;
 
 public class Route implements Parcelable {
     /*
