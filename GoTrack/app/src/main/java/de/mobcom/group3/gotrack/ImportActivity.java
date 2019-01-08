@@ -33,13 +33,13 @@ public class ImportActivity extends Activity {
                 InputStream inputStream=getContentResolver().openInputStream(uri);
                 Import.getImport().handleSend(this, file, inputStream);
                 Log.i("GoTrack-Import", "Import einer Datei gestartet.");
-                Toast.makeText(this,"Import wird ausgefürt", Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Import wird ausgeführt", Toast.LENGTH_LONG).show();
             }
             catch (Exception ex) {
                 Toast.makeText(this,
                         "Die Datei konnte nicht importiert werden", Toast.LENGTH_LONG).show();
                 Log.e("GoTrack-Import", "Die Datei konnte nicht importiert werden");
-                ex.printStackTrace();
+                Log.e("GoTrack-Import", ex.toString());
             }
         }
         else {
@@ -71,8 +71,8 @@ public class ImportActivity extends Activity {
             context.startActivity(i);
             Log.i("GoTrack-Import",
                     "Das Laden der App war erfolgreich");
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
+        } catch (ActivityNotFoundException ex) {
+            Log.e("GoTrack-Import", ex.toString());
             Log.e("GoTrack-Import",
                     "Das Laden der App war nicht erfolgreich");
         }

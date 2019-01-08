@@ -92,6 +92,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getInstance().finish();
     }
 
+    public PermissionManager getPermissionManager(){
+        return permissionManager;
+    }
+
     public static MainActivity getInstance() {
         return instance;
     }
