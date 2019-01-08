@@ -11,7 +11,7 @@
             android:icon="@drawable/menu_record" />
         <item
             android:id="@+id/nav_recordlist"
-            android:title="Gespeicherte Aufzeichnungen"
+            android:title="Aufzeichnungen"
             android:icon="@drawable/menu_recordlist" />
         <item
             android:id="@+id/nav_import"
