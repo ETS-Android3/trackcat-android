@@ -140,14 +140,17 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
 
                     List<User> users = userDAO.readAll();
                     User user = userDAO.read(MainActivity.getActiveUser());
+                    boolean removeLastUser = false;
                     if (users.size() > 1) {
                         userDAO.delete(user);
                         if (MainActivity.getHints()) {
                             Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Löschen von: " + user.getFirstName() + " " + user.getLastName(), Toast.LENGTH_LONG).show();
+                            removeLastUser = false;
                         }
                     } else {
                         if (MainActivity.getHints()) {
                             Toast.makeText(MainActivity.getInstance().getApplicationContext(), "" + user.getFirstName() + " " + user.getLastName() + " konnte nicht gelöscht werden, da sonst keine Nutzer mehr existieren.", Toast.LENGTH_LONG).show();
+                            removeLastUser = true;
                         }
                     }
                     /* Ausblenden des Spinners */
@@ -160,7 +163,9 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                     } catch (Exception e) {
                     }
                     /*Aktualisieren des Spinners*/
-                    MainActivity.getInstance().addItemsToSpinner();
+                    if (!removeLastUser) {
+                        MainActivity.getInstance().addItemsToSpinner();
+                    }
                 }
             });
         }
@@ -173,7 +178,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
             int padding_in_dp = 20;
             final float scale = MainActivity.getInstance().getResources().getDisplayMetrics().density;
             int padding_in_px = (int) (padding_in_dp * scale + 0.5f);
-            profileItem.setPadding(padding_in_px,padding_in_px/2,padding_in_px,padding_in_px/2);
+            profileItem.setPadding(padding_in_px, padding_in_px / 2, padding_in_px, padding_in_px / 2);
         }
         /* Profilbilder anzeigen */
         ImageView profileImage = profileItem.findViewById(R.id.profile_image);
