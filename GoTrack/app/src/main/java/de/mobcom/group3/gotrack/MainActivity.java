@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static int activeUser;
     private static boolean hints;
     private static boolean darkTheme;
+    boolean currentThemeDark;
     private static boolean createInitialUser = false;
     private UserDAO userDAO;
     public static Boolean isActiv = false;
@@ -167,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 activeUser = users.get(i).getId();
                 hints = users.get(i).isHintsActive();
                 darkTheme = users.get(i).isDarkThemeActive();
+                currentThemeDark=darkTheme;
             }
         }
     }
@@ -235,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Dynamisches Hinzufügen von Spinner-Items */
     public void addItemsToSpinner() {
+
 
         /* Erstellen der Listen */
         final ArrayList<byte[]> spinnerAccountIcons = new ArrayList<byte[]>();
@@ -335,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     /* Überprüfung, ob die MainActivity neu gestartet wird */
                     if (shouldRestart) {
                         shouldRestart = false;
-                        if (oldUserTheme != newUserTheme) {
+                        if (oldUserTheme != newUserTheme || currentThemeDark!=newUserTheme) {
                             MainActivity.isActiv = false;
                             restart();
                         }else{
