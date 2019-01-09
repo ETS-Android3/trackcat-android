@@ -1025,7 +1025,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         SensorManager.getOrientation(rotationMatrix, orientation);
 
         float trueNorth = orientation[0] + gf.getDeclination();
-        Log.d("goTrack", "onAccuracyChanged north:" + trueNorth);
         if (trueNorth > 360.0f)
             trueNorth = trueNorth - 360.0f;
         float offset = (360 - trueNorth - this.deviceOrientation);
