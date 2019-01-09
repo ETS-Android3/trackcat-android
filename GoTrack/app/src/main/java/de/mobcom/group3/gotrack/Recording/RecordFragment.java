@@ -896,10 +896,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 }
 
 
-            /*
-             + sets the desired map rotation based on location heading if movement is detected
-             + and map is not fixed in north direction
-             */
+                /*
+                 + sets the desired map rotation based on location heading if movement is detected
+                 + and map is not fixed in north direction
+                 */
                 if ((gpsBearing >= 0.1f) && !northUp) {
                     mMapView.setMapOrientation(-gpsBearing);
                 }

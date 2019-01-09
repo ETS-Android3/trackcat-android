@@ -1,9 +1,9 @@
 package de.mobcom.group3.gotrack.CustomElements;
 
 /*
- * Replacement for android Location Class because of small differences in
+ * Replacement for Android.Location class because of incompatibilities across
  * different api levels
- * needed for example when sending Route from Samsung Galaxy S5 to S9
+ * needed for example when sending route from Samsung Galaxy S5 to S9
  * */
 public class CustomLocation {
     private double altitude;
