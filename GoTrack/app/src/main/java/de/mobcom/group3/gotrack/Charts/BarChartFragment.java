@@ -43,7 +43,8 @@ public class BarChartFragment extends Fragment {
 
     double[] values = new double[0];
 
-    public BarChartFragment(){}
+    public BarChartFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class BarChartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         /* Checks current Theme and uses the correct xml */
-        if(MainActivity.getDarkTheme()) {
+        if (MainActivity.getDarkTheme()) {
             view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
         } else {
             view = inflater.inflate(R.layout.fragment_line_chart, container, false);
@@ -79,7 +80,7 @@ public class BarChartFragment extends Fragment {
         } else {
             /* Setting default vals, if plot is not used with bundle arguments */
             title = "Series01";
-            rangeTitle="range";
+            rangeTitle = "range";
             color = Color.GRAY;
             incrementStepsY = 10;
             series1Numbers = new Number[]{0, 1, 2, 3, 4, 5, 6, 7, 0};
@@ -111,7 +112,7 @@ public class BarChartFragment extends Fragment {
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new XLabelFormat(curDay));
 
         /* If Steps are to small to show in 0.0 Format, it will be set as 0.00 or 0.000 for Range */
-        if(rangeTitle.equals("Km") && max < 1){
+        if (rangeTitle.equals("Km") && max < 1) {
             plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("0.000"));
         }
 

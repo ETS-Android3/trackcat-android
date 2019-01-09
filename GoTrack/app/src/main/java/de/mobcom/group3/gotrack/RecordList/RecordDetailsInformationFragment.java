@@ -70,7 +70,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
         /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
-            Log.v("iiiiiii------------", i+"");
+            Log.v("iiiiiii------------", i + "");
             CustomLocation location = locations.get(i);
 
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
@@ -276,7 +276,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     }
 
     /* Das Datum wird von Millisekunden als Formatiertes Datum zurückgegeben */
-    private static String getDate(long millis, String dateFormat){
+    private static String getDate(long millis, String dateFormat) {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
         Calendar calendar = Calendar.getInstance();

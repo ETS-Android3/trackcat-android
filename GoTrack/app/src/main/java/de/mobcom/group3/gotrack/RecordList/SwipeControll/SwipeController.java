@@ -76,10 +76,10 @@ public class SwipeController extends Callback {
         if (actionState == ACTION_STATE_SWIPE) {
             if (buttonShowedState != ButtonsState.GONE) {
                 if (buttonShowedState == ButtonsState.LEFT_VISIBLE) dX = Math.max(dX, buttonWidth);
-                if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) dX = Math.min(dX, -buttonWidth);
+                if (buttonShowedState == ButtonsState.RIGHT_VISIBLE)
+                    dX = Math.min(dX, -buttonWidth);
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-            else {
+            } else {
                 setTouchListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
         }
@@ -97,7 +97,7 @@ public class SwipeController extends Callback {
                 swipeBack = event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP;
                 if (swipeBack) {
                     if (dX < buttonWidth) buttonShowedState = ButtonsState.RIGHT_VISIBLE;
-                    else if (dX > buttonWidth) buttonShowedState  = ButtonsState.LEFT_VISIBLE;
+                    else if (dX > buttonWidth) buttonShowedState = ButtonsState.LEFT_VISIBLE;
 
                     if (buttonShowedState != ButtonsState.GONE) {
                         setTouchDownListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -139,8 +139,7 @@ public class SwipeController extends Callback {
                     if (buttonsActions != null && buttonInstance != null && buttonInstance.contains(event.getX(), event.getY())) {
                         if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {
                             buttonsActions.onShareClick(viewHolder.getAdapterPosition());
-                        }
-                        else if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) {
+                        } else if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) {
                             buttonsActions.onRemoveClick(viewHolder.getAdapterPosition());
                         }
                     }
@@ -178,8 +177,7 @@ public class SwipeController extends Callback {
         buttonInstance = null;
         if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {
             buttonInstance = leftButton;
-        }
-        else if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) {
+        } else if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) {
             buttonInstance = rightButton;
         }
     }
@@ -189,7 +187,7 @@ public class SwipeController extends Callback {
         p.setAntiAlias(true);
 
         Bitmap icon = null;
-        switch(type){
+        switch (type) {
             case SHARE_BTN:
                 icon = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.drawable.ic_share_white_24dp);
                 break;
@@ -197,7 +195,7 @@ public class SwipeController extends Callback {
                 icon = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.drawable.ic_delete_white_24dp);
                 break;
         }
-        c.drawBitmap(icon, button.centerX()-(icon.getWidth()/2), button.centerY()-(icon.getHeight()/2), p);
+        c.drawBitmap(icon, button.centerX() - (icon.getWidth() / 2), button.centerY() - (icon.getHeight() / 2), p);
     }
 
     public void onDraw(Canvas c) {

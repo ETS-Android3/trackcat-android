@@ -10,7 +10,8 @@ final class DbContract {
     /*
      + private constructor to prevent instantiating this class
      */
-    private DbContract() {}
+    private DbContract() {
+    }
 
     /*
      + defining standard database constants for creation
@@ -75,6 +76,7 @@ final class DbContract {
         static final String COL_LOCATIONS = "locations";
         static final String COL_ISIMPORTED = "imported";
     }
+
     /*
      + class to declare columns for user table
      */

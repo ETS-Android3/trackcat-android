@@ -30,24 +30,22 @@ public class ImportActivity extends Activity {
             Uri uri = intent.getData();
             try {
                 File file = new File(getCacheDir(), "document");
-                InputStream inputStream=getContentResolver().openInputStream(uri);
+                InputStream inputStream = getContentResolver().openInputStream(uri);
                 Import.getImport().handleSend(this, file, inputStream);
                 Log.i("GoTrack-Import", "Import einer Datei gestartet.");
-                Toast.makeText(this,"Import wird ausgeführt", Toast.LENGTH_LONG).show();
-            }
-            catch (Exception ex) {
+                Toast.makeText(this, "Import wird ausgeführt", Toast.LENGTH_LONG).show();
+            } catch (Exception ex) {
                 Toast.makeText(this,
                         "Die Datei konnte nicht importiert werden", Toast.LENGTH_LONG).show();
                 Log.e("GoTrack-Import", "Die Datei konnte nicht importiert werden");
                 Log.e("GoTrack-Import", ex.toString());
             }
-        }
-        else {
+        } else {
             Log.i("GoTrack-Import", "Der Intent war kein Import : " + action);
         }
         if (MainActivity.isActiv) {
             /* Diese App-Instanz wird beendet da die App bereits in einer anderen Instanz läuft */
-            Toast.makeText(this,"GoTrack wird bereits in einer" +
+            Toast.makeText(this, "GoTrack wird bereits in einer" +
                     " anderen Instanz ausgeführt", Toast.LENGTH_LONG).show();
             Log.i("GoTrack-Import", "GoTrack wird bereits in einer" +
                     " anderen Instanz ausgeführt");

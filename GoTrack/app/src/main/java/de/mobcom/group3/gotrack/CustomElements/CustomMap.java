@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 
 import org.osmdroid.views.MapView;
 
-public class CustomMap extends MapView{
+public class CustomMap extends MapView {
     public CustomMap(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

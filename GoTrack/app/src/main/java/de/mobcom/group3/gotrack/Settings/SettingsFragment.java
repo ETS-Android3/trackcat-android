@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
+
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.InExport.Export;
@@ -99,7 +100,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         }
         /* Wechsel des Themes */
         else if (preference.getKey().equals("dark_theme")) {
-            Log.d("PREFERENCES", "Wechsel des Themes!");
 
             MainActivity.isActiv = false;
 
@@ -107,7 +107,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 if (MainActivity.getHints()) {
                     Toast.makeText(getActivity(), "DarkTheme aktiviert!", Toast.LENGTH_LONG).show();
                 }
-                Log.d("PREFERENCES", "DarkTheme aktiviert!");
+
                 /* Nutzer aktualisieren */
                 currentUser.setDarkThemeActive(true);
                 MainActivity.setDarkTheme(true);
@@ -116,7 +116,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 if (MainActivity.getHints()) {
                     Toast.makeText(getActivity(), "LightTheme aktiviert!", Toast.LENGTH_LONG).show();
                 }
-                Log.d("PREFERENCES", "LightTheme aktiviert!");
+
                 /* Nutzer aktualisieren */
                 currentUser.setDarkThemeActive(false);
                 MainActivity.setDarkTheme(false);
@@ -125,7 +125,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             MainActivity.restart();
 
         } else {
-            Log.d("PREFERENCES", "Unbekannte Aktion ausgeführt!");
+            if (MainActivity.getHints()) {
+                Toast.makeText(getActivity(), "Unbekannte Aktion ausgeführt!", Toast.LENGTH_LONG).show();
+            }
         }
         dao.update(MainActivity.getActiveUser(), currentUser);
     }
@@ -171,23 +173,23 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                             type = "Gesamtes Profil \"" + fullName + "\" exportiert!";
                             String fileName = Export.getExport().exportAllUserData(getActivity(),
                                     currentUser.getId(), true);
-                            Log.i("GoTrack-Export", "Die Datei: "+ fileName +
+                            Log.i("GoTrack-Export", "Die Datei: " + fileName +
                                     " wurde erstellt.");
 
                             /* Nutzer-Einstellung exportieren */
                         } else if (rBtn_all_options.isChecked()) {
                             type = "Profileinstellungen von \"" + fullName + "\" exportiert!";
                             String fileName = Export.getExport().exportUserData(getActivity(),
-                                    currentUser.getId(),true);
-                            Log.i("GoTrack-Export", "Die Datei: "+ fileName +
+                                    currentUser.getId(), true);
+                            Log.i("GoTrack-Export", "Die Datei: " + fileName +
                                     " wurde erstellt.");
 
                             /* Alle Routen exportieren */
                         } else if (rBtn_all_route.isChecked()) {
                             type = "Alle Routen von \"" + fullName + "\" exportiert!";
                             String fileName = Export.getExport().exportAllRoute(getActivity(),
-                                    currentUser.getId(),true);
-                            Log.i("GoTrack-Export", "Die Datei: "+ fileName +
+                                    currentUser.getId(), true);
+                            Log.i("GoTrack-Export", "Die Datei: " + fileName +
                                     " wurde erstellt.");
 
                             /* Alle Nutzer exportieren */
@@ -195,7 +197,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                             type = "App Backup erstellt!";
                             String fileName = Export.getExport().exportAllRouteUsers(getActivity(),
                                     true);
-                            Log.i("GoTrack-Export", "Die Datei: "+ fileName +
+                            Log.i("GoTrack-Export", "Die Datei: " + fileName +
                                     " wurde erstellt.");
                         }
 
@@ -226,7 +228,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             alert.setMessage("Entwickler:\nTimo Kramer, Marie Fock, Finn Lenz, Yannik Petersen, Kristoff Klan, Jenö Petsch");
             alert.setNegativeButton("Schließen", null);
             alert.show();
-        } else if (preference.getKey().equals("send_feedback")){
+        } else if (preference.getKey().equals("send_feedback")) {
             sendFeedback(getActivity());
         }
         return false;
