@@ -373,7 +373,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             /* Alten Nutzer deaktivieren */
                             if (deactivateOldUser && !createInitialUser && !firstRun) {
-                                Log.d("TEST123", "IN SCHLEIFE");
                                 User oldUser = userDAO.read(activeUser);
                                 oldUser.setActive(false);
                                 userDAO.update(activeUser, oldUser);
