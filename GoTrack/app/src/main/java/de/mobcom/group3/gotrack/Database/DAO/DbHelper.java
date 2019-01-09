@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.*;
 
 /**
@@ -16,9 +17,9 @@ public class DbHelper extends SQLiteOpenHelper {
      *
      * @param context of type context
      *
-     * <p>
-     *  Calls super method to create database in filesystem
-     * </p>
+     *                <p>
+     *                Calls super method to create database in filesystem
+     *                </p>
      */
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -37,7 +38,7 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Method to upgrade to a newer version of the database.
      *
-     * @param db of type SQLiteDatabase
+     * @param db         of type SQLiteDatabase
      * @param oldVersion of type integer
      * @param newVersion of type integer
      */
@@ -52,7 +53,7 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Method to downgrade to an older version of the database.
      *
-     * @param db of type SQLiteDatabase
+     * @param db         of type SQLiteDatabase
      * @param oldVersion of type integer
      * @param newVersion of type integer
      */

@@ -26,17 +26,18 @@ public class Route {
     /**
      * Empty constructor, modifications via getter and setter
      */
-    public Route() {}
+    public Route() {
+    }
 
     /**
      * Constructor to save route information from database read.
      *
-     * @param id of type integer
-     * @param userId of type integer
-     * @param name of type string
-     * @param time of type long
-     * @param rideTime of type long
-     * @param distance of type double
+     * @param id        of type integer
+     * @param userId    of type integer
+     * @param name      of type string
+     * @param time      of type long
+     * @param rideTime  of type long
+     * @param distance  of type double
      * @param locations of type array list
      */
     public Route(int id, int userId, String name, long time, long rideTime, double distance,
@@ -47,7 +48,7 @@ public class Route {
         this.time = time;
         this.rideTime = rideTime;
         this.distance = distance;
-        this.locations =locations;
+        this.locations = locations;
         this.date = date;
         this.type = type;
         this.setImportedDB(isImported);
@@ -159,7 +160,7 @@ public class Route {
      */
     public void setLocations(ArrayList<CustomLocation> locations) {
         this.locations = locations;
-        if(!locations.isEmpty())
+        if (!locations.isEmpty())
             this.date = locations.get(0).getTime();
     }
 
@@ -169,7 +170,7 @@ public class Route {
      * @param location of type location
      */
     public void addLocation(CustomLocation location) {
-        if(this.locations == null){
+        if (this.locations == null) {
             this.locations = new ArrayList<>();
         }
         this.locations.add(location);
@@ -235,7 +236,7 @@ public class Route {
      * @return value of type boolean
      *
      * <p>
-     *     Returns true if the route is imported or false if it isn't.
+     * Returns true if the route is imported or false if it isn't.
      * </p>
      */
     public boolean isImported() {
@@ -247,9 +248,9 @@ public class Route {
      *
      * @param isImported of type integer
      *
-     * <p>
-     *     Hand over true to define that the route is imported or false to define that it isn't.
-     * </p>
+     *                   <p>
+     *                   Hand over true to define that the route is imported or false to define that it isn't.
+     *                   </p>
      */
     public void setImported(boolean isImported) {
         this.isImported = isImported;
@@ -261,11 +262,11 @@ public class Route {
      * @return value of type integer
      *
      * <p>
-     *      Integer value is necessary due to SQLite Database constraint.
-     *      SQLite does not implement boolean values natively as true or false but only as integer.
+     * Integer value is necessary due to SQLite Database constraint.
+     * SQLite does not implement boolean values natively as true or false but only as integer.
      * </p>
      * <p>
-     *     Returns "1" if the route is imported or "0" if it isn't.
+     * Returns "1" if the route is imported or "0" if it isn't.
      * </p>
      */
     public int isImportedDB() {
@@ -281,13 +282,13 @@ public class Route {
      *
      * @param isImported value of type integer
      *
-     * <p>
-     *      Integer value is necessary due to SQLite Database constraint.
-     *      SQLite does not implement boolean values natively as true or false but only as integer.
-     * </p>
-     * <p>
-     *     Hand over "1" to define that the route is imported or "0" to define that it isn't.
-     * </p>
+     *                   <p>
+     *                   Integer value is necessary due to SQLite Database constraint.
+     *                   SQLite does not implement boolean values natively as true or false but only as integer.
+     *                   </p>
+     *                   <p>
+     *                   Hand over "1" to define that the route is imported or "0" to define that it isn't.
+     *                   </p>
      */
     public void setImportedDB(int isImported) {
         this.isImported = isImported == 1;

@@ -32,15 +32,17 @@ public class Import {
 
     private Type imExportType = User.class;
 
-    public Boolean getIsImportActiv () {return isImportActiv;}
+    public Boolean getIsImportActiv() {
+        return isImportActiv;
+    }
 
     /* Konstruktor */
-    private Import(){
+    private Import() {
     }
 
     /* Mit dieser Methode wird eine Instanz der Klasse zurügegeben */
-    public static Import getImport (){
-        if(importSingleton == null){
+    public static Import getImport() {
+        if (importSingleton == null) {
             Log.i("GoTrack-Import", "Es wurde eine Import-Instanz erstellt.");
             importSingleton = new Import();
         }
@@ -48,9 +50,9 @@ public class Import {
     }
 
     /* Diese Methode verwertet eingekommende Import-Dateien */
-    public void incomingImport (Context context, String incomingFile){
+    public void incomingImport(Context context, String incomingFile) {
         try {
-            isImportActiv =true;
+            isImportActiv = true;
             String[] stringArr = incomingFile.split("<index>");
             String index = stringArr[0];
             String content = stringArr[1];
@@ -83,16 +85,15 @@ public class Import {
                 case ("AllUsersAllRoutes"):
                     /* Import aller  Routen und aller User */
                     String[] stringUsersRoutesArr = content.split("<nextUser>");
-                    for(String userRoutes: stringUsersRoutesArr  )
-                    {
-                        String[] userRoutesArr= userRoutes.split("<route>");
+                    for (String userRoutes : stringUsersRoutesArr) {
+                        String[] userRoutesArr = userRoutes.split("<route>");
                         String user = userRoutesArr[0];
                         int userID = createUser(context, user, uDAO);
                         try {
                             String routes = userRoutesArr[1];
                             rDAO.importRoutesFromJson(stringToarrayList(routes),
                                     userID, false);
-                        }catch (ArrayIndexOutOfBoundsException ex){
+                        } catch (ArrayIndexOutOfBoundsException ex) {
                             Log.e("GoTrack-Import", ex.toString());
                         }
                     }
@@ -110,7 +111,7 @@ public class Import {
                         String routes = stringUserRoutesArr[1];
                         rDAO.importRoutesFromJson(stringToarrayList(routes),
                                 userID, false);
-                    }catch (ArrayIndexOutOfBoundsException ex){
+                    } catch (ArrayIndexOutOfBoundsException ex) {
                         Log.e("GoTrack-Import", ex.toString());
                     }
                     Log.i("GoTrack-Import",
@@ -124,14 +125,12 @@ public class Import {
                     Toast.makeText(context, "Die Import-Datei war fehlerhaft",
                             Toast.LENGTH_LONG).show();
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Toast.makeText(context, "Die Import-Datei war fehlerhaft",
                     Toast.LENGTH_LONG).show();
             Log.e("GoTrack-Import", ex.toString());
-        }
-        finally {
-            isImportActiv =false;
+        } finally {
+            isImportActiv = false;
         }
     }
 
@@ -166,8 +165,7 @@ public class Import {
     private ArrayList<String> stringToarrayList(String listStr) {
         ArrayList<String> resultList = new ArrayList<String>();
         String[] stringArr = listStr.split("<goTrack>");
-        for (String lineStr: stringArr)
-        {
+        for (String lineStr : stringArr) {
             resultList.add(lineStr);
         }
         return resultList;
@@ -175,42 +173,40 @@ public class Import {
 
     /* Diese Methode gibt zuletzt erstellten User zurück damit Ihm seine Routen zugewiesen
      werden können */
-    private int getNewestUserID(Context context){
+    private int getNewestUserID(Context context) {
         UserDAO uDAO = new UserDAO(context);
         List<User> users = uDAO.readAll();
-        int result=-1;
-        for(User u: users )
-        {
-            if(u.getId()>result){
-                result=u.getId();
+        int result = -1;
+        for (User u : users) {
+            if (u.getId() > result) {
+                result = u.getId();
             }
         }
         return result;
     }
 
     /* Diese Methode legt einen importierten User in der Datenbank, sofern er nicht existiert */
-    private int createUser (Context context,
-                                       String user, UserDAO uDAO){
+    private int createUser(Context context,
+                           String user, UserDAO uDAO) {
         User newUser = gson.fromJson(user, imExportType);
         List<User> users = uDAO.readAll();
         Boolean exist = false;
-        int userID=0;
-        for(User u: users )
-        {
-            if(newUser.getMail().equals(u.getMail())&&newUser.getFirstName().
-                    equals(u.getFirstName())&&newUser.getLastName().
-                    equals(u.getLastName())){
-                exist= true;
-                userID =u.getId();
+        int userID = 0;
+        for (User u : users) {
+            if (newUser.getMail().equals(u.getMail()) && newUser.getFirstName().
+                    equals(u.getFirstName()) && newUser.getLastName().
+                    equals(u.getLastName())) {
+                exist = true;
+                userID = u.getId();
                 Log.i("GoTrack-Import",
-                        "Der User "+ u.getMail()+" existiert bereits.");
+                        "Der User " + u.getMail() + " existiert bereits.");
                 break;
             }
 
         }
-        if(!exist) {
+        if (!exist) {
             Log.i("GoTrack-Import",
-                    "Der User "+ newUser.getMail()+" wurde angelegt.");
+                    "Der User " + newUser.getMail() + " wurde angelegt.");
             uDAO.importUserFromJson(user);
             userID = getNewestUserID(context);
         }
