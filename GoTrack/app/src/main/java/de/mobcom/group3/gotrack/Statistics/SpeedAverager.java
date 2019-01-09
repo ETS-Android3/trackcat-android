@@ -1,12 +1,17 @@
 package de.mobcom.group3.gotrack.Statistics;
 
 import de.mobcom.group3.gotrack.MainActivity;
+import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.Recording.Timer;
 
 /*
  * This class calculates the average Speed in M/S via the selected Timer
  * */
 public class SpeedAverager {
+
+    final private static int WALKER_MAX_SPEED = 14;
+    final private static int BIKE_MAX_SPEED = 40;
+
     private MainActivity creator;
 
     private mCounter mCounter;
@@ -45,7 +50,60 @@ public class SpeedAverager {
         return type;
     }
 
-    public double getAvgSpeed(){
+    public double getAvgSpeed() {
         return avgSpeed;
+    }
+
+    /* Liefert den entsprechenden Typene einer Durchschnittsgeschwindigkeit */
+    public static int getRouteType(double avg) {
+        int type;
+        /* Läufer */
+        if (avg * 60 * 60 / 1000 < WALKER_MAX_SPEED) {
+            type = 0;
+        }
+        /* Fahrrad */
+        else if (avg * 60 * 60 / 1000 < BIKE_MAX_SPEED) {
+            type = 1;
+        }
+        /* Auto */
+        else {
+            type = 2;
+        }
+        return type;
+    }
+
+    /* Liefert die entsprechende Icon ID zu einem Typen */
+    public static int getTypeIcon(int type, boolean list) {
+        int drawableInt = 0;
+
+        /* Icons in Listenansicht an Theme angepasst */
+        if (list) {
+            switch (type) {
+                case 0:
+                    drawableInt = R.drawable.activity_running_record_list;
+                    break;
+                case 1:
+                    drawableInt = R.drawable.activity_biking_record_list;
+                    break;
+                case 2:
+                    drawableInt = R.drawable.activity_caring_record_list;
+                    break;
+            }
+        }
+        /* Icons an jeder anderen genutzen Stelle */
+        else {
+            switch (type) {
+                case 0:
+                    drawableInt = R.drawable.activity_running_record;
+                    break;
+                case 1:
+                    drawableInt = R.drawable.activity_biking_record;
+                    break;
+                case 2:
+                    drawableInt = R.drawable.activity_caring_record;
+                    break;
+            }
+        }
+        return drawableInt;
     }
 }

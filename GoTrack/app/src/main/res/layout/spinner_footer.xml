@@ -4,7 +4,7 @@
     android:id="@+id/profile_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <include layout="@layout/spinner_profile_list" />
 
@@ -15,45 +15,76 @@
         android:background="?android:attr/listDivider" />
 
     <LinearLayout
-        android:id="@+id/action_edit"
+        android:id="@+id/profile_options"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp">
 
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            app:srcCompat="@drawable/menu_settings" />
-
-        <TextView
-            android:id="@+id/add_label"
+        <LinearLayout
+            android:id="@+id/profile_edit_user"
+            style="@style/VerticalThemeLayoutInputs"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:gravity="center_vertical"
-            android:text="Profil bearbeiten"
-            android:textSize="18sp" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <LinearLayout
-        android:id="@+id/action_add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/profile_edit_user_icon"
+                style="@style/TitleBarImage"
+                app:srcCompat="@drawable/menu_settings" />
 
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            app:srcCompat="@drawable/menu_settings" />
+            <TextView
+                android:id="@+id/profile_edit_user_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profil bearbeiten"
+                android:textAppearance="@style/TextAppearanceTitle"
+                android:textSize="8pt" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/edit_label"
+        <LinearLayout
+            android:id="@+id/profile_add_user"
+            style="@style/VerticalThemeLayoutInputs"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:gravity="center_vertical"
-            android:text="Neues Profil erstellen"
-            android:textSize="18sp" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/profile_add_user_icon"
+                style="@style/TitleBarImage"
+                app:srcCompat="@drawable/menu_plus" />
+
+            <TextView
+                android:id="@+id/profile_add_user_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Neues Profil"
+                android:textAppearance="@style/TextAppearanceTitle"
+                android:textSize="8pt" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/profile_delete_user"
+            style="@style/VerticalThemeLayoutInputs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/profile_delete_user_icon"
+                style="@style/TitleBarImage"
+                app:srcCompat="@drawable/menu_delete" />
+
+            <TextView
+                android:id="@+id/profile_delete_user_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profil löschen"
+                android:textAppearance="@style/TextAppearanceTitle"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="8pt" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

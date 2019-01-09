@@ -1,37 +1,67 @@
 <resources>
     <string name="app_name">GoTrack</string>
+    <string name="recordListTitle">Aufnahmen</string>
+    <string name="recordLastListTitle">Letzte Aktivitäten</string>
+    <string name="recordLastListMoreLink">Mehr anzeigen</string>
+    <string name="recordLastListNothing">Noch keine\nAufnahmen</string>
 
-    <!-- TODO: Preferences Page "SettingsFragment" -->
+    <!-- Fragment Namen -->
+    <string name="fDashboard">DASHBOARD</string>
+    <string name="fDashboardSummary">DASHBOARD_SUMMARY</string>
+    <string name="fRecordlist">RECORD_LIST</string>
+    <string name="fRecord">RECORD</string>
+    <string name="fRecordOneItem">RECORD_ONE_ITEM</string>
+    <string name="fRecordDetailsDashbaord">RECORD_DETAILS_DASHBOARD</string>
+    <string name="fRecordDetailsList">RECORD_DETAILS_LIST</string>
+    <string name="fImport">IMPORT</string>
+    <string name="fSettings">SETTINGS</string>
+    <string name="fPageViewer">PAGE_VIEWER</string>
+    <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
+    <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
+    <string name="fNewUser">NEW_USER</string>
+
+    <!-- Einstellungen -->
     <string name="category1">Allgemeines</string>
-    <string name="category2">Sonstiges</string>
-    <string-array name="list">
-        <item name="1">Once a day</item>
-        <item name="7">Once a week</item>
-        <item name="3">Once a year</item>
-        <item name="0">Never (Update maually)</item>
-    </string-array>
-    <string-array name="listValues">
-        <item name="1">1</item>
-        <item name="7">7</item>
-        <item name="30">30</item>
-        <item name="0">0</item>
-    </string-array>
 
-    <string-array name="profile_options">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
-    </string-array>
+    <string name="category2">Exportmöglichkeiten</string>
+    <string name="export_options_all_options">Aktueller Benutzer (ohne Routen)</string>
+    <string name="export_options_all_full_user">Aktueller Benutzer (mit Routen) </string>
+    <string name="export_options_all_route">Routen des aktuellen Benutzers</string>
+    <string name="export_options_all_users">Alle Daten (alle Benutzer mit allen Routen)</string>
 
-    // Menu Toggle
+    <string name="category3">Über GoTrack</string>
+    <string name="aboutGoTrack">GoTrack ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
+    <string name="cVersion_title">Version</string>
+    <string name="cVersion_summary">1.6.7</string>
+    <string name="feedback_title">Feedback geben</string>
+    <string name="feedback_summary">Haben Sie Fragen oder Anmerkungen?</string>
+
+    <!-- Menu Toggle -->
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hallo ich bin ein leeres Fragment</string>
+    <!-- User Verwaltung -->
+    <string name="newUserTitle">Neues Profil</string>
+    <string name="editUserTitle">Profil bearbeiten</string>
+
+    <!-- Help Menu -->
+    <string name="help_dashboard">Das Dashboard dient zur Übersicht über Ihre vergangenen Aktivitäten. Unter den  \"Letzte Aktivitäten\"
+        finden sich Ihre letzten zwei Aufzeichnungen, wenn Sie mehr sehen wollen, können Sie dies über den Link \"Mehr anzeigen\" tun.\n\nIm unteren
+        Teil der Seite finden Sie eine Übersicht der letzten Woche (Distanz und Zeit).\n\nZusätzlich haben Sie die Möglichkeit mit dem Shortcut-Button direkt zur Aufnahme zu kommen.</string>
+    <string name="help_record">Hier können Sie Ihre Aktivität aufzeichnen.\n\nStarten, sowie Pausieren können Sie Ihre Aufnahme, indem Sie auf den
+        entsprechenden Play-Button klicken.\n\nZum Beenden der laufenden Aufnahme halten Sie den Pause-Button für 2 Sekunden gedrückt, anschließend
+        haben Sie die Möglichkeit die eben aufgezeichnete Strecke zu verwerfen oder zu speichern.</string>
+    <string name="help_record_list">Hier finden Sie die gesamte Liste Ihrer Aufzeichnungen.\n\nZum Öffnen der Detailansicht klicken Sie auf die
+        entsprechende Aufzeichnung. Zum Löschen ziehen Sie die entsprechende Aufzeichnung nach links.\n\nZum Teilen einer Aufzeichnung ziehen Sie
+        diese nach rechts.</string>
+    <string name="help_settings">Hier haben Sie die Möglichkeit benutzerdefinierte Einstellungen vorzunehmen. Durch einfaches Togglen, Aktivieren oder
+        Deaktivieren, lassen sich z.B. das Theme der App ändern oder Hilfestellungen aktivieren bzw. deaktivieren.\n\nZum Exportieren Ihrer Daten, klicken
+        Sie einfach auf \"Exportieren\" und wählen Sie die vorzunehmende Option.\n\nNäheres zur von Ihnen verwendeten Version finden Sie unter \"Version\".</string>
+    <string name="help_record_details">Hier können Sie alle Daten Ihrer gewählten Aufzeichnung einsehen. Durch das Wischen nach links erhalten Sie Diagramme
+        über den Verlauf Ihrer Geschwindigkeit sowie die hinterlegten Höhenmeter in Relation zur Zeit.\n\nZum Bearbeiten des Namens klicken Sie einfach auf das
+        \"Edit\"-Icon, neben dem derzeit verwendeten Namen.</string>
+    <string name="help_new_user">Hier können Sie einen neuen Benutzer anlegen. Alle Felder müssen ausgefüllt werden. Wenn ein Profilbild gewünscht ist, kann
+        dieses durch Klicken auf das Bild ausgewählt und festgelegt werden.</string>
+    <string name="help_edit_user">Hier haben Sie die Möglichkeit Ihr Profil zu bearbeiten. Durch Klicken auf das aktuelle Profilbild lässt sich dieses
+        ebenfalls ändern.</string>
 </resources>

@@ -1,39 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    // Light Mode
+    <!-- Light Mode -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorGreenLight</item>
         <item name="colorSecondary">@color/colorGreenDark</item>
+        <item name="android:colorBackground">@color/colorWhite</item>
         <item name="colorAccent">@color/colorGreenAccent</item>
         <item name="colorButtonNormal">@color/colorWhite</item>
 
+        <item name="colorBackgroundFloating">@color/colorWhite</item>
+
         <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:statusBarColor" tools:ignore="NewApi">@color/colorGreenDark</item>
+        <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorGreenDark</item>
     </style>
 
-    // Dark Mode
+    <!-- Dark Mode -->
     <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorGreyLight</item>
         <item name="colorSecondary">@color/colorGreyDark</item>
+        <item name="android:colorBackground">@color/colorGreySuperLight</item>
         <item name="colorAccent">@color/colorGreyAccent</item>
         <item name="colorPrimaryDark">@color/colorBlack</item>
         <item name="colorButtonNormal">@color/colorBlack</item>
 
+        <item name="colorBackgroundFloating">@color/colorGreySuperLight</item>
+
         <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:statusBarColor" tools:ignore="NewApi">@color/colorGreyDark</item>
+        <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorGreyDark</item>
     </style>
 
+    <style name="PlotLight" parent="APDefacto">
+        <item name="android:background">@color/colorWhite</item>
+        <item name="backgroundColor">@color/colorWhite</item>
+        <item name="graphBackgroundColor">@color/colorWhite</item>
+        <item name="gridBackgroundColor">@color/off_white</item>
+        <item name="domainLineColor">@color/colorBlack</item>
+        <item name="rangeLineColor">@color/colorBlack</item>
+        <item name="lineLabelTextColorTop">@color/colorBlack</item>
+        <item name="lineLabelTextColorBottom">@color/colorBlack</item>
+        <item name="lineLabelTextColorLeft">@color/colorBlack</item>
+        <item name="lineLabelTextColorRight">@color/colorBlack</item>
+        <item name="domainOriginLineColor">@color/colorBlack</item>
+        <item name="rangeOriginLineColor">@color/colorBlack</item>
+        <item name="titleTextColor">@color/colorBlack</item>
+        <item name="domainTitleTextColor">@color/colorBlack</item>
+        <item name="rangeTitleTextColor">@color/colorBlack</item>
+        <item name="legendTextColor">@color/colorBlack</item>
+
+        <item name="lineLabelInsetLeft">30dp</item>
+        <item name="gridInsetLeft">30dp</item>
+    </style>
+
+
+    <style name="PlotDark" parent="APDefacto">
+        <item name="android:background">@color/colorGreySuperLight</item>
+        <item name="backgroundColor">@color/colorGreySuperLight</item>
+        <item name="graphBackgroundColor">@color/colorGreySuperLight</item>
+        <item name="gridBackgroundColor">@color/colorGreyLight</item>
+        <item name="domainLineColor">@color/colorWhite</item>
+        <item name="rangeLineColor">@color/colorWhite</item>
+        <item name="lineLabelTextColorTop">@color/colorWhite</item>
+        <item name="lineLabelTextColorBottom">@color/colorWhite</item>
+        <item name="lineLabelTextColorLeft">@color/colorWhite</item>
+        <item name="lineLabelTextColorRight">@color/colorWhite</item>
+        <item name="domainOriginLineColor">@color/colorWhite</item>
+        <item name="rangeOriginLineColor">@color/colorWhite</item>
+        <item name="titleTextColor">@color/colorWhite</item>
+        <item name="domainTitleTextColor">@color/colorWhite</item>
+        <item name="rangeTitleTextColor">@color/colorWhite</item>
+        <item name="legendTextColor">@color/colorWhite</item>
+
+        <item name="lineLabelInsetLeft">30dp</item>
+        <item name="gridInsetLeft">30dp</item>
+    </style>
+
+    <!-- Hauptfenster: Geteilte Ansicht (oben Karte unten Main-Fenster) -->
     <style name="Main" parent="">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:layout_marginTop">@dimen/roundCornersRecord</item>
     </style>
 
+    <!-- Standard-Textfarbe im Main-Fenster -->
+    <style name="TextAppearanceRecord" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/colorWhite</item>
+    </style>
+
+    <style name="TextAppearanceRecordSummaryText" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">?android:attr/textColor</item>
+    </style>
+
+    <!-- Toolbar Style -->
     <style name="Toolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:textColorPrimary">@color/colorWhite</item>
     </style>
 
-    <style name="TextAppearance.AppCompat" parent="android:Widget.TextView">
-        <item name="android:textColor">@color/colorWhite</item>
+    <!-- Überschrift TextAppearance -->
+    <style name="TextAppearance.AppCompat.Headline" parent="android:Widget.TextView">
+        <item name="android:textColor">?android:attr/textColor</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <!-- Summary Row - detaillierte Informationen -->
+    <style name="SummaryRow">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="FirstPairedSummaryRow">
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="LastPairedSummaryRow">
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <!-- Lineares Standard Layout -->
+    <style name="VerticalThemeLayoutInputs">
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <!-- Profile Spinner Iconstyles der Zusatzoptionen -->
+    <style name="TitleBarImage">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <!-- Profile Spinner Benutzername -->
+    <style name="TextAppearanceTitle" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <!-- Profile Spinner Email-Adresse -->
+    <style name="TextAppearanceSubtitle" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/colorLightGrey</item>
+        <item name="android:textSize">@dimen/profileSpinnerSubtitleSize</item>
+    </style>
+
+    <!-- Profile Spinner Email-Adresse -->
+    <style name="RemoveBtn" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">?android:attr/textColor</item>
+        <item name="android:background">@android:color/holo_red_light</item>
+    </style>
+
+    <!-- Link Farbe -->
+    <style name="Link">
+        <item name="android:textColor">?attr/colorAccent</item>
     </style>
 
 </resources>

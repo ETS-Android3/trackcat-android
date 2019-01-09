@@ -2,26 +2,41 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory android:title="@string/category1" >
         <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/settings_theme"
             android:key="dark_theme"
-            android:title="Dunkler Modus"
-            android:defaultValue="false" />
+            android:title="Dunkler Modus" />
         <CheckBoxPreference
             android:defaultValue="true"
+            android:icon="@drawable/settings_help"
             android:key="help_messages"
-            android:summary="Zeige hilfreiche Nachrichten an"
-            android:title="Hilfestellungen" >
-        </CheckBoxPreference>
-        <ListPreference
-            android:key="list"
-            android:entries="@array/list"
-            android:summary="Aus Liste auswählen"
-            android:entryValues="@array/listValues"
-            android:title="Listenansicht" />
+            android:summary="Zeige allgemeine Hinweise an"
+            android:title="Hilfestellungen"></CheckBoxPreference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category2" >
-        <EditTextPreference
-            android:key="text"
-            android:title="Text Editor"
-            android:summary="Hier kann ein String bearbeitet werden" />
+        <Preference
+            android:icon="@drawable/settings_export"
+            android:key="global_export_options"
+            android:summary="Exportieren Sie hier Ihre Benutzerprofile"
+            android:title="Exportieren" />
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/category3" >
+        <Preference
+            android:selectable="false"
+            android:summary="@string/aboutGoTrack" />
+
+        <Preference
+            android:icon="@drawable/settings_version"
+            android:key="current_version"
+            android:summary="@string/cVersion_summary"
+            android:title="@string/cVersion_title" />
+
+        <Preference
+            android:icon="@drawable/settings_feedback"
+            android:key="send_feedback"
+            android:summary="@string/feedback_summary"
+            android:title="@string/feedback_title" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

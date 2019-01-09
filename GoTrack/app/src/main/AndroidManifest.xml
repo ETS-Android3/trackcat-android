@@ -25,9 +25,45 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Diese "activity" wird verwendet um Dateien zu importieren, durch die Intent-Filter
+        können Dateien, welche die Endung .gotrack haben, dirket in diese App gelesen werden -->
+        <activity
+            android:name="de.mobcom.group3.gotrack.ImportActivity"
+            android:configChanges="orientation|keyboardHidden">
+            <intent-filter
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:mimeType="application/octet-stream"
+                    android:host="*"
+                    android:pathPattern=".*\\.gotrack"
+                    />
+                <data
+                    android:mimeType="application/gotrack"
+                    android:host="*"
+                    android:pathPattern=".*\\.gotrack"
+                    />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:mimeType="application/octet-stream"
+                    android:host="*"
+                    android:pathPattern=".*.gotrack"
+                    android:scheme="content" />
+                <data
+                    android:mimeType="application/gotrack"
+                    android:host="*"
+                    android:pathPattern=".*.gotrack"
+                    android:scheme="content" />
+            </intent-filter>
+        </activity>
         <receiver android:name="de.mobcom.group3.gotrack.NotificationActionReciever">
 
         </receiver>
+        <service android:name=".Recording.Locator" android:enabled="true"/>
     </application>
 
 </manifest>

@@ -5,14 +5,13 @@
     android:layout_height="match_parent"
     tools:context="de.mobcom.group3.gotrack.Recording.Recording_UI.TimeTotal_View_Fragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/time_TextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical|center_horizontal"
         android:text="0:00:00"
-        android:textColor="?android:attr/textColor"
-        android:textSize="35sp" />
+        android:textSize="35sp"
+        style="@style/TextAppearanceRecord" />
 
 </FrameLayout>

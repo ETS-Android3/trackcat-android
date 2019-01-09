@@ -4,6 +4,20 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="defaultPagePadding">15dp</dimen>
 
     <dimen name="roundCornersRecord">20dp</dimen>
+
+    <!-- Text parameters -->
+    <dimen name="profileSpinnerTitleSize">14sp</dimen>
+    <dimen name="profileSpinnerSubtitleSize">12sp</dimen>
+
+    <!-- Allgemeine Zahlen -->
+    <integer name="summaryRecordListAmount">2</integer>
+
+
+    <dimen name="activity_padding_horizontal">16dp</dimen>
+    <dimen name="padd_10">10dp</dimen>
+    <dimen name="ic_delete">30dp</dimen>
+    <dimen name="thumbnail">90dp</dimen>
 </resources>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginTop="20dp">
+
+                    <de.mobcom.group3.gotrack.CustomElements.CustomMap
+                        android:id="@+id/mapview"
+                        android:layout_width="fill_parent"
+                        android:layout_height="300dp"
+                        android:layout_weight="1"
+                        android:clickable="true" />
+
+                    <LinearLayout
+                        android:id="@+id/record_data2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/defaultPagePadding"
+                        android:paddingTop="35dp"
+                        android:paddingBottom="25dp"
+                        android:paddingRight="@dimen/defaultPagePadding">
+
+                        <EditText
+                            android:id="@+id/record_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            android:ems="10"
+                            android:hint="Name der Aufnahme"
+                            android:inputType="textPersonName" />
+
+                        <LinearLayout
+                            android:id="@+id/total_time_Layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/total_time_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0"
+                                app:srcCompat="@drawable/ic_clock_theme_color" />
+
+                            <TextView
+                                android:id="@+id/total_time_TextView"
+                                style="@style/TextAppearanceRecordSummaryText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="00:00:00"
+                                android:textSize="32sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/distance_Layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/distance_Icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginRight="5dp"
+                                app:srcCompat="@drawable/record_distance_theme_color" />
+
+                            <TextView
+                                android:id="@+id/distance_TextView"
+                                style="@style/TextAppearanceRecordSummaryText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:gravity="center"
+                                android:text="0.0 km"
+                                android:textSize="32sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fabButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:translationY="0dp"
+                    app:fabSize="normal"
+                    app:layout_anchor="@id/mapview"
+                    app:layout_anchorGravity="bottom|center"
+                    app:srcCompat="@drawable/activity_running_record" />
+            </android.support.design.widget.CoordinatorLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

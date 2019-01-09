@@ -7,12 +7,14 @@ import java.util.TimerTask;
  * Timer counts the secsonds.
  * */
 public class Timer {
-    private double time = 0;
+    private long time = 0;
 
     private java.util.Timer timer;
-    int type;
+    private int type;
     private boolean isRunning;
 
+    Timer() {
+    }
 
     /*
      * Define Timer to add up Time and create String in HH:MM:SS format
@@ -31,13 +33,22 @@ public class Timer {
     /*
      * create and Send readable Message String
      * */
-    public void sendTime()
+    void sendTime() {
+        // send message to View
+        Message msg = new Message();
+        msg.what = type;
+        msg.obj = secToString(time);
+        RecordFragment.handler.sendMessage(msg);
+    }
 
-    {
+    /*
+    * build Readable String from Seconds
+    * */
+    String secToString(double secs) {
         // create readable String
-        int hours = (int) Math.floor((time / 60) / 60);
+        int hours = (int) Math.floor((secs / 60) / 60);
 
-        double timeCalc = time - hours * 60 * 60;
+        double timeCalc = secs - hours * 60 * 60;
 
         int minutes = (int) Math.floor(timeCalc / 60);
         String seconds = (timeCalc - minutes * 60) / 100 + "";
@@ -52,20 +63,15 @@ public class Timer {
             minutesStr = 0 + minutesStr;
         }
 
-        // send message to View
-        Message msg = new Message();
-        msg.what = type;
-        msg.obj = hours + ":" + minutesStr + ":" + seconds;
-        RecordFragment.handler.sendMessage(msg);
+        return hours + ":" + minutesStr + ":" + seconds;
     }
-
 
     /*
      * create new Instance and set type
      * 0 = Total Timer
      * 1 = Timer counts while speed > 0
      * */
-    public Timer(int typeSet) {
+    Timer(int typeSet) {
         type = typeSet;
 
         if (type != 1) {
@@ -74,7 +80,7 @@ public class Timer {
     }
 
     // return counted Time
-    public double getTime() {
+    public long getTime() {
         return time;
     }
 
@@ -82,7 +88,7 @@ public class Timer {
     /*
      * stops Timer
      * */
-    public void stopTimer() {
+    void stopTimer() {
         if (isRunning) {
             timer.cancel();
             timer = null;
@@ -93,7 +99,7 @@ public class Timer {
     /*
      * starts Timer
      * */
-    public void startTimer() {
+    void startTimer() {
         if (!isRunning) {
             /* initialise Timer */
             timer = new java.util.Timer();
@@ -104,7 +110,7 @@ public class Timer {
     }
 
     // return state of Timer
-    public boolean getActive() {
+    boolean getActive() {
         return isRunning;
     }
 }
