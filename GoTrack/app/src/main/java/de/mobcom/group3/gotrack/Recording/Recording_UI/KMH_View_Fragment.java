@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import de.mobcom.group3.gotrack.R;
 
 public class KMH_View_Fragment extends Fragment {

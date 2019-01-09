@@ -17,7 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import java.util.List;
+
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.InExport.Export;
@@ -93,12 +95,13 @@ public class RecordListFragment extends Fragment {
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
             }
+
             /* Versenden einer Route */
             @Override
             public void onShareClick(int position) {
                 String fileName = Export.getExport().exportRoute(getContext(),
-                        records.get(position).getId(),true);
-                Log.i("GoTrack-Export", "Die Datei: "+ fileName +
+                        records.get(position).getId(), true);
+                Log.i("GoTrack-Export", "Die Datei: " + fileName +
                         " wurde erstellt.");
             }
         });

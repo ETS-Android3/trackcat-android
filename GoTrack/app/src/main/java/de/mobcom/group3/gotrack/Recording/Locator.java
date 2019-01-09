@@ -80,8 +80,8 @@ public class Locator extends Service {
     }
 
     /*
-    * create notification for foreground service
-    * */
+     * create notification for foreground service
+     * */
     private Notification getNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -115,7 +115,7 @@ public class Locator extends Service {
                 PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.getInstance(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST);
-        // for external storage
+            // for external storage
         } else if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.getInstance(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},

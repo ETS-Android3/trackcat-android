@@ -1,18 +1,15 @@
 package de.mobcom.group3.gotrack;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.GravityCompat;
@@ -45,14 +42,9 @@ import de.mobcom.group3.gotrack.Settings.SettingsFragment;
 
 import java.io.File;
 import java.io.InputStream;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
-
-import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -373,7 +365,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             /* Alten Nutzer deaktivieren */
                             if (deactivateOldUser && !createInitialUser && !firstRun) {
-                                Log.d("TEST123", "IN SCHLEIFE");
                                 User oldUser = userDAO.read(activeUser);
                                 oldUser.setActive(false);
                                 userDAO.update(activeUser, oldUser);

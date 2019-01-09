@@ -26,7 +26,8 @@ public class LineChartFragment extends Fragment {
     private double[] values;
     private String rangeTitle;
     private String title;
-    private LineAndPointFormatter series1Format;;
+    private LineAndPointFormatter series1Format;
+    ;
 
     public LineChartFragment() {
     }
@@ -42,11 +43,11 @@ public class LineChartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         /* Checks current Theme and uses the correct xml and formatter */
-        if(MainActivity.getDarkTheme()){
+        if (MainActivity.getDarkTheme()) {
             view = inflater.inflate(R.layout.fragment_line_chart_dark, container, false);
             series1Format =
                     new LineAndPointFormatter(getActivity(), R.xml.line_and_point_formatter_with_labels_dark);
-        }else{
+        } else {
             view = inflater.inflate(R.layout.fragment_line_chart, container, false);
             series1Format =
                     new LineAndPointFormatter(getActivity(), R.xml.line_and_point_formatter_with_labels);
@@ -66,10 +67,10 @@ public class LineChartFragment extends Fragment {
 
         /* Sets every value as Value in number Array */
         series1Numbers = new Number[values.length];
-        double maxValue=0;
+        double maxValue = 0;
         for (int i = 0; i < series1Numbers.length; i++) {
             series1Numbers[i] = values[i];
-            if (maxValue < values[i]){
+            if (maxValue < values[i]) {
                 maxValue = values[i];
             }
         }
@@ -99,7 +100,6 @@ public class LineChartFragment extends Fragment {
         plot.setRangeLowerBoundary(LOWER_BOUNDARY_Y, BoundaryMode.FIXED);
         plot.setRangeUpperBoundary(maxValue, BoundaryMode.FIXED);
         plot.setRangeStep(StepMode.INCREMENT_BY_VAL, incrementStepsY);
-
 
 
         return view;
