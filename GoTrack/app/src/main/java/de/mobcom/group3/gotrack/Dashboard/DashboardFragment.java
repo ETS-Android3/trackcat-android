@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
-import de.mobcom.group3.gotrack.Recording.RecordFragment;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener {
     private FragmentTransaction fragTransaction;

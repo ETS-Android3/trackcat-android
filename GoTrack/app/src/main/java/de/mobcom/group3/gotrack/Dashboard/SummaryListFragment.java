@@ -19,7 +19,6 @@ import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.RecordList.CustomRecordListAdapter;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
-import de.mobcom.group3.gotrack.Recording.RecordFragment;
 
 public class SummaryListFragment extends Fragment implements View.OnClickListener {
 
