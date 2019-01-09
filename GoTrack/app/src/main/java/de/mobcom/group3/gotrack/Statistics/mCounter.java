@@ -3,8 +3,8 @@ package de.mobcom.group3.gotrack.Statistics;
 import android.location.Location;
 
 /*
-* Class counts the travelled Distance, gets the current Locations
-* */
+ * Class counts the travelled Distance, gets the current Locations
+ * */
 public class mCounter {
     private float mAmount;
     private Location oldLocation;

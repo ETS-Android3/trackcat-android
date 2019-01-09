@@ -46,9 +46,9 @@ public class PageViewerCharts extends Fragment {
         View view = inflater.inflate(R.layout.fragment_page_viewer_charts, container, false);
 
         /* Get AccentColor for current Theme */
-        if(MainActivity.getDarkTheme()){
+        if (MainActivity.getDarkTheme()) {
             colorAccent = getResources().getColor(R.color.colorGreyAccent);
-        }else{
+        } else {
             colorAccent = getResources().getColor(R.color.colorGreenAccent);
         }
 
@@ -68,7 +68,7 @@ public class PageViewerCharts extends Fragment {
         int curDay = getWeekDay(System.currentTimeMillis());
 
         /* If the list has routes, this will be handled. If not, the Graph will be empty */
-        if(records.size() > 0) {
+        if (records.size() > 0) {
             for (int i = 0; i < records.size(); i++) {
                 long curDate = records.get(i).getDate();
                 double curDistanceKm = records.get(i).getDistance() / 1000;
@@ -77,29 +77,29 @@ public class PageViewerCharts extends Fragment {
 
                 /* Dependinng on the Current day of Week,
                    this will shift the data in the array to the correct index for the corresponding Labels */
-                if(curDay == 1){
+                if (curDay == 1) {
                     dayOfWeek = dayOfWeek + 6;
-                }else if(curDay == 2){
+                } else if (curDay == 2) {
                     dayOfWeek = dayOfWeek + 5;
-                }else if(curDay == 3){
+                } else if (curDay == 3) {
                     dayOfWeek = dayOfWeek + 4;
-                }else if(curDay == 4){
+                } else if (curDay == 4) {
                     dayOfWeek = dayOfWeek + 3;
-                }else if(curDay == 5){
+                } else if (curDay == 5) {
                     dayOfWeek = dayOfWeek + 2;
-                }else if(curDay == 6){
+                } else if (curDay == 6) {
                     dayOfWeek = dayOfWeek + 1;
                 }
                 /* if a value exceeds 7, it will substract 7 to start from 0 with the exceeding value */
-                if(dayOfWeek > 7){
+                if (dayOfWeek > 7) {
                     dayOfWeek = dayOfWeek - 7;
                 }
 
                 /* If the weekDay is equal to previous Date, the variables add up */
-                if(dayOfWeek == prevDay){
+                if (dayOfWeek == prevDay) {
                     distance = distance + curDistanceKm;
                     time += curTime;
-                /* If the Weekday is not equal, the variables will be reset with new values */
+                    /* If the Weekday is not equal, the variables will be reset with new values */
                 } else {
                     prevDay = dayOfWeek;
                     distance = curDistanceKm;
@@ -138,15 +138,15 @@ public class PageViewerCharts extends Fragment {
         bundleTime.putInt("color", colorAccent);
 
         /* Determines if seconds, minutes or hours should be displayed. Prevents too long decimals */
-        if(maxTime < 60){
+        if (maxTime < 60) {
             bundleTime.putDouble("stepsY", maxTime / 5);
             bundleTime.putString("rangeTitle", "Sekunden");
             bundleTime.putDoubleArray("array", timeArray);
-        }else if(maxTime < 3600){
+        } else if (maxTime < 3600) {
             bundleTime.putDouble("stepsY", (maxTime / 60) / 5);
             bundleTime.putString("rangeTitle", "Minuten");
             bundleTime.putDoubleArray("array", timeArrayMinutes);
-        }else if(maxTime >= 3600){
+        } else if (maxTime >= 3600) {
             bundleTime.putDouble("stepsY", (maxTime / 3600) / 5);
             bundleTime.putString("rangeTitle", "Stunden");
             bundleTime.putDoubleArray("array", timeArrayHours);
@@ -181,6 +181,7 @@ public class PageViewerCharts extends Fragment {
 
         return view;
     }
+
     /* The weekDay of a date in millis will be returned as int (1 / Sunday to 7 / Saturday */
     /* Date can't be before 1. January 1970 */
     private int getWeekDay(long millis) {
@@ -192,7 +193,7 @@ public class PageViewerCharts extends Fragment {
     }
 
     /* Returns the mod of every given number */
-    private int mod(int x, int mod){
+    private int mod(int x, int mod) {
         int result = x % mod;
         return result < 0 ? result + mod : result;
     }

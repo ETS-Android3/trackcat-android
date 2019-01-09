@@ -11,15 +11,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
 import de.mobcom.group3.gotrack.RecordList.CustomRecordListAdapter;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
-import de.mobcom.group3.gotrack.Recording.RecordFragment;
 
 public class SummaryListFragment extends Fragment implements View.OnClickListener {
 

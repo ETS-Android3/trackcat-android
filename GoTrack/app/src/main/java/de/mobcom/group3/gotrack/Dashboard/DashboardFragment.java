@@ -12,9 +12,9 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
-import de.mobcom.group3.gotrack.Recording.RecordFragment;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener {
     private FragmentTransaction fragTransaction;
@@ -38,7 +38,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         fabButton.setOnClickListener(this);
 
         /* Funktionen hinter dem Schnellwechsel-Button */
-        if (Build.VERSION.SDK_INT <= 21){
+        if (Build.VERSION.SDK_INT <= 21) {
             fabButton.setVisibility(View.INVISIBLE);
         }
         return view;

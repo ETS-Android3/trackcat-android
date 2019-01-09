@@ -244,7 +244,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                         issueNotification(notificationContent);
                     } catch (Exception e) {
-                        Log.v("TEST", e.toString());
+                        Log.v("GOTRACK", e.toString());
                     }
 
                     /*
@@ -255,7 +255,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                         String toSet = Math.round((kmhAverager.getAvgSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
                         average_speed_TextView.setText(toSet);
                     } catch (NullPointerException e) {
-                        Log.v("GOREACK", e.toString());
+                        Log.v("GOTRACK", e.toString());
 
                     }
                 } else if (msg.what == 2) {
@@ -313,7 +313,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             int orientation = Objects.requireNonNull(getActivity()).getRequestedOrientation();
             int rotation = ((WindowManager) Objects.requireNonNull(
                     Objects.requireNonNull(getActivity()).getSystemService(
-                    Context.WINDOW_SERVICE))).getDefaultDisplay().getRotation();
+                            Context.WINDOW_SERVICE))).getDefaultDisplay().getRotation();
             switch (rotation) {
                 case Surface.ROTATION_0:
                     orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
@@ -454,7 +454,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             playPause.setImageResource(R.drawable.record_pausebtn_white);
         } else {
             playPause.setImageResource(R.drawable.record_playbtn_white);
-            if(locatorGPS != null){
+            if (locatorGPS != null) {
                 locatorGPS.startTracking();
             }
         }
@@ -550,7 +550,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             Timer timerForCalc = new Timer();
             total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
         }
-        // TODO Implementation für Nutzer mit API <= 16
 
 
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
@@ -632,7 +631,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-        // TODO version 21
+
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
         }
@@ -862,7 +861,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             }
 
         } catch (NullPointerException e) {
-            Log.v("GOREACK", e.toString());
+            Log.v("GOTRACK", e.toString());
         }
 
         try {
@@ -893,7 +892,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     mPath.setColor(Color.RED);
                     mPath.setWidth(4);
                 } catch (NullPointerException e) {
-                    Log.v("GOREACK", e.toString());
+                    Log.v("GOTRACK", e.toString());
                 }
 
 
@@ -936,21 +935,21 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     String toSet = (Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
                     kmh_TextView.setText(toSet);
                 } catch (NullPointerException e) {
-                    Log.v("GOREACK", e.toString());
+                    Log.v("GOTRACK", e.toString());
                 }
                 try {
                     TextView distance_TextView = view.findViewById(R.id.distance_TextView);
                     String toSet = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
                     distance_TextView.setText(toSet);
                 } catch (NullPointerException e) {
-                    Log.v("GOREACK", e.toString());
+                    Log.v("GOTRACK", e.toString());
                 }
                 try {
                     TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
                     String toSet = Math.round(location.getAltitude()) + " m";
                     altimeter_TextView.setText(toSet);
                 } catch (NullPointerException e) {
-                    Log.v("GOREACK", e.toString());
+                    Log.v("GOTRACK", e.toString());
                 }
             }
         } catch (NullPointerException e) {
@@ -973,7 +972,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             String toSet = "0.0 km/h";
             kmh_TextView.setText(toSet);
         } catch (NullPointerException e) {
-            Log.v("GOREACK", e.toString());
+            Log.v("GOTRACK", e.toString());
         }
 
         playPause.setImageResource(R.drawable.record_playbtn_white);
