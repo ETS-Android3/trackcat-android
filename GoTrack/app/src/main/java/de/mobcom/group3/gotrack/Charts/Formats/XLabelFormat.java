@@ -26,10 +26,10 @@ public class XLabelFormat extends Format {
     private String[] label7 = {"", Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, ""};
     private String[] labelDefault = {"", Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, ""};
 
-    public XLabelFormat(int curDay){
+    public XLabelFormat(int curDay) {
         /* this will set the correct Labelstyle corresponding to the current weekday */
         /* This way, the current weekday will always be displayed last on the graphs */
-        switch (curDay){
+        switch (curDay) {
             case 1:
                 xLabels = label1;
                 break;

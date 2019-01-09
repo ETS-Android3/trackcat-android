@@ -3,13 +3,16 @@ package de.mobcom.group3.gotrack.Database.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+
 import com.google.gson.Gson;
 
 import de.mobcom.group3.gotrack.Database.Models.Route;
 import de.mobcom.group3.gotrack.Database.Models.User;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
 import static de.mobcom.group3.gotrack.Database.DAO.DbContract.UserEntry.*;
 
 /**
@@ -42,9 +45,9 @@ public class UserDAO {
      *
      * @param user of type user to be stored in the database
      *
-     * <p>
-     *      Sets the database id to the model.
-     * </p>
+     *             <p>
+     *             Sets the database id to the model.
+     *             </p>
      */
     public void create(User user) {
         DbHelper dbHelper = new DbHelper(context);
@@ -62,9 +65,9 @@ public class UserDAO {
      * @return content values to be inserted into database
      *
      * <p>
-     *     Maps the attributes of the user model to content values based on columns
-     *     where they have to be inserted. This type of prepared statement should prevent SQL
-     *     injections.
+     * Maps the attributes of the user model to content values based on columns
+     * where they have to be inserted. This type of prepared statement should prevent SQL
+     * injections.
      * </p>
      */
     private ContentValues valueGenerator(User user) {
@@ -99,7 +102,7 @@ public class UserDAO {
                     COL_ISACTIVE,
                     COL_THEME,
                     COL_HINT,
-                    COL_IMAGE };
+                    COL_IMAGE};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
@@ -107,7 +110,7 @@ public class UserDAO {
                     selectionArgs,
                     null,
                     null,
-                    null )) {
+                    null)) {
                 if (cursor.moveToFirst()) {
                     result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
                     result.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(COL_FIRSTNAME)));
@@ -153,7 +156,7 @@ public class UserDAO {
                     COL_ISACTIVE,
                     COL_IMAGE,
                     COL_HINT,
-                    COL_THEME };
+                    COL_THEME};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
@@ -161,7 +164,7 @@ public class UserDAO {
                     null,
                     null,
                     null,
-                    orderArgs[0] + " " + orderArgs[1] )) {
+                    orderArgs[0] + " " + orderArgs[1])) {
                 if (cursor.moveToFirst())
                     do {
                         result.add(new User(
@@ -184,7 +187,7 @@ public class UserDAO {
     /**
      * Updates a specific user in database with handed over user, which has matching id.
      *
-     * @param id of type integer of which route has to be updated
+     * @param id   of type integer of which route has to be updated
      * @param user of type user which would override user with defined id in database
      */
     public void update(int id, User user) {
@@ -223,9 +226,9 @@ public class UserDAO {
      *
      * @param jsonString of type string which defines the route to be imported
      *
-     * <p>
-     *      Creates a user with the attributes which were defined in JSON
-     * </p>
+     *                   <p>
+     *                   Creates a user with the attributes which were defined in JSON
+     *                   </p>
      */
     public void importUserFromJson(String jsonString) {
         this.create(gson.fromJson(jsonString, imExportType));
@@ -236,9 +239,9 @@ public class UserDAO {
      *
      * @param jsonStrings of type List<String> which inherits the routes to be imported
      *
-     * <p>
-     *      Creates a user for each entry with the attributes which were defined in JSON
-     * </p>
+     *                    <p>
+     *                    Creates a user for each entry with the attributes which were defined in JSON
+     *                    </p>
      */
     public void importUsersFromJson(ArrayList<String> jsonStrings) {
         for (String jsonString : jsonStrings) {
