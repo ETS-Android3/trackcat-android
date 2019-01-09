@@ -57,7 +57,6 @@ public class Import {
             String content = stringArr[1];
             RouteDAO rDAO = new RouteDAO(context);
             UserDAO uDAO = new UserDAO(context);
-
             /* Suchen des aktiven Nutzers */
             List<User> users = uDAO.readAll();
             int activeUser = 0;
