@@ -11,7 +11,7 @@ public class User {
     private String firstName;
     private String lastName;
     private boolean isActive;
-    private boolean darkThemeActive; // true for dark, false for light theme
+    private boolean darkThemeActive;
     private boolean hintsActive;
     private int id;
     private String eMail;
@@ -38,7 +38,7 @@ public class User {
         this.lastName = lastName;
         this.eMail = eMail;
         this.image = image;
-        this.setActiveForDB(active);
+        this.setActiveDB(active);
         this.setDarkThemeActiveDB(themeActive);
         this.setHintsActiveDB(hintsActive);
     }
@@ -170,7 +170,7 @@ public class User {
      *     Returns "1" if the user is currently the active one or "0" if it isn't.
      * </p>
      */
-    public int isActiveForDB() {
+    public int isActiveDB() {
         if(isActive)
             return 1;
         else
@@ -205,7 +205,7 @@ public class User {
      *     to define that it isn't.
      * </p>
      */
-    public void setActiveForDB(int active) {
+    public void setActiveDB(int active) {
         this.isActive = active == 1;
     }
 

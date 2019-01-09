@@ -62,6 +62,7 @@ final class DbContract {
      + class to declare columns for route table
      */
     static final class RouteEntry implements BaseColumns {
+        private RouteEntry() {}
         static final String TABLE_NAME = "route_table";
         static final String COL_ID = "id";
         static final String COL_USER = "fk_user_id";
@@ -78,6 +79,7 @@ final class DbContract {
      + class to declare columns for user table
      */
     static final class UserEntry implements BaseColumns {
+        private UserEntry() {}
         static final String TABLE_NAME = "user_table";
         static final String COL_ID = "id";
         static final String COL_LASTNAME = "lastname";

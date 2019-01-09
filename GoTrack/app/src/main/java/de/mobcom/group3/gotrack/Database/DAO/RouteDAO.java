@@ -234,7 +234,8 @@ public class RouteDAO {
                     COL_ISIMPORTED,
                     COL_LOCATIONS };
             long sevenDaysInMillis = 604800000;
-            String having = COL_DATE + " >= " + (System.currentTimeMillis() - sevenDaysInMillis);
+            String having = COL_DATE + " >= " + (System.currentTimeMillis() - sevenDaysInMillis) +
+                    " AND " + COL_ISIMPORTED + " == 0";
             try (Cursor cursor = dbHelper.getWritableDatabase().query(
                     TABLE_NAME,
                     projection,

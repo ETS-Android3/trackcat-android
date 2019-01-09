@@ -72,7 +72,7 @@ public class UserDAO {
         values.put(COL_FIRSTNAME, user.getFirstName());
         values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_MAIL, user.getMail());
-        values.put(COL_ISACTIVE, user.isActiveForDB());
+        values.put(COL_ISACTIVE, user.isActiveDB());
         values.put(COL_HINT, user.isHintsActiveDB());
         values.put(COL_THEME, user.isDarkThemeActiveDB());
         values.put(COL_IMAGE, user.getImage());
@@ -112,7 +112,7 @@ public class UserDAO {
                     result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
                     result.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(COL_FIRSTNAME)));
                     result.setLastName(cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)));
-                    result.setActiveForDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)));
+                    result.setActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)));
                     result.setHintsActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)));
                     result.setDarkThemeActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)));
                     result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));
@@ -232,21 +232,6 @@ public class UserDAO {
     }
 
     /**
-     * Imports all users from handed over JSON List.
-     *
-     * @param jsonStrings of type List<String> which inherits the routes to be imported
-     *
-     * <p>
-     *      Creates a user for each entry with the attributes which were defined in JSON
-     * </p>
-     */
-    public void importUsersFromJson(ArrayList<String> jsonStrings) {
-        for (String jsonString : jsonStrings) {
-            this.importUserFromJson(jsonString);
-        }
-    }
-
-    /**
      * Creates a JSON string which defines a user object and its attributes.
      *
      * @param id of type integer of which user has to be exported
@@ -254,18 +239,5 @@ public class UserDAO {
      */
     public String exportUserToJson(int id) {
         return gson.toJson(this.read(id));
-    }
-
-    /**
-     * Creates a List of JSON strings which defines all user objects and its attributes.
-     *
-     * @return a List of JSON strings
-     */
-    public ArrayList<String> exportUsersToJson() {
-        ArrayList<String> result = new ArrayList<>();
-        for (User user : this.readAll(new String[]{COL_ID, "DESC"})) {
-            result.add(gson.toJson(user));
-        }
-        return result;
     }
 }
