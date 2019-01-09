@@ -6,12 +6,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import de.mobcom.group3.gotrack.Charts.LineChartFragment;
 import de.mobcom.group3.gotrack.R;
 
 public class RecordDetailsChartsFragment extends Fragment {
 
     private FragmentTransaction fragTransaction;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,7 +42,7 @@ public class RecordDetailsChartsFragment extends Fragment {
 
         /* Charts in Container einfügen */
         fragTransaction = getChildFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.speedContainer,lineFragSpeed , getResources().getString(R.string.fRecordDetailsChartSpeed));
+        fragTransaction.replace(R.id.speedContainer, lineFragSpeed, getResources().getString(R.string.fRecordDetailsChartSpeed));
         fragTransaction.replace(R.id.altitudeContainer, lineFragAltitude, getResources().getString(R.string.fRecordDetailsChartAltitude));
         fragTransaction.commit();
 

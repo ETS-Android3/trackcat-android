@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import de.mobcom.group3.gotrack.R;
 
 public class RecordDetailsFragment extends Fragment {

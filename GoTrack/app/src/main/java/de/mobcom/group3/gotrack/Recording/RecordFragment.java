@@ -313,7 +313,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             int orientation = Objects.requireNonNull(getActivity()).getRequestedOrientation();
             int rotation = ((WindowManager) Objects.requireNonNull(
                     Objects.requireNonNull(getActivity()).getSystemService(
-                    Context.WINDOW_SERVICE))).getDefaultDisplay().getRotation();
+                            Context.WINDOW_SERVICE))).getDefaultDisplay().getRotation();
             switch (rotation) {
                 case Surface.ROTATION_0:
                     orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
@@ -454,7 +454,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             playPause.setImageResource(R.drawable.record_pausebtn_white);
         } else {
             playPause.setImageResource(R.drawable.record_playbtn_white);
-            if(locatorGPS != null){
+            if (locatorGPS != null) {
                 locatorGPS.startTracking();
             }
         }

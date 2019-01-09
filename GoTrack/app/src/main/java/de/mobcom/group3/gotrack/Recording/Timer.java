@@ -1,6 +1,7 @@
 package de.mobcom.group3.gotrack.Recording;
 
 import android.os.Message;
+
 import java.util.TimerTask;
 
 /*
@@ -42,8 +43,8 @@ public class Timer {
     }
 
     /*
-    * build Readable String from Seconds
-    * */
+     * build Readable String from Seconds
+     * */
     String secToString(double secs) {
         // create readable String
         int hours = (int) Math.floor((secs / 60) / 60);
