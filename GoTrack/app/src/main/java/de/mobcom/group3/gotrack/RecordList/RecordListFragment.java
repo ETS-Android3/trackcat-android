@@ -11,6 +11,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,8 +96,10 @@ public class RecordListFragment extends Fragment {
             /* Versenden einer Route */
             @Override
             public void onShareClick(int position) {
-                Export.getExport().exportRoute(getContext(), records.get(position).getId(),
-                        true);
+                String fileName = Export.getExport().exportRoute(getContext(),
+                        records.get(position).getId(),true);
+                Log.i("GoTrack-Export", "Die Datei: "+ fileName +
+                        " wurde erstellt.");
             }
         });
 

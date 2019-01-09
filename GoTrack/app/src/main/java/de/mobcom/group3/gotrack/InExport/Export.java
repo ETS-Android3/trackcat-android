@@ -118,8 +118,8 @@ public class Export {
                     DIRECTORY_DOWNLOADS).toString();
             File root = new File(mainFileDirectory, "GoTrack");
             if (!root.exists()) {
-                Log.i("GoTrack-Export", "Der Ordner GoTrack wurde in Download erstellt.");
                 root.mkdirs();
+                Log.i("GoTrack-Export", "Der Ordner GoTrack wurde in Download erstellt.");
             }
             try{
                 File file = new File(root, fileName);

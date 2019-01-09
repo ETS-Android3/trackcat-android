@@ -62,7 +62,7 @@ public class ImportActivity extends Activity {
         }
     }
 
-    /* Durch diese Methode wird die eingenständige Version der diese App gestartet werden */
+    /* Durch diese Methode kann die eingenständige Version dieser App gestartet werden */
     public void openApp(Context context, String packageName) {
         PackageManager manager = context.getPackageManager();
         try {

@@ -169,26 +169,34 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                                 currentUser.getLastName();
                         if (rBtn_all_records.isChecked()) {
                             type = "Gesamtes Profil \"" + fullName + "\" exportiert!";
-                            Export.getExport().exportAllUserData(getActivity(), currentUser.getId(),
-                                    true);
+                            String fileName = Export.getExport().exportAllUserData(getActivity(),
+                                    currentUser.getId(), true);
+                            Log.i("GoTrack-Export", "Die Datei: "+ fileName +
+                                    " wurde erstellt.");
 
                             /* Nutzer-Einstellung exportieren */
                         } else if (rBtn_all_options.isChecked()) {
                             type = "Profileinstellungen von \"" + fullName + "\" exportiert!";
-                            Export.getExport().exportUserData(getActivity(), currentUser.getId(),
-                                    true);
+                            String fileName = Export.getExport().exportUserData(getActivity(),
+                                    currentUser.getId(),true);
+                            Log.i("GoTrack-Export", "Die Datei: "+ fileName +
+                                    " wurde erstellt.");
 
                             /* Alle Routen exportieren */
                         } else if (rBtn_all_route.isChecked()) {
                             type = "Alle Routen von \"" + fullName + "\" exportiert!";
-                            Export.getExport().exportAllRoute(getActivity(), currentUser.getId(),
-                                    true);
+                            String fileName = Export.getExport().exportAllRoute(getActivity(),
+                                    currentUser.getId(),true);
+                            Log.i("GoTrack-Export", "Die Datei: "+ fileName +
+                                    " wurde erstellt.");
 
                             /* Alle Nutzer exportieren */
                         } else if (rBtn_all_users.isChecked()) {
                             type = "App Backup erstellt!";
-                            Export.getExport().exportAllRouteUsers(getActivity(),
+                            String fileName = Export.getExport().exportAllRouteUsers(getActivity(),
                                     true);
+                            Log.i("GoTrack-Export", "Die Datei: "+ fileName +
+                                    " wurde erstellt.");
                         }
 
                         if (MainActivity.getHints()) {
