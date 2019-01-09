@@ -53,7 +53,7 @@
         haben Sie die Möglichkeit die eben aufgezeichnete Strecke zu verwerfen oder zu speichern.</string>
     <string name="help_record_list">Hier finden Sie die gesamte Liste Ihrer Aufzeichnungen.\n\nZum Öffnen der Detailansicht klicken Sie auf die
         entsprechende Aufzeichnung. Zum Löschen ziehen Sie die entsprechende Aufzeichnung nach links.\n\nZum Teilen einer Aufzeichnung ziehen Sie
-        diese nach rechts.</string>
+        diese nach rechts.\n\nZum Aktualisieren der Liste, ziehen Sie nach unten.</string>
     <string name="help_settings">Hier haben Sie die Möglichkeit benutzerdefinierte Einstellungen vorzunehmen. Durch einfaches Togglen, Aktivieren oder
         Deaktivieren, lassen sich z.B. das Theme der App ändern oder Hilfestellungen aktivieren bzw. deaktivieren.\n\nZum Exportieren Ihrer Daten, klicken
         Sie einfach auf \"Exportieren\" und wählen Sie die vorzunehmende Option.\n\nNäheres zur von Ihnen verwendeten Version finden Sie unter \"Version\".</string>
