@@ -324,7 +324,9 @@ public class RouteDAO {
      */
     public void importRouteFromJson(String jsonString, int userId, boolean isImported) {
         Route route = gson.fromJson(jsonString, exImportType);
-        route.setImported(isImported);
+        if (!route.isImported()) {
+            route.setImported(isImported);
+        }
         route.setUserID(userId);
         this.create(route);
     }
