@@ -99,7 +99,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         }
         /* Wechsel des Themes */
         else if (preference.getKey().equals("dark_theme")) {
-            Log.d("PREFERENCES", "Wechsel des Themes!");
 
             MainActivity.isActiv = false;
 
@@ -107,7 +106,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 if (MainActivity.getHints()) {
                     Toast.makeText(getActivity(), "DarkTheme aktiviert!", Toast.LENGTH_LONG).show();
                 }
-                Log.d("PREFERENCES", "DarkTheme aktiviert!");
+
                 /* Nutzer aktualisieren */
                 currentUser.setDarkThemeActive(true);
                 MainActivity.setDarkTheme(true);
@@ -116,7 +115,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 if (MainActivity.getHints()) {
                     Toast.makeText(getActivity(), "LightTheme aktiviert!", Toast.LENGTH_LONG).show();
                 }
-                Log.d("PREFERENCES", "LightTheme aktiviert!");
+
                 /* Nutzer aktualisieren */
                 currentUser.setDarkThemeActive(false);
                 MainActivity.setDarkTheme(false);
@@ -125,7 +124,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             MainActivity.restart();
 
         } else {
-            Log.d("PREFERENCES", "Unbekannte Aktion ausgeführt!");
+            if (MainActivity.getHints()) {
+                Toast.makeText(getActivity(), "Unbekannte Aktion ausgeführt!", Toast.LENGTH_LONG).show();
+            }
         }
         dao.update(MainActivity.getActiveUser(), currentUser);
     }
