@@ -228,7 +228,9 @@ public class UserDAO {
      * </p>
      */
     public void importUserFromJson(String jsonString) {
-        this.create(gson.fromJson(jsonString, imExportType));
+        User user = gson.fromJson(jsonString, imExportType);
+        user.setActive(false);
+        this.create(user);
     }
 
     /**
