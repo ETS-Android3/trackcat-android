@@ -74,13 +74,17 @@ public class LineChartFragment extends Fragment {
                 maxValue = values[i];
             }
         }
+        String description=title;
+        if(title=="Höhenmeter"){
+            description= title+" (WGS-84)";
+        }
 
         /* Incrementing Steps are created dynamically */
         incrementStepsY = maxValue / 5;
 
         /* Turning Arrays to XYSeries */
         XYSeries series1 = new SimpleXYSeries(
-                Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, title);
+                Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, description);
 
         /* Smoothing curves */
         series1Format.setInterpolationParams(

@@ -19,7 +19,6 @@ import java.util.List;
 import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
-import de.mobcom.group3.gotrack.MainActivity;
 
 /* Mit dieser Klasse können exportierte Nutzer und Routen, aus einer Datei, eingelesen werden. */
 public class Import {
@@ -58,10 +57,19 @@ public class Import {
             String content = stringArr[1];
             RouteDAO rDAO = new RouteDAO(context);
             UserDAO uDAO = new UserDAO(context);
+            /* Suchen des aktiven Nutzers */
+            List<User> users = uDAO.readAll();
+            int activeUser = 0;
+            for (int i = 0; i < users.size(); i++) {
+                if (users.get(i).isActive()) {
+                    activeUser = users.get(i).getId();
+                    break;
+                }
+            }
             switch (index) {
                 case ("SingleRoute"):
                     /* Import einer einzelnen Route */
-                    rDAO.importRouteFromJson(content, MainActivity.getActiveUser(), true);
+                    rDAO.importRouteFromJson(content, activeUser, true);
                     Log.i("GoTrack-Import", "Der Import einer Route wurde gestartet.");
                     Toast.makeText(context, "Die Datei wird importiert",
                             Toast.LENGTH_LONG).show();
@@ -76,7 +84,7 @@ public class Import {
                 case ("AllRoutes"):
                     /* Import aller Routen eines Users, ohne den User */
                     rDAO.importRoutesFromJson(stringToarrayList(content),
-                            MainActivity.getActiveUser(), true);
+                            activeUser, true);
                     Log.i("GoTrack-Import",
                             "Der Import aller Routen eines Users wurde gestartet.");
                     Toast.makeText(context, "Die Datei wird importiert",
@@ -202,7 +210,6 @@ public class Import {
                         "Der User " + u.getMail() + " existiert bereits.");
                 break;
             }
-
         }
         if (!exist) {
             Log.i("GoTrack-Import",
