@@ -59,7 +59,7 @@ public class Import {
             UserDAO uDAO = new UserDAO(context);
             /* Suchen des aktiven Nutzers */
             List<User> users = uDAO.readAll();
-            int activeUser = 0;
+            int activeUser = 1;
             for (int i = 0; i < users.size(); i++) {
                 if (users.get(i).isActive()) {
                     activeUser = users.get(i).getId();
