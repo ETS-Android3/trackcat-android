@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
@@ -115,23 +118,28 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                     String fullName = user.getFirstName() + " " + user.getLastName();
 
                     if (actionBtn.getText().equals("Erstellen")) {
-                        /* An Datenbank senden */
-                        dao.create(user);
+                        if (validateUserInputs(user)) {
+                            /* An Datenbank senden */
+                            dao.create(user);
 
-                        /* Alten Nutzer deaktivieren */
-                        User oldUser = dao.read(MainActivity.getActiveUser());
-                        oldUser.setActive(false);
-                        dao.update(MainActivity.getActiveUser(), oldUser);
-                        MainActivity.setCreateUser(true);
+                            /* Alten Nutzer deaktivieren */
+                            User oldUser = dao.read(MainActivity.getActiveUser());
+                            oldUser.setActive(false);
+                            dao.update(MainActivity.getActiveUser(), oldUser);
+                            MainActivity.setCreateUser(true);
 
-                        /* UI-Meldung & Felder löschen */
-                        if (MainActivity.getHints()) {
-                            Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde erstellt!", Toast.LENGTH_LONG).show();
+                            /* UI-Meldung & Felder löschen */
+                            if (MainActivity.getHints()) {
+                                Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde erstellt!", Toast.LENGTH_LONG).show();
+                            }
+                            fieldFirstName.setText("");
+                            fieldLastName.setText("");
+                            fieldEmail.setText("");
+                            imageView.setImageResource(R.raw.no_image);
+
+                            /* Spinner aktualisieren */
+                            MainActivity.getInstance().addItemsToSpinner();
                         }
-                        fieldFirstName.setText("");
-                        fieldLastName.setText("");
-                        fieldEmail.setText("");
-                        imageView.setImageResource(R.raw.no_image);
                     } else {
                         /* An Datenbank senden */
                         User newUser = dao.read(MainActivity.getActiveUser());
@@ -140,18 +148,20 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                         newUser.setMail(email);
                         newUser.setActive(true);
                         newUser.setImage(imageBytes);
-                        dao.update(MainActivity.getActiveUser(), newUser);
+                        if (validateUserInputs(newUser)) {
+                            dao.update(MainActivity.getActiveUser(), newUser);
 
-                        /* UI-Meldung */
-                        if (MainActivity.getHints()) {
-                            Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde bearbeitet!", Toast.LENGTH_LONG).show();
+                            /* UI-Meldung */
+                            if (MainActivity.getHints()) {
+                                Toast.makeText(getContext(), "Benutzer \"" + fullName + "\" wurde bearbeitet!", Toast.LENGTH_LONG).show();
+                            }
+
+                            /* Spinner aktualisieren */
+                            MainActivity.getInstance().addItemsToSpinner();
+                            /* Dashboard anzeigen */
+                            swapFragment();
                         }
                     }
-
-                    MainActivity.getInstance().addItemsToSpinner();
-                    /* Dashboard anzeigen */
-                    swapFragment();
-
                 } else {
                     if (MainActivity.getHints()) {
                         Toast.makeText(getContext(), "Bitte alle Felder ausfüllen", Toast.LENGTH_LONG).show();
@@ -168,6 +178,25 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
         }
+    }
+
+    private static boolean validateUserInputs(User user) {
+        int nameLength = 15;
+        boolean valid = true;
+        if ((user.getFirstName() + " " + user.getLastName()).length() > nameLength) {
+            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ihr Name ist zu lang (max. " + nameLength + " Zeichen)!", Toast.LENGTH_SHORT).show();
+            valid = false;
+        } else if (!validateEmail(user.getMail())) {
+            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Geben Sie eine gültige Email an!", Toast.LENGTH_SHORT).show();
+            valid = false;
+        }
+        return valid;
+    }
+
+    private static boolean validateEmail(String email) {
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        // TODO: Abfrage ob Email Adresse schon in DB ist
+        return pattern.matcher(email).matches();
     }
 
     @Override
