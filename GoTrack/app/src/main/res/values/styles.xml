@@ -35,8 +35,16 @@
     <!-- Dialog -->
     <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
         <item name="colorAccent">@color/colorGreyAccent</item>
-        <item name="android:textColorPrimary">@color/colorBlack</item>
-        <item name="android:background">@color/colorGreyDark</item>
+        <item name="android:textColorPrimary">@color/ap_white</item>
+        <item name="android:background">@color/colorGreenDark</item>
+    </style>
+
+    <!-- EditTextTheme -->
+    <style name="EditTextTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">@color/colorGreyAccent</item>
+        <item name="colorControlActivated">@color/colorGreyAccent</item>
+        <item name="colorControlHighlight">@color/colorGreyAccent</item>
+
     </style>
 
     <style name="PlotLight" parent="APDefacto">

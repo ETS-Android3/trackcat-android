@@ -7,6 +7,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/colorGreenLight"
     android:fitsSystemWindows="true">
 
     <LinearLayout
@@ -17,7 +18,7 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/ic_launcher"
+        <ImageView android:src="@raw/logo"
             android:layout_width="wrap_content"
             android:layout_height="72dp"
             android:layout_marginBottom="24dp"
@@ -28,9 +29,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:theme="@style/EditTextTheme"
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_email"
                 android:layout_width="match_parent"
+                android:textColor="@color/ap_black"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:hint="Email" />
@@ -40,10 +43,12 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:theme="@style/EditTextTheme"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_password"
                 android:layout_width="match_parent"
+                android:textColor="@color/ap_black"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:hint="Passwort"/>
@@ -56,6 +61,8 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
+            android:textColor="@color/ap_white"
+            android:background="@color/colorGreyAccent"
             android:text="Login"/>
 
         <TextView

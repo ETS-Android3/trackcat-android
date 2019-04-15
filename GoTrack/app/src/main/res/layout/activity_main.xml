@@ -17,7 +17,13 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:theme="@style/Toolbar" />
+                android:theme="@style/Toolbar">
+            <ImageView android:src="@raw/logo"
+                android:adjustViewBounds="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"/>
+            </android.support.v7.widget.Toolbar>
 
             <!-- Neue Fragments werden hier eingesetzt  -->
             <FrameLayout

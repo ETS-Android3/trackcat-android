@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GoTrack</string>
+    <string name="app_name">Trackcat</string>
     <string name="recordListTitle">Aufnahmen</string>
     <string name="recordLastListTitle">Letzte Aktivitäten</string>
     <string name="recordLastListMoreLink">Mehr anzeigen</string>
@@ -32,8 +32,8 @@
     <string name="export_options_all_route">Routen des aktuellen Benutzers</string>
     <string name="export_options_all_users">Alle Daten (alle Benutzer mit allen Routen)</string>
 
-    <string name="category3">Über GoTrack</string>
-    <string name="aboutGoTrack">GoTrack ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
+    <string name="category3">Über TrackCat</string>
+    <string name="aboutGoTrack">TrackCat ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
     <string name="cVersion_title">Version</string>
     <string name="cVersion_summary">1.6.7</string>
     <string name="feedback_title">Feedback geben</string>

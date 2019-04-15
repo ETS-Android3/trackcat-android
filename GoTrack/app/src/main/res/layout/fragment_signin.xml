@@ -17,7 +17,7 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/ic_launcher"
+        <ImageView android:src="@raw/logo"
             android:layout_width="wrap_content"
             android:layout_height="72dp"
             android:layout_marginBottom="24dp"
