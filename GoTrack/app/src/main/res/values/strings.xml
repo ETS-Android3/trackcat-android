@@ -16,6 +16,9 @@
     <string name="fImport">IMPORT</string>
     <string name="fSettings">SETTINGS</string>
     <string name="fPageViewer">PAGE_VIEWER</string>
+    <string name="fLoadScreen">LOADSCREEN</string>
+    <string name="fLogIn">LOGIN</string>
+    <string name="fSignIn">SIGNIN</string>
     <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
     <string name="fNewUser">NEW_USER</string>
