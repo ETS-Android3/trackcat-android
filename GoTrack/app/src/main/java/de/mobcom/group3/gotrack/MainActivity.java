@@ -34,6 +34,7 @@ import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.InExport.Import;
+import de.mobcom.group3.gotrack.Profile.ProfileFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.Locator;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
@@ -415,6 +416,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.show_help, menu);
         return true;
@@ -437,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_record_list));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_settings));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null ||getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_record_details));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fNewUser)) != null) {
                         String title = ((TextView) (findViewById(R.id.user_settings_title))).getText().toString();
@@ -486,6 +488,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivityForResult(
                         Intent.createChooser(intent, "Import"), 0);
                 break;
+            case R.id.nav_profil:
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) == null) {
+                    loadProfile();
+                }
+                break;
+
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
                     loadSettings();
@@ -621,6 +629,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new RecordListFragment(),
                 getResources().getString(R.string.fRecordlist));
+        fragTransaction.commit();
+    }
+
+    /* Laden des Profil-Fragments */
+    public void loadProfile() {
+        Log.i("GoTrack-Fragment", "Das Profil-Fragment wird geladen.");
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, new ProfileFragment(),
+                getResources().getString(R.string.fProfile));
         fragTransaction.commit();
     }
 

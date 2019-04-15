@@ -14,6 +14,7 @@
     <string name="fRecordDetailsDashbaord">RECORD_DETAILS_DASHBOARD</string>
     <string name="fRecordDetailsList">RECORD_DETAILS_LIST</string>
     <string name="fImport">IMPORT</string>
+    <string name="fProfile">PROFILE</string>
     <string name="fSettings">SETTINGS</string>
     <string name="fPageViewer">PAGE_VIEWER</string>
     <string name="fLoadScreen">LOADSCREEN</string>
