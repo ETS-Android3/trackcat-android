@@ -1,85 +1,247 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="56dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/colorGreenLight"
+        android:fitsSystemWindows="true">
 
-        <ImageView android:src="@raw/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="center_horizontal" />
-
-        <!--  Name Label -->
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_name"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingTop="56dp"
+            android:paddingRight="24dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="72dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"
+                android:src="@raw/logo" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="15dp"
+                android:orientation="horizontal">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_image_upload"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:src="@raw/no_image"
+                    app:border_color="#FF000000" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Firstname Label -->
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:theme="@style/EditTextTheme">
+
+                        <EditText
+                            android:id="@+id/user_first_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="Vorname"
+                            android:inputType="textPersonName" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <!-- Lastname Label -->
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:theme="@style/EditTextTheme">
+
+                        <EditText
+                            android:id="@+id/user_last_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="Nachname"
+                            android:inputType="textPersonName" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <!-- Email Label -->
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:theme="@style/EditTextTheme">
+
+                        <EditText
+                            android:id="@+id/user_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="E-Mail"
+                            android:inputType="textEmailAddress" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapWords"
-                android:hint="Name" />
-        </android.support.design.widget.TextInputLayout>
+                android:orientation="horizontal">
 
-        <!-- Email Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_email"
+                <RadioGroup
+                    android:id="@+id/radioGennder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:theme="@style/EditTextTheme">
+
+                    <RadioButton
+                        android:id="@+id/radioFemale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="weiblich" />
+
+                    <RadioButton
+                        android:id="@+id/radioMale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="männlich" />
+
+                    <RadioButton
+                        android:id="@+id/radioVarious"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="diverses" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <!-- Weight Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/EditTextTheme">
 
-        <!-- Password Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_password"
+                <EditText
+                    android:id="@+id/weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="Gewicht"
+                    android:inputType="number" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Age Label -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Password"/>
-        </android.support.design.widget.TextInputLayout>
+                android:orientation="horizontal">
 
-        <!-- Signup Button -->
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_signup"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:text="Account erstellen"/>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight="0.6"
+                    android:theme="@style/EditTextTheme">
 
-        <TextView android:id="@+id/link_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="Schon Mitglied? Login"
-            android:gravity="center"
-            android:textSize="16dip"/>
+                    <SeekBar
+                        android:id="@+id/age"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="115"
+                        android:min="1" />
 
-    </LinearLayout>
-</ScrollView>
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/ageOutput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:text="17 Jahre"
+                    android:textSize="20dip" />
+            </LinearLayout>
+
+
+            <!-- Password Label -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/EditTextTheme">
+
+                <EditText
+                    android:id="@+id/input_password1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Passwort"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Password Label -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/EditTextTheme">
+
+                <EditText
+                    android:id="@+id/input_password2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Passwortwiederholung"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Signup Button -->
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_signin"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@color/colorGreyAccent"
+                android:padding="12dp"
+                android:text="Account erstellen"
+                android:textColor="@color/ap_white" />
+
+            <TextView
+                android:id="@+id/link_login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:text="Schon Mitglied? Login"
+                android:textSize="16dip" />
+
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>

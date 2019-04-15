@@ -50,10 +50,10 @@ public class LogInFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-           /*     fragTransaction = getChildFragmentManager().beginTransaction();
+                fragTransaction = getFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, new SignInFragment(),
                         getResources().getString(R.string.fSignIn));
-                fragTransaction.commit();*/
+                fragTransaction.commit();
             }
         });
 
