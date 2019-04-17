@@ -34,7 +34,9 @@ import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.InExport.Import;
+import de.mobcom.group3.gotrack.Profile.EditPasswordFragment;
 import de.mobcom.group3.gotrack.Profile.ProfileFragment;
+import de.mobcom.group3.gotrack.Profile.EditProfileFragment;
 import de.mobcom.group3.gotrack.RecordList.RecordListFragment;
 import de.mobcom.group3.gotrack.Recording.Locator;
 import de.mobcom.group3.gotrack.Recording.RecordFragment;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private UserDAO userDAO;
     public static Boolean isActiv = false;
     private static boolean isRestart = false;
+    private static Menu menuInstance;
 
     /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
     public static int randomImg = (int) (Math.random() * ((13 - 0) + 1)) + 0;
@@ -97,6 +100,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return spinner;
     }
 
+    public static Menu getMenuInstance() {
+        return menuInstance;
+    }
+
     public static int getActiveUser() {
         return activeUser;
     }
@@ -120,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static void setCreateUser(boolean createUser) {
         createInitialUser = createUser;
     }
+
 
     @Override
     protected void onResume() {
@@ -414,9 +422,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+        menuInstance = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.show_help, menu);
         return true;
@@ -455,6 +465,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(instance, "Diese Funktion muss zunächst in den Einstellungen aktiviert werden!", Toast.LENGTH_LONG).show();
                 }
                 return true;
+            case R.id.nav_editProfile:
+                loadEditProfile();
+                return true;
+            case R.id.nav_editPassword:
+                loadEditPassword();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -467,16 +483,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_dashboard:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
                     loadDashboard();
+                    menuInstance.removeGroup(R.id.nav_profileSettings);
                 }
                 break;
             case R.id.nav_recordlist:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
                     loadRecordList();
+                    menuInstance.removeGroup(R.id.nav_profileSettings);
                 }
                 break;
             case R.id.nav_record:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
                     loadRecord();
+                    menuInstance.removeGroup(R.id.nav_profileSettings);
                 }
                 break;
             case R.id.nav_import:
@@ -490,12 +509,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_profil:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) == null) {
+                    menuInstance.removeGroup(R.id.nav_profileSettings);
                     loadProfile();
                 }
-                break;
-
-            case R.id.nav_settings:
+                break;            case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
+                    menuInstance.removeGroup(R.id.nav_profileSettings);
                     loadSettings();
                 }
                 break;
@@ -647,6 +666,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new SettingsFragment(),
                 getResources().getString(R.string.fSettings));
+        fragTransaction.commit();
+    }
+
+    /* Laden des Einstellung-Fragments */
+    public void loadEditProfile() {
+        Log.i("GoTrack-Fragment", "Das Profil-Bearbeiten-Fragment wird geladen.");
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, new EditProfileFragment(),
+                getResources().getString(R.string.fEditProfile));
+        fragTransaction.commit();
+    }
+    /* Laden des Einstellung-Fragments */
+    public void loadEditPassword() {
+        Log.i("GoTrack-Fragment", "Das Passwort-Ändern-Fragment wird geladen.");
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, new EditPasswordFragment(),
+                getResources().getString(R.string.fEditPassword));
         fragTransaction.commit();
     }
 
