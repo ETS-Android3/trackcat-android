@@ -137,7 +137,7 @@ public class SignInFragment extends Fragment {
         Matcher matcher = pattern.matcher(input_email);
 
         if (!matcher.matches()) {
-            email.setError("Ihre Email Adresse entsrpicht nicht dem folgenden Schema: ");
+            email.setError("Ihre Email Adresse entsrpicht nicht dem Standard-Email Format.");
             Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ihre E-Mail Adresse ist nicht konform!", Toast.LENGTH_SHORT).show();
             valid = false;
         }
@@ -145,10 +145,10 @@ public class SignInFragment extends Fragment {
         /* validate password */
         String passwordErrorMsg = "Das Passwort muss zwischen 8 und 15 Zeichen lang sein und mindestens folgende Parameter enthalten: 1x Groß- und Kleinbuchstabe, 1x Zahl und 1x Sonderzeichen";
         String regrex2 = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{8,15}$";
-        Pattern pattern2 = Pattern.compile(regrex);
+        Pattern pattern2 = Pattern.compile(regrex2);
         Matcher matcher2 = pattern2.matcher(input_password1);
 
-        if (!matcher.matches()) {
+        if (!matcher2.matches()) {
             password1.setError(passwordErrorMsg);
             password2.setError(passwordErrorMsg);
             Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ihr Passwort ist nicht konform!", Toast.LENGTH_SHORT).show();
