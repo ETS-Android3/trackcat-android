@@ -23,21 +23,15 @@ import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Objects;
-
 import de.hdodenhof.circleimageview.CircleImageView;
-import de.mobcom.group3.gotrack.Database.DAO.RouteDAO;
-import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
-import de.mobcom.group3.gotrack.Database.Models.User;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
-import de.mobcom.group3.gotrack.Recording.Timer;
-import de.mobcom.group3.gotrack.Statistics.SpeedAverager;
+
 
 public class EditProfileFragment extends Fragment implements View.OnClickListener {
 
@@ -46,6 +40,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     AlertDialog.Builder alert;
     LayoutInflater layoutInflater;
     View alertView;
+
     /* Variables */
     View view;
     EditText firstName, lastName;
@@ -71,14 +66,12 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         btnSave = view.findViewById(R.id.btn_save);
         imageUpload = view.findViewById(R.id.profile_image_upload);
 
-
         /* set onClick Listener */
         btnSave.setOnClickListener(this);
         dayOfBirth.setOnClickListener(this);
         height.setOnClickListener(this);
         weight.setOnClickListener(this);
         imageUpload.setOnClickListener(this);
-
         return view;
     }
 
@@ -91,16 +84,24 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 String input_lastName = lastName.getText().toString();
                 String input_weight = weight.getText().toString();
                 String input_height = height.getText().toString();
-                //String input_gender =gender.getCheckedRadioButtonId();
 
-                /* validate inputs */
-                if (!validate()) {
-                    onProfileChangeFailed();
-                    return;
+                /* get selected gender */
+                int input_gender_id = gender.getCheckedRadioButtonId();
+                String gender="";
+                switch (input_gender_id) {
+                    case R.id.radioFemale:
+                        gender="weiblich";
+                        break;
+                    case R.id.radioMale:
+                        gender="männlich";
+                        break;
+                    case R.id.radioVarious:
+                        gender="diverses";
+                        break;
                 }
 
-                /* check if all fields are filled */
-                if (!input_firstName.equals("") && !input_lastName.equals("")) {
+                /* check if all fields are filled and  validate inputs*/
+                if (validate() && !input_firstName.equals("") && !input_lastName.equals("")) {
 
                     /* ImageView in Bytes umwandeln */
                     ImageView imageView = view.findViewById(R.id.profile_image_upload);
@@ -117,12 +118,12 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         Toast.makeText(getContext(), "Benutzer \"" + input_firstName + " " + input_lastName + "\" wurde erfolgreich geändert!", Toast.LENGTH_LONG).show();
                     }
 
-
                 } else {
                     if (MainActivity.getHints()) {
                         Toast.makeText(getContext(), "Bitte alle Felder ausfüllen!", Toast.LENGTH_LONG).show();
                     }
                 }
+
                 break;
             case R.id.profile_image_upload:
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -135,6 +136,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.input_dayOfBirth:
 
+                /* set datepicker an set value in field */
                 final Calendar cldr = Calendar.getInstance();
                 int day = cldr.get(Calendar.DAY_OF_MONTH);
                 int month = cldr.get(Calendar.MONTH);
@@ -157,6 +159,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_numberpicker, null, true) : null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
+                    /* set max, min and unit */
                     alert.setView(alertView);
                     NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                     numberPickerInteger.setMinValue(0);
@@ -195,6 +198,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_numberpicker, null, true) : null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
+                    /* set max, min and unit */
                     alert.setView(alertView);
                     NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                     numberPickerInteger.setMinValue(0);
@@ -226,7 +230,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         }
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -252,31 +255,15 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         /* read inputs */
         String input_firstName = firstName.getText().toString();
         String input_lastName = lastName.getText().toString();
-        String input_weight = weight.getText().toString();
-        String input_height = height.getText().toString();
 
         /* validate name */
         if ((input_firstName + " " + input_lastName).length() > nameLength) {
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ihr Name ist zu lang (max. " + nameLength + " Zeichen)!", Toast.LENGTH_SHORT).show();
+            firstName.setError("Ihr kompletter Name darf nicht länger als max. " + nameLength+" + Zeichen sein.");
+            lastName.setError("Ihr kompletter Name darf nicht länger als max. " + nameLength+" + Zeichen sein.");
+            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ihr Name ist zu lang.", Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
-        //TODO validate weight
-        //TODO validate height
-
         return valid;
     }
-
-    /* Function, if change profile success */
-    public void onProfileChangeSuccess() {
-        btnSave.setEnabled(true);
-
-    }
-
-    /* Function, if change profile failed */
-    public void onProfileChangeFailed() {
-        //TODO error message
-        btnSave.setEnabled(true);
-    }
-
 }

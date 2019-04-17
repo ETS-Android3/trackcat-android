@@ -26,117 +26,7 @@
                 android:src="@raw/logo" />
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="15dp"
-                android:orientation="horizontal">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profile_image_upload"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="10dp"
-                    android:src="@raw/no_image"
-                    app:border_color="#FF000000" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- Firstname Label -->
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:theme="@style/EditTextTheme">
-
-                        <EditText
-                            android:id="@+id/user_first_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:hint="Vorname"
-                            android:inputType="textPersonName" />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <!-- Lastname Label -->
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:theme="@style/EditTextTheme">
-
-                        <EditText
-                            android:id="@+id/user_last_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:hint="Nachname"
-                            android:inputType="textPersonName" />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <!-- Email Label -->
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:theme="@style/EditTextTheme">
-
-                        <EditText
-                            android:id="@+id/user_email"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:hint="E-Mail"
-                            android:inputType="textEmailAddress" />
-                    </android.support.design.widget.TextInputLayout>
-
-                </LinearLayout>
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <RadioGroup
-                    android:id="@+id/radioGennder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:theme="@style/EditTextTheme">
-
-                    <RadioButton
-                        android:id="@+id/radioFemale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="weiblich" />
-
-                    <RadioButton
-                        android:id="@+id/radioMale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="männlich" />
-
-                    <RadioButton
-                        android:id="@+id/radioVarious"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="diverses" />
-                </RadioGroup>
-            </LinearLayout>
-
-            <!-- Weight Label -->
+            <!-- Firstname Label -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -145,51 +35,50 @@
                 android:theme="@style/EditTextTheme">
 
                 <EditText
-                    android:id="@+id/weight"
+                    android:id="@+id/input_firstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:ems="10"
-                    android:hint="Gewicht"
-                    android:inputType="number" />
-
+                    android:hint="Vorname"
+                    android:inputType="textPersonName" />
             </android.support.design.widget.TextInputLayout>
 
-            <!-- Age Label -->
-            <LinearLayout
+            <!-- Lastname Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/EditTextTheme">
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/input_lastName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_weight="0.6"
-                    android:theme="@style/EditTextTheme">
+                    android:ems="10"
+                    android:hint="Nachname"
+                    android:inputType="textPersonName" />
+            </android.support.design.widget.TextInputLayout>
 
-                    <SeekBar
-                        android:id="@+id/age"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:max="115"
-                        android:min="1" />
 
-                </android.support.design.widget.TextInputLayout>
+            <!-- Email Label -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/EditTextTheme">
 
-                <TextView
-                    android:id="@+id/ageOutput"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/input_email"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="17 Jahre"
-                    android:textSize="20dip" />
-            </LinearLayout>
+                    android:ems="10"
+                    android:hint="E-Mail"
+                    android:inputType="textEmailAddress" />
+            </android.support.design.widget.TextInputLayout>
 
-
-            <!-- Password Label -->
+            <!-- Password1 Label -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -205,7 +94,7 @@
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 
-            <!-- Password Label -->
+            <!-- Password2 Label -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -217,7 +106,7 @@
                     android:id="@+id/input_password2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Passwortwiederholung"
+                    android:hint="Passwort wdh."
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 
