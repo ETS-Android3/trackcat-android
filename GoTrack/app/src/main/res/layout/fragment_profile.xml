@@ -50,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dip"
                     android:text="Max Mustermann"
-                    android:textSize="17dip"
+                    android:textSize="21dip"
                     android:textStyle="bold" />
 
                 <TextView
@@ -58,6 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dip"
+                    android:textSize="19dip"
                     android:text="mustermann@web.de" />
 
                 <TextView
@@ -65,119 +66,171 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dip"
+                    android:textSize="19dip"
                     android:text="12.07.1980" />
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
+        <!-- weight Label -->
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/label_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dip"
-                android:orientation="vertical">
+                android:layout_alignParentLeft="true"
+                android:text="Gewicht:"
+                android:textSize="19dip"
+                android:textStyle="bold"/>
 
-                <TextView
+            <TextView
+                android:id="@+id/weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="19dip"
+                android:text="70 kg" />
+        </RelativeLayout>
+
+        <!-- height Label -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/label_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Größe:"
+                android:textSize="19dip"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="19dip"
+                android:text="1,80 cm" />
+        </RelativeLayout>
+
+        <!-- bmi Label -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
                 android:id="@+id/label_bmi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dip"
+                android:layout_alignParentLeft="true"
                 android:text="BMI:"
-                android:textStyle="bold" />
+                android:textSize="19dip"
+                android:textStyle="bold"/>
 
-                <TextView
-                    android:id="@+id/label_height"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="Größe:"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/label_weight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="Gewicht:"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/label_state"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="Status:"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/label_lastLogIn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="letzer Login:"
-                    android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/label_regitrationDay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="Registriert seit:"
-                    android:textStyle="bold" />
-
-
-
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/bmi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_alignParentRight="true"
+                android:textSize="19dip"
+                android:text="20" />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/bmi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="20" />
+        <!-- state Label -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/height"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="1,80m" />
-                <TextView
-                    android:id="@+id/weight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="60kg" />
-                <TextView
-                    android:id="@+id/state"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="kleine Katze" />
-                <TextView
-                    android:id="@+id/lastLogIn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="20.12.2018" />
-                <TextView
-                    android:id="@+id/regitrationDay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dip"
-                    android:text="11.11.2018" />
+            <TextView
+                android:id="@+id/label_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Status:"
+                android:textSize="19dip"
+                android:textStyle="bold"/>
 
+            <TextView
+                android:id="@+id/state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="19dip"
+                android:text="kleine Katze" />
+        </RelativeLayout>
 
-            </LinearLayout>
-        </LinearLayout>
+        <!-- last login Label -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/label_last_logIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Letzer Login:"
+                android:textSize="19dip"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/lastLogIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="19dip"
+                android:text="20.12.2017" />
+        </RelativeLayout>
+
+        <!-- registered since Label -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/label_registeredSince"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="Registriert seit:"
+                android:textSize="19dip"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/registeredSince"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="19dip"
+                android:text="11.07.2009" />
+        </RelativeLayout>
     </LinearLayout>
-
-
 </FrameLayout>
