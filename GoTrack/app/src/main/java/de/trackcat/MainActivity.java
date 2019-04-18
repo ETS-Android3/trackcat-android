@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceActivity;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -47,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     };
     final int NOTIFICATION_ID = 100;
     private DrawerLayout mainDrawer;
-    private ImageView showHelp;
+    private ImageView showHelp, profileImage;
+    private TextView profileName, profileEmail;
     private Toolbar toolbar;
     private NavigationView navigationView;
     private static MainActivity instance;
@@ -211,16 +214,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainDrawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         showHelp = findViewById(R.id.showHelp);
+
+
+        /*On Click Listener definieren*/
         showHelp.setOnClickListener(this);
+
 
         /* Actionbar definieren und MenuListener festlegen */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerView=navigationView.getHeaderView(0);
+
+        /* show menu, if you click on profile */
+        profileEmail=headerView.findViewById(R.id.profile_email);
+        profileName=headerView.findViewById(R.id.profile_name);
+        profileImage=headerView.findViewById(R.id.profile_image);
+        profileEmail.setOnClickListener(this);
+        profileName.setOnClickListener(this);
+        profileImage.setOnClickListener(this);
 
         /* Header anhand des aktuellen Monats wählen */
-        LinearLayout header_img = navigationView.getHeaderView(0).findViewById(R.id.header_img);
+        LinearLayout header_img = headerView.findViewById(R.id.header_img);
         int month = Calendar.getInstance().getTime().getMonth() + 1;
         switch (randomImg) {
             case 1:
@@ -281,9 +297,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             createInitialUser = true;
         }
         firstRun = true;
-
-       // spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
-
 
         /* Startseite festlegen - Erster Aufruf */
         loadDashboard();
@@ -544,6 +557,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     alert.show();
                 } else {
                     Toast.makeText(instance, "Diese Funktion muss zunächst in den Einstellungen aktiviert werden!", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.profile_email:
+            case R.id.profile_image:
+            case R.id.profile_name:
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) == null) {
+                    menuInstance.clear();
+                    loadProfile(true);
                 }
                 break;
         }

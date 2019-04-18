@@ -34,14 +34,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:text="Akash Bangad"
+            android:text="Max Mustermann"
             android:textAppearance="@style/TextAppearanceTitle" />
 
         <TextView
             android:id="@+id/profile_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="akash.bangad96@gmail.com"
+            android:text="max@mustermann.com"
             android:textAppearance="@style/TextAppearanceTitle" />
 
     </LinearLayout>
