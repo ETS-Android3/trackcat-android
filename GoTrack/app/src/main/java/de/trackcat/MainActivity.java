@@ -3,9 +3,6 @@ package de.trackcat;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -40,12 +36,8 @@ import de.trackcat.Profile.EditProfileFragment;
 import de.trackcat.RecordList.RecordListFragment;
 import de.trackcat.Recording.Locator;
 import de.trackcat.Recording.RecordFragment;
-import de.trackcat.Settings.CustomSpinnerAdapter;
 import de.trackcat.Settings.SettingsFragment;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -290,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         firstRun = true;
 
-        spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
+       // spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
 
 
         /* Startseite festlegen - Erster Aufruf */
