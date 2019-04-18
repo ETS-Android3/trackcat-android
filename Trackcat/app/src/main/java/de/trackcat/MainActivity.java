@@ -91,10 +91,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return instance;
     }
 
-    public static Spinner getSpinner() {
-        return spinner;
-    }
-
     public static Menu getMenuInstance() {
         return menuInstance;
     }
@@ -301,8 +297,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
 
         menuInstance = menu;
-        MenuInflater inflater = getMenuInflater();
-        // inflater.inflate(R.menu.profile_settings, menu);
         return true;
     }
 
@@ -342,12 +336,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
                     menuInstance.clear();
                     loadRecord();
-                }
-                break;
-            case R.id.nav_profil:
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) == null) {
-                    menuInstance.clear();
-                    loadProfile(true);
                 }
                 break;
             case R.id.nav_settings:
@@ -559,6 +547,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     menuInstance.clear();
                     loadProfile(true);
                 }
+                mainDrawer.closeDrawer(GravityCompat.START);
                 break;
         }
     }
