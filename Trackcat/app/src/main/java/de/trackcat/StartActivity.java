@@ -3,6 +3,9 @@ package de.trackcat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.karan.churi.PermissionManager.PermissionManager;
+
 import de.trackcat.LogIn.LoadScreenFragment;
 import de.trackcat.LogIn.LogInFragment;
 
@@ -10,6 +13,8 @@ public class StartActivity extends AppCompatActivity {
 
     private FragmentTransaction fragTransaction;
     private static StartActivity instance;
+    private PermissionManager permissionManager = new PermissionManager() {
+    };
 
     public static StartActivity getInstance() {
         return instance;
@@ -18,6 +23,10 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /* Fragt nach noch nicht erteilten Permissions */
+        permissionManager.checkAndRequestPermissions(this);
+
         setContentView(R.layout.activity_start);
 
         /* set instance */

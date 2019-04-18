@@ -167,21 +167,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void getCurrentUserInformation() {
         userDAO = new UserDAO(this);
         List<User> users = userDAO.readAll();
-        if(users.size()==0){
+        if (users.size() == 0) {
             /* Initiale Usererstellung */
 
-                User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
-                        null);
-                initialUser.setActive(true);
-                initialUser.setHintsActive(true);
-                userDAO.create(initialUser);
-                createInitialUser = true;
+            User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
+                    null);
+            initialUser.setActive(true);
+            initialUser.setHintsActive(true);
+            initialUser.setDarkThemeActive(false);
+            userDAO.create(initialUser);
+            createInitialUser = true;
 
+            hints = true;
+            darkTheme = false;
+            currentThemeDark = darkTheme;
+
+        } else {
+
+            hints = users.get(0).isHintsActive();
+            darkTheme = users.get(0).isDarkThemeActive();
+            currentThemeDark = darkTheme;
         }
-        activeUser = users.get(0).getId();
-        hints = users.get(0).isHintsActive();
-        darkTheme = users.get(0).isDarkThemeActive();
-        currentThemeDark = darkTheme;
+
     }
 
     @Override
@@ -284,8 +291,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         notificationManager = NotificationManagerCompat.from(this);
-
-
         firstRun = true;
 
         /* Startseite festlegen - Erster Aufruf */
@@ -489,6 +494,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.replace(R.id.mainFrame, profileFragment,
                 getResources().getString(R.string.fProfile));
         fragTransaction.commit();
+
+        /* set menu checked on false */
+        Menu menu = navigationView.getMenu();
+        menu.findItem(R.id.nav_dashboard).setChecked(false);
+        menu.findItem(R.id.nav_record).setChecked(false);
+        menu.findItem(R.id.nav_recordlist).setChecked(false);
+        menu.findItem(R.id.nav_settings).setChecked(false);
     }
 
     /* Laden des Einstellung-Fragments */
@@ -542,11 +554,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_settings));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_record_details));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_profile));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_editProfile));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_editPassword));
                     }
                     alert.setNegativeButton("Schließen", null);
