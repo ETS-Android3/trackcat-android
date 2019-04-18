@@ -3,6 +3,7 @@ package de.trackcat;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -262,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 header_img.setBackgroundResource(R.raw.bg_december);
                 break;
         }
+        getProfileColor();
 
         /* Menu Toggle */
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -288,6 +291,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         loadDashboard();
     }
 
+    /* Anpassen der TextFarbe zum Hintergrundbild */
+    public void getProfileColor() {
+        int month = Calendar.getInstance().getTime().getMonth() + 1;
+        int defaultColor = Color.WHITE;
+        switch (MainActivity.randomImg) {
+            case 8:
+            case 9:
+            case 10:
+            case 12:
+                defaultColor = Color.BLACK;
+                break;
+        }
+
+        profileEmail.setTextColor(defaultColor);
+        profileName.setTextColor(defaultColor);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
