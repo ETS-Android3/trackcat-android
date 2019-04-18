@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceActivity;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
@@ -17,13 +16,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -526,13 +522,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_settings));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_record_details));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fNewUser)) != null) {
-                        String title = ((TextView) (findViewById(R.id.user_settings_title))).getText().toString();
-                        if (title.equals(getResources().getString(R.string.newUserTitle))) {
-                            alert.setMessage(getResources().getString(R.string.help_new_user));
-                        } else if (title.equals(getResources().getString(R.string.editUserTitle))) {
-                            alert.setMessage(getResources().getString(R.string.help_edit_user));
-                        }
+                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_profile));
+                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_editProfile));
+                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_editPassword));
                     }
                     alert.setNegativeButton("Schließen", null);
                     alert.show();
