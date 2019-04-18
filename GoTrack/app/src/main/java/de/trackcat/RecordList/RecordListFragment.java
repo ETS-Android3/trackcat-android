@@ -22,7 +22,6 @@ import java.util.List;
 
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.Models.Route;
-import de.trackcat.InExport.Export;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
@@ -96,14 +95,14 @@ public class RecordListFragment extends Fragment {
                 snackbar.show();
             }
 
-            /* Versenden einer Route */
+            /* Versenden einer Route
             @Override
             public void onShareClick(int position) {
                 String fileName = Export.getExport().exportRoute(getContext(),
                         records.get(position).getId(), true);
                 Log.i("GoTrack-Export", "Die Datei: " + fileName +
                         " wurde erstellt.");
-            }
+            } */
         });
 
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);

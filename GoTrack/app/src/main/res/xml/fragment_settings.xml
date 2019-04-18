@@ -13,14 +13,6 @@
             android:summary="Zeige allgemeine Hinweise an"
             android:title="Hilfestellungen"></CheckBoxPreference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/category2" >
-        <Preference
-            android:icon="@drawable/settings_export"
-            android:key="global_export_options"
-            android:summary="Exportieren Sie hier Ihre Benutzerprofile"
-            android:title="Exportieren" />
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/category3" >
         <Preference
             android:selectable="false"

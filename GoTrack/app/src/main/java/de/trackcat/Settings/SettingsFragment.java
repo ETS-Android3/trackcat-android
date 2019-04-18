@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
-import de.trackcat.InExport.Export;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.Recording.RecordFragment;
@@ -142,79 +141,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        if (preference.getKey().equals("global_export_options")) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-            alert.setTitle("Daten exportieren?");
-
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View alertView = inflater.inflate(R.layout.fragment_settings_export, null, true);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                alert.setView(alertView);
-
-                alert.setPositiveButton("Exportieren", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        /* Data Access Object (DAO) */
-                        UserDAO dao = new UserDAO(getActivity());
-                        User currentUser = dao.read(MainActivity.getActiveUser());
-
-                        RadioButton rBtn_all_records = alertView.findViewById(R.id.rBtn_all_records);
-                        RadioButton rBtn_all_options = alertView.findViewById(R.id.rBtn_all_options);
-                        RadioButton rBtn_all_route = alertView.findViewById(R.id.rBtn_all_route);
-                        RadioButton rBtn_all_users = alertView.findViewById(R.id.rBtn_all_users);
-                        String type = "";
-
-                        /* Überprüfung, welche exportoption gewählt wurde */
-
-                        /* Alle Aufnahmen des aktuellen Nutzers exportieren */
-                        String fullName = currentUser.getFirstName() + " " +
-                                currentUser.getLastName();
-                        if (rBtn_all_records.isChecked()) {
-                            type = "Gesamtes Profil \"" + fullName + "\" exportiert!";
-                            String fileName = Export.getExport().exportAllUserData(getActivity(),
-                                    currentUser.getId(), true);
-                            Log.i("GoTrack-Export", "Die Datei: " + fileName +
-                                    " wurde erstellt.");
-
-                            /* Nutzer-Einstellung exportieren */
-                        } else if (rBtn_all_options.isChecked()) {
-                            type = "Profileinstellungen von \"" + fullName + "\" exportiert!";
-                            String fileName = Export.getExport().exportUserData(getActivity(),
-                                    currentUser.getId(), true);
-                            Log.i("GoTrack-Export", "Die Datei: " + fileName +
-                                    " wurde erstellt.");
-
-                            /* Alle Routen exportieren */
-                        } else if (rBtn_all_route.isChecked()) {
-                            type = "Alle Routen von \"" + fullName + "\" exportiert!";
-                            String fileName = Export.getExport().exportAllRoute(getActivity(),
-                                    currentUser.getId(), true);
-                            Log.i("GoTrack-Export", "Die Datei: " + fileName +
-                                    " wurde erstellt.");
-
-                            /* Alle Nutzer exportieren */
-                        } else if (rBtn_all_users.isChecked()) {
-                            type = "App Backup erstellt!";
-                            String fileName = Export.getExport().exportAllRouteUsers(getActivity(),
-                                    true);
-                            Log.i("GoTrack-Export", "Die Datei: " + fileName +
-                                    " wurde erstellt.");
-                        }
-
-                        if (MainActivity.getHints()) {
-                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), type,
-                                    Toast.LENGTH_LONG).show();
-                            Log.i("GoTrack-Export", type);
-                        }
-                    }
-                });
-
-                alert.setNegativeButton("Abbruch", null);
-            } else {
-                alert.setMessage("Ihre Android-Version ist zu alt für diese Funktion!");
-            }
-            alert.show();
-        } else if (preference.getKey().equals("current_version")) {
+       if (preference.getKey().equals("current_version")) {
             AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
 
             String version = "\"unknown\"";

@@ -179,7 +179,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<String> {
                         }
                         /*Aktualisieren des Spinners*/
                         if (!removeLastUser) {
-                            MainActivity.getInstance().addItemsToSpinner();
+                         //   MainActivity.getInstance().addItemsToSpinner();
                         }
                     } else {
                         if (MainActivity.getHints()) {

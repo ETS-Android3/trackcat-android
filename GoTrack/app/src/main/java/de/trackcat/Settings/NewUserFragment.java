@@ -137,7 +137,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                             imageView.setImageResource(R.raw.no_image);
 
                             /* Spinner aktualisieren */
-                            MainActivity.getInstance().addItemsToSpinner();
+                           // MainActivity.getInstance().addItemsToSpinner();
                         }
                     } else {
                         /* An Datenbank senden */
@@ -156,7 +156,7 @@ public class NewUserFragment extends Fragment implements View.OnClickListener {
                             }
 
                             /* Spinner aktualisieren */
-                            MainActivity.getInstance().addItemsToSpinner();
+                          //  MainActivity.getInstance().addItemsToSpinner();
                             /* Dashboard anzeigen */
                             swapFragment();
                         }

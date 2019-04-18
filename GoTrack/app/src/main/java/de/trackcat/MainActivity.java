@@ -34,7 +34,6 @@ import com.karan.churi.PermissionManager.PermissionManager;
 import de.trackcat.Dashboard.DashboardFragment;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
-import de.trackcat.InExport.Import;
 import de.trackcat.Profile.EditPasswordFragment;
 import de.trackcat.Profile.ProfileFragment;
 import de.trackcat.Profile.EditProfileFragment;
@@ -292,141 +291,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         firstRun = true;
 
         spinner = navigationView.getHeaderView(0).findViewById(R.id.profile_spinner);
-        addItemsToSpinner();
+
 
         /* Startseite festlegen - Erster Aufruf */
         loadDashboard();
     }
 
-    /* Dynamisches Hinzufügen von Spinner-Items */
-    public void addItemsToSpinner() {
-
-
-        /* Erstellen der Listen */
-        final ArrayList<byte[]> spinnerAccountIcons = new ArrayList<byte[]>();
-        ArrayList<String> spinnerAccountEmail = new ArrayList<String>();
-        final ArrayList<String> spinnerAccountNames = new ArrayList<String>();
-        List<User> users = userDAO.readAll();
-        int selectedID = 0;
-        boolean findActiveUser = false;
-        for (int i = 0; i < users.size(); i++) {
-            spinnerAccountEmail.add(users.get(i).getMail());
-            spinnerAccountNames.add(users.get(i).getFirstName() + " " + users.get(i).getLastName());
-            spinnerAccountIcons.add(users.get(i).getImage());
-            if (users.get(i).isActive()) {
-                activeUser = users.get(i).getId();
-                hints = users.get(i).isHintsActive();
-                darkTheme = users.get(i).isDarkThemeActive();
-                selectedID = i;
-                findActiveUser = true;
-            }
-        }
-
-        /*Wenn nach dem Löschen eines Users kein neuer aktiver Nutzer gefunden wurde*/
-        if (!findActiveUser) {
-            activeUser = users.get(selectedID).getId();
-            User newActiveUser = userDAO.read(activeUser);
-            newActiveUser.setActive(true);
-            userDAO.update(activeUser, newActiveUser);
-        }
-        final boolean deactivateOldUser = findActiveUser;
-
-        /* Erstellen des Custom Spinners */
-        final CustomSpinnerAdapter spinAdapter = new CustomSpinnerAdapter(
-                getApplicationContext(), spinnerAccountIcons, spinnerAccountNames, spinnerAccountEmail);
-
-        /* Setzen des Adapters */
-        spinner.setAdapter(spinAdapter);
-        spinner.setSelection(selectedID);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> adapter, View v,
-                                       int position, long id) {
-
-                /* Überprüfung, ob immoment ein Import aktiv ist */
-                if (Import.getImport().getIsImportActiv()) {
-                    if (hints) {
-                        Toast.makeText(getApplicationContext(), "Nutzerwechsel nicht möglich, da im Moment ein Import läuft.", Toast.LENGTH_LONG).show();
-                    }
-                } else if (RecordFragment.isTracking()) {
-                    if (hints) {
-                        Toast.makeText(getApplicationContext(), "Nutzerwechsel nicht möglich, da im Moment eine Aufzeichnung läuft.", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-
-                    /* Auslesen des angeklickten Items */
-                    String item = adapter.getItemAtPosition(position).toString();
-
-                    /* Wechseln des Profilbildes */
-                    byte[] imgRessource = spinnerAccountIcons.get(position);
-                    de.hdodenhof.circleimageview.CircleImageView circleImageView = findViewById(R.id.profile_image);
-                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.raw.default_profile);
-                    if (imgRessource != null && imgRessource.length > 0) {
-                        bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
-                    }
-                    circleImageView.setImageBitmap(bitmap);
-
-                    boolean oldUserTheme = true;
-                    boolean newUserTheme = true;
-                    /* Durchlaufen der Nutzer */
-                    List<User> users = userDAO.readAll();
-                    for (int i = 0; i < users.size(); i++) {
-                        if (adapter.getItemAtPosition(position).equals(users.get(i).getFirstName() + " " + users.get(i).getLastName())) {
-                            /* Ausgewählten Nutzer als aktiven Nutzer setzen */
-                            User user = userDAO.read(users.get(i).getId());
-                            user.setActive(true);
-                            userDAO.update(user.getId(), user);
-
-                            /* Alten Nutzer deaktivieren */
-                            if (deactivateOldUser && !createInitialUser && !firstRun) {
-                                User oldUser = userDAO.read(activeUser);
-                                oldUser.setActive(false);
-                                userDAO.update(activeUser, oldUser);
-                            } else {
-                                createInitialUser = false;
-                                firstRun = false;
-                            }
-
-                            /* Nutzerwechsel in globaler Variable */
-                            activeUser = users.get(i).getId();
-                            hints = users.get(i).isHintsActive();
-
-                            oldUserTheme = darkTheme;
-                            newUserTheme = users.get(i).isDarkThemeActive();
-
-                            if (hints) {
-                                Toast.makeText(getApplicationContext(), "Ausgewähltes Profil: " + item, Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-
-                    /* Überprüfung, ob die MainActivity neu gestartet wird */
-                    if (shouldRestart) {
-
-                        if (oldUserTheme != newUserTheme || currentThemeDark != newUserTheme) {
-                            MainActivity.isActiv = false;
-                            restart();
-                            shouldRestart = false;
-                        } else {
-                            /*Anzeigen des Dashboard nach Wechsel des Nutzers*/
-                            loadDashboard();
-                            Menu menu = navigationView.getMenu();
-                            menu.findItem(R.id.nav_dashboard).setChecked(true);
-                        }
-                    } else {
-                        shouldRestart = true;
-                    }
-                }
-            }
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
-
-        });
-    }
 
 
     @Override
@@ -476,15 +346,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     loadRecord();
                 }
                 break;
-            case R.id.nav_import:
-                /* In diesem Bereich können gotrack-Datei direkt in der App importiert werden */
-                Log.i("GoTrack-Import", "Der Import wurde aus der App herausgestartet.");
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("application/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivityForResult(
-                        Intent.createChooser(intent, "Import"), 0);
-                break;
             case R.id.nav_profil:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) == null) {
                     menuInstance.clear();
@@ -501,27 +362,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         menuItem.setChecked(true);
         mainDrawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case 0:
-                if (resultCode == RESULT_OK) {
-                    Uri uri = data.getData();
-                    try {
-                        File file = new File(getCacheDir(), "document");
-                        InputStream inputStream = getContentResolver().openInputStream(uri);
-                        Import.getImport().handleSend(this, file, inputStream);
-                        addItemsToSpinner();
-                        loadDashboard();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /* Stops/pauses Tracking opens App and switch to RecordFragment */
