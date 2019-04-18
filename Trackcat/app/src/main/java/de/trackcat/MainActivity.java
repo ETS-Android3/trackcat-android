@@ -56,9 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static MainActivity instance;
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
-    private Boolean shouldRestart = false;
     public Boolean firstRun = false;
-    private static Spinner spinner;
     private static int activeUser;
     private static boolean hints;
     private static boolean darkTheme;
@@ -175,14 +173,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void getCurrentUserInformation() {
         userDAO = new UserDAO(this);
         List<User> users = userDAO.readAll();
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).isActive()) {
-                activeUser = users.get(i).getId();
-                hints = users.get(i).isHintsActive();
-                darkTheme = users.get(i).isDarkThemeActive();
-                currentThemeDark = darkTheme;
-            }
-        }
+        activeUser = users.get(0).getId();
+        hints = users.get(0).isHintsActive();
+        darkTheme = users.get(0).isDarkThemeActive();
+        currentThemeDark = darkTheme;
     }
 
     @Override
@@ -225,12 +219,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        View headerView=navigationView.getHeaderView(0);
+        View headerView = navigationView.getHeaderView(0);
 
         /* show menu, if you click on profile */
-        profileEmail=headerView.findViewById(R.id.profile_email);
-        profileName=headerView.findViewById(R.id.profile_name);
-        profileImage=headerView.findViewById(R.id.profile_image);
+        profileEmail = headerView.findViewById(R.id.profile_email);
+        profileName = headerView.findViewById(R.id.profile_name);
+        profileImage = headerView.findViewById(R.id.profile_image);
         profileEmail.setOnClickListener(this);
         profileName.setOnClickListener(this);
         profileImage.setOnClickListener(this);
@@ -301,7 +295,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Startseite festlegen - Erster Aufruf */
         loadDashboard();
     }
-
 
 
     @Override
@@ -441,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Laden des Dashboard-Fragments */
     public void loadDashboard() {
-        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Dashboard-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Dashboard-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new DashboardFragment(),
                 getResources().getString(R.string.fDashboard));
@@ -460,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int resGPS = getInstance().checkCallingOrSelfPermission(permissionGPS);
 
         if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED) {
-            Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Aufnahme-Fragment wird geladen.");
+            Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Aufnahme-Fragment wird geladen.");
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, recordFragment,
                     getResources().getString(R.string.fRecord));
@@ -470,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Laden des Listen-Fragments */
     public void loadRecordList() {
-        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Listen-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Listen-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new RecordListFragment(),
                 getResources().getString(R.string.fRecordlist));
@@ -480,7 +473,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /* Laden des Profil-Fragments */
     public void loadProfile(boolean loadMenu) {
 
-        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Profil-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Profil-Fragment wird geladen.");
 
         /* set Bundle */
         Bundle bundleSpeed = new Bundle();
@@ -496,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Laden des Einstellung-Fragments */
     public void loadSettings() {
-        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Einstellung-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Einstellung-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new SettingsFragment(),
                 getResources().getString(R.string.fSettings));
@@ -505,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Laden des Einstellung-Fragments */
     public void loadEditProfile() {
-        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Profil-Bearbeiten-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Profil-Bearbeiten-Fragment wird geladen.");
 
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new EditProfileFragment(),
@@ -515,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Laden des Einstellung-Fragments */
     public void loadEditPassword() {
-        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Passwort-Ändern-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Passwort-Ändern-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new EditPasswordFragment(),
                 getResources().getString(R.string.fEditPassword));
