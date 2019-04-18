@@ -23,12 +23,26 @@
         android:src="@raw/default_profile"
         app:border_color="#FF000000" />
 
-    <Spinner
-        android:id="@+id/profile_spinner"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="-16dp"
-        android:paddingRight="-16dp"
-        android:popupBackground="@color/ap_white" />
+        android:orientation="vertical"
+        android:id="@+id/profile_layout_selected">
 
+        <TextView
+            android:id="@+id/profile_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:text="Max Mustermann"
+            android:textAppearance="@style/TextAppearanceTitle" />
+
+        <TextView
+            android:id="@+id/profile_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="max@mustermann.com"
+            android:textAppearance="@style/TextAppearanceTitle" />
+
+    </LinearLayout>
 </LinearLayout>

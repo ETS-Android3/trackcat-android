@@ -25,40 +25,6 @@
         Diese "activity" wird verwendet um Dateien zu importieren, durch die Intent-Filter
         können Dateien, welche die Endung .gotrack haben, dirket in diese App gelesen werden
         -->
-        <activity
-            android:name="de.trackcat.ImportActivity"
-            android:configChanges="orientation|keyboardHidden">
-            <intent-filter tools:ignore="AppLinkUrlError">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="*"
-                    android:mimeType="application/octet-stream"
-                    android:pathPattern=".*\\.gotrack" />
-                <data
-                    android:host="*"
-                    android:mimeType="application/gotrack"
-                    android:pathPattern=".*\\.gotrack" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="*"
-                    android:mimeType="application/octet-stream"
-                    android:pathPattern=".*.gotrack"
-                    android:scheme="content" />
-                <data
-                    android:host="*"
-                    android:mimeType="application/gotrack"
-                    android:pathPattern=".*.gotrack"
-                    android:scheme="content" />
-            </intent-filter>
-        </activity>
 
         <receiver android:name="de.trackcat.NotificationActionReciever" />
 
