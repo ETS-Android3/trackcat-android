@@ -9,23 +9,48 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:theme="@style/Toolbar" />
+                android:theme="@style/Toolbar">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:adjustViewBounds="true"
+                        android:src="@raw/logo" />
+
+                    <ImageView
+                        android:id="@+id/showHelp"
+                        android:layout_marginRight="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/menu_help" />
+                </RelativeLayout>
+            </android.support.v7.widget.Toolbar>
+
 
             <!-- Neue Fragments werden hier eingesetzt  -->
             <FrameLayout
                 android:id="@+id/mainFrame"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
-            </FrameLayout>
+                android:layout_weight="1"></FrameLayout>
         </LinearLayout>
 
     </FrameLayout>
@@ -36,9 +61,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:itemTextAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:itemIconTint="?android:attr/textColor"
         app:headerLayout="@layout/nav_header"
+        app:itemIconTint="?android:attr/textColor"
+        app:itemTextAppearance="@style/TextAppearance.AppCompat.Body1"
         app:menu="@menu/drawer_view" />
 
 </android.support.v4.widget.DrawerLayout>

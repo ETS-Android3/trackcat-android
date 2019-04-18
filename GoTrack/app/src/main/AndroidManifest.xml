@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="de.mobcom.group3.gotrack">
+    package="de.trackcat">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,60 +10,71 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@raw/logo_marker"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@raw/logo_marker"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="de.mobcom.group3.gotrack.MainActivity"
+            android:name="de.trackcat.MainActivity"
             android:configChanges="orientation|keyboardHidden">
+
+        </activity>
+        <!--
+        Diese "activity" wird verwendet um Dateien zu importieren, durch die Intent-Filter
+        können Dateien, welche die Endung .gotrack haben, dirket in diese App gelesen werden
+        -->
+        <activity
+            android:name="de.trackcat.ImportActivity"
+            android:configChanges="orientation|keyboardHidden">
+            <intent-filter tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="*"
+                    android:mimeType="application/octet-stream"
+                    android:pathPattern=".*\\.gotrack" />
+                <data
+                    android:host="*"
+                    android:mimeType="application/gotrack"
+                    android:pathPattern=".*\\.gotrack" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="*"
+                    android:mimeType="application/octet-stream"
+                    android:pathPattern=".*.gotrack"
+                    android:scheme="content" />
+                <data
+                    android:host="*"
+                    android:mimeType="application/gotrack"
+                    android:pathPattern=".*.gotrack"
+                    android:scheme="content" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="de.trackcat.NotificationActionReciever" />
+
+        <service
+            android:name="de.trackcat.Recording.Locator"
+            android:enabled="true" />
+
+        <activity
+            android:name="de.trackcat.StartActivity"
+            android:label="@string/app_name">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- Diese "activity" wird verwendet um Dateien zu importieren, durch die Intent-Filter
-        können Dateien, welche die Endung .gotrack haben, dirket in diese App gelesen werden -->
-        <activity
-            android:name="de.mobcom.group3.gotrack.ImportActivity"
-            android:configChanges="orientation|keyboardHidden">
-            <intent-filter
-                tools:ignore="AppLinkUrlError">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data
-                    android:mimeType="application/octet-stream"
-                    android:host="*"
-                    android:pathPattern=".*\\.gotrack"
-                    />
-                <data
-                    android:mimeType="application/gotrack"
-                    android:host="*"
-                    android:pathPattern=".*\\.gotrack"
-                    />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data
-                    android:mimeType="application/octet-stream"
-                    android:host="*"
-                    android:pathPattern=".*.gotrack"
-                    android:scheme="content" />
-                <data
-                    android:mimeType="application/gotrack"
-                    android:host="*"
-                    android:pathPattern=".*.gotrack"
-                    android:scheme="content" />
-            </intent-filter>
-        </activity>
-        <receiver android:name="de.mobcom.group3.gotrack.NotificationActionReciever">
-
-        </receiver>
-        <service android:name=".Recording.Locator" android:enabled="true"/>
     </application>
 
 </manifest>

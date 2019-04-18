@@ -17,10 +17,21 @@
             android:id="@+id/nav_import"
             android:title="Import"
             android:icon="@drawable/menu_import" />
+
         <item
             android:id="@+id/nav_settings"
             android:title="Einstellungen"
             android:icon="@drawable/menu_settings" />
+
+        <item
+            android:id="@+id/nav_profil"
+            android:title="Profil"
+            android:icon="@drawable/ic_account_circle_black_24dp" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:title="Abmelden"
+            android:icon="@drawable/menu_sign_out" />
 
     </group>
 </menu>

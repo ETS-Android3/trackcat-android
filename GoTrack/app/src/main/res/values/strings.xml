@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GoTrack</string>
+    <string name="app_name">Trackcat</string>
     <string name="recordListTitle">Aufnahmen</string>
     <string name="recordLastListTitle">Letzte Aktivitäten</string>
     <string name="recordLastListMoreLink">Mehr anzeigen</string>
@@ -14,8 +14,14 @@
     <string name="fRecordDetailsDashbaord">RECORD_DETAILS_DASHBOARD</string>
     <string name="fRecordDetailsList">RECORD_DETAILS_LIST</string>
     <string name="fImport">IMPORT</string>
+    <string name="fProfile">PROFILE</string>
+    <string name="fEditProfile">EDITPROFILE</string>
+    <string name="fEditPassword">EDITPASSWORD</string>
     <string name="fSettings">SETTINGS</string>
     <string name="fPageViewer">PAGE_VIEWER</string>
+    <string name="fLoadScreen">LOADSCREEN</string>
+    <string name="fLogIn">LOGIN</string>
+    <string name="fSignIn">SIGNIN</string>
     <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
     <string name="fNewUser">NEW_USER</string>
@@ -29,12 +35,30 @@
     <string name="export_options_all_route">Routen des aktuellen Benutzers</string>
     <string name="export_options_all_users">Alle Daten (alle Benutzer mit allen Routen)</string>
 
-    <string name="category3">Über GoTrack</string>
-    <string name="aboutGoTrack">GoTrack ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
+    <string name="category3">Über TrackCat</string>
+    <string name="aboutApp">TrackCat ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
     <string name="cVersion_title">Version</string>
     <string name="cVersion_summary">1.6.7</string>
     <string name="feedback_title">Feedback geben</string>
     <string name="feedback_summary">Haben Sie Fragen oder Anmerkungen?</string>
+
+    <!-- Error Messages -->
+    <string name="errorMsgPassword">Das Passwort muss zwischen 8 und 15 Zeichen lang sein und mindestens folgende Parameter enthalten: 1x Groß- und Kleinbuchstabe, 1x Zahl und 1x Sonderzeichen</string>
+    <string name="errorMsgName">Ihr Name darf nicht länger als 16 Zeichen sein und muss den allgemeinen Namensrichtlinien entsprechen.</string>
+    <string name="errorMsgEMail">Ihre Email Adresse entsrpicht nicht dem Standard-Email Format.</string>
+
+    <!-- Toast Messages -->
+    <string name="tErrorPassword">Ihr Passwort ist nicht konform!</string>
+    <string name="tErrorPasswordNotIdentical">Passwörter stimmen nicht überein!</string>
+    <string name="tErrorName">Ihr Name ist nicht konform!</string>
+    <string name="tErrorEmail">Ihre E-Mail Adresse ist nicht konform!</string>
+    <string name="tFillAllFields">Bitte alle Felder ausfüllen!</string>
+    <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
+
+    <!-- Regex -->
+    <string name="rEmail">"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"</string>
+    <string name="rPassword">"^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{8,15}$"</string>
+    <string name="rName">"^[A-Z]+(((\\-|\\s)[A-Z])?[a-z]*)*$"</string>
 
     <!-- Menu Toggle -->
     <string name="navigation_drawer_open">Open</string>
@@ -64,4 +88,5 @@
         dieses durch Klicken auf das Bild ausgewählt und festgelegt werden.</string>
     <string name="help_edit_user">Hier haben Sie die Möglichkeit Ihr Profil zu bearbeiten. Durch Klicken auf das aktuelle Profilbild lässt sich dieses
         ebenfalls ändern.</string>
+
 </resources>
