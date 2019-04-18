@@ -9,11 +9,19 @@ import de.mobcom.group3.gotrack.LogIn.LogInFragment;
 public class StartActivity extends AppCompatActivity {
 
     private FragmentTransaction fragTransaction;
+    private static StartActivity instance;
+
+    public static StartActivity getInstance() {
+        return instance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        /* set instance */
+        instance=this;
 
         /* Load Screen */
         fragTransaction = getSupportFragmentManager().beginTransaction();

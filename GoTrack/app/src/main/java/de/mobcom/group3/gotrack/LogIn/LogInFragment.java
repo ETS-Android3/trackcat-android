@@ -5,14 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
+import de.mobcom.group3.gotrack.StartActivity;
 
 public class LogInFragment extends Fragment {
 
@@ -130,17 +137,30 @@ public class LogInFragment extends Fragment {
         String email = emailTextView.getText().toString();
         String password = passwordTextView.getText().toString();
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailTextView.setError("Geben Sie eine gültige E-mail Adresse ein");
+        /* validate email */
+        Pattern pattern = Pattern.compile(getResources().getString(R.string.rEmail));
+        Matcher matcher = pattern.matcher(email);
+        Log.d("ppppp", getResources().getString(R.string.rEmail));
+        Log.d("ppppp",email);
+        Log.d("ppppp",""+matcher.matches());
+
+        if (!matcher.matches()) {
+            emailTextView.setError(getResources().getString(R.string.errorMsgEMail));
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorEmail), Toast.LENGTH_SHORT).show();
             valid = false;
-        } else {
+        }else{
             emailTextView.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            passwordTextView.setError("Passwort muss zwischen 4 und 10 alphanumeric characters");
+        /* validate password */
+        Pattern pattern2 = Pattern.compile(getResources().getString(R.string.rPassword));
+        Matcher matcher2 = pattern2.matcher(password);
+
+        if (!matcher2.matches()) {
+            passwordTextView.setError(getResources().getString(R.string.errorMsgPassword));
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(),  getResources().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
             valid = false;
-        } else {
+        }else{
             passwordTextView.setError(null);
         }
 

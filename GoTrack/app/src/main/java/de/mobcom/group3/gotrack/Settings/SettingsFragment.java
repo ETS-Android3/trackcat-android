@@ -224,7 +224,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-            alert.setTitle("GoTrack v" + version);
+            alert.setTitle(getResources().getString(R.string.app_name)+" v" + version);
             alert.setMessage("Entwickler:\nTimo Kramer, Marie Fock, Finn Lenz, Yannik Petersen, Kristoff Klan, Jenö Petsch");
             alert.setNegativeButton("Schließen", null);
             alert.show();
@@ -245,8 +245,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         }
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"timokramer1@me.com", "yannik-petersen92@t-online.de", "fock.marie@gmail.com", "finnlenz@outlook.de", "kristoff_klan@hotmail.de", "j.petsch95@gmail.com"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback: GoTrack");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"info@trackcat.de"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback: TrackCat");
         intent.putExtra(Intent.EXTRA_TEXT, body);
         context.startActivity(Intent.createChooser(intent, "Wählen Sie Ihren E-Mail Client"));
     }

@@ -24,7 +24,7 @@
     <PreferenceCategory android:title="@string/category3" >
         <Preference
             android:selectable="false"
-            android:summary="@string/aboutGoTrack" />
+            android:summary="@string/aboutApp" />
 
         <Preference
             android:icon="@drawable/settings_version"

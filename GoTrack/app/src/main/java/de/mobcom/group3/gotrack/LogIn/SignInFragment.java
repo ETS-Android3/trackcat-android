@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
+import de.mobcom.group3.gotrack.StartActivity;
 
 public class SignInFragment extends Fragment {
 
@@ -100,14 +101,16 @@ public class SignInFragment extends Fragment {
                                     progressDialog.dismiss();
                                 }
                             }, 3000);
+                }else{
+                    return;
                 }
 
             } else {
-                Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ihre Passwörter stimmen nicht überein.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorPasswordNotIdentical), Toast.LENGTH_SHORT).show();
             }
 
         } else {
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Bitte füllen Sie alle Felder aus.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tFillAllFields), Toast.LENGTH_SHORT).show();
         }
 
 
@@ -125,36 +128,40 @@ public class SignInFragment extends Fragment {
 
         /* validate name */
         if ((input_firstName + " " + input_lastName).length() > nameLength) {
-            firstName.setError("Ihr kompletter Name darf nicht länger als max. " + nameLength + " + Zeichen sein.");
-            lastName.setError("Ihr kompletter Name darf nicht länger als max. " + nameLength + " + Zeichen sein.");
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ihr Name ist zu lang.", Toast.LENGTH_SHORT).show();
+            firstName.setError(getResources().getString(R.string.errorMsgName));
+            lastName.setError(getResources().getString(R.string.errorMsgName));
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
             valid = false;
+        }else{
+            firstName.setError(null);
+            lastName.setError(null);
         }
 
         /* validate email */
-        String regrex = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$";
-        Pattern pattern = Pattern.compile(regrex);
+        Pattern pattern = Pattern.compile(getResources().getString(R.string.rEmail));
         Matcher matcher = pattern.matcher(input_email);
 
         if (!matcher.matches()) {
-            email.setError("Ihre Email Adresse entsrpicht nicht dem Standard-Email Format.");
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ihre E-Mail Adresse ist nicht konform!", Toast.LENGTH_SHORT).show();
+            email.setError(getResources().getString(R.string.errorMsgEMail));
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorEmail), Toast.LENGTH_SHORT).show();
             valid = false;
+        }else{
+            email.setError(null);
         }
 
         /* validate password */
-        String passwordErrorMsg = "Das Passwort muss zwischen 8 und 15 Zeichen lang sein und mindestens folgende Parameter enthalten: 1x Groß- und Kleinbuchstabe, 1x Zahl und 1x Sonderzeichen";
-        String regrex2 = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{8,15}$";
-        Pattern pattern2 = Pattern.compile(regrex2);
+        Pattern pattern2 = Pattern.compile(getResources().getString(R.string.rPassword));
         Matcher matcher2 = pattern2.matcher(input_password1);
 
         if (!matcher2.matches()) {
-            password1.setError(passwordErrorMsg);
-            password2.setError(passwordErrorMsg);
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ihr Passwort ist nicht konform!", Toast.LENGTH_SHORT).show();
+            password1.setError(getResources().getString(R.string.errorMsgPassword));
+            password2.setError(getResources().getString(R.string.errorMsgPassword));
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(),  getResources().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
             valid = false;
+        }else{
+            password1.setError(null);
+            password2.setError(null);
         }
-
         return valid;
     }
 }

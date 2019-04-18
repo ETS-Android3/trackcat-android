@@ -36,11 +36,28 @@
     <string name="export_options_all_users">Alle Daten (alle Benutzer mit allen Routen)</string>
 
     <string name="category3">Über TrackCat</string>
-    <string name="aboutGoTrack">TrackCat ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
+    <string name="aboutApp">TrackCat ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
     <string name="cVersion_title">Version</string>
     <string name="cVersion_summary">1.6.7</string>
     <string name="feedback_title">Feedback geben</string>
     <string name="feedback_summary">Haben Sie Fragen oder Anmerkungen?</string>
+
+    <!-- Error Messages -->
+    <string name="errorMsgPassword">Das Passwort muss zwischen 8 und 15 Zeichen lang sein und mindestens folgende Parameter enthalten: 1x Groß- und Kleinbuchstabe, 1x Zahl und 1x Sonderzeichen</string>
+    <string name="errorMsgName">Ihr kompletter Name darf nicht länger als max. 15 Zeichen sein.</string>
+    <string name="errorMsgEMail">Ihre Email Adresse entsrpicht nicht dem Standard-Email Format.</string>
+
+    <!-- Toast Messages -->
+    <string name="tErrorPassword">Ihr Passwort ist nicht konform!</string>
+    <string name="tErrorPasswordNotIdentical">Passwörter stimmen nicht überein!</string>
+    <string name="tErrorName">Ihr Name ist nicht konform!</string>
+    <string name="tErrorEmail">Ihre E-Mail Adresse ist nicht konform!</string>
+    <string name="tFillAllFields">Bitte alle Felder ausfüllen!</string>
+    <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
+
+    <!-- Regex -->
+    <string name="rEmail">"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"</string>
+    <string name="rPassword">"^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{8,15}$"</string>
 
     <!-- Menu Toggle -->
     <string name="navigation_drawer_open">Open</string>
@@ -70,17 +87,5 @@
         dieses durch Klicken auf das Bild ausgewählt und festgelegt werden.</string>
     <string name="help_edit_user">Hier haben Sie die Möglichkeit Ihr Profil zu bearbeiten. Durch Klicken auf das aktuelle Profilbild lässt sich dieses
         ebenfalls ändern.</string>
-    <string name="title_activity_login">Login</string>
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+
 </resources>

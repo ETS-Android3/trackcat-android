@@ -120,7 +120,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                 } else {
                     if (MainActivity.getHints()) {
-                        Toast.makeText(getContext(), "Bitte alle Felder ausfüllen!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), getResources().getString(R.string.tFillAllFields), Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -258,9 +258,9 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         /* validate name */
         if ((input_firstName + " " + input_lastName).length() > nameLength) {
-            firstName.setError("Ihr kompletter Name darf nicht länger als max. " + nameLength+" + Zeichen sein.");
-            lastName.setError("Ihr kompletter Name darf nicht länger als max. " + nameLength+" + Zeichen sein.");
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Ihr Name ist zu lang.", Toast.LENGTH_SHORT).show();
+            firstName.setError(getResources().getString(R.string.errorMsgName));
+            lastName.setError(getResources().getString(R.string.errorMsgName));
+            Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
             valid = false;
         }
 
