@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single"
+        android:id="@+id/group1">
         <item
             android:id="@+id/nav_dashboard"
             android:title="Dashboard"
@@ -13,16 +15,18 @@
             android:id="@+id/nav_recordlist"
             android:title="Aufzeichnungen"
             android:icon="@drawable/menu_recordlist" />
-
         <item
             android:id="@+id/nav_settings"
             android:title="Einstellungen"
             android:icon="@drawable/menu_settings" />
+    </group>
 
+    <group android:checkableBehavior="single"
+        android:id="@+id/group2">
         <item
             android:id="@+id/nav_logout"
             android:title="Abmelden"
             android:icon="@drawable/menu_sign_out" />
+</group>
 
-    </group>
 </menu>
