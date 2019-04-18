@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
@@ -23,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,12 +51,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private PermissionManager permissionManager = new PermissionManager() {
     };
     final int NOTIFICATION_ID = 100;
     private DrawerLayout mainDrawer;
+    private ImageView showHelp;
+    private Toolbar toolbar;
     private NavigationView navigationView;
     private static MainActivity instance;
     private RecordFragment recordFragment;
@@ -215,6 +219,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         instance = this;
         recordFragment = new RecordFragment();
         mainDrawer = findViewById(R.id.drawer_layout);
+        toolbar = findViewById(R.id.toolbar);
+        showHelp = findViewById(R.id.showHelp);
+        showHelp.setOnClickListener(this);
 
         /* Actionbar definieren und MenuListener festlegen */
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -428,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         menuInstance = menu;
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.show_help, menu);
+       // inflater.inflate(R.menu.profile_settings, menu);
         return true;
     }
 
@@ -436,35 +443,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         /* OptionItems Listener */
         switch (item.getItemId()) {
-            case R.id.nav_help:
-                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.getInstance());
-                alert.setTitle("Hilfe");
 
-                if (MainActivity.getHints()) {
-                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_dashboard));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_record));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_record_list));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_settings));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_record_details));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fNewUser)) != null) {
-                        String title = ((TextView) (findViewById(R.id.user_settings_title))).getText().toString();
-                        if (title.equals(getResources().getString(R.string.newUserTitle))) {
-                            alert.setMessage(getResources().getString(R.string.help_new_user));
-                        } else if (title.equals(getResources().getString(R.string.editUserTitle))) {
-                            alert.setMessage(getResources().getString(R.string.help_edit_user));
-                        }
-                    }
-                    alert.setNegativeButton("Schließen", null);
-                    alert.show();
-                } else {
-                    Toast.makeText(instance, "Diese Funktion muss zunächst in den Einstellungen aktiviert werden!", Toast.LENGTH_LONG).show();
-                }
-                return true;
             case R.id.nav_editProfile:
                 loadEditProfile();
                 return true;
@@ -482,20 +461,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (menuItem.getItemId()) {
             case R.id.nav_dashboard:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
+                    menuInstance.clear();
                     loadDashboard();
-                    menuInstance.removeGroup(R.id.nav_profileSettings);
                 }
                 break;
             case R.id.nav_recordlist:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
+                    menuInstance.clear();
                     loadRecordList();
-                    menuInstance.removeGroup(R.id.nav_profileSettings);
                 }
                 break;
             case R.id.nav_record:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
+                    menuInstance.clear();
                     loadRecord();
-                    menuInstance.removeGroup(R.id.nav_profileSettings);
                 }
                 break;
             case R.id.nav_import:
@@ -509,12 +488,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_profil:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) == null) {
-                    menuInstance.removeGroup(R.id.nav_profileSettings);
+                    menuInstance.clear();
                     loadProfile();
                 }
-                break;            case R.id.nav_settings:
+                break;
+            case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
-                    menuInstance.removeGroup(R.id.nav_profileSettings);
+                    menuInstance.clear();
                     loadSettings();
                 }
                 break;
@@ -689,5 +669,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // set the RecordFragment wich is in use
     public void setRecordFragment(RecordFragment recordFragment) {
         this.recordFragment = recordFragment;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.showHelp:
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.getInstance());
+                alert.setTitle("Hilfe");
+
+                if (MainActivity.getHints()) {
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_dashboard));
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_record));
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_record_list));
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_settings));
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_record_details));
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fNewUser)) != null) {
+                        String title = ((TextView) (findViewById(R.id.user_settings_title))).getText().toString();
+                        if (title.equals(getResources().getString(R.string.newUserTitle))) {
+                            alert.setMessage(getResources().getString(R.string.help_new_user));
+                        } else if (title.equals(getResources().getString(R.string.editUserTitle))) {
+                            alert.setMessage(getResources().getString(R.string.help_edit_user));
+                        }
+                    }
+                    alert.setNegativeButton("Schließen", null);
+                    alert.show();
+                } else {
+                    Toast.makeText(instance, "Diese Funktion muss zunächst in den Einstellungen aktiviert werden!", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
     }
 }

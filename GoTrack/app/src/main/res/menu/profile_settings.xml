@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_profileSettings">
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/nav_profileSettings">
+    <item
+        android:id="@+id/nav_profileSettings1"
+        android:title="profileMenu"
+        app:showAsAction="ifRoom">
         <item
             android:id="@+id/nav_editProfile"
-            android:title="Profil bearbeiten"
-           />
+            android:title="Profil bearbeiten" />
         <item
             android:id="@+id/nav_editPassword"
-            android:title="Passwort ändern"
-         />
+            android:title="Passwort ändern" />
+    </item>
 
-    </group>
 </menu>
