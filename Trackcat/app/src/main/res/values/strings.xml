@@ -79,8 +79,7 @@
         entsprechende Aufzeichnung. Zum Löschen ziehen Sie die entsprechende Aufzeichnung nach links.\n\nZum Teilen einer Aufzeichnung ziehen Sie
         diese nach rechts.\n\nZum Aktualisieren der Liste, ziehen Sie nach unten.</string>
     <string name="help_settings">Hier haben Sie die Möglichkeit benutzerdefinierte Einstellungen vorzunehmen. Durch einfaches Togglen, Aktivieren oder
-        Deaktivieren, lassen sich z.B. das Theme der App ändern oder Hilfestellungen aktivieren bzw. deaktivieren.\n\nZum Exportieren Ihrer Daten, klicken
-        Sie einfach auf \"Exportieren\" und wählen Sie die vorzunehmende Option.\n\nNäheres zur von Ihnen verwendeten Version finden Sie unter \"Version\".</string>
+        Deaktivieren, lassen sich z.B. das Theme der App ändern oder Hilfestellungen aktivieren bzw. deaktivieren.\n\nNäheres zur von Ihnen verwendeten Version finden Sie unter \"Version\".</string>
     <string name="help_record_details">Hier können Sie alle Daten Ihrer gewählten Aufzeichnung einsehen. Durch das Wischen nach links erhalten Sie Diagramme
         über den Verlauf Ihrer Geschwindigkeit sowie die hinterlegten Höhenmeter in Relation zur Zeit.\n\nZum Bearbeiten des Namens klicken Sie einfach auf das
         \"Edit\"-Icon, neben dem derzeit verwendeten Namen.</string>

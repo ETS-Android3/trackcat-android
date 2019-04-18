@@ -44,10 +44,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             theme.setSummary("Während Aufzeichnung nicht möglich!");
         }
 
-        /* Export von Daten */
-        Preference export = findPreference("global_export_options");
-        export.setOnPreferenceClickListener(this);
-
         /* Aktuelle Version in Einstellungen anzeigen */
         Preference version = findPreference("current_version");
         version.setSummary("unknown");
