@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.mobcom.group3.gotrack.Recording.Recording_UI.KMH_View_Fragment">
+    tools:context="de.trackcat.Recording.Recording_UI.KMH_View_Fragment">
 
     <TextView
         android:id="@+id/kmh_TextView"
