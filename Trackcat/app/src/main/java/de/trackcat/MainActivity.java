@@ -55,12 +55,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
     public Boolean firstRun = false;
-    private static int activeUser;
     private static boolean hints;
     private static boolean darkTheme;
-    boolean currentThemeDark;
-    private static boolean createInitialUser = false;
     private UserDAO userDAO;
+    private static int activeUser;
     public static Boolean isActiv = false;
     private static boolean isRestart = false;
     private static Menu menuInstance;
@@ -93,10 +91,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return menuInstance;
     }
 
-    public static int getActiveUser() {
-        return activeUser;
-    }
-
     public static boolean getHints() {
         return hints;
     }
@@ -109,14 +103,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return darkTheme;
     }
 
+    public static int getActiveUser() {
+        return activeUser;
+    }
+
     public static void setDarkTheme(boolean activeDarkTheme) {
         darkTheme = activeDarkTheme;
     }
-
-    public static void setCreateUser(boolean createUser) {
-        createInitialUser = createUser;
-    }
-
 
     @Override
     protected void onResume() {
@@ -166,8 +159,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void getCurrentUserInformation() {
         userDAO = new UserDAO(this);
-        List<User> users = userDAO.readAll();
-        if (users.size() == 0) {
+
+        List<User> userList = userDAO.readAll();
+        if (userList.size()==0) {
             /* Initiale Usererstellung */
 
             User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
@@ -176,17 +170,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             initialUser.setHintsActive(true);
             initialUser.setDarkThemeActive(false);
             userDAO.create(initialUser);
-            createInitialUser = true;
+            activeUser=1;
 
             hints = true;
             darkTheme = false;
-            currentThemeDark = darkTheme;
 
         } else {
 
-            hints = users.get(0).isHintsActive();
-            darkTheme = users.get(0).isDarkThemeActive();
-            currentThemeDark = darkTheme;
+            hints = userList.get(0).isHintsActive();
+            darkTheme = userList.get(0).isDarkThemeActive();
         }
 
     }
@@ -221,10 +213,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         showHelp = findViewById(R.id.showHelp);
 
-
         /*On Click Listener definieren*/
         showHelp.setOnClickListener(this);
-
 
         /* Actionbar definieren und MenuListener festlegen */
         Toolbar toolbar = findViewById(R.id.toolbar);
