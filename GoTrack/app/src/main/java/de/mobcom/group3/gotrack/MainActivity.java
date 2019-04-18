@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.karan.churi.PermissionManager.PermissionManager;
 
+import de.mobcom.group3.gotrack.Charts.LineChartFragment;
 import de.mobcom.group3.gotrack.Dashboard.DashboardFragment;
 import de.mobcom.group3.gotrack.Database.DAO.UserDAO;
 import de.mobcom.group3.gotrack.Database.Models.User;
@@ -435,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         menuInstance = menu;
         MenuInflater inflater = getMenuInflater();
-       // inflater.inflate(R.menu.profile_settings, menu);
+        // inflater.inflate(R.menu.profile_settings, menu);
         return true;
     }
 
@@ -461,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (menuItem.getItemId()) {
             case R.id.nav_dashboard:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
-                    menuInstance.clear();
+                    toolbar.getMenu().clear();
                     loadDashboard();
                 }
                 break;
@@ -489,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_profil:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) == null) {
                     menuInstance.clear();
-                    loadProfile();
+                    loadProfile(true);
                 }
                 break;
             case R.id.nav_settings:
@@ -570,6 +571,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadDashboard();
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
             loadRecordList();
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
+            loadProfile(false);
         } else {
             if (exitApp) {
                 finish();
@@ -595,7 +598,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Laden des Dashboard-Fragments */
     public void loadDashboard() {
-        Log.i("GoTrack-Fragment", "Das Dashboard-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Dashboard-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new DashboardFragment(),
                 getResources().getString(R.string.fDashboard));
@@ -614,7 +617,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int resGPS = getInstance().checkCallingOrSelfPermission(permissionGPS);
 
         if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED) {
-            Log.i("GoTrack-Fragment", "Das Aufnahme-Fragment wird geladen.");
+            Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Aufnahme-Fragment wird geladen.");
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, recordFragment,
                     getResources().getString(R.string.fRecord));
@@ -624,7 +627,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Laden des Listen-Fragments */
     public void loadRecordList() {
-        Log.i("GoTrack-Fragment", "Das Listen-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Listen-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new RecordListFragment(),
                 getResources().getString(R.string.fRecordlist));
@@ -632,17 +635,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /* Laden des Profil-Fragments */
-    public void loadProfile() {
-        Log.i("GoTrack-Fragment", "Das Profil-Fragment wird geladen.");
+    public void loadProfile(boolean loadMenu) {
+
+        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Profil-Fragment wird geladen.");
+
+        /* set Bundle */
+        Bundle bundleSpeed = new Bundle();
+        bundleSpeed.putBoolean("loadMenu", loadMenu);
+
+        ProfileFragment profileFragment = new ProfileFragment();
+        profileFragment.setArguments(bundleSpeed);
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new ProfileFragment(),
+        fragTransaction.replace(R.id.mainFrame, profileFragment,
                 getResources().getString(R.string.fProfile));
         fragTransaction.commit();
     }
 
     /* Laden des Einstellung-Fragments */
     public void loadSettings() {
-        Log.i("GoTrack-Fragment", "Das Einstellung-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Einstellung-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new SettingsFragment(),
                 getResources().getString(R.string.fSettings));
@@ -651,15 +662,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Laden des Einstellung-Fragments */
     public void loadEditProfile() {
-        Log.i("GoTrack-Fragment", "Das Profil-Bearbeiten-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Profil-Bearbeiten-Fragment wird geladen.");
+
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new EditProfileFragment(),
                 getResources().getString(R.string.fEditProfile));
         fragTransaction.commit();
     }
+
     /* Laden des Einstellung-Fragments */
     public void loadEditPassword() {
-        Log.i("GoTrack-Fragment", "Das Passwort-Ändern-Fragment wird geladen.");
+        Log.i(getResources().getString(R.string.app_name)+"-Fragment", "Das Passwort-Ändern-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new EditPasswordFragment(),
                 getResources().getString(R.string.fEditPassword));

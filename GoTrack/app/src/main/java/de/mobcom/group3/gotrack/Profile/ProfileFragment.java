@@ -16,10 +16,14 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        boolean loadMenu = getArguments().getBoolean("loadMenu");
 
-        /* Inlate Menu */
-        MenuInflater menuInflater = MainActivity.getInstance().getMenuInflater();
-        menuInflater.inflate(R.menu.profile_settings, MainActivity.getMenuInstance());
+        if(loadMenu){
+            /* Inlate Menu */
+            MenuInflater menuInflater = MainActivity.getInstance().getMenuInflater();
+            menuInflater.inflate(R.menu.profile_settings, MainActivity.getMenuInstance());
+        }
+
         return view;
     }
 }
