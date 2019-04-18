@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +29,13 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import de.mobcom.group3.gotrack.MainActivity;
 import de.mobcom.group3.gotrack.R;
+import de.mobcom.group3.gotrack.StartActivity;
 
 
 public class EditProfileFragment extends Fragment implements View.OnClickListener {
@@ -136,16 +141,31 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.input_dayOfBirth:
 
+                /* get old values */
+                String[] dayOfBirthValues = dayOfBirth.getText().toString().split("\\.");
+
                 /* set datepicker an set value in field */
-                final Calendar cldr = Calendar.getInstance();
+                int day = Integer.parseInt(dayOfBirthValues[0]);
+                int month = Integer.parseInt(dayOfBirthValues[1])-1;
+                int year = Integer.parseInt(dayOfBirthValues[2]);
+
+             /*   final Calendar cldr = Calendar.getInstance();
                 int day = cldr.get(Calendar.DAY_OF_MONTH);
                 int month = cldr.get(Calendar.MONTH);
-                int year = cldr.get(Calendar.YEAR);
+                int year = cldr.get(Calendar.YEAR);*/
                 picker = new DatePickerDialog(getContext(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                dayOfBirth.setText(dayOfMonth + "." + (monthOfYear + 1) + "." + year);
+                                String month=""+(monthOfYear + 1);
+                                String day=""+dayOfMonth;
+                                if(monthOfYear + 1<10){
+                                    month="0"+month;
+                                }
+                                if(dayOfMonth<10){
+                                    day="0"+day;
+                                }
+                                dayOfBirth.setText(day + "." + month + "." + year);
                             }
                         }, year, month, day);
                 picker.show();
@@ -159,15 +179,20 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_numberpicker, null, true) : null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
+                    /* get old values */
+                    String[] heightValues = height.getText().toString().split(",");
+
                     /* set max, min and unit */
                     alert.setView(alertView);
                     NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                     numberPickerInteger.setMinValue(0);
                     numberPickerInteger.setMaxValue(300);
+                    numberPickerInteger.setValue(Integer.parseInt(heightValues[0]));
 
                     NumberPicker numberPickerDecimal = alertView.findViewById(R.id.numberPickerDecimal);
                     numberPickerDecimal.setMinValue(0);
                     numberPickerDecimal.setMaxValue(10);
+                    numberPickerDecimal.setValue(Integer.parseInt(heightValues[1]));
 
                     TextView unit = alertView.findViewById(R.id.label_unit);
                     unit.setText("cm");
@@ -177,7 +202,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     public void onClick(DialogInterface dialog, int whichButton) {
                         NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                         NumberPicker numberPickerDecimal = alertView.findViewById(R.id.numberPickerDecimal);
-                        height.setText(numberPickerInteger.getValue() + "," + numberPickerDecimal.getValue()+" cm");
+                        height.setText(numberPickerInteger.getValue() + "," + numberPickerDecimal.getValue());
                     }
                 });
 
@@ -198,15 +223,20 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_numberpicker, null, true) : null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
+                    /* get old values */
+                    String[]weightValues = weight.getText().toString().split(",");
+
                     /* set max, min and unit */
                     alert.setView(alertView);
                     NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                     numberPickerInteger.setMinValue(0);
                     numberPickerInteger.setMaxValue(500);
+                    numberPickerInteger.setValue(Integer.parseInt(weightValues[0]));
 
                     NumberPicker numberPickerDecimal = alertView.findViewById(R.id.numberPickerDecimal);
                     numberPickerDecimal.setMinValue(0);
                     numberPickerDecimal.setMaxValue(10);
+                    numberPickerDecimal.setValue(Integer.parseInt(weightValues[1]));
 
                     TextView unit = alertView.findViewById(R.id.label_unit);
                     unit.setText("kg");
@@ -216,7 +246,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     public void onClick(DialogInterface dialog, int whichButton) {
                         NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                         NumberPicker numberPickerDecimal = alertView.findViewById(R.id.numberPickerDecimal);
-                        weight.setText(numberPickerInteger.getValue() + "," + numberPickerDecimal.getValue()+" kg");
+
+                        weight.setText(numberPickerInteger.getValue() + "," + numberPickerDecimal.getValue());
                     }
                 });
 
@@ -251,17 +282,31 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
     public boolean validate() {
         boolean valid = true;
-        int nameLength = 15;
+
         /* read inputs */
         String input_firstName = firstName.getText().toString();
         String input_lastName = lastName.getText().toString();
 
-        /* validate name */
-        if ((input_firstName + " " + input_lastName).length() > nameLength) {
+        /* validate firstName */
+        Pattern pattern3 = Pattern.compile(getResources().getString(R.string.rName));
+        Matcher matcher3 = pattern3.matcher(input_firstName);
+        if (!matcher3.matches()) {
             firstName.setError(getResources().getString(R.string.errorMsgName));
+            Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
+            valid = false;
+        }else{
+            firstName.setError(null);
+        }
+
+        /* validate lastName */
+        Pattern pattern4 = Pattern.compile(getResources().getString(R.string.rName));
+        Matcher matcher4 = pattern4.matcher(input_lastName);
+        if (!matcher4.matches()) {
             lastName.setError(getResources().getString(R.string.errorMsgName));
             Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
             valid = false;
+        }else{
+            lastName.setError(null);
         }
 
         return valid;

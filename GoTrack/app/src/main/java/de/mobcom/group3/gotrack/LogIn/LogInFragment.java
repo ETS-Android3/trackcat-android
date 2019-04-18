@@ -140,9 +140,6 @@ public class LogInFragment extends Fragment {
         /* validate email */
         Pattern pattern = Pattern.compile(getResources().getString(R.string.rEmail));
         Matcher matcher = pattern.matcher(email);
-        Log.d("ppppp", getResources().getString(R.string.rEmail));
-        Log.d("ppppp",email);
-        Log.d("ppppp",""+matcher.matches());
 
         if (!matcher.matches()) {
             emailTextView.setError(getResources().getString(R.string.errorMsgEMail));

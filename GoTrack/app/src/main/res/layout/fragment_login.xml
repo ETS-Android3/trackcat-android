@@ -33,6 +33,7 @@
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_email"
                 android:layout_width="match_parent"
+                android:maxLength="@integer/iEmail"
                 android:textColor="@color/ap_black"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
@@ -49,6 +50,7 @@
             <EditText android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:textColor="@color/ap_black"
+                android:maxLength="@integer/iPassword"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:hint="Passwort"/>

@@ -126,14 +126,25 @@ public class SignInFragment extends Fragment {
         String input_email = email.getText().toString();
         String input_password1 = password1.getText().toString();
 
-        /* validate name */
-        if ((input_firstName + " " + input_lastName).length() > nameLength) {
+        /* validate firstName */
+        Pattern pattern3 = Pattern.compile(getResources().getString(R.string.rName));
+        Matcher matcher3 = pattern3.matcher(input_firstName);
+        if (!matcher3.matches()) {
             firstName.setError(getResources().getString(R.string.errorMsgName));
-            lastName.setError(getResources().getString(R.string.errorMsgName));
             Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
             valid = false;
         }else{
             firstName.setError(null);
+        }
+
+        /* validate lastName */
+        Pattern pattern4 = Pattern.compile(getResources().getString(R.string.rName));
+        Matcher matcher4 = pattern4.matcher(input_lastName);
+        if (!matcher4.matches()) {
+            lastName.setError(getResources().getString(R.string.errorMsgName));
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
+            valid = false;
+        }else{
             lastName.setError(null);
         }
 

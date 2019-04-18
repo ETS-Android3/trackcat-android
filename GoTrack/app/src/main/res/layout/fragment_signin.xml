@@ -38,6 +38,7 @@
                     android:id="@+id/input_firstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLength="@integer/iName"
                     android:ems="10"
                     android:hint="Vorname"
                     android:inputType="textPersonName" />
@@ -55,6 +56,7 @@
                     android:id="@+id/input_lastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLength="@integer/iName"
                     android:ems="10"
                     android:hint="Nachname"
                     android:inputType="textPersonName" />
@@ -74,6 +76,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
+                    android:maxLength="@integer/iEmail"
                     android:hint="E-Mail"
                     android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
@@ -90,6 +93,7 @@
                     android:id="@+id/input_password1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLength="@integer/iPassword"
                     android:hint="Passwort"
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
@@ -106,6 +110,7 @@
                     android:id="@+id/input_password2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLength="@integer/iPassword"
                     android:hint="Passwort wdh."
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>

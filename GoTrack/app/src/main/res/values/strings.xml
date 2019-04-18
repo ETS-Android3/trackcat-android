@@ -44,7 +44,7 @@
 
     <!-- Error Messages -->
     <string name="errorMsgPassword">Das Passwort muss zwischen 8 und 15 Zeichen lang sein und mindestens folgende Parameter enthalten: 1x Groß- und Kleinbuchstabe, 1x Zahl und 1x Sonderzeichen</string>
-    <string name="errorMsgName">Ihr kompletter Name darf nicht länger als max. 15 Zeichen sein.</string>
+    <string name="errorMsgName">Ihr Name darf nicht länger als 16 Zeichen sein und muss den allgemeinen Namensrichtlinien entsprechen.</string>
     <string name="errorMsgEMail">Ihre Email Adresse entsrpicht nicht dem Standard-Email Format.</string>
 
     <!-- Toast Messages -->
@@ -58,6 +58,7 @@
     <!-- Regex -->
     <string name="rEmail">"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"</string>
     <string name="rPassword">"^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{8,15}$"</string>
+    <string name="rName">"^[A-Z]+(((\\-|\\s)[A-Z])?[a-z]*)*$"</string>
 
     <!-- Menu Toggle -->
     <string name="navigation_drawer_open">Open</string>
