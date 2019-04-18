@@ -167,6 +167,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void getCurrentUserInformation() {
         userDAO = new UserDAO(this);
         List<User> users = userDAO.readAll();
+        if(users.size()==0){
+            /* Initiale Usererstellung */
+
+                User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
+                        null);
+                initialUser.setActive(true);
+                initialUser.setHintsActive(true);
+                userDAO.create(initialUser);
+                createInitialUser = true;
+
+        }
         activeUser = users.get(0).getId();
         hints = users.get(0).isHintsActive();
         darkTheme = users.get(0).isDarkThemeActive();
@@ -274,17 +285,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         notificationManager = NotificationManagerCompat.from(this);
 
-        /* Initiale Usererstellung */
-        userDAO = new UserDAO(this);
-        List<User> userList = userDAO.readAll();
-        if (userList.size() == 0) {
-            User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
-                    null);
-            initialUser.setActive(true);
-            initialUser.setHintsActive(true);
-            userDAO.create(initialUser);
-            createInitialUser = true;
-        }
+
         firstRun = true;
 
         /* Startseite festlegen - Erster Aufruf */
