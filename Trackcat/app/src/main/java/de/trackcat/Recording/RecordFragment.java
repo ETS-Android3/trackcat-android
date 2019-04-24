@@ -768,7 +768,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         /* Nur in neueren Versionen */
         if (Build.VERSION.SDK_INT >= 21) {
             mBuilder.setSmallIcon(R.drawable.ic_icon)
-                    .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.drawable.ic_launcher));
+                    .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.mipmap.ic_launcher));
         }
 
         if (isTracking) {
