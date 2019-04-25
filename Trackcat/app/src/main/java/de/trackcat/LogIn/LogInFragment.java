@@ -119,7 +119,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", response.body());
 
                                 /* open activity if login success*/
-                                if (response.body() == "0") {
+                                if (response.body().equals("0")) {
                                     Intent intent = new Intent(getContext(), MainActivity.class);
                                     startActivity(intent);
                                 } else {
