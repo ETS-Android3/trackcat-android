@@ -45,7 +45,7 @@ public class StartActivity extends AppCompatActivity {
                         fragTransaction = getSupportFragmentManager().beginTransaction();
                         fragTransaction.replace(R.id.mainFrame, new LogInFragment(),
                                 getResources().getString(R.string.fLogIn));
-                        fragTransaction.commit();
+                        fragTransaction.commitAllowingStateLoss();
                     }
                 }, 3000);
     }
