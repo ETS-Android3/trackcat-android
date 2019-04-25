@@ -8,7 +8,7 @@ import retrofit2.http.POST;
 
 public interface APIClient {
 
-    @POST("/login")
+    @POST("/loginAPI")
     Call<String> getUser(@Header("Authorization") String authHeader);
 
 

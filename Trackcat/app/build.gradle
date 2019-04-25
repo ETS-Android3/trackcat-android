@@ -64,7 +64,7 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
 
 
-    // Volley net connection
+    // Retrofit net connection
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 }
