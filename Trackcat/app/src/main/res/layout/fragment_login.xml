@@ -31,13 +31,16 @@
             android:layout_marginTop="8dp"
             android:theme="@style/EditTextTheme"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_email"
+
+            <EditText
+                android:id="@+id/input_email"
                 android:layout_width="match_parent"
-                android:maxLength="@integer/iEmail"
-                android:textColor="@color/ap_black"
                 android:layout_height="wrap_content"
+                android:hint="Email"
                 android:inputType="textEmailAddress"
-                android:hint="Email" />
+                android:maxLength="@integer/iEmail"
+                android:text="test@quatsch.de"
+                android:textColor="@color/ap_black" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
@@ -47,13 +50,16 @@
             android:theme="@style/EditTextTheme"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_password"
+
+            <EditText
+                android:id="@+id/input_password"
                 android:layout_width="match_parent"
-                android:textColor="@color/ap_black"
-                android:maxLength="@integer/iPassword"
                 android:layout_height="wrap_content"
+                android:hint="Passwort"
                 android:inputType="textPassword"
-                android:hint="Passwort"/>
+                android:maxLength="@integer/iPassword"
+                android:text="a2@Ahhhhh"
+                android:textColor="@color/ap_black" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.AppCompatButton

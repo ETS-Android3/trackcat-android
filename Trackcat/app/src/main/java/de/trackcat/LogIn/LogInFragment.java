@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +18,17 @@ import android.widget.Toast;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
+import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.StartActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LogInFragment extends Fragment {
 
@@ -36,11 +46,11 @@ public class LogInFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        emailTextView =  view.findViewById(R.id.input_email);
+        emailTextView = view.findViewById(R.id.input_email);
         passwordTextView = view.findViewById(R.id.input_password);
-        btnLogin= view.findViewById(R.id.btn_login);
-        signInLink= view.findViewById(R.id.link_signup);
-        messageBox= view.findViewById(R.id.messageBox);
+        btnLogin = view.findViewById(R.id.btn_login);
+        signInLink = view.findViewById(R.id.link_signup);
+        messageBox = view.findViewById(R.id.messageBox);
 
         /* Login EventListener */
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +99,32 @@ public class LogInFragment extends Fragment {
 
         // TODO: Implement your own authentication logic here.
         /* open activity*/
+
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+
+        String base = email + ":" + password;
+
+        // TODO hashsalt Password
+
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+        Call<String> call = apiInterface.getUser(authString);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                Log.d("testConn", response.body());
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                call.cancel();
+            }
+        });
+
+
         Intent intent = new Intent(getContext(), MainActivity.class);
         startActivity(intent);
 
@@ -144,7 +180,7 @@ public class LogInFragment extends Fragment {
             emailTextView.setError(getResources().getString(R.string.errorMsgEMail));
             Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorEmail), Toast.LENGTH_SHORT).show();
             valid = false;
-        }else{
+        } else {
             emailTextView.setError(null);
         }
 
@@ -154,9 +190,9 @@ public class LogInFragment extends Fragment {
 
         if (!matcher2.matches()) {
             passwordTextView.setError(getResources().getString(R.string.errorMsgPassword));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(),  getResources().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
             valid = false;
-        }else{
+        } else {
             passwordTextView.setError(null);
         }
 
