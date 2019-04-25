@@ -30,7 +30,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LogInFragment extends Fragment {
+public class LogInFragment extends Fragment implements View.OnClickListener {
 
     private FragmentTransaction fragTransaction;
     /* UI references */
@@ -52,39 +52,42 @@ public class LogInFragment extends Fragment {
         signInLink = view.findViewById(R.id.link_signup);
         messageBox = view.findViewById(R.id.messageBox);
 
-        /* Login EventListener */
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        /* set on click-Listener */
+        btnLogin.setOnClickListener(this);
+        signInLink.setOnClickListener(this);
 
-            @Override
-            public void onClick(View v) {
+        return view;
+    }
+
+    /* onClick Listener */
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.btn_login:
                 login();
-            }
-        });
-
-        /* SignIn Link EventListener */
-        signInLink.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
+                break;
+            case R.id.link_signup:
                 fragTransaction = getFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, new SignInFragment(),
                         getResources().getString(R.string.fSignIn));
                 fragTransaction.commit();
-            }
-        });
-
-        return view;
+                break;
+        }
     }
 
     /* Function to Login */
     public void login() {
 
+        /* validate the inputs */
         if (!validate()) {
-            onLoginFailed();
             return;
         }
-
         btnLogin.setEnabled(false);
+
+        /* read the inputs to send */
+        String email = emailTextView.getText().toString();
+        String password = passwordTextView.getText().toString();
 
         /* set wait field */
         final ProgressDialog progressDialog = new ProgressDialog(getContext(),
@@ -93,77 +96,55 @@ public class LogInFragment extends Fragment {
         progressDialog.setMessage("Anmeldung...");
         progressDialog.show();
 
-        /* read the inputs */
-        String email = emailTextView.getText().toString();
-        String password = passwordTextView.getText().toString();
-
-        // TODO: Implement your own authentication logic here.
-        /* open activity*/
-
-        Retrofit retrofit = APIConnector.getRetrofit();
-        APIClient apiInterface = retrofit.create(APIClient.class);
-
-        String base = email + ":" + password;
-
-        // TODO hashsalt Password
-
-        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-
-        Call<String> call = apiInterface.getUser(authString);
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-
-                Log.d("testConn", response.body());
-
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                call.cancel();
-            }
-        });
-
-
-        Intent intent = new Intent(getContext(), MainActivity.class);
-        startActivity(intent);
-
+        /* set waiting handler */
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
                         progressDialog.dismiss();
+
+                        /* send inputs to server */
+                        Retrofit retrofit = APIConnector.getRetrofit();
+                        APIClient apiInterface = retrofit.create(APIClient.class);
+                        String base = email + ":" + password;
+
+                        // TODO hashsalt Password
+                        /* start a call */
+                        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                        Call<String> call = apiInterface.getUser(authString);
+
+                        call.enqueue(new Callback<String>() {
+
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", response.body());
+
+                                /* open activity if login success*/
+                                if (response.body() == "0") {
+                                    Intent intent = new Intent(getContext(), MainActivity.class);
+                                    startActivity(intent);
+                                } else {
+
+                                    /* set errror message */
+                                    messageBox.setVisibility(View.VISIBLE);
+                                    messageBox.setText("FEHLER!");
+                                    new android.os.Handler().postDelayed(
+                                            new Runnable() {
+                                                public void run() {
+                                                    messageBox.setVisibility(View.GONE);
+                                                }
+                                            }, 7000);
+                                    btnLogin.setEnabled(true);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                call.cancel();
+                            }
+                        });
                     }
                 }, 3000);
     }
-
-    /* @Override
-   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP) {
-            if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
-            }
-        }
-    }*/
-
-    /* Function, if login success */
-    public void onLoginSuccess() {
-        btnLogin.setEnabled(true);
-
-    }
-
-    /* Function, if login failed */
-    public void onLoginFailed() {
-        // TODO: Implement correct message
-        messageBox.setText("FEHLER!");
-        btnLogin.setEnabled(true);
-    }
-
 
     /* Function to validate user input */
     public boolean validate() {
@@ -195,7 +176,6 @@ public class LogInFragment extends Fragment {
         } else {
             passwordTextView.setError(null);
         }
-
         return valid;
     }
 }
