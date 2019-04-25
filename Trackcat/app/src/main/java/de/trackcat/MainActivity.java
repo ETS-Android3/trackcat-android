@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userDAO = new UserDAO(this);
 
         List<User> userList = userDAO.readAll();
-        if (userList.size()==0) {
+        if (userList.size() == 0) {
             /* Initiale Usererstellung */
 
             User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             initialUser.setHintsActive(true);
             initialUser.setDarkThemeActive(false);
             userDAO.create(initialUser);
-            activeUser=1;
+            activeUser = 1;
 
             hints = true;
             darkTheme = false;
@@ -408,6 +408,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadRecordList();
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
             loadProfile(false);
+        } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+            mainDrawer.closeDrawer(GravityCompat.START);
         } else {
             if (exitApp) {
                 finish();
