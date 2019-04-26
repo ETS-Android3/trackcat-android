@@ -14,11 +14,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_gravity="center"
+            android:orientation="vertical"
             android:paddingLeft="24dp"
             android:paddingRight="24dp">
 
+            <!-- header -->
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
@@ -26,75 +27,54 @@
                 android:layout_marginBottom="24dp"
                 android:src="@raw/logo" />
 
-            <TextView
-                android:id="@+id/messageBox"
+            <!-- inputs -->
+            <RelativeLayout
+                android:id="@+id/inputs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="FEHLER"
-                android:textColor="@color/colorGreyAccent"
-                android:textStyle="bold"
+                android:layout_height="200dp"
                 android:gravity="center"
-                android:textSize="20dip"
-                android:visibility="gone"
-                />
-            <TextView
-                android:id="@+id/messageBoxInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="FEHLERInfo"
-                android:textColor="@color/colorGreyAccent"
-                android:gravity="center"
-                android:textSize="16dip"
-                android:visibility="gone"
-                />
+                android:orientation="vertical">
 
-            <!-- Password1 Label -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:theme="@style/EditTextTheme">
 
-                <EditText
-                    android:id="@+id/input_password1"
+                <!-- Password1 Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/layout_password1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Passwort"
-                    android:inputType="textPassword"
-                    android:maxLength="@integer/iPassword"
-                    android:text="Geheim-123" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:theme="@style/EditTextTheme">
 
-            <!-- Password2 Label -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:theme="@style/EditTextTheme">
+                    <EditText
+                        android:id="@+id/input_password1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Passwort"
+                        android:inputType="textPassword"
+                        android:maxLength="@integer/iPassword"
+                        android:text="Geheim-123" />
+                </android.support.design.widget.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/input_password2"
+                <!-- Password2 Label -->
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Passwort wdh."
-                    android:inputType="textPassword"
-                    android:maxLength="@integer/iPassword"
-                    android:text="Geheim-123" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_marginTop="8dp"
+                    android:layout_below="@+id/layout_password1"
+                    android:layout_marginBottom="8dp"
+                    android:theme="@style/EditTextTheme">
 
-            <!-- Signup Button -->
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btn_signin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:background="@color/colorGreyAccent"
-                android:padding="12dp"
-                android:textColor="@color/ap_white"
-                android:text="Account erstellen"
-                />
+                    <EditText
+                        android:id="@+id/input_password2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Passwort wdh."
+                        android:inputType="textPassword"
+                        android:maxLength="@integer/iPassword"
+                        android:text="Geheim-123" />
+                </android.support.design.widget.TextInputLayout>
+            </RelativeLayout>
+
 
             <!-- navigation line -->
             <LinearLayout
@@ -121,11 +101,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:padding="16dp"
+                        app:sv_steps="@array/steps"
                         app:sv_animationType="Line"
                         app:sv_doneCircleColor="@color/colorSuccess"
                         app:sv_doneCircleRadius="12dp"
                         app:sv_doneStepLineColor="@color/colorSuccess"
                         app:sv_doneStepMarkColor="@color/colorBlack"
+                        app:sv_doneTextColor="@color/colorSuccess"
                         app:sv_nextStepLineColor="@color/colorGreenAccent"
                         app:sv_nextTextColor="@color/colorGreenAccent"
                         app:sv_selectedCircleColor="@color/colorGreenAccent"
@@ -138,6 +120,13 @@
                         app:sv_stepViewStyle="@style/StepView" />
                 </LinearLayout>
 
+                <!-- next Button -->
+                <ImageView
+                    android:id="@+id/btn_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/ic_next" />
+
             </LinearLayout>
 
             <TextView
@@ -145,9 +134,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
+                android:textColor="@color/ap_black"
                 android:gravity="center"
                 android:text="Schon Mitglied? Login"
-                android:textSize="16dip" />
+                android:textSize="20dip" />
 
         </LinearLayout>
     </ScrollView>

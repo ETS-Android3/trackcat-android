@@ -81,6 +81,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <!-- back Button -->
+                <ImageView
+                    android:id="@+id/btn_back"
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/ic_back" />
+
                 <!-- stepView -->
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -95,7 +103,9 @@
                         android:padding="16dp"
                         app:sv_animationType="Line"
                         app:sv_doneCircleColor="@color/colorSuccess"
+                        app:sv_steps="@array/steps"
                         app:sv_doneCircleRadius="12dp"
+                        app:sv_doneTextColor="@color/colorSuccess"
                         app:sv_doneStepLineColor="@color/colorSuccess"
                         app:sv_doneStepMarkColor="@color/colorBlack"
                         app:sv_nextStepLineColor="@color/colorGreenAccent"
@@ -113,6 +123,7 @@
                 <ImageView
                     android:id="@+id/btn_next"
                     android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_next" />
             </LinearLayout>
@@ -123,8 +134,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
+                android:textColor="@color/ap_black"
                 android:text="Schon Mitglied? Login"
-                android:textSize="16dip" />
+                android:textSize="20dip" />
 
         </LinearLayout>
     </ScrollView>

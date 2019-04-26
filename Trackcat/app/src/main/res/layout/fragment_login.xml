@@ -103,8 +103,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:gravity="center"
+                android:textColor="@color/ap_black"
                 android:text="Noch keinen Account? Erstelle hier einen."
-                android:textSize="16dip" />
+                android:textSize="20dip" />
 
         </LinearLayout>
     </ScrollView>

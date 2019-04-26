@@ -78,6 +78,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:padding="16dp"
+                        app:sv_steps="@array/steps"
                         app:sv_animationType="Line"
                         app:sv_doneCircleColor="@color/colorSuccess"
                         app:sv_doneCircleRadius="12dp"
@@ -85,6 +86,7 @@
                         app:sv_doneStepMarkColor="@color/colorBlack"
                         app:sv_nextStepLineColor="@color/colorGreenAccent"
                         app:sv_nextTextColor="@color/colorGreenAccent"
+                        app:sv_doneTextColor="@color/colorSuccess"
                         app:sv_selectedCircleColor="@color/colorGreenAccent"
                         app:sv_selectedCircleRadius="12dp"
                         app:sv_selectedStepNumberColor="@color/colorGreenLight"
@@ -108,8 +110,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
+                android:textColor="@color/ap_black"
                 android:text="Schon Mitglied? Login"
-                android:textSize="16dip" />
+                android:textSize="20dip" />
 
         </LinearLayout>
     </ScrollView>

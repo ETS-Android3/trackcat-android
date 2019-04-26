@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,11 +38,11 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
     private FragmentTransaction fragTransaction;
     /* UI references */
-    EditText password1, password2;
+    CheckBox generalTerm, dataProtection;
     ImageView btnBack;
     Button btnSignIn;
     TextView logInInLink, messageBox, messageBoxInfo;
-    String firstName, lastName, email;
+    String firstName, lastName, email, passwort1, passwort2;
     private com.shuhart.stepview.StepView stepView;
 
 
@@ -50,12 +51,12 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_signin_4, container, false);
-
+        generalTerm = view.findViewById(R.id.checkBox_generalTerm);
+        dataProtection = view.findViewById(R.id.checkBox_dataProtection);
         btnBack = view.findViewById(R.id.btn_back);
         btnSignIn = view.findViewById(R.id.btn_signin);
         logInInLink = view.findViewById(R.id.link_login);
-        password1 = view.findViewById(R.id.input_password1);
-        password2 = view.findViewById(R.id.input_password2);
+
         messageBox = view.findViewById(R.id.messageBox);
         messageBoxInfo = view.findViewById(R.id.messageBoxInfo);
 
@@ -64,18 +65,17 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
             firstName = getArguments().getString("firstName");
             lastName = getArguments().getString("lastName");
             email = getArguments().getString("email");
-            if (getArguments().getString("password1") != null) {
-                password1.setText(getArguments().getString("password1"));
-            }
-            if (getArguments().getString("password2") != null) {
-                password2.setText(getArguments().getString("password2"));
-            }
+            passwort1 = getArguments().getString("password1");
+            passwort2 = getArguments().getString("password2");
+
+            generalTerm.setChecked(getArguments().getBoolean("generalTerms"));
+            dataProtection.setChecked(getArguments().getBoolean("dataProtection"));
         }
+
 
         /* step view */
         stepView = view.findViewById(R.id.step_view);
-        stepView.setStepsNumber(3);
-        stepView.go(2, false);
+        stepView.go(3, false);
 
         /* set on click-Listener */
         btnBack.setOnClickListener(this);
@@ -90,24 +90,22 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_back:
-                /* read inputs */
-                String input_password1 = password1.getText().toString();
-                String input_password2 = password2.getText().toString();
-                /*create bundle*/
-                Bundle bundleSignIn_1_and_2_and_3 = new Bundle();
-                bundleSignIn_1_and_2_and_3.putString("firstName", firstName);
-                bundleSignIn_1_and_2_and_3.putString("lastName", lastName);
-                bundleSignIn_1_and_2_and_3.putString("email", email);
-                bundleSignIn_1_and_2_and_3.putString("password1", input_password1);
-                bundleSignIn_1_and_2_and_3.putString("password2", input_password2);
 
-                SignInFragment_2 signInFragment_2 = new SignInFragment_2();
-                signInFragment_2.setArguments(bundleSignIn_1_and_2_and_3);
+                /*create bundle*/
+                Bundle bundleSignIn_1_and_2_and_3_and_4 = new Bundle();
+                bundleSignIn_1_and_2_and_3_and_4.putString("firstName", firstName);
+                bundleSignIn_1_and_2_and_3_and_4.putString("lastName", lastName);
+                bundleSignIn_1_and_2_and_3_and_4.putString("email", email);
+                bundleSignIn_1_and_2_and_3_and_4.putBoolean("generalTerm", generalTerm.isChecked());
+                bundleSignIn_1_and_2_and_3_and_4.putBoolean("dataProtection", dataProtection.isChecked());
+
+                SignInFragment_3 signInFragment_3 = new SignInFragment_3();
+                signInFragment_3.setArguments(bundleSignIn_1_and_2_and_3_and_4);
 
                 /* show next page */
                 fragTransaction = getFragmentManager().beginTransaction();
-                fragTransaction.replace(R.id.mainFrame, signInFragment_2,
-                        getResources().getString(R.string.fSignIn_2));
+                fragTransaction.replace(R.id.mainFrame, signInFragment_3,
+                        getResources().getString(R.string.fSignIn_3));
                 fragTransaction.commit();
 
                 break;
@@ -125,101 +123,77 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
     public void signin() {
 
-        /* read inputs */
-        String input_password1 = password1.getText().toString();
-        String input_password2 = password2.getText().toString();
+
         btnSignIn.setEnabled(false);
 
 
-        /* if passwords are the same and inputs validate */
-        if (input_password1.equals(input_password2)) {
-            if (validate()) {
-                btnSignIn.setEnabled(true);
+        /* if generalTerm and dataProtection is checked*/
+        if (generalTerm.isChecked() && dataProtection.isChecked()) {
 
-                final ProgressDialog progressDialog = new ProgressDialog(getContext(),
-                        R.style.AppTheme_Dark_Dialog);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Account wird erstellt...");
-                progressDialog.show();
+            btnSignIn.setEnabled(true);
 
-
-                // TODO: Implement your own signup logic here.
-
-                new android.os.Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-                                progressDialog.dismiss();
-
-                                /* send inputs to server */
-                                Retrofit retrofit = APIConnector.getRetrofit();
-                                APIClient apiInterface = retrofit.create(APIClient.class);
-
-                                HashMap<String, String> map = new HashMap<>();
-                                map.put("firstName", "" + firstName);
-                                map.put("lastName", lastName);
-                                map.put("email", email);
-                                map.put("password", password1.getText().toString());
+            final ProgressDialog progressDialog = new ProgressDialog(getContext(),
+                    R.style.AppTheme_Dark_Dialog);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Account wird erstellt...");
+            progressDialog.show();
 
 
-                                // TODO hashsalt Password
-                                /* start a call */
-                                Call<String> call = apiInterface.registerUser(map);
+            // TODO: Implement your own signup logic here.
 
-                                call.enqueue(new Callback<String>() {
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            progressDialog.dismiss();
 
-                                    @Override
-                                    public void onResponse(Call<String> call, Response<String> response) {
-                                        try {
-                                            Log.d(getResources().getString(R.string.app_name) + "-SigninConnection", response.body());
+                            /* send inputs to server */
+                            Retrofit retrofit = APIConnector.getRetrofit();
+                            APIClient apiInterface = retrofit.create(APIClient.class);
 
-                                            /* open activity if login success*/
-                                            if (response.body().equals("0")) {
-                                                Intent intent = new Intent(getContext(), MainActivity.class);
-                                                startActivity(intent);
-                                            } else {
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("firstName", firstName);
+                            map.put("lastName", lastName);
+                            map.put("email", email);
+                            map.put("password", passwort1);
 
-                                                /* set errror message */
-                                                messageBox.setVisibility(View.VISIBLE);
-                                                messageBox.setText("FEHLER!");
-                                                new android.os.Handler().postDelayed(
-                                                        new Runnable() {
-                                                            public void run() {
-                                                                messageBox.setVisibility(View.GONE);
-                                                            }
-                                                        }, 7000);
-                                                btnSignIn.setEnabled(true);
-                                            }
-                                        } catch (Exception e) {
 
-                                            /* show server error message to user */
-                                            Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + response.raw().message());
-                                            messageBoxInfo.setVisibility(View.VISIBLE);
-                                            messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
+                            // TODO hashsalt Password
+                            /* start a call */
+                            Call<String> call = apiInterface.registerUser(map);
 
+                            call.enqueue(new Callback<String>() {
+
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    try {
+                                        Log.d(getResources().getString(R.string.app_name) + "-SigninConnection", response.body());
+
+                                        /* open activity if login success*/
+                                        if (response.body().equals("0")) {
+                                            Intent intent = new Intent(getContext(), MainActivity.class);
+                                            startActivity(intent);
+                                        } else {
+
+                                            /* set errror message */
                                             messageBox.setVisibility(View.VISIBLE);
-                                            messageBox.setText(response.raw().message());
+                                            messageBox.setText("FEHLER!");
                                             new android.os.Handler().postDelayed(
                                                     new Runnable() {
                                                         public void run() {
                                                             messageBox.setVisibility(View.GONE);
-                                                            messageBoxInfo.setVisibility(View.GONE);
                                                         }
-                                                    }, 10000);
+                                                    }, 7000);
                                             btnSignIn.setEnabled(true);
                                         }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<String> call, Throwable t) {
-                                        call.cancel();
+                                    } catch (Exception e) {
 
                                         /* show server error message to user */
-                                        Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + t.getMessage());
+                                        Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + response.raw().message());
                                         messageBoxInfo.setVisibility(View.VISIBLE);
                                         messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
 
                                         messageBox.setVisibility(View.VISIBLE);
-                                        messageBox.setText(t.getMessage());
+                                        messageBox.setText(response.raw().message());
                                         new android.os.Handler().postDelayed(
                                                 new Runnable() {
                                                     public void run() {
@@ -229,37 +203,35 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                                                 }, 10000);
                                         btnSignIn.setEnabled(true);
                                     }
-                                });
-                            }
-                        }, 3000);
-            } else {
-                return;
-            }
+                                }
+
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                    call.cancel();
+
+                                    /* show server error message to user */
+                                    Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + t.getMessage());
+                                    messageBoxInfo.setVisibility(View.VISIBLE);
+                                    messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
+
+                                    messageBox.setVisibility(View.VISIBLE);
+                                    messageBox.setText(t.getMessage());
+                                    new android.os.Handler().postDelayed(
+                                            new Runnable() {
+                                                public void run() {
+                                                    messageBox.setVisibility(View.GONE);
+                                                    messageBoxInfo.setVisibility(View.GONE);
+                                                }
+                                            }, 10000);
+                                    btnSignIn.setEnabled(true);
+                                }
+                            });
+                        }
+                    }, 3000);
+
 
         } else {
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorPasswordNotIdentical), Toast.LENGTH_SHORT).show();
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorHook), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public boolean validate() {
-        boolean valid = true;
-
-        /* read inputs */
-        String input_password1 = password1.getText().toString();
-
-        /* validate password */
-        Pattern pattern2 = Pattern.compile(getResources().getString(R.string.rPassword));
-        Matcher matcher2 = pattern2.matcher(input_password1);
-
-        if (!matcher2.matches()) {
-            password1.setError(getResources().getString(R.string.errorMsgPassword));
-            password2.setError(getResources().getString(R.string.errorMsgPassword));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            password1.setError(null);
-            password2.setError(null);
-        }
-        return valid;
     }
 }

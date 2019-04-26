@@ -37,7 +37,8 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
     EditText email;
     ImageView btnBack, btnNext;
     TextView logInInLink;
-    String firstName, lastName, password1,password2;
+    String firstName, lastName, password1, password2;
+    Boolean generalTerm, dataProtection;
     private com.shuhart.stepview.StepView stepView;
 
 
@@ -59,14 +60,15 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
             lastName = getArguments().getString("lastName");
             password1 = getArguments().getString("password1");
             password2 = getArguments().getString("password2");
-            if(getArguments().getString("email")!=null) {
+            generalTerm = getArguments().getBoolean("generalTerm");
+            dataProtection = getArguments().getBoolean("dataProtection");
+            if (getArguments().getString("email") != null) {
                 email.setText(getArguments().getString("email"));
             }
         }
 
         /* stepview */
-        stepView=view.findViewById(R.id.step_view);
-        stepView.setStepsNumber(3);
+        stepView = view.findViewById(R.id.step_view);
         stepView.go(1, false);
         btnBack.setOnClickListener(this);
         btnNext.setOnClickListener(this);
@@ -84,25 +86,24 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
             case R.id.btn_back:
                 /* read inputs */
                 String input_email_back = email.getText().toString();
-                    /*create bundle*/
-                    bundleSignIn_1_and_2 = new Bundle();
-                    bundleSignIn_1_and_2.putString("firstName",firstName);
-                    bundleSignIn_1_and_2.putString("lastName", lastName);
-                    bundleSignIn_1_and_2.putString("email", input_email_back);
+                /*create bundle*/
+                bundleSignIn_1_and_2 = new Bundle();
+                bundleSignIn_1_and_2.putString("firstName", firstName);
+                bundleSignIn_1_and_2.putString("lastName", lastName);
+                bundleSignIn_1_and_2.putString("email", input_email_back);
                 bundleSignIn_1_and_2.putString("password1", password1);
                 bundleSignIn_1_and_2.putString("password2", password2);
+                bundleSignIn_1_and_2.putBoolean("generalTerms", generalTerm);
+                bundleSignIn_1_and_2.putBoolean("dataProtection", dataProtection);
 
-                    SignInFragment_1 signInFragment_1 = new SignInFragment_1();
-                    signInFragment_1.setArguments(bundleSignIn_1_and_2);
+                SignInFragment_1 signInFragment_1 = new SignInFragment_1();
+                signInFragment_1.setArguments(bundleSignIn_1_and_2);
 
-                    /* show next page */
-                    fragTransaction = getFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, signInFragment_1,
-                            getResources().getString(R.string.fSignIn_1));
-                    fragTransaction.commit();
-
-
-
+                /* show next page */
+                fragTransaction = getFragmentManager().beginTransaction();
+                fragTransaction.replace(R.id.mainFrame, signInFragment_1,
+                        getResources().getString(R.string.fSignIn_1));
+                fragTransaction.commit();
                 break;
             case R.id.btn_next:
                 /* read inputs */
@@ -110,11 +111,13 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                 if (validate()) {
                     /*create bundle*/
                     bundleSignIn_1_and_2 = new Bundle();
-                    bundleSignIn_1_and_2.putString("firstName",firstName);
+                    bundleSignIn_1_and_2.putString("firstName", firstName);
                     bundleSignIn_1_and_2.putString("lastName", lastName);
                     bundleSignIn_1_and_2.putString("email", input_email_next);
                     bundleSignIn_1_and_2.putString("password1", password1);
                     bundleSignIn_1_and_2.putString("password2", password2);
+                    bundleSignIn_1_and_2.putBoolean("generalTerms", generalTerm);
+                    bundleSignIn_1_and_2.putBoolean("dataProtection", dataProtection);
 
                     SignInFragment_3 signInFragment_3 = new SignInFragment_3();
                     signInFragment_3.setArguments(bundleSignIn_1_and_2);
@@ -135,7 +138,6 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-
 
 
     public boolean validate() {

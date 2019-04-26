@@ -24,6 +24,7 @@
     <string name="fSignIn_1">SIGNIN_1</string>
     <string name="fSignIn_2">SIGNIN_2</string>
     <string name="fSignIn_3">SIGNIN_3</string>
+    <string name="fSignIn_4">SIGNIN_4</string>
     <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
 
@@ -52,7 +53,8 @@
     <string name="tErrorPassword">Ihr Passwort ist nicht konform!</string>
     <string name="tErrorPasswordNotIdentical">Passwörter stimmen nicht überein!</string>
     <string name="tErrorName">Ihr Name ist nicht konform!</string>
-    <string name="tErrorEmail">Ihre E-Mail Adresse ist nicht konform!</string>
+    <string name="tErrorEmail">Ihr Email ist nicht konform!</string>
+    <string name="tErrorHook">Bitte akzeptieren Sie die AGBs und die Datenschutzerklärung!</string>
     <string name="tFillAllFields">Bitte alle Felder ausfüllen!</string>
     <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
 
@@ -85,7 +87,5 @@
         ebenfalls ändern.</string>
     <string name="help_editPassword">Hier haben Sie die Möglichkeit Ihr Passwort zu ändern. Hierfür müssen Sie zunächst ihr aktuelles Passwort eingeben.</string>
     <string name="help_friendSystem">Hier sehen sie alle Ihre Freunde.</string>
-
-
 
 </resources>
