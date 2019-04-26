@@ -38,7 +38,7 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
     /* UI references */
     EditText password1, password2;
     Button btnSignIn, btnBack;
-    TextView logInInLink;
+    TextView logInInLink, messageBox, messageBoxInfo;
     String firstName, lastName, email;
     private com.shuhart.stepview.StepView stepView;
 
@@ -54,6 +54,8 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
         logInInLink = view.findViewById(R.id.link_login);
         password1 = view.findViewById(R.id.input_password1);
         password2 = view.findViewById(R.id.input_password2);
+        messageBox = view.findViewById(R.id.messageBox);
+        messageBoxInfo = view.findViewById(R.id.messageBoxInfo);
 
         /* get bundle */
         if (getArguments() != null) {
@@ -176,12 +178,12 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
                                             } else {
 
                                                 /* set errror message */
-                                                //  messageBox.setVisibility(View.VISIBLE);
-                                                //  messageBox.setText("FEHLER!");
+                                                messageBox.setVisibility(View.VISIBLE);
+                                                messageBox.setText("FEHLER!");
                                                 new android.os.Handler().postDelayed(
                                                         new Runnable() {
                                                             public void run() {
-                                                                // messageBox.setVisibility(View.GONE);
+                                                                messageBox.setVisibility(View.GONE);
                                                             }
                                                         }, 7000);
                                                 btnSignIn.setEnabled(true);
@@ -190,16 +192,16 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
 
                                             /* show server error message to user */
                                             Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + response.raw().message());
-                                            //  messageBoxInfo.setVisibility(View.VISIBLE);
-                                            // messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
+                                            messageBoxInfo.setVisibility(View.VISIBLE);
+                                            messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
 
-                                            // messageBox.setVisibility(View.VISIBLE);
-                                            //  messageBox.setText(response.raw().message());
+                                            messageBox.setVisibility(View.VISIBLE);
+                                            messageBox.setText(response.raw().message());
                                             new android.os.Handler().postDelayed(
                                                     new Runnable() {
                                                         public void run() {
-                                                            //  messageBox.setVisibility(View.GONE);
-                                                            //  messageBoxInfo.setVisibility(View.GONE);
+                                                            messageBox.setVisibility(View.GONE);
+                                                            messageBoxInfo.setVisibility(View.GONE);
                                                         }
                                                     }, 10000);
                                             btnSignIn.setEnabled(true);
@@ -209,6 +211,22 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
                                     @Override
                                     public void onFailure(Call<String> call, Throwable t) {
                                         call.cancel();
+
+                                        /* show server error message to user */
+                                        Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + t.getMessage());
+                                        messageBoxInfo.setVisibility(View.VISIBLE);
+                                        messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
+
+                                        messageBox.setVisibility(View.VISIBLE);
+                                        messageBox.setText(t.getMessage());
+                                        new android.os.Handler().postDelayed(
+                                                new Runnable() {
+                                                    public void run() {
+                                                        messageBox.setVisibility(View.GONE);
+                                                        messageBoxInfo.setVisibility(View.GONE);
+                                                    }
+                                                }, 10000);
+                                        btnSignIn.setEnabled(true);
                                     }
                                 });
                             }
