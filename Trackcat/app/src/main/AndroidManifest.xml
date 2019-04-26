@@ -7,28 +7,25 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        tools:ignore="GoogleAppIndexingWarning"
+        android:usesCleartextTraffic="true"
 
 
-
-
-
-        android:usesCleartextTraffic="true">
-
+        tools:ignore="GoogleAppIndexingWarning">
 
 
         <activity
             android:name="de.trackcat.MainActivity"
-            android:hardwareAccelerated="false"
-            android:configChanges="orientation|keyboardHidden">
+            android:configChanges="orientation|keyboardHidden"
+            android:hardwareAccelerated="false">
 
         </activity>
         <!--
