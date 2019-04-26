@@ -125,12 +125,16 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
 
         btnSignIn.setEnabled(false);
+        generalTerm.setError(null);
+        dataProtection.setError(null);
 
 
         /* if generalTerm and dataProtection is checked*/
         if (generalTerm.isChecked() && dataProtection.isChecked()) {
 
             btnSignIn.setEnabled(true);
+
+
 
             final ProgressDialog progressDialog = new ProgressDialog(getContext(),
                     R.style.AppTheme_Dark_Dialog);
@@ -231,7 +235,20 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
 
         } else {
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorHook), Toast.LENGTH_SHORT).show();
+
+            if (!generalTerm.isChecked()) {
+                generalTerm.setError("Sie müssen die AGBs akzeptieren.");
+                Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorHookGeneralTerm), Toast.LENGTH_SHORT).show();
+            } else if (!dataProtection.isChecked()) {
+                dataProtection.setError("Sie müssen die Datenschutzrichtlinien akzeptieren.");
+                Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorHookDataProtection), Toast.LENGTH_SHORT).show();
+            } else if (!generalTerm.isChecked() && !dataProtection.isChecked()) {
+                generalTerm.setError("Sie müssen die AGBs akzeptieren.");
+                dataProtection.setError("Sie müssen die Datenschutzrichtlinien akzeptieren.");
+                Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorHook), Toast.LENGTH_SHORT).show();
+            }
+
+
         }
     }
 }

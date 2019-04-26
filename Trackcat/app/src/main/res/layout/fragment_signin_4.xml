@@ -145,8 +145,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
+                android:layout_marginTop="24dp"
+                android:textStyle="italic"
                 android:gravity="center"
-                android:textColor="@color/ap_black"
+                android:textColor="@color/colorBlack"
                 android:text="Schon Mitglied? Login"
                 android:textSize="20dip" />
 

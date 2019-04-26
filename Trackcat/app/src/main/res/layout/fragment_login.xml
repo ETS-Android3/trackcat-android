@@ -103,7 +103,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:gravity="center"
-                android:textColor="@color/ap_black"
+                android:textStyle="italic"
+                android:textColor="@color/colorBlack"
                 android:text="Noch keinen Account? Erstelle hier einen."
                 android:textSize="20dip" />
 

@@ -55,6 +55,8 @@
     <string name="tErrorName">Ihr Name ist nicht konform!</string>
     <string name="tErrorEmail">Ihr Email ist nicht konform!</string>
     <string name="tErrorHook">Bitte akzeptieren Sie die AGBs und die Datenschutzerklärung!</string>
+    <string name="tErrorHookGeneralTerm">Bitte akzeptieren Sie die AGBs!</string>
+    <string name="tErrorHookDataProtection">Bitte akzeptieren Sie die Datenschutzerklärung!</string>
     <string name="tFillAllFields">Bitte alle Felder ausfüllen!</string>
     <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
 

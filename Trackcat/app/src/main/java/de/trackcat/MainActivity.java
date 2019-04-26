@@ -1,6 +1,7 @@
 package de.trackcat;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +40,10 @@ import de.trackcat.RecordList.RecordListFragment;
 import de.trackcat.Recording.Locator;
 import de.trackcat.Recording.RecordFragment;
 import de.trackcat.Settings.SettingsFragment;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import java.util.Calendar;
 import java.util.List;
@@ -361,6 +367,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     menuInstance.clear();
                     loadFriendSystem();
                 }
+                break;
+            case R.id.nav_logout:
+
+                /* set wait field */
+                final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this,
+                        R.style.AppTheme_Dark_Dialog);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Abmeldung...");
+                progressDialog.show();
+                /* set waiting handler */
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+
+                                //TODO Geschmeidiger Übergang
+                                progressDialog.dismiss();
+
+                                Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                                startActivity(intent);
+                                MainActivity.super.onDestroy();
+
+                            }
+                        }, 3000);
+
                 break;
         }
         menuItem.setChecked(true);
