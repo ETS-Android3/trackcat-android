@@ -38,7 +38,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     private EditText passwordTextView;
     private Button btnLogin;
     private TextView signInLink;
-    private TextView messageBox;
+    private TextView messageBox, messageBoxInfo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +51,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         btnLogin = view.findViewById(R.id.btn_login);
         signInLink = view.findViewById(R.id.link_signup);
         messageBox = view.findViewById(R.id.messageBox);
+        messageBoxInfo = view.findViewById(R.id.messageBoxInfo);
 
         /* set on click-Listener */
         btnLogin.setOnClickListener(this);
@@ -116,23 +117,42 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
                             @Override
                             public void onResponse(Call<String> call, Response<String> response) {
-                                Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", response.body());
+                                try {
+                                    Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", response.body());
 
-                                /* open activity if login success*/
-                                if (response.body().equals("0")) {
-                                    Intent intent = new Intent(getContext(), MainActivity.class);
-                                    startActivity(intent);
-                                } else {
+                                    /* open activity if login success*/
+                                    if (response.body().equals("0")) {
+                                        Intent intent = new Intent(getContext(), MainActivity.class);
+                                        startActivity(intent);
+                                    } else {
 
-                                    /* set errror message */
+                                        /* set errror message */
+                                        messageBox.setVisibility(View.VISIBLE);
+                                        messageBox.setText("FEHLER!");
+                                        new android.os.Handler().postDelayed(
+                                                new Runnable() {
+                                                    public void run() {
+                                                        messageBox.setVisibility(View.GONE);
+                                                    }
+                                                }, 7000);
+                                        btnLogin.setEnabled(true);
+                                    }
+                                }catch (Exception e){
+
+                                    /* show server error message to user */
+                                    Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: "+response.raw().message());
+                                    messageBoxInfo.setVisibility(View.VISIBLE);
+                                    messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
+
                                     messageBox.setVisibility(View.VISIBLE);
-                                    messageBox.setText("FEHLER!");
+                                    messageBox.setText(response.raw().message());
                                     new android.os.Handler().postDelayed(
                                             new Runnable() {
                                                 public void run() {
                                                     messageBox.setVisibility(View.GONE);
+                                                    messageBoxInfo.setVisibility(View.GONE);
                                                 }
-                                            }, 7000);
+                                            }, 10000);
                                     btnLogin.setEnabled(true);
                                 }
                             }

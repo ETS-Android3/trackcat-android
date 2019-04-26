@@ -74,6 +74,7 @@
                 android:text="Login"
                 android:textColor="@color/ap_white" />
 
+
             <TextView
                 android:id="@+id/messageBox"
                 android:layout_width="match_parent"
@@ -84,6 +85,16 @@
                 android:textStyle="bold"
                 android:gravity="center"
                 android:textSize="20dip"
+                android:visibility="gone"
+                />
+            <TextView
+                android:id="@+id/messageBoxInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FEHLERInfo"
+                android:textColor="@color/colorGreyAccent"
+                android:gravity="center"
+                android:textSize="16dip"
                 android:visibility="gone"
                 />
 
