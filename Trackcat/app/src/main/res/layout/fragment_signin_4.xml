@@ -98,6 +98,8 @@
                     android:id="@+id/btn_back"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/signInPagerMargin"
                     app:srcCompat="@drawable/ic_back" />
 
                 <!-- stepView -->
@@ -111,7 +113,7 @@
                         android:id="@+id/step_view"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:padding="16dp"
+                        android:padding="5dp"
                         app:sv_steps="@array/steps"
                         app:sv_animationType="Line"
                         app:sv_doneTextColor="@color/colorSuccess"
@@ -135,7 +137,10 @@
                 <ImageView
                     android:id="@+id/btn_next"
                     android:layout_width="wrap_content"
+                    android:visibility="invisible"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/signInPagerMargin"
                     app:srcCompat="@drawable/ic_next" />
 
             </LinearLayout>
