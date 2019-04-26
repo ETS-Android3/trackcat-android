@@ -34,11 +34,9 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
     private FragmentTransaction fragTransaction;
     /* UI references */
-    private EditText emailTextView;
-    private EditText passwordTextView;
+    private EditText emailTextView, passwordTextView;
     private Button btnLogin;
-    private TextView signInLink;
-    private TextView messageBox, messageBoxInfo;
+    private TextView signInLink, messageBox, messageBoxInfo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
