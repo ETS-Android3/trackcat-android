@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +37,8 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
     private FragmentTransaction fragTransaction;
     /* UI references */
     EditText password1, password2;
-    Button btnSignIn, btnBack;
+    ImageView btnBack;
+    Button btnSignIn;
     TextView logInInLink, messageBox, messageBoxInfo;
     String firstName, lastName, email;
     private com.shuhart.stepview.StepView stepView;

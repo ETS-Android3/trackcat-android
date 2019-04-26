@@ -25,8 +25,16 @@
                 android:layout_marginBottom="24dp"
                 android:src="@raw/logo" />
 
+            <RelativeLayout
+                android:id="@+id/inputs"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                >
             <!-- Firstname Label -->
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/layout_firstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -47,6 +55,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_firstName"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:theme="@style/EditTextTheme">
@@ -61,45 +70,48 @@
                     android:maxLength="@integer/iName" />
             </android.support.design.widget.TextInputLayout>
 
-            <RelativeLayout
+</RelativeLayout>
+            <!-- navigation line -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <!-- Next Button -->
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btn_next"
+                <!-- stepView -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
-                    android:background="@color/colorGreyAccent"
-                    android:padding="12dp"
-                    android:text="next"
-                    android:textColor="@color/ap_white" />
-            </RelativeLayout>
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
-            <com.shuhart.stepview.StepView
-                android:id="@+id/step_view"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:padding="16dp"
-                app:sv_animationType="Line"
-                app:sv_doneCircleColor="@color/colorGreenAccent"
-                app:sv_doneCircleRadius="12dp"
-                app:sv_doneStepLineColor="@color/colorGreenAccent"
-                app:sv_doneStepMarkColor="@color/colorGreenLight"
-                app:sv_nextStepLineColor="@color/colorGreenAccent"
-                app:sv_nextTextColor="@color/colorGreenAccent"
-                app:sv_selectedCircleColor="@color/colorGreenAccent"
-                app:sv_selectedCircleRadius="12dp"
-                app:sv_selectedStepNumberColor="@color/colorGreenLight"
-                app:sv_selectedTextColor="@color/colorGreenAccent"
-                app:sv_stepLineWidth="1dp"
-                app:sv_stepNumberTextSize="12sp"
-                app:sv_stepPadding="4dp"
-                app:sv_stepViewStyle="@style/StepView" />
+                    <com.shuhart.stepview.StepView
+                        android:id="@+id/step_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:padding="16dp"
+                        app:sv_animationType="Line"
+                        app:sv_doneCircleColor="@color/colorSuccess"
+                        app:sv_doneCircleRadius="12dp"
+                        app:sv_doneStepLineColor="@color/colorSuccess"
+                        app:sv_doneStepMarkColor="@color/colorBlack"
+                        app:sv_nextStepLineColor="@color/colorGreenAccent"
+                        app:sv_nextTextColor="@color/colorGreenAccent"
+                        app:sv_selectedCircleColor="@color/colorGreenAccent"
+                        app:sv_selectedCircleRadius="12dp"
+                        app:sv_selectedStepNumberColor="@color/colorGreenLight"
+                        app:sv_selectedTextColor="@color/colorGreenAccent"
+                        app:sv_stepLineWidth="1dp"
+                        app:sv_stepNumberTextSize="12sp"
+                        app:sv_stepPadding="4dp"
+                        app:sv_stepViewStyle="@style/StepView" />
+                </LinearLayout>
+                <!-- next Button -->
+                <ImageView
+                    android:id="@+id/btn_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/ic_next" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/link_login"
