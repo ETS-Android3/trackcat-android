@@ -163,7 +163,6 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
 
                                 // TODO hashsalt Password
                                 /* start a call */
-                                //String json = jsonObj;
                                 Call<String> call = apiInterface.registerUser(map);
 
                                 call.enqueue(new Callback<String>() {
