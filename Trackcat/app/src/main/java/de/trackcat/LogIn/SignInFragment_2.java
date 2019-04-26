@@ -65,9 +65,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
         /* stepview */
         stepView=view.findViewById(R.id.step_view);
         stepView.setStepsNumber(3);
-        stepView.go(2,true);
-
-        /* set on click-Listener */
+        stepView.go(1, false);
         btnBack.setOnClickListener(this);
         btnNext.setOnClickListener(this);
         logInInLink.setOnClickListener(this);

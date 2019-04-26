@@ -34,7 +34,7 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
     private FragmentTransaction fragTransaction;
     /* UI references */
     EditText  firstName, lastName;
-    Button btnBack, btnNext;
+    Button  btnNext;
     TextView logInInLink;
     String first_Name, last_Name, email, password1, password2;
     com.shuhart.stepview.StepView stepView;
@@ -47,7 +47,6 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_signin_1, container, false);
 
         /*get references */
-        btnBack = view.findViewById(R.id.btn_back);
         btnNext = view.findViewById(R.id.btn_next);
         logInInLink = view.findViewById(R.id.link_login);
         firstName = view.findViewById(R.id.input_firstName);
@@ -68,7 +67,6 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
         stepView.setStepsNumber(3);
 
         /* set on click-Listener */
-        btnBack.setOnClickListener(this);
         btnNext.setOnClickListener(this);
         logInInLink.setOnClickListener(this);
 
@@ -79,12 +77,6 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
-            case R.id.btn_back:
-
-
-
-                break;
             case R.id.btn_next:
                 /* read inputs */
                 String input_firstName = firstName.getText().toString();

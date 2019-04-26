@@ -65,20 +65,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <!-- Signup Button -->
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btn_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
-                    android:background="@color/colorGreyAccent"
-                    android:padding="12dp"
-                    android:text="zurück"
-                    android:textColor="@color/ap_white" />
 
-                <!-- Signup Button -->
+                <!-- Next Button -->
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/btn_next"
                     android:layout_width="wrap_content"
