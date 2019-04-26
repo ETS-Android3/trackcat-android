@@ -38,9 +38,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:maxLength="@integer/iEmail"
                     android:hint="E-Mail"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:maxLength="@integer/iEmail"
+                    android:text="test@trackcat.de" />
             </android.support.design.widget.TextInputLayout>
 
 

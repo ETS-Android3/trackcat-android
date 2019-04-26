@@ -40,7 +40,8 @@
                     android:ems="10"
                     android:hint="Vorname"
                     android:inputType="textPersonName"
-                    android:maxLength="@integer/iName" />
+                    android:maxLength="@integer/iName"
+                    android:text="Test" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- Lastname Label -->
@@ -58,7 +59,8 @@
                     android:ems="10"
                     android:hint="Nachname"
                     android:inputType="textPersonName"
-                    android:maxLength="@integer/iName" />
+                    android:maxLength="@integer/iName"
+                    android:text="User" />
             </android.support.design.widget.TextInputLayout>
 
             <RelativeLayout

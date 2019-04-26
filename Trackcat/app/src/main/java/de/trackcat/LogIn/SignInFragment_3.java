@@ -18,6 +18,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -149,22 +150,17 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
                                 Retrofit retrofit = APIConnector.getRetrofit();
                                 APIClient apiInterface = retrofit.create(APIClient.class);
 
-                                /* create JSON */
-                                JSONObject jsonObj = new JSONObject();
-                                try {
+                                HashMap<String, String> map = new HashMap<>();
+                                map.put("firstName", "" + firstName);
+                                map.put("lastName", lastName);
+                                map.put("email", email);
+                                map.put("password", password1.getText().toString());
 
-                                    jsonObj.put("firstName", "" + firstName);
-                                    jsonObj.put("lastName", lastName);
-                                    jsonObj.put("email", email);
-                                    jsonObj.put("password", password1);
-                                } catch (JSONException e) {
-                                    Log.d(getResources().getString(R.string.app_name) + "-SigninConnection", "Failed to create JSOnObject");
-                                }
 
                                 // TODO hashsalt Password
                                 /* start a call */
-                                String json = jsonObj.toString();
-                                Call<String> call = apiInterface.registerUser(json);
+                                //String json = jsonObj;
+                                Call<String> call = apiInterface.registerUser(map);
 
                                 call.enqueue(new Callback<String>() {
 
