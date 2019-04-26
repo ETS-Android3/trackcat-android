@@ -18,7 +18,7 @@
     <!-- Input lenght -->
     <integer name="iPassword">15</integer>
     <integer name="iName">16</integer>
-    <integer name="iEmail">20</integer>
+    <integer name="iEmail">30</integer>
 
 
     <dimen name="activity_padding_horizontal">16dp</dimen>
