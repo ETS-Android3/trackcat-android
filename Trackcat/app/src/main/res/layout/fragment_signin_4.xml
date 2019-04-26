@@ -13,12 +13,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="vertical"
+            android:layout_gravity="center"
             android:paddingLeft="24dp"
             android:paddingRight="24dp">
 
-            <!-- header -->
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
@@ -26,32 +25,73 @@
                 android:layout_marginBottom="24dp"
                 android:src="@raw/logo" />
 
-            <!-- inputs -->
-            <RelativeLayout
-                android:id="@+id/inputs"
+            <TextView
+                android:id="@+id/messageBox"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
+                android:text="FEHLER"
+                android:textColor="@color/colorGreyAccent"
+                android:textStyle="bold"
                 android:gravity="center"
-                android:orientation="vertical">
-                <!-- Email Label -->
-                <android.support.design.widget.TextInputLayout
+                android:textSize="20dip"
+                android:visibility="gone"
+                />
+            <TextView
+                android:id="@+id/messageBoxInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FEHLERInfo"
+                android:textColor="@color/colorGreyAccent"
+                android:gravity="center"
+                android:textSize="16dip"
+                android:visibility="gone"
+                />
+
+            <!-- Password1 Label -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/EditTextTheme">
+
+                <EditText
+                    android:id="@+id/input_password1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:theme="@style/EditTextTheme">
+                    android:maxLength="@integer/iPassword"
+                    android:hint="Passwort"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
 
-                    <EditText
-                        android:id="@+id/input_email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:hint="E-Mail"
-                        android:inputType="textEmailAddress"
-                        android:maxLength="@integer/iEmail" />
-                </android.support.design.widget.TextInputLayout>
-            </RelativeLayout>
+            <!-- Password2 Label -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/EditTextTheme">
 
+                <EditText
+                    android:id="@+id/input_password2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="@integer/iPassword"
+                    android:hint="Passwort wdh."
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Signup Button -->
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_signin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@color/colorGreyAccent"
+                android:padding="12dp"
+                android:textColor="@color/ap_white"
+                android:text="Account erstellen"
+                />
 
             <!-- navigation line -->
             <LinearLayout
@@ -94,12 +134,7 @@
                         app:sv_stepPadding="4dp"
                         app:sv_stepViewStyle="@style/StepView" />
                 </LinearLayout>
-                <!-- next Button -->
-                <ImageView
-                    android:id="@+id/btn_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_next" />
+
             </LinearLayout>
 
             <TextView

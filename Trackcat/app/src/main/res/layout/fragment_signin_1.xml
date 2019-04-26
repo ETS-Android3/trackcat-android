@@ -18,6 +18,7 @@
             android:paddingLeft="24dp"
             android:paddingRight="24dp">
 
+            <!-- header -->
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
@@ -25,52 +26,55 @@
                 android:layout_marginBottom="24dp"
                 android:src="@raw/logo" />
 
+            <!-- inputs -->
             <RelativeLayout
                 android:id="@+id/inputs"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:gravity="center"
-                android:orientation="vertical"
-                >
-            <!-- Firstname Label -->
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/layout_firstName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:theme="@style/EditTextTheme">
+                android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/input_firstName"
+                <!-- Firstname Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/layout_firstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="Vorname"
-                    android:inputType="textPersonName"
-                    android:maxLength="@integer/iName" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:theme="@style/EditTextTheme">
 
-            <!-- Lastname Label -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_firstName"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:theme="@style/EditTextTheme">
+                    <EditText
+                        android:id="@+id/input_firstName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="Vorname"
+                        android:inputType="textPersonName"
+                        android:maxLength="@integer/iName" />
+                </android.support.design.widget.TextInputLayout>
 
-                <EditText
-                    android:id="@+id/input_lastName"
+                <!-- Lastname Label -->
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="Nachname"
-                    android:inputType="textPersonName"
-                    android:maxLength="@integer/iName" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_below="@+id/layout_firstName"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:theme="@style/EditTextTheme">
 
-</RelativeLayout>
+                    <EditText
+                        android:id="@+id/input_lastName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="Nachname"
+                        android:inputType="textPersonName"
+                        android:maxLength="@integer/iName" />
+                </android.support.design.widget.TextInputLayout>
+
+            </RelativeLayout>
+
+
             <!-- navigation line -->
             <LinearLayout
                 android:layout_width="match_parent"
