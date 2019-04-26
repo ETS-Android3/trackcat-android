@@ -15,6 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -126,7 +129,7 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
         /* if passwords are the same and inputs validate */
         if (input_password1.equals(input_password2)) {
             if (validate()) {
-                btnSignIn.setEnabled(false);
+                btnSignIn.setEnabled(true);
 
                 final ProgressDialog progressDialog = new ProgressDialog(getContext(),
                         R.style.AppTheme_Dark_Dialog);
@@ -145,12 +148,23 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
                                 /* send inputs to server */
                                 Retrofit retrofit = APIConnector.getRetrofit();
                                 APIClient apiInterface = retrofit.create(APIClient.class);
-                                String base = email + ":" + password1;
+
+                                /* create JSON */
+                                JSONObject jsonObj = new JSONObject();
+                                try {
+
+                                    jsonObj.put("firstName", "" + firstName);
+                                    jsonObj.put("lastName", lastName);
+                                    jsonObj.put("email", email);
+                                    jsonObj.put("password", password1);
+                                } catch (JSONException e) {
+                                    Log.d(getResources().getString(R.string.app_name) + "-SigninConnection", "Failed to create JSOnObject");
+                                }
 
                                 // TODO hashsalt Password
                                 /* start a call */
-                                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                                Call<String> call = apiInterface.getUser(authString);
+                                String json = jsonObj.toString();
+                                Call<String> call = apiInterface.registerUser(json);
 
                                 call.enqueue(new Callback<String>() {
 
@@ -208,7 +222,7 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
             }
 
         } else {
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorPasswordNotIdentical), Toast.LENGTH_SHORT).show();
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorPasswordNotIdentical), Toast.LENGTH_SHORT).show();
         }
     }
 
