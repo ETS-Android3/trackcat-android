@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -59,9 +60,10 @@
                     android:id="@+id/input_password1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="@integer/iPassword"
                     android:hint="Passwort"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:maxLength="@integer/iPassword"
+                    android:text="Geheim-123" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- Password2 Label -->
@@ -76,9 +78,10 @@
                     android:id="@+id/input_password2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="@integer/iPassword"
                     android:hint="Passwort wdh."
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:maxLength="@integer/iPassword"
+                    android:text="Geheim-123" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- Signup Button -->

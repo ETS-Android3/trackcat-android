@@ -64,7 +64,7 @@
                     android:hint="Email"
                     android:inputType="textEmailAddress"
                     android:maxLength="@integer/iEmail"
-                    android:text="test@quatsch.de"
+                    android:text="test@trackcat.de"
                     android:textColor="@color/ap_black" />
             </android.support.design.widget.TextInputLayout>
 
@@ -83,7 +83,7 @@
                     android:hint="Passwort"
                     android:inputType="textPassword"
                     android:maxLength="@integer/iPassword"
-                    android:text="a2@Ahhhhh"
+                    android:text="Geheim-123"
                     android:textColor="@color/ap_black" />
             </android.support.design.widget.TextInputLayout>
 
