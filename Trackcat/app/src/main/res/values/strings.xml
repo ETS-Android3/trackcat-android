@@ -16,6 +16,7 @@
     <string name="fProfile">PROFILE</string>
     <string name="fEditProfile">EDITPROFILE</string>
     <string name="fEditPassword">EDITPASSWORD</string>
+    <string name="fFriendSystem">FREUNDE</string>
     <string name="fSettings">SETTINGS</string>
     <string name="fPageViewer">PAGE_VIEWER</string>
     <string name="fLoadScreen">LOADSCREEN</string>
@@ -81,5 +82,6 @@
     <string name="help_editProfile">Hier haben Sie die Möglichkeit Ihr Profil zu bearbeiten. Durch Klicken auf das aktuelle Profilbild oder ihr Gewicht/Größe/Geburtstag lässt sich dieses
         ebenfalls ändern.</string>
     <string name="help_editPassword">Hier haben Sie die Möglichkeit Ihr Passwort zu ändern. Hierfür müssen Sie zunächst ihr aktuelles Passwort eingeben.</string>
+    <string name="help_friendSystem">Hier sehen sie alle Ihre Freunde.</string>
 
 </resources>

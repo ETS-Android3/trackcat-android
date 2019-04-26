@@ -30,6 +30,7 @@ import com.karan.churi.PermissionManager.PermissionManager;
 import de.trackcat.Dashboard.DashboardFragment;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
+import de.trackcat.FriendsSystem.FriendsFragment;
 import de.trackcat.Profile.EditPasswordFragment;
 import de.trackcat.Profile.ProfileFragment;
 import de.trackcat.Profile.EditProfileFragment;
@@ -355,6 +356,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     loadSettings();
                 }
                 break;
+            case R.id.nav_friends:
+                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) == null) {
+                    menuInstance.clear();
+                    loadFriendSystem();
+                }
+                break;
         }
         menuItem.setChecked(true);
         mainDrawer.closeDrawer(GravityCompat.START);
@@ -523,6 +530,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.commit();
     }
 
+    /* Laden des Friends-Fragments */
+    public void loadFriendSystem() {
+        Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Freunde-Fragment wird geladen.");
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, new FriendsFragment(),
+                getResources().getString(R.string.fFriendSystem));
+        fragTransaction.commit();
+    }
+
     // set the RecordFragment wich is in use
     public void setRecordFragment(RecordFragment recordFragment) {
         this.recordFragment = recordFragment;
@@ -552,6 +568,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_editProfile));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_editPassword));
+                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_friendSystem));
                     }
                     alert.setNegativeButton("Schließen", null);
                     alert.show();
