@@ -70,8 +70,8 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.link_signup:
                 fragTransaction = getFragmentManager().beginTransaction();
-                fragTransaction.replace(R.id.mainFrame, new SignInFragment(),
-                        getResources().getString(R.string.fSignIn));
+                fragTransaction.replace(R.id.mainFrame, new SignInFragment_1(),
+                        getResources().getString(R.string.fSignIn_1));
                 fragTransaction.commit();
                 break;
         }

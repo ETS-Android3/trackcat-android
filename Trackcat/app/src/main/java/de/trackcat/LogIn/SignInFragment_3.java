@@ -28,30 +28,48 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class SignInFragment extends Fragment implements View.OnClickListener {
+public class SignInFragment_3 extends Fragment implements View.OnClickListener {
 
     private FragmentTransaction fragTransaction;
     /* UI references */
-    EditText email, firstName, lastName, password1, password2;
-    Button btnSignIn;
+    EditText password1, password2;
+    Button btnSignIn, btnBack;
     TextView logInInLink;
+    String firstName, lastName, email;
+    private com.shuhart.stepview.StepView stepView;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_signin, container, false);
+        View view = inflater.inflate(R.layout.fragment_signin_3, container, false);
 
+        btnBack = view.findViewById(R.id.btn_back);
         btnSignIn = view.findViewById(R.id.btn_signin);
         logInInLink = view.findViewById(R.id.link_login);
-        email = view.findViewById(R.id.input_email);
-        firstName = view.findViewById(R.id.input_firstName);
-        lastName = view.findViewById(R.id.input_lastName);
         password1 = view.findViewById(R.id.input_password1);
         password2 = view.findViewById(R.id.input_password2);
 
+        /* get bundle */
+        if (getArguments() != null) {
+            firstName = getArguments().getString("firstName");
+            lastName = getArguments().getString("lastName");
+            email = getArguments().getString("email");
+            if (getArguments().getString("password1") != null) {
+                password1.setText(getArguments().getString("password1"));
+            }
+            if (getArguments().getString("password2") != null) {
+                password2.setText(getArguments().getString("password2"));
+            }
+        }
+
+        /* step view */
+        stepView = view.findViewById(R.id.step_view);
+        stepView.setStepsNumber(3);
+
         /* set on click-Listener */
+        btnBack.setOnClickListener(this);
         btnSignIn.setOnClickListener(this);
         logInInLink.setOnClickListener(this);
 
@@ -62,7 +80,28 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_back:
+                /* read inputs */
+                String input_password1 = password1.getText().toString();
+                String input_password2 = password2.getText().toString();
+                /*create bundle*/
+                Bundle bundleSignIn_1_and_2_and_3 = new Bundle();
+                bundleSignIn_1_and_2_and_3.putString("firstName", firstName);
+                bundleSignIn_1_and_2_and_3.putString("lastName", lastName);
+                bundleSignIn_1_and_2_and_3.putString("email", email);
+                bundleSignIn_1_and_2_and_3.putString("password1", input_password1);
+                bundleSignIn_1_and_2_and_3.putString("password2", input_password2);
 
+                SignInFragment_2 signInFragment_2 = new SignInFragment_2();
+                signInFragment_2.setArguments(bundleSignIn_1_and_2_and_3);
+
+                /* show next page */
+                fragTransaction = getFragmentManager().beginTransaction();
+                fragTransaction.replace(R.id.mainFrame, signInFragment_2,
+                        getResources().getString(R.string.fSignIn_2));
+                fragTransaction.commit();
+
+                break;
             case R.id.btn_signin:
                 signin();
                 break;
@@ -78,9 +117,6 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     public void signin() {
 
         /* read inputs */
-        String input_firstName = firstName.getText().toString();
-        String input_lastName = lastName.getText().toString();
-        String input_email = email.getText().toString();
         String input_password1 = password1.getText().toString();
         String input_password2 = password2.getText().toString();
         btnSignIn.setEnabled(false);
@@ -179,44 +215,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         boolean valid = true;
 
         /* read inputs */
-        String input_firstName = firstName.getText().toString();
-        String input_lastName = lastName.getText().toString();
-        String input_email = email.getText().toString();
         String input_password1 = password1.getText().toString();
-
-        /* validate firstName */
-        Pattern pattern3 = Pattern.compile(getResources().getString(R.string.rName));
-        Matcher matcher3 = pattern3.matcher(input_firstName);
-        if (!matcher3.matches()) {
-            firstName.setError(getResources().getString(R.string.errorMsgName));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            firstName.setError(null);
-        }
-
-        /* validate lastName */
-        Pattern pattern4 = Pattern.compile(getResources().getString(R.string.rName));
-        Matcher matcher4 = pattern4.matcher(input_lastName);
-        if (!matcher4.matches()) {
-            lastName.setError(getResources().getString(R.string.errorMsgName));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            lastName.setError(null);
-        }
-
-        /* validate email */
-        Pattern pattern = Pattern.compile(getResources().getString(R.string.rEmail));
-        Matcher matcher = pattern.matcher(input_email);
-
-        if (!matcher.matches()) {
-            email.setError(getResources().getString(R.string.errorMsgEMail));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorEmail), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            email.setError(null);
-        }
 
         /* validate password */
         Pattern pattern2 = Pattern.compile(getResources().getString(R.string.rPassword));

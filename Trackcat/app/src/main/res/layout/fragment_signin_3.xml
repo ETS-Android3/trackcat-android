@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/colorGreenLight"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"
+                android:src="@raw/logo" />
+
+            <!-- Password1 Label -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/EditTextTheme">
+
+                <EditText
+                    android:id="@+id/input_password1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="@integer/iPassword"
+                    android:hint="Passwort"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Password2 Label -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/EditTextTheme">
+
+                <EditText
+                    android:id="@+id/input_password2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="@integer/iPassword"
+                    android:hint="Passwort wdh."
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- back Button -->
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:background="@color/colorGreyAccent"
+                    android:padding="12dp"
+                    android:text="zurück"
+                    android:textColor="@color/ap_white" />
+
+                <!-- Signup Button -->
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_signin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:layout_alignParentRight="true"
+                    android:background="@color/colorGreyAccent"
+                    android:padding="12dp"
+                    android:text="Account erstellen"
+                    android:textColor="@color/ap_white" />
+            </RelativeLayout>
+
+            <com.shuhart.stepview.StepView
+                android:id="@+id/step_view"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:padding="16dp"
+                app:sv_animationType="Line"
+                app:sv_doneCircleColor="@color/colorGreenAccent"
+                app:sv_doneCircleRadius="12dp"
+                app:sv_doneStepLineColor="@color/colorGreenAccent"
+                app:sv_doneStepMarkColor="@color/colorGreenLight"
+                app:sv_nextStepLineColor="@color/colorGreenAccent"
+                app:sv_nextTextColor="@color/colorGreenAccent"
+                app:sv_selectedCircleColor="@color/colorGreenAccent"
+                app:sv_selectedCircleRadius="12dp"
+                app:sv_selectedStepNumberColor="@color/colorGreenLight"
+                app:sv_selectedTextColor="@color/colorGreenAccent"
+                app:sv_stepLineWidth="1dp"
+                app:sv_stepNumberTextSize="12sp"
+                app:sv_stepPadding="4dp"
+                app:sv_stepViewStyle="@style/StepView" />
+
+            <TextView
+                android:id="@+id/link_login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:text="Schon Mitglied? Login"
+                android:textSize="16dip" />
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>
