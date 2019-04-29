@@ -26,6 +26,8 @@ public interface APIClient {
     @POST("/getUserByEmail")
     Call<ResponseBody> getUserByEmail(@Body HashMap<String,String> json);
 
-
+    @Headers({"Accept: application/json"})
+    @POST("/updateUser")
+    Call<ResponseBody> updateUser(@Body HashMap<String,String> json);
 
 }
