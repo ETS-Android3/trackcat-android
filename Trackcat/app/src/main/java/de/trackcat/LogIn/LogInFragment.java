@@ -149,14 +149,6 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                         loggedUser.setLastName(userObject.getString("lastName"));
                                         //loggedUser.setImage(userObject.getLong("image"));
                                         loggedUser.setGender(userObject.getInt("gender"));
-                                       /* int gender = ;
-                                        if (gender != 2) {
-                                            if (gender == 1) {
-                                                loggedUser.setGender(true);
-                                            } else {
-                                                loggedUser.setGender(false);
-                                            }
-                                        }*/
 
                                         try {
                                             loggedUser.setWeight((float) userObject.getDouble("weight"));

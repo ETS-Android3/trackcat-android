@@ -58,6 +58,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     AlertDialog.Builder alert;
     LayoutInflater layoutInflater;
     View alertView;
+    UserDAO userDAO;
+    User currentUser;
 
     /* Variables */
     View view;
@@ -91,19 +93,19 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         imageUpload.setOnClickListener(this);
 
         /* get current user */
-        UserDAO userDAO = new UserDAO(MainActivity.getInstance());
-        User currentUser = userDAO.read(MainActivity.getActiveUser());
+        userDAO = new UserDAO(MainActivity.getInstance());
+        currentUser = userDAO.read(MainActivity.getActiveUser());
 
         //TODO read values from global db
 
         /* read values from local DB */
-        setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight());
+        setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender());
 
         return view;
     }
 
     /* function to set profile values */
-    private void setProfileValues(String user_firstName, String user_lastName, long user_dayOfBirth, float user_size, float user_weight) {
+    private void setProfileValues(String user_firstName, String user_lastName, long user_dayOfBirth, float user_size, float user_weight, int user_gender) {
 
         firstName.setText(user_firstName);
         lastName.setText(user_lastName);
@@ -111,6 +113,17 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         weight.setText("" + string1.replace('.', ','));
         String string2 = "" + user_size;
         size.setText("" + "" + string2.replace('.', ','));
+
+        /* set gender */
+        switch (user_gender) {
+            case 0:
+                gender.check(R.id.radioFemale);
+                break;
+            case 1:
+                gender.check(R.id.radioMale);
+                break;
+
+        }
         //   dayOfBirth.setText(user_lastName);
     }
 
@@ -127,16 +140,16 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                 /* get selected gender */
                 int input_gender_id = gender.getCheckedRadioButtonId();
-                String gender = "";
+                int gender;
                 switch (input_gender_id) {
                     case R.id.radioFemale:
-                        gender = "0";
+                        gender = 0;
                         break;
                     case R.id.radioMale:
-                        gender = "1";
+                        gender = 1;
                         break;
                     default:
-                        gender ="2";
+                        gender = 2;
                         break;
                 }
 
@@ -151,16 +164,34 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                     byte[] imageBytes = stream.toByteArray();
 
-                    //TODO Nutzerandereungen an DB senden
+                    //TODO Image umwandeln und datum anpassen
 
+                    /* parse values */
+                    String string1 = "" + input_height;
+                    input_height = "" + string1.replace(',', '.');
+                    String string2 = "" + input_weight;
+                    input_weight = "" + string2.replace(',', '.');
 
+                    /* change values in local DB */
+                    currentUser.setImage(imageBytes);
+                    currentUser.setFirstName(input_firstName);
+                    currentUser.setLastName(input_lastName);
+
+                    currentUser.setSize(Float.valueOf(input_height));
+                    currentUser.setWeight(Float.valueOf(input_weight));
+                    currentUser.setGender(gender);
+                    currentUser.isSynchronised(false);
+                    //  currentUser.setDateOfBirth(input_dayOfBirth);
+                    userDAO.update(currentUser.getId(), currentUser);
+
+                    /* change values in global DB*/
                     HashMap<String, String> map = new HashMap<>();
                     map.put("image", imageBytes.toString());
                     map.put("firstName", input_firstName);
                     map.put("lastName", input_lastName);
                     map.put("height", input_height);
                     map.put("weight", input_weight);
-                    map.put("gender", gender);
+                    map.put("gender", "" + gender);
                     map.put("dateOfBirth", input_dayOfBirth);
 
 
@@ -182,13 +213,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                 /* parse json */
                                 JSONObject successJSON = new JSONObject(jsonString);
 
-
                                 if (successJSON.getString("success").equals("0")) {
 
-                                    // success
+                                    /* save is Synchronizes value */
+                                    currentUser.isSynchronised(true);
+                                    userDAO.update(currentUser.getId(), currentUser);
 
                                 }
-
 
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -204,9 +235,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     });
 
 
-
-
-                    /* UI-Meldung & Felder löschen */
+                    /* UI-Meldung */
                     if (MainActivity.getHints()) {
                         Toast.makeText(getContext(), "Benutzer \"" + input_firstName + " " + input_lastName + "\" wurde erfolgreich geändert!", Toast.LENGTH_LONG).show();
                     }
