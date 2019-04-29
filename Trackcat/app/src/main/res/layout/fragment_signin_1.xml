@@ -49,6 +49,7 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="Vorname"
+                        android:text="Max"
                         android:inputType="textPersonName"
                         android:maxLength="@integer/iName" />
                 </android.support.design.widget.TextInputLayout>
@@ -68,6 +69,7 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="Nachname"
+                        android:text="Mustermann"
                         android:inputType="textPersonName"
                         android:maxLength="@integer/iName" />
                 </android.support.design.widget.TextInputLayout>
@@ -81,6 +83,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <!-- back Button -->
+                <ImageView
+                    android:id="@+id/btn_back"
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/ic_back" />
+
                 <!-- stepView -->
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -92,10 +102,12 @@
                         android:id="@+id/step_view"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:padding="16dp"
+                        android:padding="5dp"
                         app:sv_animationType="Line"
                         app:sv_doneCircleColor="@color/colorSuccess"
+                        app:sv_steps="@array/steps"
                         app:sv_doneCircleRadius="12dp"
+                        app:sv_doneTextColor="@color/colorSuccess"
                         app:sv_doneStepLineColor="@color/colorSuccess"
                         app:sv_doneStepMarkColor="@color/colorBlack"
                         app:sv_nextStepLineColor="@color/colorGreenAccent"
@@ -113,6 +125,8 @@
                 <ImageView
                     android:id="@+id/btn_next"
                     android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/signInPagerMargin"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_next" />
             </LinearLayout>
@@ -121,10 +135,13 @@
                 android:id="@+id/link_login"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
+                android:textColor="@color/colorBlack"
+                android:textStyle="italic"
                 android:text="Schon Mitglied? Login"
-                android:textSize="16dip" />
+                android:textSize="20dip" />
 
         </LinearLayout>
     </ScrollView>

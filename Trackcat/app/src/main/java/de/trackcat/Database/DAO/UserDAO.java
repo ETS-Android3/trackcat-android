@@ -72,6 +72,14 @@ public class UserDAO {
         values.put(COL_FIRSTNAME, user.getFirstName());
         values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_MAIL, user.getMail());
+        values.put(COL_WEIGHT, user.getWeight());
+        values.put(COL_SIZE, user.getSize());
+        values.put(COL_GENDER, user.getGender());
+        values.put(COL_DATEOFBIRTH, user.getDateOfBirth());
+        values.put(COL_DATEOFREGISTRATION, user.getDateOfRegistration());
+        values.put(COL_LASTLOGIN, user.getLastLogin());
+        values.put(COL_TIMESTAMP, user.getTimeStamp());
+        values.put(COL_IDUSERS, user.getIdUsers());
         values.put(COL_ISACTIVE, user.isActiveDB());
         values.put(COL_HINT, user.isHintsActiveDB());
         values.put(COL_THEME, user.isDarkThemeActiveDB());
@@ -96,6 +104,14 @@ public class UserDAO {
                     COL_FIRSTNAME,
                     COL_LASTNAME,
                     COL_MAIL,
+                    COL_WEIGHT,
+                    COL_SIZE,
+                    COL_GENDER,
+                    COL_DATEOFBIRTH,
+                    COL_DATEOFREGISTRATION,
+                    COL_LASTLOGIN,
+                    COL_TIMESTAMP,
+                    COL_IDUSERS,
                     COL_ISACTIVE,
                     COL_THEME,
                     COL_HINT,
@@ -116,6 +132,14 @@ public class UserDAO {
                     result.setHintsActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)));
                     result.setDarkThemeActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)));
                     result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));
+                    result.setWeight(cursor.getFloat(cursor.getColumnIndexOrThrow(COL_WEIGHT)));
+                    result.setSize(cursor.getFloat(cursor.getColumnIndexOrThrow(COL_SIZE)));
+                    result.setGenderDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GENDER)));
+                    result.setDateOfBirth(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFBIRTH)));
+                    result.setDateOfRegistration(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFREGISTRATION)));
+                    result.setLastLogin(cursor.getLong(cursor.getColumnIndexOrThrow(COL_LASTLOGIN)));
+                    result.setTimeStamp(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
+                    result.setIdUsers(cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)));
                     result.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)));
                 }
             }
@@ -152,6 +176,14 @@ public class UserDAO {
                     COL_MAIL,
                     COL_ISACTIVE,
                     COL_IMAGE,
+                    COL_WEIGHT,
+                    COL_SIZE,
+                    COL_GENDER,
+                    COL_DATEOFBIRTH,
+                    COL_DATEOFREGISTRATION,
+                    COL_LASTLOGIN,
+                    COL_TIMESTAMP,
+                    COL_IDUSERS,
                     COL_HINT,
                     COL_THEME };
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
@@ -172,6 +204,14 @@ public class UserDAO {
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)),
                                 cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow(COL_WEIGHT)),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow(COL_SIZE)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_GENDER)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFBIRTH)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFREGISTRATION)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_LASTLOGIN)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)),
                                 cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE))));
                     } while (cursor.moveToNext());
             }
@@ -241,5 +281,28 @@ public class UserDAO {
      */
     public String exportUserToJson(int id) {
         return gson.toJson(this.read(id));
+    }
+
+
+    /**
+     * Count the entrys of the userTable
+     *
+     * @return amount of users in table
+     */
+    public int userInDB() {
+        DbHelper dbHelper = new DbHelper(context);
+        int result;
+        final String SQL_COUNT_USER_ENTRYS = "SELECT COUNT(*) FROM " + TABLE_NAME;
+
+        try {
+
+            Cursor cursor = dbHelper.getWritableDatabase().rawQuery(SQL_COUNT_USER_ENTRYS,null);
+            cursor.moveToFirst();
+            result =cursor.getInt(0);
+
+        } finally {
+            dbHelper.close();
+        }
+        return result;
     }
 }

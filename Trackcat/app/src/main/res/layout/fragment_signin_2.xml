@@ -47,6 +47,7 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="E-Mail"
+                        android:text="max@mustermann.de"
                         android:inputType="textEmailAddress"
                         android:maxLength="@integer/iEmail" />
                 </android.support.design.widget.TextInputLayout>
@@ -62,6 +63,8 @@
                 <!-- back Button -->
                 <ImageView
                     android:id="@+id/btn_back"
+                    android:layout_marginBottom="@dimen/signInPagerMargin"
+                    android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_back" />
@@ -77,7 +80,8 @@
                         android:id="@+id/step_view"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:padding="16dp"
+                        android:padding="5dp"
+                        app:sv_steps="@array/steps"
                         app:sv_animationType="Line"
                         app:sv_doneCircleColor="@color/colorSuccess"
                         app:sv_doneCircleRadius="12dp"
@@ -85,6 +89,7 @@
                         app:sv_doneStepMarkColor="@color/colorBlack"
                         app:sv_nextStepLineColor="@color/colorGreenAccent"
                         app:sv_nextTextColor="@color/colorGreenAccent"
+                        app:sv_doneTextColor="@color/colorSuccess"
                         app:sv_selectedCircleColor="@color/colorGreenAccent"
                         app:sv_selectedCircleRadius="12dp"
                         app:sv_selectedStepNumberColor="@color/colorGreenLight"
@@ -97,6 +102,8 @@
                 <!-- next Button -->
                 <ImageView
                     android:id="@+id/btn_next"
+                    android:layout_marginBottom="@dimen/signInPagerMargin"
+                    android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/ic_next" />
@@ -107,9 +114,12 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
+                android:layout_marginTop="24dp"
                 android:gravity="center"
+                android:textStyle="italic"
+                android:textColor="@color/colorBlack"
                 android:text="Schon Mitglied? Login"
-                android:textSize="16dip" />
+                android:textSize="20dip" />
 
         </LinearLayout>
     </ScrollView>

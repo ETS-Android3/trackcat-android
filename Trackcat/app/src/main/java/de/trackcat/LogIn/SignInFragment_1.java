@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +39,7 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
     ImageView btnNext;
     TextView logInInLink;
     String first_Name, last_Name, email, password1, password2;
+    Boolean generalTerm, dataProtection;
     com.shuhart.stepview.StepView stepView;
 
 
@@ -52,6 +54,8 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
         logInInLink = view.findViewById(R.id.link_login);
         firstName = view.findViewById(R.id.input_firstName);
         lastName = view.findViewById(R.id.input_lastName);
+        generalTerm = false;
+        dataProtection = false;
 
         /* get bundle */
         if (getArguments() != null) {
@@ -62,10 +66,13 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
             email = getArguments().getString("email");
             password1 = getArguments().getString("password1");
             password2 = getArguments().getString("password2");
+            generalTerm = getArguments().getBoolean("generalTerm");
+            dataProtection = getArguments().getBoolean("dataProtection");
         }
 
         stepView=view.findViewById(R.id.step_view);
-        stepView.setStepsNumber(3);
+
+
 
         /* set on click-Listener */
         btnNext.setOnClickListener(this);
@@ -90,6 +97,8 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
                     bundleSignIn_1.putString("email", email);
                     bundleSignIn_1.putString("password1", password1);
                     bundleSignIn_1.putString("password2", password2);
+                    bundleSignIn_1.putBoolean("generalTerms", generalTerm);
+                    bundleSignIn_1.putBoolean("dataProtection", dataProtection);
 
                     SignInFragment_2 signInFragment_2 = new SignInFragment_2();
                     signInFragment_2.setArguments(bundleSignIn_1);

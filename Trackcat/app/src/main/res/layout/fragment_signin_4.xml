@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@color/colorGreenLight"
@@ -13,11 +13,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_gravity="center"
+            android:orientation="vertical"
             android:paddingLeft="24dp"
             android:paddingRight="24dp">
 
+            <!-- header -->
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
@@ -25,73 +26,66 @@
                 android:layout_marginBottom="24dp"
                 android:src="@raw/logo" />
 
-            <TextView
-                android:id="@+id/messageBox"
+            <!-- inputs -->
+            <RelativeLayout
+                android:id="@+id/inputs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="FEHLER"
-                android:textColor="@color/colorGreyAccent"
-                android:textStyle="bold"
+                android:layout_height="200dp"
                 android:gravity="center"
-                android:textSize="20dip"
-                android:visibility="gone"
-                />
-            <TextView
-                android:id="@+id/messageBoxInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="FEHLERInfo"
-                android:textColor="@color/colorGreyAccent"
-                android:gravity="center"
-                android:textSize="16dip"
-                android:visibility="gone"
-                />
+                android:orientation="vertical">
 
-            <!-- Password1 Label -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:theme="@style/EditTextTheme">
-
-                <EditText
-                    android:id="@+id/input_password1"
+                <!-- AGB Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/layout_agb"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="@integer/iPassword"
-                    android:hint="Passwort"
-                    android:inputType="textPassword" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:theme="@style/EditTextTheme">
 
-            <!-- Password2 Label -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:theme="@style/EditTextTheme">
+                    <CheckBox
+                        android:id="@+id/checkBox_generalTerm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="AGBs gelesen und akzeptiert" />
 
-                <EditText
-                    android:id="@+id/input_password2"
+                </android.support.design.widget.TextInputLayout>
+
+                <!-- Datenschutz Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/layout_dsgvo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="@integer/iPassword"
-                    android:hint="Passwort wdh."
-                    android:inputType="textPassword" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_below="@+id/layout_agb"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:theme="@style/EditTextTheme">
 
-            <!-- Signup Button -->
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btn_signin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:background="@color/colorGreyAccent"
-                android:padding="12dp"
-                android:textColor="@color/ap_white"
-                android:text="Account erstellen"
-                />
+                    <CheckBox
+                        android:id="@+id/checkBox_dataProtection"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Datenschutzerklärung gelesen und akzeptiert" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <!-- Signup Button -->
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_signin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/layout_dsgvo"
+                    android:layout_marginTop="24dp"
+                    android:background="@color/colorGreyAccent"
+                    android:padding="12dp"
+                    android:text="Account erstellen"
+                    android:textColor="@color/ap_white" />
+
+
+            </RelativeLayout>
+
 
             <!-- navigation line -->
             <LinearLayout
@@ -104,6 +98,8 @@
                     android:id="@+id/btn_back"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/signInPagerMargin"
                     app:srcCompat="@drawable/ic_back" />
 
                 <!-- stepView -->
@@ -117,8 +113,10 @@
                         android:id="@+id/step_view"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:padding="16dp"
+                        android:padding="5dp"
+                        app:sv_steps="@array/steps"
                         app:sv_animationType="Line"
+                        app:sv_doneTextColor="@color/colorSuccess"
                         app:sv_doneCircleColor="@color/colorSuccess"
                         app:sv_doneCircleRadius="12dp"
                         app:sv_doneStepLineColor="@color/colorSuccess"
@@ -135,6 +133,16 @@
                         app:sv_stepViewStyle="@style/StepView" />
                 </LinearLayout>
 
+                <!-- next Button -->
+                <ImageView
+                    android:id="@+id/btn_next"
+                    android:layout_width="wrap_content"
+                    android:visibility="invisible"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/signInPagerMargin"
+                    app:srcCompat="@drawable/ic_next" />
+
             </LinearLayout>
 
             <TextView
@@ -142,9 +150,12 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
+                android:layout_marginTop="24dp"
+                android:textStyle="italic"
                 android:gravity="center"
+                android:textColor="@color/colorBlack"
                 android:text="Schon Mitglied? Login"
-                android:textSize="16dip" />
+                android:textSize="20dip" />
 
         </LinearLayout>
     </ScrollView>

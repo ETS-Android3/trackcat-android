@@ -52,6 +52,14 @@ final class DbContract {
                     UserEntry.COL_THEME + " BOOLEAN, " +
                     UserEntry.COL_HINT + " BOOLEAN, " +
                     UserEntry.COL_MAIL + " TEXT, " +
+                    UserEntry.COL_WEIGHT + " FLOAT, " +
+                    UserEntry.COL_SIZE + " FLOAT, " +
+                    UserEntry.COL_GENDER + " BOOLEAN, " +
+                    UserEntry.COL_DATEOFBIRTH + " LONG, " +
+                    UserEntry.COL_DATEOFREGISTRATION + " LONG, " +
+                    UserEntry.COL_LASTLOGIN + " LONG, " +
+                    UserEntry.COL_TIMESTAMP + " LONG, " +
+                    UserEntry.COL_IDUSERS + " INTEGER, " +
                     UserEntry.COL_IMAGE + " BLOB) ";
 
     /*
@@ -90,6 +98,14 @@ final class DbContract {
         static final String COL_HINT = "hint";
         static final String COL_THEME = "theme";
         static final String COL_MAIL = "mail";
+        static final String COL_WEIGHT ="weight";
+        static final String COL_SIZE ="size";
+        static final String COL_GENDER ="gender";
+        static final String COL_DATEOFBIRTH ="dateOfBirth";
+        static final String COL_DATEOFREGISTRATION ="dateOfRegistration";
+        static final String COL_LASTLOGIN ="lastLogin";
+        static final String COL_TIMESTAMP ="timeStamp";
+        static final String COL_IDUSERS ="idUsers";
         static final String COL_IMAGE = "image";
     }
 
