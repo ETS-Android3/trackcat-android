@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
@@ -19,6 +20,7 @@ import de.trackcat.R;
 public class ProfileFragment extends Fragment {
 
     TextView name, email, dayOfBirth, gender,weight, size, bmi, state, lastLogIn, dayOfRegistration;
+    CircleImageView image;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +50,7 @@ public class ProfileFragment extends Fragment {
         state = view.findViewById(R.id.user_state);
         lastLogIn = view.findViewById(R.id.user_lastLogIn);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
+        image = view.findViewById(R.id.profile_image);
 
 setProfileValues(currentUser);
 

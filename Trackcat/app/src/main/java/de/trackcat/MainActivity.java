@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         profileName.setOnClickListener(this);
         profileImage.setOnClickListener(this);
 
-        /* Header anhand des aktuellen Monats wählen */
+        /* Header anhand des aktuellen Monats wählen*/
         LinearLayout header_img = headerView.findViewById(R.id.header_img);
         int month = Calendar.getInstance().getTime().getMonth() + 1;
         switch (randomImg) {
