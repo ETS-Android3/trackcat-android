@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,18 +24,31 @@ import android.widget.NumberPicker;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class EditProfileFragment extends Fragment implements View.OnClickListener {
@@ -89,15 +103,15 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     }
 
     /* function to set profile values */
-    private  void setProfileValues(String user_firstName, String user_lastName, long user_dayOfBirth, float user_size, float user_weight){
+    private void setProfileValues(String user_firstName, String user_lastName, long user_dayOfBirth, float user_size, float user_weight) {
 
         firstName.setText(user_firstName);
         lastName.setText(user_lastName);
-        String string1= ""+ user_weight;
-        weight.setText(""+ string1.replace('.',','));
-        String string2= ""+ user_size;
-        size.setText(""+ ""+ string2.replace('.',','));
-     //   dayOfBirth.setText(user_lastName);
+        String string1 = "" + user_weight;
+        weight.setText("" + string1.replace('.', ','));
+        String string2 = "" + user_size;
+        size.setText("" + "" + string2.replace('.', ','));
+        //   dayOfBirth.setText(user_lastName);
     }
 
     @Override
@@ -109,16 +123,20 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 String input_lastName = lastName.getText().toString();
                 String input_weight = weight.getText().toString();
                 String input_height = size.getText().toString();
+                String input_dayOfBirth = dayOfBirth.getText().toString();
 
                 /* get selected gender */
                 int input_gender_id = gender.getCheckedRadioButtonId();
-                String gender="";
+                String gender = "";
                 switch (input_gender_id) {
                     case R.id.radioFemale:
-                        gender="weiblich";
+                        gender = "0";
                         break;
                     case R.id.radioMale:
-                        gender="männlich";
+                        gender = "1";
+                        break;
+                    default:
+                        gender ="2";
                         break;
                 }
 
@@ -134,6 +152,59 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     byte[] imageBytes = stream.toByteArray();
 
                     //TODO Nutzerandereungen an DB senden
+
+
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("image", imageBytes.toString());
+                    map.put("firstName", input_firstName);
+                    map.put("lastName", input_lastName);
+                    map.put("height", input_height);
+                    map.put("weight", input_weight);
+                    map.put("gender", gender);
+                    map.put("dateOfBirth", input_dayOfBirth);
+
+
+                    Retrofit retrofit = APIConnector.getRetrofit();
+                    APIClient apiInterface = retrofit.create(APIClient.class);
+
+                    /* start a call */
+                    Call<ResponseBody> call = apiInterface.updateUser(map);
+
+                    call.enqueue(new Callback<ResponseBody>() {
+
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            /* get jsonString from API */
+
+                            try {
+                                String jsonString = response.body().string();
+
+                                /* parse json */
+                                JSONObject successJSON = new JSONObject(jsonString);
+
+
+                                if (successJSON.getString("success").equals("0")) {
+
+                                    // success
+
+                                }
+
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            call.cancel();
+                        }
+                    });
+
+
+
 
                     /* UI-Meldung & Felder löschen */
                     if (MainActivity.getHints()) {
@@ -163,7 +234,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                 /* set datepicker an set value in field */
                 int day = Integer.parseInt(dayOfBirthValues[0]);
-                int month = Integer.parseInt(dayOfBirthValues[1])-1;
+                int month = Integer.parseInt(dayOfBirthValues[1]) - 1;
                 int year = Integer.parseInt(dayOfBirthValues[2]);
 
              /*   final Calendar cldr = Calendar.getInstance();
@@ -174,13 +245,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                String month=""+(monthOfYear + 1);
-                                String day=""+dayOfMonth;
-                                if(monthOfYear + 1<10){
-                                    month="0"+month;
+                                String month = "" + (monthOfYear + 1);
+                                String day = "" + dayOfMonth;
+                                if (monthOfYear + 1 < 10) {
+                                    month = "0" + month;
                                 }
-                                if(dayOfMonth<10){
-                                    day="0"+day;
+                                if (dayOfMonth < 10) {
+                                    day = "0" + day;
                                 }
                                 dayOfBirth.setText(day + "." + month + "." + year);
                             }
@@ -241,7 +312,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
                     /* get old values */
-                    String[]weightValues = weight.getText().toString().split(",");
+                    String[] weightValues = weight.getText().toString().split(",");
 
                     /* set max, min and unit */
                     alert.setView(alertView);
@@ -311,7 +382,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             firstName.setError(getResources().getString(R.string.errorMsgName));
             Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
             valid = false;
-        }else{
+        } else {
             firstName.setError(null);
         }
 
@@ -322,7 +393,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             lastName.setError(getResources().getString(R.string.errorMsgName));
             Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
             valid = false;
-        }else{
+        } else {
             lastName.setError(null);
         }
 
