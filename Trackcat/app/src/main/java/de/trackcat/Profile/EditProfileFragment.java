@@ -31,6 +31,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 
@@ -47,10 +49,9 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     View view;
     EditText firstName, lastName;
     RadioGroup gender;
-    TextView dayOfBirth, height, weight;
+    TextView dayOfBirth, size, weight;
     Button btnSave;
     CircleImageView imageUpload;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +64,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         lastName = view.findViewById(R.id.input_lastName);
         gender = view.findViewById(R.id.input_gender);
         weight = view.findViewById(R.id.input_weight);
-        height = view.findViewById(R.id.input_height);
+        size = view.findViewById(R.id.input_height);
         dayOfBirth = view.findViewById(R.id.input_dayOfBirth);
         btnSave = view.findViewById(R.id.btn_save);
         imageUpload = view.findViewById(R.id.profile_image_upload);
@@ -71,10 +72,32 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         /* set onClick Listener */
         btnSave.setOnClickListener(this);
         dayOfBirth.setOnClickListener(this);
-        height.setOnClickListener(this);
+        size.setOnClickListener(this);
         weight.setOnClickListener(this);
         imageUpload.setOnClickListener(this);
+
+        /* get current user */
+        UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+        User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+        //TODO read values from global db
+
+        /* read values from local DB */
+        setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight());
+
         return view;
+    }
+
+    /* function to set profile values */
+    private  void setProfileValues(String user_firstName, String user_lastName, long user_dayOfBirth, float user_size, float user_weight){
+
+        firstName.setText(user_firstName);
+        lastName.setText(user_lastName);
+        String string1= ""+ user_weight;
+        weight.setText(""+ string1.replace('.',','));
+        String string2= ""+ user_size;
+        size.setText(""+ ""+ string2.replace('.',','));
+     //   dayOfBirth.setText(user_lastName);
     }
 
     @Override
@@ -85,7 +108,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 String input_firstName = firstName.getText().toString();
                 String input_lastName = lastName.getText().toString();
                 String input_weight = weight.getText().toString();
-                String input_height = height.getText().toString();
+                String input_height = size.getText().toString();
 
                 /* get selected gender */
                 int input_gender_id = gender.getCheckedRadioButtonId();
@@ -96,9 +119,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         break;
                     case R.id.radioMale:
                         gender="männlich";
-                        break;
-                    case R.id.radioVarious:
-                        gender="diverses";
                         break;
                 }
 
@@ -177,7 +197,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
                     /* get old values */
-                    String[] heightValues = height.getText().toString().split(",");
+                    String[] heightValues = size.getText().toString().split(",");
 
                     /* set max, min and unit */
                     alert.setView(alertView);
@@ -199,7 +219,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     public void onClick(DialogInterface dialog, int whichButton) {
                         NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                         NumberPicker numberPickerDecimal = alertView.findViewById(R.id.numberPickerDecimal);
-                        height.setText(numberPickerInteger.getValue() + "," + numberPickerDecimal.getValue());
+                        size.setText(numberPickerInteger.getValue() + "," + numberPickerDecimal.getValue());
                     }
                 });
 

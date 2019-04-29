@@ -52,6 +52,7 @@ public class ProfileFragment extends Fragment {
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
         image = view.findViewById(R.id.profile_image);
 
+        //TODO read values from global db
 
         /* read values from local DB */
         setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight());
