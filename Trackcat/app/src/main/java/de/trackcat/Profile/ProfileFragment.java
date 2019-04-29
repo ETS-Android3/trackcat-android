@@ -19,7 +19,7 @@ import de.trackcat.R;
 
 public class ProfileFragment extends Fragment {
 
-    TextView name, email, dayOfBirth, gender,weight, size, bmi, state, lastLogIn, dayOfRegistration;
+    TextView name, email, dayOfBirth, gender, weight, size, bmi, state, lastLogIn, dayOfRegistration;
     CircleImageView image;
 
     @Override
@@ -52,33 +52,35 @@ public class ProfileFragment extends Fragment {
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
         image = view.findViewById(R.id.profile_image);
 
-setProfileValues(currentUser);
+
+        /* read values from local DB */
+        setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight());
 
         return view;
     }
 
-    private void setProfileValues(User currentUser){
+    private void setProfileValues(String user_firstName, String user_lastName, String user_email,long user_dayOfBirth, float user_size, float user_weight) {
 
 
         /*set profile values*/
-        name.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
-        email.setText(currentUser.getMail());
-        long curDayIfBirth = currentUser.getDateOfBirth();
-        String curDateString = getDate(curDayIfBirth, "dd.MM.yyyy");
+        name.setText(user_firstName + " " + user_lastName);
+        email.setText(user_email);
+;
+        String curDateString = getDate(user_dayOfBirth, "dd.MM.yyyy");
         dayOfBirth.setText(curDateString);
 
-        weight.setText("" + currentUser.getWeight() +" kg");
-        size.setText("" + currentUser.getSize() +" cm");
+        weight.setText("" + user_weight + " kg");
+        size.setText("" + user_size + " cm");
 
         /* bmi */
-        float userSize = currentUser.getSize();
-        boolean userGender = currentUser.getGender();
-        float userWeight = currentUser.getWeight();
-        float x = (userSize/100) * (userSize/100);
+        float userSize = user_size;
+        boolean userGender = true;
+        float userWeight = user_weight;
+        float x = (userSize / 100) * (userSize / 100);
 
-        double userBmi= Math.round((userWeight / x) * 100) / 100.0;
+        double userBmi = Math.round((userWeight / x) * 100) / 100.0;
 
-        String bmiClass="nicht angebegen";
+        String bmiClass = "nicht angebegen";
         int age = 30;
         /* if user is female */
         if (userGender) {
