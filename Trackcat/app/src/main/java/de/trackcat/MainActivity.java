@@ -394,6 +394,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 startActivity(intent);
                                 MainActivity.super.onDestroy();
 
+                                /* remove user from local db */
+                                List<User> deletedUsers = userDAO.readAll();
+                                for (User user : deletedUsers){
+                                    userDAO.delete(user);
+                                }
+
+
                             }
                         }, 3000);
 
