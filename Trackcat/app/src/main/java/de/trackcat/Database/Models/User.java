@@ -17,7 +17,7 @@ public class User {
     private String eMail;
     private float weight;
     private float size;
-    private boolean gender;
+    private int gender;
     private long dateOfBirth;
     private long dateOfRegistration;
     private long lastLogin;
@@ -58,6 +58,7 @@ public class User {
         this.eMail = eMail;
         this.weight = weight;
         this.size = size;
+        this.gender=gender;
         this.dateOfBirth = dateOfBirth;
         this.dateOfRegistration = dateOfRegistration;
         this.lastLogin = lastLogin;
@@ -65,7 +66,6 @@ public class User {
         this.idUsers = idUsers;
         this.image = image;
         this.setIsSynchronizedDB(isSynchronized);
-        this.setGenderDB(gender);
         this.setActiveDB(active);
         this.setDarkThemeActiveDB(themeActive);
         this.setHintsActiveDB(hintsActive);
@@ -197,57 +197,20 @@ public class User {
     /**
      * Getter for the gender.
      *
-     * @return value of type boolean
+     * @return value of type integer
      */
-    public boolean getGender() {
+    public int getGender() {
         return gender;
     }
 
-    /**
-     * Getter to define gender.
-     *
-     * @return value of type integer
-     *
-     * <p>
-     * Integer value is necessary due to SQLite Database constraint. SQLite does not implement
-     * boolean values natively as true or false but only as integer.
-     * </p>
-     * <p>
-     * Returns "1" if the user is currently the active one or "0" if it isn't.
-     * </p>
-     */
-    public int getGenderDB() {
-        if (gender)
-            return 1;
-        else
-            return 0;
-    }
 
     /**
      * Setter for the gender.
      *
-     * @param gender of type boolean
-     */
-    public void setGender(boolean gender) {
-        this.gender = gender;
-    }
-
-    /**
-     * Setter to define gender.
-     *
      * @param gender of type integer
-     *
-     *               <p>
-     *               Integer value is necessary due to SQLite Database constraint. SQLite does not implement
-     *               boolean values natively as true or false but only as integer.
-     *               </p>
-     *               <p>
-     *               Hand over "1" to define that the user is currently the active one or "0"
-     *               to define that it isn't.
-     *               </p>
      */
-    public void setGenderDB(int gender) {
-        this.gender = gender == 1;
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 
 

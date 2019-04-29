@@ -54,7 +54,7 @@ final class DbContract {
                     UserEntry.COL_MAIL + " TEXT, " +
                     UserEntry.COL_WEIGHT + " FLOAT, " +
                     UserEntry.COL_SIZE + " FLOAT, " +
-                    UserEntry.COL_GENDER + " BOOLEAN, " +
+                    UserEntry.COL_GENDER + " INTEGER, " +
                     UserEntry.COL_DATEOFBIRTH + " LONG, " +
                     UserEntry.COL_DATEOFREGISTRATION + " LONG, " +
                     UserEntry.COL_LASTLOGIN + " LONG, " +
