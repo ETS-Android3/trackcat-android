@@ -74,7 +74,7 @@ public class UserDAO {
         values.put(COL_MAIL, user.getMail());
         values.put(COL_WEIGHT, user.getWeight());
         values.put(COL_SIZE, user.getSize());
-        values.put(COL_GENDER, user.getGender());
+        values.put(COL_GENDER, user.getGenderDB());
         values.put(COL_DATEOFBIRTH, user.getDateOfBirth());
         values.put(COL_DATEOFREGISTRATION, user.getDateOfRegistration());
         values.put(COL_LASTLOGIN, user.getLastLogin());

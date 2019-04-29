@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
+import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -41,6 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LogInFragment extends Fragment implements View.OnClickListener {
 
     private FragmentTransaction fragTransaction;
+    private UserDAO userDAO;
     /* UI references */
     private EditText emailTextView, passwordTextView;
     private Button btnLogin;
@@ -62,6 +64,9 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         /* set on click-Listener */
         btnLogin.setOnClickListener(this);
         signInLink.setOnClickListener(this);
+
+        /* set user dao */
+        userDAO = new UserDAO(StartActivity.getInstance());
 
         return view;
     }
@@ -136,8 +141,38 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                         /* get userObject from Json */
                                         JSONObject userObject = mainObject.getJSONObject("userData");
 
-                                        /* example to get value from JSON --------------------------------vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
-                                        Log.d(getResources().getString(R.string.app_name) + "-JSON", userObject.getString("eMail"));
+                                        /* save logged user in db */
+                                        User loggedUser = new User();
+                                        loggedUser.setIdUsers(userObject.getInt("id"));
+                                        loggedUser.setMail(userObject.getString("eMail"));
+                                        loggedUser.setFirstName(userObject.getString("firstName"));
+                                        loggedUser.setLastName(userObject.getString("lastName"));
+                                        //loggedUser.setImage(userObject.getLong("image"));
+                                        int gender = userObject.getInt("gender");
+                                        if (gender != 2) {
+                                            if (gender == 1) {
+                                                loggedUser.setGender(true);
+                                            } else {
+                                                loggedUser.setGender(false);
+                                            }
+                                        }
+
+                                        try {
+                                            loggedUser.setWeight((float) userObject.getDouble("weight"));
+                                        }catch (Exception e) {}
+
+                                        try {
+                                          loggedUser.setSize((float) userObject.getDouble("size"));
+                                        }catch (Exception e) {}
+                                        try {
+                                            loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                                        } catch (Exception e) {}
+
+
+
+                                        //loggedUser.setPassword(userObject.getString("password"));
+                                        userDAO.create(loggedUser);
+
 
                                         /* !!!!!!!!!!!!!!!!!!!  how JSON is build in Python, TODO delete if finished */
                                         /* jsonUser['id'] = result[0]

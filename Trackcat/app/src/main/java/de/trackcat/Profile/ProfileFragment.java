@@ -8,12 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 
 public class ProfileFragment extends Fragment {
+
+    TextView name, email, dayOfBirth, gender,weight, size, bmi, state, lastLogIn, dayOfRegistration;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,40 +38,49 @@ public class ProfileFragment extends Fragment {
         User currentUser = userDAO.read(MainActivity.getActiveUser());
 
         /* get profil fields */
-        TextView name = view.findViewById(R.id.user_name);
-        TextView email = view.findViewById(R.id.user_email);
-        TextView dayOfBirth = view.findViewById(R.id.user_dayOfBirth);
-        TextView gender = view.findViewById(R.id.user_gender);
-        TextView weight = view.findViewById(R.id.user_weight);
-        TextView size = view.findViewById(R.id.user_size);
-        TextView bmi = view.findViewById(R.id.user_bmi);
-        TextView state = view.findViewById(R.id.user_state);
-        TextView lastLogIn = view.findViewById(R.id.user_lastLogIn);
-        TextView dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
+        name = view.findViewById(R.id.user_name);
+        email = view.findViewById(R.id.user_email);
+        dayOfBirth = view.findViewById(R.id.user_dayOfBirth);
+        gender = view.findViewById(R.id.user_gender);
+        weight = view.findViewById(R.id.user_weight);
+        size = view.findViewById(R.id.user_size);
+        bmi = view.findViewById(R.id.user_bmi);
+        state = view.findViewById(R.id.user_state);
+        lastLogIn = view.findViewById(R.id.user_lastLogIn);
+        dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
+
+setProfileValues(currentUser);
+
+        return view;
+    }
+
+    private void setProfileValues(User currentUser){
+
 
         /*set profile values*/
         name.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
         email.setText(currentUser.getMail());
-        //long curDayIfBirth = currentUser.getDateOfBirth();
-        // String curDateString = getDate(curDayIfBirth, "dd.MM.yyyy");
-        // dayOfBirth.setText(curDateString);
-        // gender.setText();
-        weight.setText("" + currentUser.getWeight());
-        size.setText("" + currentUser.getSize());
+        long curDayIfBirth = currentUser.getDateOfBirth();
+        String curDateString = getDate(curDayIfBirth, "dd.MM.yyyy");
+        dayOfBirth.setText(curDateString);
+
+        weight.setText("" + currentUser.getWeight() +" kg");
+        size.setText("" + currentUser.getSize() +" cm");
 
         /* bmi */
         float userSize = currentUser.getSize();
         boolean userGender = currentUser.getGender();
         float userWeight = currentUser.getWeight();
-        float x = userSize * userSize;
-        float userBmi = userWeight / x;
+        float x = (userSize/100) * (userSize/100);
 
-        String bmiClass;
+        double userBmi= Math.round((userWeight / x) * 100) / 100.0;
+
+        String bmiClass="nicht angebegen";
         int age = 30;
         /* if user is female */
         if (userGender) {
             /*children*/
-            if(age==8){
+            if (age == 8) {
                 if (userBmi < 13.2) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 13.3 && userBmi <= 18.7) {
@@ -77,7 +91,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==9){
+            } else if (age == 9) {
                 if (userBmi < 13.7) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 13.8 && userBmi <= 19.7) {
@@ -88,7 +102,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==10){
+            } else if (age == 10) {
                 if (userBmi < 14.2) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 14.3 && userBmi <= 20.6) {
@@ -99,7 +113,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==11){
+            } else if (age == 11) {
                 if (userBmi < 14.6) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 14.7 && userBmi <= 20.7) {
@@ -110,7 +124,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==12){
+            } else if (age == 12) {
                 if (userBmi < 16) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 16.1 && userBmi <= 21.4) {
@@ -121,7 +135,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==13){
+            } else if (age == 13) {
                 if (userBmi < 15.6) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 15.7 && userBmi <= 22) {
@@ -132,7 +146,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==14){
+            } else if (age == 14) {
                 if (userBmi < 17) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 17.1 && userBmi <= 23.1) {
@@ -143,7 +157,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==15){
+            } else if (age == 15) {
                 if (userBmi < 17.6) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 17.7 && userBmi <= 23.1) {
@@ -237,7 +251,7 @@ public class ProfileFragment extends Fragment {
         } else {
 
             /*children*/
-            if(age==8){
+            if (age == 8) {
                 if (userBmi < 14.2) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 14.3 && userBmi <= 19.2) {
@@ -248,7 +262,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==9){
+            } else if (age == 9) {
                 if (userBmi < 13.7) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 13.8 && userBmi <= 19.3) {
@@ -259,7 +273,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==10){
+            } else if (age == 10) {
                 if (userBmi < 14.6) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 14.7 && userBmi <= 21.3) {
@@ -270,7 +284,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==11){
+            } else if (age == 11) {
                 if (userBmi < 14.3) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 14.4 && userBmi <= 21.1) {
@@ -281,7 +295,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==12){
+            } else if (age == 12) {
                 if (userBmi < 14.8) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 14.9 && userBmi <= 21.9) {
@@ -292,7 +306,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==13){
+            } else if (age == 13) {
                 if (userBmi < 16.2) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 16.3 && userBmi <= 21.6) {
@@ -303,7 +317,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==14){
+            } else if (age == 14) {
                 if (userBmi < 16.7) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 16.8 && userBmi <= 22.5) {
@@ -314,7 +328,7 @@ public class ProfileFragment extends Fragment {
                     bmiClass = "starkes Übergewicht";
                 }
 
-            }else if(age==15){
+            } else if (age == 15) {
                 if (userBmi < 18.5) {
                     bmiClass = "Untergewicht";
                 } else if (userBmi >= 18.6 && userBmi <= 23.6) {
@@ -395,13 +409,19 @@ public class ProfileFragment extends Fragment {
             }
         }
 
-
+        bmi.setText(userBmi + " (" + bmiClass + ")");
         // long curlastLogin = currentUser.getLastLogin();
         // String curDateString = getDate(curDayIfBirth, "dd.MM.yyyy");
         // dayOfBirth.setText(curDateString);
 
+    }
 
+    /* Das Datum wird von Millisekunden als Formatiertes Datum zurückgegeben */
+    private static String getDate(long millis, String dateFormat) {
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
-        return view;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millis);
+        return formatter.format(calendar.getTime());
     }
 }

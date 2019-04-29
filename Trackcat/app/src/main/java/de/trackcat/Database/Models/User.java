@@ -214,7 +214,7 @@ public class User {
      * Returns "1" if the user is currently the active one or "0" if it isn't.
      * </p>
      */
-    public int genderDB() {
+    public int getGenderDB() {
         if (gender)
             return 1;
         else
@@ -253,7 +253,7 @@ public class User {
      *
      * @return value of type long
      */
-    public float getDateOfBirth() {
+    public long getDateOfBirth() {
         return dateOfBirth;
     }
 
