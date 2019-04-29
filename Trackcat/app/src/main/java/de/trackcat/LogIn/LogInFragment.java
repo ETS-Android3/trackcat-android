@@ -15,6 +15,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +31,7 @@ import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.StartActivity;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -109,17 +117,40 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                         // TODO hashsalt Password
                         /* start a call */
                         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                        Call<String> call = apiInterface.getUser(authString);
+                        Call<ResponseBody> call = apiInterface.getUser(authString);
 
-                        call.enqueue(new Callback<String>() {
+                        call.enqueue(new Callback<ResponseBody>() {
 
                             @Override
-                            public void onResponse(Call<String> call, Response<String> response) {
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 try {
-                                    Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", response.body());
+                                    /* get jsonString from API */
+                                    String jsonString = response.body().string();
+
+                                    /* parse json */
+                                    JSONObject mainObject = new JSONObject(jsonString);
 
                                     /* open activity if login success*/
-                                    if (response.body().equals("0")) {
+                                    if (mainObject.getString("success").equals("0")) {
+
+                                        /* get userObject from Json */
+                                        JSONObject userObject = mainObject.getJSONObject("userData");
+
+                                        /* example to get value from JSON --------------------------------vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
+                                        Log.d(getResources().getString(R.string.app_name) + "-JSON", userObject.getString("eMail"));
+
+                                        /* !!!!!!!!!!!!!!!!!!!  how JSON is build in Python, TODO delete if finished */
+                                        /* jsonUser['id'] = result[0]
+                                        jsonUser['eMail'] = result[1]
+                                        jsonUser['firstName'] = result[2]
+                                        jsonUser['lastName'] = result[3]
+                                        jsonUser['image'] = result[4]
+                                        jsonUser['gender'] = result[5]
+                                        jsonUser['weight'] = result[6]
+                                        jsonUser['size'] = result[7]
+                                        jsonUser['dateOfBirth'] = result[8]
+                                        jsonUser['password'] = result[9]*/
+
                                         Intent intent = new Intent(getContext(), MainActivity.class);
                                         startActivity(intent);
                                     } else {
@@ -135,10 +166,10 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                                 }, 7000);
                                         btnLogin.setEnabled(true);
                                     }
-                                }catch (Exception e){
+                                } catch (Exception e) {
 
                                     /* show server error message to user */
-                                    Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: "+response.raw().message());
+                                    Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + response.raw().message());
                                     messageBoxInfo.setVisibility(View.VISIBLE);
                                     messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
 
@@ -156,7 +187,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                             }
 
                             @Override
-                            public void onFailure(Call<String> call, Throwable t) {
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
                                 call.cancel();
                             }
                         });
