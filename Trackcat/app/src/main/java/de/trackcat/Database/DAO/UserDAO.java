@@ -282,4 +282,27 @@ public class UserDAO {
     public String exportUserToJson(int id) {
         return gson.toJson(this.read(id));
     }
+
+
+    /**
+     * Count the entrys of the userTable
+     *
+     * @return amount of users in table
+     */
+    public int userInDB() {
+        DbHelper dbHelper = new DbHelper(context);
+        int result;
+        final String SQL_COUNT_USER_ENTRYS = "SELECT COUNT(*) FROM " + TABLE_NAME;
+
+        try {
+
+            Cursor cursor = dbHelper.getWritableDatabase().rawQuery(SQL_COUNT_USER_ENTRYS,null);
+            cursor.moveToFirst();
+            result =cursor.getInt(0);
+
+        } finally {
+            dbHelper.close();
+        }
+        return result;
+    }
 }

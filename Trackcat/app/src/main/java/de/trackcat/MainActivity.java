@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             initialUser.setDarkThemeActive(false);
             userDAO.create(initialUser);
             activeUser = 1;
-
             hints = true;
             darkTheme = false;
 
