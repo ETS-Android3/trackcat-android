@@ -1,21 +1,35 @@
 package de.trackcat.Profile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ProfileFragment extends Fragment {
 
@@ -53,6 +67,48 @@ public class ProfileFragment extends Fragment {
         image = view.findViewById(R.id.profile_image);
 
         //TODO read values from global db
+        HashMap<String, String> map = new HashMap<>();
+        map.put("eMail", currentUser.getMail());
+
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+
+        // TODO hashsalt Password
+        /* start a call */
+        Call<ResponseBody> call = apiInterface.getUserByEmail(map);
+
+        call.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                /* get jsonString from API */
+
+                try {
+                    String jsonString = response.body().string();
+
+// TODO have fun :P
+                    /* parse json */
+                    JSONObject userJSON = new JSONObject(jsonString);
+
+                    Log.v("test", userJSON.getString("eMail"));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                call.cancel();
+
+
+            }
+        });
+
+
+
 
         /* read values from local DB */
         setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight());
@@ -60,13 +116,13 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    private void setProfileValues(String user_firstName, String user_lastName, String user_email,long user_dayOfBirth, float user_size, float user_weight) {
+    private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight) {
 
 
         /*set profile values*/
         name.setText(user_firstName + " " + user_lastName);
         email.setText(user_email);
-;
+        ;
         String curDateString = getDate(user_dayOfBirth, "dd.MM.yyyy");
         dayOfBirth.setText(curDateString);
 

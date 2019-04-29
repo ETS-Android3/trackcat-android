@@ -22,6 +22,10 @@ public interface APIClient {
     @POST("/registerAPI")
     Call<String> registerUser(@Body HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/getUserByEmail")
+    Call<ResponseBody> getUserByEmail(@Body HashMap<String,String> json);
+
 
 
 }
