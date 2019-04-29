@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /* function to get active user information */
     public void getCurrentUserInformation() {
         userDAO = new UserDAO(this);
 
@@ -171,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (userList.size() == 0) {
             /* Initiale Usererstellung */
 
-            User initialUser = new User("Max", "Mustermann", "max.mustermann@mail.de",
+            User initialUser = new User("Test", "Testi", "test.testi@mail.de",
                     null);
             initialUser.setActive(true);
             initialUser.setHintsActive(true);
@@ -185,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             hints = userList.get(0).isHintsActive();
             darkTheme = userList.get(0).isDarkThemeActive();
+            activeUser = userList.get(0).getId();
         }
 
     }
@@ -279,6 +281,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         getProfileColor();
+
+        /* set profile information */
+        User currentUser = userDAO.read(activeUser);
+        profileName.setText(currentUser.getFirstName()+" "+currentUser.getLastName());
+        profileEmail.setText(currentUser.getMail());
 
         /* Menu Toggle */
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
