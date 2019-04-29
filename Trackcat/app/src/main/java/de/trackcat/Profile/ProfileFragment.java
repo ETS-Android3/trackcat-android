@@ -86,11 +86,13 @@ public class ProfileFragment extends Fragment {
                 try {
                     String jsonString = response.body().string();
 
-// TODO have fun :P
                     /* parse json */
                     JSONObject userJSON = new JSONObject(jsonString);
 
                     Log.v("test", userJSON.getString("eMail"));
+
+                    /* read values from global DB */
+                    setProfileValues(userJSON.getString("firstName"),userJSON.getString("lastName"), userJSON.getString("eMail"), userJSON.getLong("dateOfBirth"), (float)userJSON.getDouble("size"), (float) userJSON.getDouble("weight"));
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -103,15 +105,10 @@ public class ProfileFragment extends Fragment {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
 
-
+                /* read values from local DB */
+                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight());
             }
         });
-
-
-
-
-        /* read values from local DB */
-        setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight());
 
         return view;
     }
