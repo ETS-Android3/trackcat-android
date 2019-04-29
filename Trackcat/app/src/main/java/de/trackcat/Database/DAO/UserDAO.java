@@ -83,6 +83,7 @@ public class UserDAO {
         values.put(COL_ISACTIVE, user.isActiveDB());
         values.put(COL_HINT, user.isHintsActiveDB());
         values.put(COL_THEME, user.isDarkThemeActiveDB());
+        values.put(COL_ISSYNCHRONIZED, user.isSynchronizedDB());
         values.put(COL_IMAGE, user.getImage());
         return values;
     }
@@ -115,7 +116,8 @@ public class UserDAO {
                     COL_ISACTIVE,
                     COL_THEME,
                     COL_HINT,
-                    COL_IMAGE };
+                    COL_IMAGE,
+                    COL_ISSYNCHRONIZED};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
@@ -141,6 +143,7 @@ public class UserDAO {
                     result.setTimeStamp(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
                     result.setIdUsers(cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)));
                     result.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)));
+                    result.setIsSynchronizedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISSYNCHRONIZED)));
                 }
             }
         } finally {
@@ -185,7 +188,8 @@ public class UserDAO {
                     COL_TIMESTAMP,
                     COL_IDUSERS,
                     COL_HINT,
-                    COL_THEME };
+                    COL_THEME,
+                    COL_ISSYNCHRONIZED };
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
@@ -212,7 +216,8 @@ public class UserDAO {
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_LASTLOGIN)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)),
-                                cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE))));
+                                cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISSYNCHRONIZED))));
                     } while (cursor.moveToNext());
             }
         } finally {

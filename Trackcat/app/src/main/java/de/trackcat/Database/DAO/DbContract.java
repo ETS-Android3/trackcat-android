@@ -60,6 +60,7 @@ final class DbContract {
                     UserEntry.COL_LASTLOGIN + " LONG, " +
                     UserEntry.COL_TIMESTAMP + " LONG, " +
                     UserEntry.COL_IDUSERS + " INTEGER, " +
+                    UserEntry.COL_ISSYNCHRONIZED + " BOOLEAN, " +
                     UserEntry.COL_IMAGE + " BLOB) ";
 
     /*
@@ -106,6 +107,7 @@ final class DbContract {
         static final String COL_LASTLOGIN ="lastLogin";
         static final String COL_TIMESTAMP ="timeStamp";
         static final String COL_IDUSERS ="idUsers";
+        static final String COL_ISSYNCHRONIZED ="isSynchronized";
         static final String COL_IMAGE = "image";
     }
 
