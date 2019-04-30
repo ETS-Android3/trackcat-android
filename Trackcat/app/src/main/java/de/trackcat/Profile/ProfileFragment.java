@@ -1,6 +1,5 @@
 package de.trackcat.Profile;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,8 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -23,6 +20,7 @@ import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import okhttp3.ResponseBody;
@@ -33,6 +31,7 @@ import retrofit2.Retrofit;
 
 public class ProfileFragment extends Fragment {
 
+    /* variables */
     TextView name, email, dayOfBirth, gender, weight, size, bmi, state, lastLogIn, dayOfRegistration;
     CircleImageView image;
 
@@ -66,14 +65,13 @@ public class ProfileFragment extends Fragment {
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
         image = view.findViewById(R.id.profile_image);
 
-        //TODO read values from global db
+        /* read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
         map.put("eMail", currentUser.getMail());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
-        // TODO hashsalt Password
         /* start a call */
         Call<ResponseBody> call = apiInterface.getUserByEmail(map);
 
@@ -81,18 +79,16 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                /* get jsonString from API */
-
                 try {
+                    /* get jsonString from API */
                     String jsonString = response.body().string();
 
                     /* parse json */
                     JSONObject userJSON = new JSONObject(jsonString);
-
-                    Log.v("test", userJSON.getString("eMail"));
+                    Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
 
                     /* read values from global DB */
-                    setProfileValues(userJSON.getString("firstName"),userJSON.getString("lastName"), userJSON.getString("eMail"), userJSON.getLong("dateOfBirth"), (float)userJSON.getDouble("size"), (float) userJSON.getDouble("weight"));
+                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("eMail"), userJSON.getLong("dateOfBirth"), (float) userJSON.getDouble("size"), (float) userJSON.getDouble("weight"));
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -113,25 +109,26 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+    /* Function to set profile information in fields */
     private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight) {
 
-
-        /*set profile values*/
+        /*set name and email*/
         name.setText(user_firstName + " " + user_lastName);
         email.setText(user_email);
-        ;
-        String curDateString = getDate(user_dayOfBirth, "dd.MM.yyyy");
+
+        /* set dayOfBirth */
+        String curDateString = GlobalFunctions.getDateFromMillis(user_dayOfBirth, "dd.MM.yyyy");
         dayOfBirth.setText(curDateString);
 
+        /* set weight and size */
         weight.setText("" + user_weight + " kg");
         size.setText("" + user_size + " cm");
 
-        /* bmi */
+        /* calculate bmi */
         float userSize = user_size;
         boolean userGender = true;
         float userWeight = user_weight;
         float x = (userSize / 100) * (userSize / 100);
-
         double userBmi = Math.round((userWeight / x) * 100) / 100.0;
 
         String bmiClass = "nicht angebegen";
@@ -464,23 +461,8 @@ public class ProfileFragment extends Fragment {
                 } else if (userBmi > 33) {
                     bmiClass = "starkes Übergewicht";
                 }
-
             }
         }
-
         bmi.setText(userBmi + " (" + bmiClass + ")");
-        // long curlastLogin = currentUser.getLastLogin();
-        // String curDateString = getDate(curDayIfBirth, "dd.MM.yyyy");
-        // dayOfBirth.setText(curDateString);
-
-    }
-
-    /* Das Datum wird von Millisekunden als Formatiertes Datum zurückgegeben */
-    private static String getDate(long millis, String dateFormat) {
-        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(millis);
-        return formatter.format(calendar.getTime());
     }
 }

@@ -12,7 +12,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -42,6 +42,7 @@ import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import okhttp3.ResponseBody;
@@ -53,16 +54,14 @@ import retrofit2.Retrofit;
 
 public class EditProfileFragment extends Fragment implements View.OnClickListener {
 
+    /* Variables */
     private static final int READ_REQUEST_CODE = 20;
     DatePickerDialog picker;
     AlertDialog.Builder alert;
     LayoutInflater layoutInflater;
-    View alertView;
     UserDAO userDAO;
     User currentUser;
-
-    /* Variables */
-    View view;
+    View view, alertView;
     EditText firstName, lastName;
     RadioGroup gender;
     TextView dayOfBirth, size, weight;
@@ -124,7 +123,10 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 break;
 
         }
-        //   dayOfBirth.setText(user_lastName);
+
+        /*set dayOfBirth*/
+        String curDateString = GlobalFunctions.getDateFromMillis(user_dayOfBirth, "dd.MM.yyyy");
+        dayOfBirth.setText(curDateString);
     }
 
     @Override
@@ -156,7 +158,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 /* check if all fields are filled and  validate inputs*/
                 if (validate() && !input_firstName.equals("") && !input_lastName.equals("")) {
 
-                    /* ImageView in Bytes umwandeln */
+                    /* parse imageView into bytes */
                     ImageView imageView = view.findViewById(R.id.profile_image_upload);
                     Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
                     bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
@@ -164,36 +166,39 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                     byte[] imageBytes = stream.toByteArray();
 
-                    //TODO Image umwandeln und datum anpassen
-
                     /* parse values */
                     String string1 = "" + input_height;
                     input_height = "" + string1.replace(',', '.');
                     String string2 = "" + input_weight;
                     input_weight = "" + string2.replace(',', '.');
+                    long long_dayOfBirth=0;
+                    try {
+                        long_dayOfBirth=GlobalFunctions.getMillisFromString(input_dayOfBirth, "dd.MM.yyyy");
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    String image = GlobalFunctions.getBase64FromBytes(imageBytes);
 
                     /* change values in local DB */
                     currentUser.setImage(imageBytes);
                     currentUser.setFirstName(input_firstName);
                     currentUser.setLastName(input_lastName);
-
                     currentUser.setSize(Float.valueOf(input_height));
                     currentUser.setWeight(Float.valueOf(input_weight));
                     currentUser.setGender(gender);
                     currentUser.isSynchronised(false);
-                    //  currentUser.setDateOfBirth(input_dayOfBirth);
+                    currentUser.setDateOfBirth(long_dayOfBirth);
                     userDAO.update(currentUser.getId(), currentUser);
 
                     /* change values in global DB*/
                     HashMap<String, String> map = new HashMap<>();
-                    map.put("image", imageBytes.toString());
+                    map.put("image", image);
                     map.put("firstName", input_firstName);
                     map.put("lastName", input_lastName);
                     map.put("height", input_height);
                     map.put("weight", input_weight);
                     map.put("gender", "" + gender);
-                    map.put("dateOfBirth", input_dayOfBirth);
-
+                    map.put("dateOfBirth", ""+long_dayOfBirth);
 
                     Retrofit retrofit = APIConnector.getRetrofit();
                     APIClient apiInterface = retrofit.create(APIClient.class);
@@ -205,9 +210,9 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            /* get jsonString from API */
 
                             try {
+                                /* get jsonString from API */
                                 String jsonString = response.body().string();
 
                                 /* parse json */
@@ -215,10 +220,9 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                                 if (successJSON.getString("success").equals("0")) {
 
-                                    /* save is Synchronizes value */
+                                    /* save is Synchronized value as true */
                                     currentUser.isSynchronised(true);
                                     userDAO.update(currentUser.getId(), currentUser);
-
                                 }
 
                             } catch (IOException e) {
