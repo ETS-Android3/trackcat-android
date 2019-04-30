@@ -293,7 +293,7 @@ public class User {
      *
      * @return value of type long
      */
-    public float getDateOfRegistration() {
+    public long getDateOfRegistration() {
         return dateOfRegistration;
     }
 
@@ -311,7 +311,7 @@ public class User {
      *
      * @return value of type long
      */
-    public float getLastLogin() {
+    public long getLastLogin() {
         return lastLogin;
     }
 

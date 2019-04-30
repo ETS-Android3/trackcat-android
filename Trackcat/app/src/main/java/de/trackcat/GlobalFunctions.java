@@ -26,6 +26,15 @@ public class GlobalFunctions {
         return formatter.format(calendar.getTime());
     }
 
+    /* get string date from millis */
+    public static String getDateWithTimeFromSeconds(long seconds, String dateFormat) {
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(seconds*1000);
+        return formatter.format(calendar.getTime());
+    }
+
     /* get millis from string date */
     public static long getMillisFromString(String str_date, String dateFormat) throws ParseException {
 

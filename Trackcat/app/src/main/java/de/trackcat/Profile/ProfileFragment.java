@@ -112,7 +112,7 @@ public class ProfileFragment extends Fragment {
                         dateOfBirth = 0;
                     }
 
-                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("eMail"), dateOfBirth, size, weight, userJSON.getInt("gender"));
+                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("eMail"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"));
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -126,7 +126,7 @@ public class ProfileFragment extends Fragment {
                 call.cancel();
 
                 /* read values from local DB */
-                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender());
+                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin());
                 Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "ERROR: " + t.getMessage());
             }
         });
@@ -135,45 +135,45 @@ public class ProfileFragment extends Fragment {
     }
 
     /* Function to set profile information in fields */
-    private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight, int user_gender) {
-        int age=0;
+    private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight, int user_gender, long user_dateOfRegistration, long user_lastLogin) {
+        int age = 0;
 
         /*set name and email*/
         name.setText(user_firstName + " " + user_lastName);
         email.setText(user_email);
 
         /* set dayOfBirth and calculate age*/
-        if(user_dayOfBirth!=0){
+        if (user_dayOfBirth != 0) {
             String curDateString = GlobalFunctions.getDateFromMillis(user_dayOfBirth, "dd.MM.yyyy");
-            age= calculateAge(curDateString);
-            dayOfBirth.setText(curDateString+" ("+age+" Jahre)");
-        }else{
+            age = calculateAge(curDateString);
+            dayOfBirth.setText(curDateString + " (" + age + " Jahre)");
+        } else {
             GlobalFunctions.setNoInformationStyle(dayOfBirth);
         }
 
         /* set size */
-        if(user_size!=0){
+        if (user_size != 0) {
             size.setText("" + user_size + " cm");
-        }else{
+        } else {
             GlobalFunctions.setNoInformationStyle(size);
         }
 
         /* set weight */
-        if(user_weight!=0){
+        if (user_weight != 0) {
             weight.setText("" + user_weight + " kg");
-        }else{
+        } else {
             GlobalFunctions.setNoInformationStyle(weight);
         }
 
         /* set gender */
-        if(user_gender!=2){
+        if (user_gender != 2) {
             gender.setText(user_gender);
-        }else{
+        } else {
             GlobalFunctions.setNoInformationStyle(gender);
         }
 
         /* calculate bmi */
-        if (user_size != 0 && user_weight != 0 && user_gender!=2 && user_dayOfBirth!=0) {
+        if (user_size != 0 && user_weight != 0 && user_gender != 2 && user_dayOfBirth != 0) {
 
             float userSize = user_size;
             boolean userGender = true;
@@ -513,23 +513,32 @@ public class ProfileFragment extends Fragment {
                 }
             }
             bmi.setText(userBmi + " (" + bmiClass + ")");
-        }else{
+        } else {
             GlobalFunctions.setNoInformationStyle(bmi);
         }
+
+        /* set dateOfRegistration*/
+        String curdayIfRegistrationString = GlobalFunctions.getDateWithTimeFromSeconds(user_dateOfRegistration, "dd.MM.yyyy HH:MM");
+        dayOfRegistration.setText(curdayIfRegistrationString);
+
+        /* set lastLogin*/
+        String curLastLoginString = GlobalFunctions.getDateWithTimeFromSeconds(user_lastLogin, "dd.MM.yyyy HH:MM");
+        lastLogIn.setText(curLastLoginString);
+
     }
 
     /* function to calculate age */
-    private int calculateAge(String dayOfBirth){
+    private int calculateAge(String dayOfBirth) {
 
-        String[] dobValues= dayOfBirth.split("\\.");
+        String[] dobValues = dayOfBirth.split("\\.");
         Calendar dob = Calendar.getInstance();
-        dob.set(Integer.parseInt(dobValues[2]),Integer.parseInt(dobValues[1]),Integer.parseInt(dobValues[0]));
+        dob.set(Integer.parseInt(dobValues[2]), Integer.parseInt(dobValues[1]), Integer.parseInt(dobValues[0]));
         Calendar currentTime = Calendar.getInstance();
 
         /* calculate age */
         int age = currentTime.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
 
-        if (currentTime.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)){
+        if (currentTime.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
             age--;
         }
 
