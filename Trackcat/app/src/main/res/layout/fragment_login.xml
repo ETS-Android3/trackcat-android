@@ -106,7 +106,7 @@
                 android:textStyle="italic"
                 android:textColor="@color/colorBlack"
                 android:text="Noch keinen Account? Erstelle hier einen."
-                android:textSize="20dip" />
+                android:textSize="@dimen/signInLogInLinkTextSize" />
 
         </LinearLayout>
     </ScrollView>

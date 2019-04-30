@@ -141,7 +141,7 @@
                 android:textColor="@color/colorBlack"
                 android:textStyle="italic"
                 android:text="Schon Mitglied? Login"
-                android:textSize="20dip" />
+                android:textSize="@dimen/signInLogInLinkTextSize" />
 
         </LinearLayout>
     </ScrollView>

@@ -7,7 +7,10 @@
     <dimen name="defaultPagePadding">15dp</dimen>
 
     <dimen name="roundCornersRecord">20dp</dimen>
+
+    <!-- LogInSignIn parameters -->
     <dimen name="signInPagerMargin">5.5dp</dimen>
+    <dimen name="signInLogInLinkTextSize">18dip</dimen>
 
     <!-- Text parameters -->
     <dimen name="profileSpinnerTitleSize">14sp</dimen>
@@ -15,7 +18,6 @@
 
     <!-- Allgemeine Zahlen -->
     <integer name="summaryRecordListAmount">2</integer>
-
 
     <!-- Input lenght -->
     <integer name="iPassword">15</integer>

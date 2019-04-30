@@ -96,6 +96,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
             return;
         }
         btnLogin.setEnabled(false);
+        btnLogin.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
 
         /* read the inputs to send */
         String email = emailTextView.getText().toString();
@@ -149,6 +150,11 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                         loggedUser.setLastName(userObject.getString("lastName"));
                                         //loggedUser.setImage(userObject.getLong("image"));
                                         loggedUser.setGender(userObject.getInt("gender"));
+                                        if(userObject.getInt("darkTheme")==0){
+                                            loggedUser.setDarkThemeActive(false);
+                                        }else{
+                                            loggedUser.setDarkThemeActive(true);
+                                        }
 
                                         try {
                                             loggedUser.setWeight((float) userObject.getDouble("weight"));
@@ -183,6 +189,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                         startActivity(intent);
                                     } else {
 
+                                        //TODO entsprechende Fehler müssen noch definiert werden
                                         /* set errror message */
                                         messageBox.setVisibility(View.VISIBLE);
                                         messageBox.setText("FEHLER!");
@@ -193,6 +200,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                                     }
                                                 }, 7000);
                                         btnLogin.setEnabled(true);
+                                        btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
                                     }
                                 } catch (Exception e) {
 
@@ -207,15 +215,34 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                             new Runnable() {
                                                 public void run() {
                                                     messageBox.setVisibility(View.GONE);
+                                                    messageBox.setText("");
                                                     messageBoxInfo.setVisibility(View.GONE);
+                                                    messageBoxInfo.setText("");
                                                 }
                                             }, 10000);
                                     btnLogin.setEnabled(true);
+                                    btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + t.getMessage());
+                                messageBox.setVisibility(View.VISIBLE);
+                                messageBox.setText("Keine Serververbindung!");
+                                messageBoxInfo.setText("Bitte überprüfen Sie Ihre Internetverbindung.");
+                                messageBoxInfo.setVisibility(View.VISIBLE);
+                                new android.os.Handler().postDelayed(
+                                        new Runnable() {
+                                            public void run() {
+                                                messageBox.setVisibility(View.GONE);
+                                                messageBox.setText("");
+                                                messageBoxInfo.setVisibility(View.GONE);
+                                                messageBoxInfo.setText("");
+                                            }
+                                        }, 10000);
+                                btnLogin.setEnabled(true);
+                                btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
                                 call.cancel();
                             }
                         });
