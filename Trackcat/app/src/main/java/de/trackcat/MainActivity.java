@@ -32,6 +32,9 @@ import android.widget.Toast;
 
 import com.karan.churi.PermissionManager.PermissionManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import de.trackcat.Dashboard.DashboardFragment;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
@@ -43,12 +46,15 @@ import de.trackcat.RecordList.RecordListFragment;
 import de.trackcat.Recording.Locator;
 import de.trackcat.Recording.RecordFragment;
 import de.trackcat.Settings.SettingsFragment;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -650,10 +656,68 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /* function checkt if device have network connection */
     public void networkChange(boolean connected) {
+        Log.v(getResources().getString(R.string.app_name) +"-ConnectedListener",  String.valueOf(connected));
 
-        // TODO react on Network change
-        Log.v("connectedListener",  String.valueOf(connected));
+        /* device have connection */
+        if(connected){
 
+            // TODO check Timestap
+            /* check user entrys if user must be synchronised*/
+            User currentUser = userDAO.read(activeUser);
+            if(!currentUser.getSynchronized()){
+
+                /* send data to db */
+                HashMap<String, String> map = new HashMap<>();
+                map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
+                map.put("firstName", currentUser.getFirstName());
+                map.put("lastName",currentUser.getLastName());
+                map.put("height", ""+currentUser.getSize());
+                map.put("weight", ""+currentUser.getWeight());
+                map.put("gender", "" + currentUser.getGender());
+                map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
+
+                Retrofit retrofit = APIConnector.getRetrofit();
+                APIClient apiInterface = retrofit.create(APIClient.class);
+
+                /* start a call */
+                Call<ResponseBody> call = apiInterface.updateUser(map);
+
+                call.enqueue(new Callback<ResponseBody>() {
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        try {
+                            /* get jsonString from API */
+                            String jsonString = response.body().string();
+
+                            /* parse json */
+                            JSONObject successJSON = new JSONObject(jsonString);
+
+                            if (successJSON.getString("success").equals("0")) {
+
+                                /* save is Synchronized value as true */
+                                currentUser.isSynchronised(true);
+                                userDAO.update(currentUser.getId(), currentUser);
+                            }
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        call.cancel();
+                    }
+                });
+            }
+
+            // TODO same for routes
+        }
     }
 }
