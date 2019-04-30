@@ -1,6 +1,10 @@
 package de.trackcat;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
+import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -8,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
+
 
 public class GlobalFunctions {
 
@@ -29,11 +34,25 @@ public class GlobalFunctions {
         return date.getTime();
     }
 
+    /* function to parse an byte to an Base64 String */
     public static String getBase64FromBytes(byte[] bytes){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return Base64.getEncoder().encodeToString(bytes);
         }else {
             return "";
         }
+    }
+
+    /* function to set style of editText */
+    public static void setNoInformationStyle(TextView t) {
+        t.setTextColor(Color.LTGRAY);
+        t.setTypeface(null, Typeface.ITALIC);
+    }
+
+    /* function to set style of editText */
+    public static void resetNoInformationStyle(TextView t, int oldColor) {
+
+        t.setTextColor(oldColor);
+        t.setTypeface(null, Typeface.NORMAL);
     }
 }

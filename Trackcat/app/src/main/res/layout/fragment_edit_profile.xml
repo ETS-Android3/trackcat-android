@@ -137,7 +137,7 @@
                     android:id="@+id/input_weight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="70,0"
+                    android:text="@string/noInformation"
                     android:textSize="19dip" />
 
                 <TextView
@@ -160,7 +160,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/label_height"
+                android:id="@+id/label_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -175,14 +175,14 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/input_height"
+                    android:id="@+id/input_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="180,0"
+                    android:text="@string/noInformation"
                     android:textSize="19dip" />
 
                 <TextView
-                    android:id="@+id/label_unit_height"
+                    android:id="@+id/label_unit_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" cm"
@@ -213,7 +213,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="12.12.2011"
+                android:text="@string/noInformation"
                 android:textSize="19dip" />
 
         </RelativeLayout>

@@ -127,6 +127,7 @@ public class ProfileFragment extends Fragment {
 
                 /* read values from local DB */
                 setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender());
+                Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "ERROR: " + t.getMessage());
             }
         });
 
@@ -147,28 +148,28 @@ public class ProfileFragment extends Fragment {
             age= calculateAge(curDateString);
             dayOfBirth.setText(curDateString+" ("+age+" Jahre)");
         }else{
-            setNoInformationStyle(dayOfBirth);
+            GlobalFunctions.setNoInformationStyle(dayOfBirth);
         }
 
         /* set size */
         if(user_size!=0){
             size.setText("" + user_size + " cm");
         }else{
-            setNoInformationStyle(size);
+            GlobalFunctions.setNoInformationStyle(size);
         }
 
         /* set weight */
         if(user_weight!=0){
             weight.setText("" + user_weight + " kg");
         }else{
-            setNoInformationStyle(weight);
+            GlobalFunctions.setNoInformationStyle(weight);
         }
 
         /* set gender */
         if(user_gender!=2){
             gender.setText(user_gender);
         }else{
-            setNoInformationStyle(gender);
+            GlobalFunctions.setNoInformationStyle(gender);
         }
 
         /* calculate bmi */
@@ -513,14 +514,8 @@ public class ProfileFragment extends Fragment {
             }
             bmi.setText(userBmi + " (" + bmiClass + ")");
         }else{
-            setNoInformationStyle(bmi);
+            GlobalFunctions.setNoInformationStyle(bmi);
         }
-    }
-
-    /* function to set style of editText */
-    private void setNoInformationStyle(TextView t) {
-        t.setTextColor(Color.LTGRAY);
-        t.setTypeface(null, Typeface.ITALIC);
     }
 
     /* function to calculate age */
