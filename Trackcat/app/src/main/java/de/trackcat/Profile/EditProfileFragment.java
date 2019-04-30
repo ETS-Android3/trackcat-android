@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,10 +96,46 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         userDAO = new UserDAO(MainActivity.getInstance());
         currentUser = userDAO.read(MainActivity.getActiveUser());
 
-        //TODO read values from global db
+        /* read profile values from global db */
+        HashMap<String, String> map = new HashMap<>();
+        map.put("eMail", currentUser.getMail());
 
-        /* read values from local DB */
-        setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender());
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+
+        /* start a call */
+        Call<ResponseBody> call = apiInterface.getUserByEmail(map);
+
+        call.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    /* get jsonString from API */
+                    String jsonString = response.body().string();
+
+                    /* parse json */
+                    JSONObject userJSON = new JSONObject(jsonString);
+                    Log.d(getResources().getString(R.string.app_name) + "-EditProfileInformation", "Edit-Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
+
+                    /* read values from global DB */
+                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getLong("dateOfBirth"), (float) userJSON.getDouble("size"), (float) userJSON.getDouble("weight"), userJSON.getInt("gender"));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                call.cancel();
+
+                /* read values from local DB */
+                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender());
+            }
+        });
 
         return view;
     }

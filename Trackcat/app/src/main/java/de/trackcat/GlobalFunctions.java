@@ -26,7 +26,6 @@ public class GlobalFunctions {
 
         DateFormat formatter = new SimpleDateFormat(dateFormat);
         Date date = (Date) formatter.parse(str_date);
-        System.out.println("Today is " + date.getTime());
         return date.getTime();
     }
 

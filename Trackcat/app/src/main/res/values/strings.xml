@@ -90,4 +90,8 @@
     <string name="help_editPassword">Hier haben Sie die Möglichkeit Ihr Passwort zu ändern. Hierfür müssen Sie zunächst ihr aktuelles Passwort eingeben.</string>
     <string name="help_friendSystem">Hier sehen sie alle Ihre Freunde.</string>
 
+    <!-- profile strings -->
+    <string name="noInformation">keine Angabe</string>
+    <string name="noBMI">Close</string>
+
 </resources>
