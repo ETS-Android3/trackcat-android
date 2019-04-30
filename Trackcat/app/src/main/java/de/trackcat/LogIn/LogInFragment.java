@@ -133,47 +133,83 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                     /* get jsonString from API */
                                     String jsonString = response.body().string();
 
-                                    /* parse json */
-                                    JSONObject mainObject = new JSONObject(jsonString);
+                                  if(jsonString.equals("\"1\"")){
+                                      /* set errror message */
+                                      Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Anmeldedaten nicht korrekt");
+                                      messageBox.setVisibility(View.VISIBLE);
+                                      messageBox.setText("Anmeldedaten sind nicht");
+                                      messageBoxInfo.setText("Bitte überprüfen Sie Ihre Anmeldedaten.");
+                                      messageBoxInfo.setVisibility(View.VISIBLE);
+                                      new android.os.Handler().postDelayed(
+                                              new Runnable() {
+                                                  public void run() {
+                                                      messageBox.setVisibility(View.GONE);
+                                                      messageBox.setText("");
+                                                      messageBoxInfo.setVisibility(View.GONE);
+                                                      messageBoxInfo.setText("");
+                                                  }
+                                              }, 10000);
+                                      btnLogin.setEnabled(true);
+                                      btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                                  }else {
 
-                                    /* open activity if login success*/
-                                    if (mainObject.getString("success").equals("0")) {
+                                      /* parse json */
+                                      JSONObject mainObject = new JSONObject(jsonString);
+                                      /* open activity if login success*/
+                                      if (mainObject.getString("success").equals("0")) {
 
-                                        /* get userObject from Json */
-                                        JSONObject userObject = mainObject.getJSONObject("userData");
+                                          /* get userObject from Json */
+                                          JSONObject userObject = mainObject.getJSONObject("userData");
 
-                                        /* save logged user in db */
-                                        User loggedUser = new User();
-                                        loggedUser.setIdUsers(userObject.getInt("id"));
-                                        loggedUser.setMail(userObject.getString("eMail"));
-                                        loggedUser.setFirstName(userObject.getString("firstName"));
-                                        loggedUser.setLastName(userObject.getString("lastName"));
-                                        //loggedUser.setImage(userObject.getLong("image"));
-                                        loggedUser.setGender(userObject.getInt("gender"));
-                                        if(userObject.getInt("darkTheme")==0){
-                                            loggedUser.setDarkThemeActive(false);
+                                          /* save logged user in db */
+                                          User loggedUser = new User();
+                                          loggedUser.setIdUsers(userObject.getInt("id"));
+                                          loggedUser.setMail(userObject.getString("eMail"));
+                                          loggedUser.setFirstName(userObject.getString("firstName"));
+                                          loggedUser.setLastName(userObject.getString("lastName"));
+                                          //loggedUser.setImage(userObject.getLong("image"));
+                                          loggedUser.setGender(userObject.getInt("gender"));
+                                          if (userObject.getInt("darkTheme") == 0) {
+                                              loggedUser.setDarkThemeActive(false);
+                                          } else {
+                                              loggedUser.setDarkThemeActive(true);
+                                          }
+
+                                    /*    if(userObject.getInt("hints")==0){
+                                            loggedUser.setHintsActive(false);
                                         }else{
-                                            loggedUser.setDarkThemeActive(true);
+                                            loggedUser.setHintsActive(true);
                                         }
 
                                         try {
-                                            loggedUser.setWeight((float) userObject.getDouble("weight"));
-                                        }catch (Exception e) {}
-
-                                        try {
-                                          loggedUser.setSize((float) userObject.getDouble("size"));
-                                        }catch (Exception e) {}
-                                        try {
-                                            loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                                            loggedUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
                                         } catch (Exception e) {}
 
+                                        try {
+                                            loggedUser.setLastLogin(userObject.getLong("lastLogin"));
+                                        } catch (Exception e) {}*/
+
+                                          try {
+                                              loggedUser.setWeight((float) userObject.getDouble("weight"));
+                                          } catch (Exception e) {
+                                          }
+
+                                          try {
+                                              loggedUser.setSize((float) userObject.getDouble("size"));
+                                          } catch (Exception e) {
+                                          }
+                                          try {
+                                              loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                                          } catch (Exception e) {
+                                          }
 
 
-                                        //loggedUser.setPassword(userObject.getString("password"));
-                                        userDAO.create(loggedUser);
+                                          //loggedUser.setPassword(userObject.getString("password"));
+                                          loggedUser.isSynchronised(true);
+                                          userDAO.create(loggedUser);
 
 
-                                        /* !!!!!!!!!!!!!!!!!!!  how JSON is build in Python, TODO delete if finished */
+                                          /* !!!!!!!!!!!!!!!!!!!  how JSON is build in Python, TODO delete if finished */
                                         /* jsonUser['id'] = result[0]
                                         jsonUser['eMail'] = result[1]
                                         jsonUser['firstName'] = result[2]
@@ -185,23 +221,10 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                         jsonUser['dateOfBirth'] = result[8]
                                         jsonUser['password'] = result[9]*/
 
-                                        Intent intent = new Intent(getContext(), MainActivity.class);
-                                        startActivity(intent);
-                                    } else {
-
-                                        //TODO entsprechende Fehler müssen noch definiert werden
-                                        /* set errror message */
-                                        messageBox.setVisibility(View.VISIBLE);
-                                        messageBox.setText("FEHLER!");
-                                        new android.os.Handler().postDelayed(
-                                                new Runnable() {
-                                                    public void run() {
-                                                        messageBox.setVisibility(View.GONE);
-                                                    }
-                                                }, 7000);
-                                        btnLogin.setEnabled(true);
-                                        btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
-                                    }
+                                          Intent intent = new Intent(getContext(), MainActivity.class);
+                                          startActivity(intent);
+                                      }
+                                  }
                                 } catch (Exception e) {
 
                                     /* show server error message to user */
