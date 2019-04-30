@@ -175,7 +175,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                               loggedUser.setDarkThemeActive(true);
                                           }
 
-                                    /*    if(userObject.getInt("hints")==0){
+                                        if(userObject.getInt("hints")==0){
                                             loggedUser.setHintsActive(false);
                                         }else{
                                             loggedUser.setHintsActive(true);
@@ -187,7 +187,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
                                         try {
                                             loggedUser.setLastLogin(userObject.getLong("lastLogin"));
-                                        } catch (Exception e) {}*/
+                                        } catch (Exception e) {}
 
                                           try {
                                               loggedUser.setWeight((float) userObject.getDouble("weight"));
@@ -203,23 +203,9 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                           } catch (Exception e) {
                                           }
 
-
                                           //loggedUser.setPassword(userObject.getString("password"));
                                           loggedUser.isSynchronised(true);
                                           userDAO.create(loggedUser);
-
-
-                                          /* !!!!!!!!!!!!!!!!!!!  how JSON is build in Python, TODO delete if finished */
-                                        /* jsonUser['id'] = result[0]
-                                        jsonUser['eMail'] = result[1]
-                                        jsonUser['firstName'] = result[2]
-                                        jsonUser['lastName'] = result[3]
-                                        jsonUser['image'] = result[4]
-                                        jsonUser['gender'] = result[5]
-                                        jsonUser['weight'] = result[6]
-                                        jsonUser['size'] = result[7]
-                                        jsonUser['dateOfBirth'] = result[8]
-                                        jsonUser['password'] = result[9]*/
 
                                           Intent intent = new Intent(getContext(), MainActivity.class);
                                           startActivity(intent);
