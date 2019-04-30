@@ -6,7 +6,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -238,7 +237,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 }
 
                 /* check if all fields are filled and  validate inputs*/
-                if (validate() && !input_firstName.equals("") && !input_lastName.equals("")) {
+                if (validate()) {
 
                     /* parse imageView into bytes */
                     ImageView imageView = view.findViewById(R.id.profile_image_upload);
