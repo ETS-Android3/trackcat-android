@@ -649,4 +649,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
     }
+
+    public void networkChange(boolean connected) {
+
+        // TODO react on Network change
+        Log.v("connectedListener",  String.valueOf(connected));
+
+    }
 }
