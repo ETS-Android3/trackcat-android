@@ -29,6 +29,7 @@ import de.trackcat.APIConnector;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.StartActivity;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -163,17 +164,21 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
                             // TODO hashsalt Password
                             /* start a call */
-                            Call<String> call = apiInterface.registerUser(map);
+                            Call<ResponseBody> call = apiInterface.registerUser(map);
 
-                            call.enqueue(new Callback<String>() {
+                            call.enqueue(new Callback<ResponseBody>() {
 
                                 @Override
-                                public void onResponse(Call<String> call, Response<String> response) {
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                     try {
-                                        Log.d(getResources().getString(R.string.app_name) + "-SigninConnection", response.body());
+                                        String jsonString = response.body().string();
+
+                                        Log.d(getResources().getString(R.string.app_name) + "-SigninConnection", jsonString);
+
+                                        JSONObject json = new JSONObject(jsonString);
 
                                         /* open activity if login success*/
-                                        if (response.body().equals("0")) {
+                                        if (json.getString("success").equals("0")) {
                                             Intent intent = new Intent(getContext(), MainActivity.class);
                                             startActivity(intent);
                                         } else {
@@ -210,7 +215,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                                 }
 
                                 @Override
-                                public void onFailure(Call<String> call, Throwable t) {
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
                                     call.cancel();
 
                                     /* show server error message to user */
