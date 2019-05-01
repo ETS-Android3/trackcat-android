@@ -52,6 +52,7 @@ final class DbContract {
                     UserEntry.COL_THEME + " BOOLEAN, " +
                     UserEntry.COL_HINT + " BOOLEAN, " +
                     UserEntry.COL_MAIL + " TEXT, " +
+                    UserEntry.COL_PASSWORD + " TEXT, " +
                     UserEntry.COL_WEIGHT + " FLOAT, " +
                     UserEntry.COL_SIZE + " FLOAT, " +
                     UserEntry.COL_GENDER + " INTEGER, " +
@@ -99,6 +100,7 @@ final class DbContract {
         static final String COL_HINT = "hint";
         static final String COL_THEME = "theme";
         static final String COL_MAIL = "mail";
+        static final String COL_PASSWORD = "password";
         static final String COL_WEIGHT ="weight";
         static final String COL_SIZE ="size";
         static final String COL_GENDER ="gender";

@@ -15,6 +15,7 @@ public class User {
     private boolean hintsActive;
     private int id;
     private String eMail;
+    private String password;
     private float weight;
     private float size;
     private int gender;
@@ -39,6 +40,7 @@ public class User {
      * @param firstName of type string
      * @param lastName  of type string
      * @param eMail     of type string
+     * @param password     of type string
      * @param weight    of type float
      * @param size    of type float
      * @param gender    of type integer
@@ -50,12 +52,13 @@ public class User {
      * @param isSynchronized     of type integer
      */
     public User(int id, String firstName, String lastName, int active, int hintsActive,
-                int themeActive, String eMail, float weight, float size, int gender, long dateOfBirth,
+                int themeActive, String eMail, String password ,float weight, float size, int gender, long dateOfBirth,
                 long dateOfRegistration, long lastLogin, long timeStamp, int idUsers, byte[] image, int isSynchronized) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.eMail = eMail;
+        this.password = password;
         this.weight = weight;
         this.size = size;
         this.gender=gender;
@@ -156,6 +159,24 @@ public class User {
      */
     public void setMail(String eMail) {
         this.eMail = eMail;
+    }
+
+    /**
+     * Getter for the password.
+     *
+     * @return value of type string
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Setter for the password.
+     *
+     * @param password of type string
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**

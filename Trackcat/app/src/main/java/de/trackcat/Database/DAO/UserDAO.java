@@ -72,6 +72,7 @@ public class UserDAO {
         values.put(COL_FIRSTNAME, user.getFirstName());
         values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_MAIL, user.getMail());
+        values.put(COL_PASSWORD, user.getPassword());
         values.put(COL_WEIGHT, user.getWeight());
         values.put(COL_SIZE, user.getSize());
         values.put(COL_GENDER, user.getGender());
@@ -105,6 +106,7 @@ public class UserDAO {
                     COL_FIRSTNAME,
                     COL_LASTNAME,
                     COL_MAIL,
+                    COL_PASSWORD,
                     COL_WEIGHT,
                     COL_SIZE,
                     COL_GENDER,
@@ -134,6 +136,7 @@ public class UserDAO {
                     result.setHintsActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)));
                     result.setDarkThemeActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)));
                     result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));
+                    result.setPassword(cursor.getString(cursor.getColumnIndexOrThrow(COL_PASSWORD)));
                     result.setWeight(cursor.getFloat(cursor.getColumnIndexOrThrow(COL_WEIGHT)));
                     result.setSize(cursor.getFloat(cursor.getColumnIndexOrThrow(COL_SIZE)));
                     result.setGender(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GENDER)));
@@ -177,6 +180,7 @@ public class UserDAO {
                     COL_FIRSTNAME,
                     COL_LASTNAME,
                     COL_MAIL,
+                    COL_PASSWORD,
                     COL_ISACTIVE,
                     COL_IMAGE,
                     COL_WEIGHT,
@@ -208,6 +212,7 @@ public class UserDAO {
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)),
                                 cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)),
+                                cursor.getString(cursor.getColumnIndexOrThrow(COL_PASSWORD)),
                                 cursor.getFloat(cursor.getColumnIndexOrThrow(COL_WEIGHT)),
                                 cursor.getFloat(cursor.getColumnIndexOrThrow(COL_SIZE)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_GENDER)),
