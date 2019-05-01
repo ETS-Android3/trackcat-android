@@ -681,61 +681,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* device have connection */
         if (connected) {
 
-            // TODO check Timestap
             /* check user entrys if user must be synchronised*/
             User currentUser = userDAO.read(activeUser);
-            if (!currentUser.getSynchronized()) {
 
-                /* send data to db */
-                HashMap<String, String> map = new HashMap<>();
-                map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
-                map.put("firstName", currentUser.getFirstName());
-                map.put("lastName", currentUser.getLastName());
-                map.put("height", "" + currentUser.getSize());
-                map.put("weight", "" + currentUser.getWeight());
-                map.put("gender", "" + currentUser.getGender());
-                map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
+            /* send data to db */
+            HashMap<String, String> map = new HashMap<>();
+            map.put("email", currentUser.getMail());
+            map.put("userTimestamp", ""+currentUser.getTimeStamp());
 
-                Retrofit retrofit = APIConnector.getRetrofit();
-                APIClient apiInterface = retrofit.create(APIClient.class);
+            Retrofit retrofit = APIConnector.getRetrofit();
+            APIClient apiInterface = retrofit.create(APIClient.class);
 
-                /* start a call */
-                Call<ResponseBody> call = apiInterface.updateUser(map);
+            /* start a call */
+            Call<ResponseBody> call = apiInterface.synchronizeData(map);
 
-                call.enqueue(new Callback<ResponseBody>() {
+            call.enqueue(new Callback<ResponseBody>() {
 
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                        try {
-                            /* get jsonString from API */
-                            String jsonString = response.body().string();
+                    try {
+                        /* get jsonString from API */
+                        String jsonString = response.body().string();
 
-                            /* parse json */
-                            JSONObject successJSON = new JSONObject(jsonString);
+                        /* parse json */
+                        JSONObject successJSON = new JSONObject(jsonString);
 
-                            if (successJSON.getString("success").equals("0")) {
 
-                                /* save is Synchronized value as true */
-                                currentUser.isSynchronised(true);
-                                userDAO.update(currentUser.getId(), currentUser);
-                            }
 
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        call.cancel();
-                    }
-                });
-            }
-
-            // TODO same for routes
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    call.cancel();
+                }
+            });
         }
     }
 }

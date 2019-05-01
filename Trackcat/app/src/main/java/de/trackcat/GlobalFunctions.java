@@ -85,4 +85,8 @@ public class GlobalFunctions {
         t.setTextColor(oldColor);
         t.setTypeface(null, Typeface.NORMAL);
     }
+
+    public static void getTimeStamp(){
+
+    }
 }
