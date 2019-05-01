@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intent intent = getIntent();
         String action = intent.getStringExtra("action");
-        if (action != null && action.equalsIgnoreCase(getResources().getString(R.string.fRecord))) {
+        if (action != null && action.equalsIgnoreCase(getResources().getString(R.string.fRecord)) && getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
             loadRecord();
         } else if (action != null && action.equalsIgnoreCase(getResources().getString(R.string.fSettings))) {
             loadSettings();
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         /* Turn off power saving and battery optimization */
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Intent intent = new Intent();
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* set profile information */
         User currentUser = userDAO.read(activeUser);
-        profileName.setText(currentUser.getFirstName()+" "+currentUser.getLastName());
+        profileName.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
         profileEmail.setText(currentUser.getMail());
 
         /* set image */
@@ -430,7 +430,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                 /* remove user from local db */
                                 List<User> deletedUsers = userDAO.readAll();
-                                for (User user : deletedUsers){
+                                for (User user : deletedUsers) {
                                     userDAO.delete(user);
                                 }
 
@@ -529,6 +529,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /* Laden des Aufnahme-Fragments */
     public void loadRecord() {
         /* Fragt nach noch nicht erteilten Permissions */
+
+        Log.v("loadRecord", "loading Record");
+
         permissionManager.checkAndRequestPermissions(MainActivity.getInstance());
 
         String permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -537,7 +540,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String permissionGPS = android.Manifest.permission.ACCESS_FINE_LOCATION;
         int resGPS = getInstance().checkCallingOrSelfPermission(permissionGPS);
 
-        if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED) {
+        if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED ){//&& getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
+
+            Log.v("loadRecord", "placing Record");
+
+
             Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Aufnahme-Fragment wird geladen.");
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             fragTransaction.replace(R.id.mainFrame, recordFragment,
@@ -668,23 +675,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* function checkt if device have network connection */
     public void networkChange(boolean connected) {
-        Log.v(getResources().getString(R.string.app_name) +"-ConnectedListener",  String.valueOf(connected));
+        Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
 
         /* device have connection */
-        if(connected){
+        if (connected) {
 
             // TODO check Timestap
             /* check user entrys if user must be synchronised*/
             User currentUser = userDAO.read(activeUser);
-            if(!currentUser.getSynchronized()){
+            if (!currentUser.getSynchronized()) {
 
                 /* send data to db */
                 HashMap<String, String> map = new HashMap<>();
                 map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
                 map.put("firstName", currentUser.getFirstName());
-                map.put("lastName",currentUser.getLastName());
-                map.put("height", ""+currentUser.getSize());
-                map.put("weight", ""+currentUser.getWeight());
+                map.put("lastName", currentUser.getLastName());
+                map.put("height", "" + currentUser.getSize());
+                map.put("weight", "" + currentUser.getWeight());
                 map.put("gender", "" + currentUser.getGender());
                 map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
 

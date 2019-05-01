@@ -212,10 +212,14 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                             loggedUser.isSynchronised(true);
                                             userDAO.create(loggedUser);
 
-                                            Intent intent = new Intent(getContext(), MainActivity.class);
-                                            startActivity(intent);
-                                        }
-                                    }
+                                          Intent intent = new Intent(getContext(), MainActivity.class);
+                                          startActivity(intent);
+
+
+
+                                          getActivity().finish();
+                                      }
+                                  }
                                 } catch (Exception e) {
 
                                     /* show server error message to user */
