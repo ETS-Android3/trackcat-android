@@ -701,11 +701,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
+                    /* get jsonString from API */
+                    /* parse json */
+                    /*
                     try {
-                        /* get jsonString from API */
+
                         String jsonString = response.body().string();
 
-                        /* parse json */
+
                         JSONObject successJSON = new JSONObject(jsonString);
 
 
@@ -714,7 +717,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         e.printStackTrace();
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                 }
 
                 @Override
