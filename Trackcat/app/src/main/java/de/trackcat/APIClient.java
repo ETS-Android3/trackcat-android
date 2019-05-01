@@ -18,15 +18,15 @@ public interface APIClient {
     Call<String> registerUser(@Body HashMap<String,String> json);
 
     @Headers({"Accept: application/json"})
-    @POST("/getUserByEmail")
+    @POST("/getUserByEmailAPI")
     Call<ResponseBody> getUserByEmail(@Body HashMap<String,String> json);
 
     @Headers({"Accept: application/json"})
-    @POST("/updateUser")
+    @POST("/updateUserAPI")
     Call<ResponseBody> updateUser(@Body HashMap<String,String> json);
 
     @Headers({"Accept: application/json"})
-    @POST("/synchronizeData")
+    @POST("/synchronizeDataAPI")
     Call<ResponseBody> synchronizeData(@Body HashMap<String,String> json);
 
 }
