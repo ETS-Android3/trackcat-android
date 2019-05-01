@@ -165,7 +165,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                             /* save logged user in db */
                                             User loggedUser = new User();
                                             loggedUser.setIdUsers(userObject.getInt("id"));
-                                            loggedUser.setMail(userObject.getString("eMail"));
+                                            loggedUser.setMail(userObject.getString("email"));
                                             loggedUser.setFirstName(userObject.getString("firstName"));
                                             loggedUser.setLastName(userObject.getString("lastName"));
                                             if (userObject.getString("image") != "null") {

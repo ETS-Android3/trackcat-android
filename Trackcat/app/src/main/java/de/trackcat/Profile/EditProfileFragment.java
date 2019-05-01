@@ -309,7 +309,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     map.put("email", currentUser.getMail());
                     map.put("firstName", input_firstName);
                     map.put("lastName", input_lastName);
-                    map.put("height", input_height);
+                    map.put("size", input_height);
                     map.put("weight", input_weight);
                     map.put("gender", "" + gender);
                     map.put("dateOfBirth", "" + long_dayOfBirth);
