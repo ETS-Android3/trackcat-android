@@ -310,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         User currentUser = userDAO.read(activeUser);
         profileName.setText(currentUser.getFirstName()+" "+currentUser.getLastName());
         profileEmail.setText(currentUser.getMail());
+       // profileImage
 
         /* Menu Toggle */
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

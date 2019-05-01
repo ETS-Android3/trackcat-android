@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.widget.TextView;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,7 +32,7 @@ public class GlobalFunctions {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(seconds*1000);
+        calendar.setTimeInMillis(seconds * 1000);
         return formatter.format(calendar.getTime());
     }
 
@@ -44,12 +45,15 @@ public class GlobalFunctions {
     }
 
     /* function to parse an byte to an Base64 String */
-    public static String getBase64FromBytes(byte[] bytes){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return Base64.getEncoder().encodeToString(bytes);
-        }else {
-            return "";
-        }
+    public static String getBase64FromBytes(byte[] bytes) {
+        String data = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+        return data;
+    }
+
+    /* function to parse an byte to an Base64 String */
+    public static byte[] getBytesFromBase64(String base64) {
+        byte[] data = android.util.Base64.decode(base64, android.util.Base64.DEFAULT);
+        return data;
     }
 
     /* function to set style of editText */
