@@ -145,7 +145,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     }
 
                     if (userJSON.getString("image") != "null") {
-                        image =GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
+                        image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
                     }
 
                     setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), dateOfBirth, size, weight, userJSON.getInt("gender"), image);
@@ -262,22 +262,22 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     byte[] imageBytes = stream.toByteArray();
 
                     /* parse values */
-                    if(input_height.equals(getResources().getString(R.string.noInformation))){
-                        input_height="0";
-                    }else{
+                    if (input_height.equals(getResources().getString(R.string.noInformation))) {
+                        input_height = "0";
+                    } else {
                         input_height = "" + input_height.replace(',', '.');
                     }
 
-                    if(input_weight.equals(getResources().getString(R.string.noInformation))){
-                        input_weight="0";
-                    }else{
+                    if (input_weight.equals(getResources().getString(R.string.noInformation))) {
+                        input_weight = "0";
+                    } else {
                         input_weight = "" + input_weight.replace(',', '.');
                     }
 
-                    long long_dayOfBirth=0;
-                    if(input_dayOfBirth.equals(getResources().getString(R.string.noInformation))) {
+                    long long_dayOfBirth = 0;
+                    if (input_dayOfBirth.equals(getResources().getString(R.string.noInformation))) {
                         long_dayOfBirth = 0;
-                    }else{
+                    } else {
                         try {
                             long_dayOfBirth = GlobalFunctions.getSecondsFromString(input_dayOfBirth, "dd.MM.yyyy");
                         } catch (ParseException e) {
@@ -390,7 +390,22 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                String month = "" + (monthOfYear + 1);
+                                /* get current date */
+                                final Calendar cldr = Calendar.getInstance();
+                                int currentDay = cldr.get(Calendar.DAY_OF_MONTH);
+                                int currentMonth = cldr.get(Calendar.MONTH)+1;
+                                int currentYear = cldr.get(Calendar.YEAR);
+
+                                /* check if dayOfBirth in future */
+
+                                if(currentMonth==(monthOfYear + 1) && currentYear==year){
+                                    if(dayOfMonth>currentDay){
+                                        Toast.makeText(getContext(), "Ihr Geburtstag darf nicht in der Zukunft liegen.", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
+
+                                    String month = "" + (monthOfYear + 1);
                                 String day = "" + dayOfMonth;
                                 if (monthOfYear + 1 < 10) {
                                     month = "0" + month;
@@ -442,11 +457,11 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                         NumberPicker numberPickerDecimal = alertView.findViewById(R.id.numberPickerDecimal);
 
-                        if(numberPickerInteger.getValue()!=0) {
+                        if (numberPickerInteger.getValue() != 0) {
                             size.setText(numberPickerInteger.getValue() + "," + numberPickerDecimal.getValue());
                             GlobalFunctions.resetNoInformationStyle(size, label_unit_size.getCurrentTextColor());
                             label_unit_size.setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             size.setText(getResources().getString(R.string.noInformation));
                             GlobalFunctions.setNoInformationStyle(size);
                             label_unit_size.setVisibility(View.GONE);
@@ -501,11 +516,11 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                         NumberPicker numberPickerDecimal = alertView.findViewById(R.id.numberPickerDecimal);
 
-                        if(numberPickerInteger.getValue()!=0) {
+                        if (numberPickerInteger.getValue() != 0) {
                             weight.setText(numberPickerInteger.getValue() + "," + numberPickerDecimal.getValue());
                             GlobalFunctions.resetNoInformationStyle(weight, label_unit_weight.getCurrentTextColor());
                             label_unit_weight.setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             weight.setText(getResources().getString(R.string.noInformation));
                             GlobalFunctions.setNoInformationStyle(weight);
                             label_unit_weight.setVisibility(View.GONE);
