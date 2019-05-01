@@ -1,16 +1,13 @@
 package de.trackcat;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
+import android.util.Log;
 import android.widget.TextView;
 
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,7 +29,7 @@ public class GlobalFunctions {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(seconds*1000);
+        calendar.setTimeInMillis(seconds * 1000);
         return formatter.format(calendar.getTime());
     }
 
@@ -50,8 +47,9 @@ public class GlobalFunctions {
 
         DateFormat formatter = new SimpleDateFormat(dateFormat);
         Date date = (Date) formatter.parse(str_date);
-        return date.getTime()/1000;
+        return date.getTime() / 1000;
     }
+
     /* get millis from string date */
     public static long getMillisFromString(String str_date, String dateFormat) throws ParseException {
 
@@ -86,7 +84,12 @@ public class GlobalFunctions {
         t.setTypeface(null, Typeface.NORMAL);
     }
 
-    public static void getTimeStamp(){
+    public static long getTimeStamp() {
 
+        Long tsLong = System.currentTimeMillis() / 1000;
+        String ts = tsLong.toString();
+
+        Log.d("LALALALAL", "Time : " + ts);
+        return tsLong;
     }
 }

@@ -298,6 +298,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     currentUser.setSize(Float.valueOf(input_height));
                     currentUser.setWeight(Float.valueOf(input_weight));
                     currentUser.setGender(gender);
+                    currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
                     currentUser.isSynchronised(false);
                     currentUser.setDateOfBirth(long_dayOfBirth);
                     userDAO.update(currentUser.getId(), currentUser);
@@ -311,6 +312,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     map.put("weight", input_weight);
                     map.put("gender", "" + gender);
                     map.put("dateOfBirth", "" + long_dayOfBirth);
+                    map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
 
                     Retrofit retrofit = APIConnector.getRetrofit();
                     APIClient apiInterface = retrofit.create(APIClient.class);
