@@ -1,5 +1,7 @@
 package de.trackcat.Profile;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -96,6 +98,7 @@ public class ProfileFragment extends Fragment {
                     /* check values an show  */
                     float size, weight;
                     long dateOfBirth;
+                    byte[] image = null;
 
                     try {
                         size = (float) userJSON.getDouble("size");
@@ -115,7 +118,11 @@ public class ProfileFragment extends Fragment {
                         dateOfBirth = 0;
                     }
 
-                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("eMail"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"));
+                    if (userJSON.getString("image") != "null") {
+                       image =GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
+                    }
+
+                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("eMail"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), image);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -129,7 +136,7 @@ public class ProfileFragment extends Fragment {
                 call.cancel();
 
                 /* read values from local DB */
-                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin());
+                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin(), currentUser.getImage());
                 Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "ERROR: " + t.getMessage());
             }
         });
@@ -138,7 +145,7 @@ public class ProfileFragment extends Fragment {
     }
 
     /* Function to set profile information in fields */
-    private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight, int user_gender, long user_dateOfRegistration, long user_lastLogin) {
+    private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight, int user_gender, long user_dateOfRegistration, long user_lastLogin, byte[] user_image) {
         int age = 0;
 
         /*set name and email*/
@@ -541,6 +548,14 @@ public class ProfileFragment extends Fragment {
         /* set lastLogin*/
         String curLastLoginString = GlobalFunctions.getDateWithTimeFromSeconds(user_lastLogin, "dd.MM.yyyy HH:MM");
         lastLogIn.setText(curLastLoginString);
+
+        /* set profile image */
+        byte[] imgRessource = user_image;
+        Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.default_profile);
+        if (imgRessource != null && imgRessource.length > 0) {
+            bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
+        }
+        image.setImageBitmap(bitmap);
 
     }
 

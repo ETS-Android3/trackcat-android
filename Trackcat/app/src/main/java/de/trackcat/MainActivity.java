@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -310,7 +312,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         User currentUser = userDAO.read(activeUser);
         profileName.setText(currentUser.getFirstName()+" "+currentUser.getLastName());
         profileEmail.setText(currentUser.getMail());
-       // profileImage
+
+        /* set image */
+        byte[] imgRessource =currentUser.getImage();
+        Bitmap bitmap = BitmapFactory.decodeResource(getBaseContext().getResources(), R.raw.default_profile);
+        if (imgRessource != null && imgRessource.length > 0) {
+            bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
+        }
+        profileImage.setImageBitmap(bitmap);
 
         /* Menu Toggle */
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

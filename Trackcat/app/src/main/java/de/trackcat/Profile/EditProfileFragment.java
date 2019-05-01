@@ -124,6 +124,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     /* check values an show  */
                     float size, weight;
                     long dateOfBirth;
+                    byte[] image = null;
 
                     try {
                         size = (float) userJSON.getDouble("size");
@@ -142,7 +143,12 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     } catch (Exception e) {
                         dateOfBirth = 0;
                     }
-                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), dateOfBirth, size, weight, userJSON.getInt("gender"));
+
+                    if (userJSON.getString("image") != "null") {
+                        image =GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
+                    }
+
+                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), dateOfBirth, size, weight, userJSON.getInt("gender"), image);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -156,7 +162,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 call.cancel();
 
                 /* read values from local DB */
-                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender());
+                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getImage());
                 Log.d(getResources().getString(R.string.app_name) + "-EditProfileInformation", "ERROR: " + t.getMessage());
 
             }
@@ -166,7 +172,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     }
 
     /* function to set profile values */
-    private void setProfileValues(String user_firstName, String user_lastName, long user_dayOfBirth, float user_size, float user_weight, int user_gender) {
+    private void setProfileValues(String user_firstName, String user_lastName, long user_dayOfBirth, float user_size, float user_weight, int user_gender, byte[] user_image) {
 
         /* set first and lastname */
         firstName.setText(user_firstName);
@@ -208,6 +214,14 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         } else {
             GlobalFunctions.setNoInformationStyle(dayOfBirth);
         }
+
+        /* set profile image */
+        byte[] imgRessource = user_image;
+        Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.default_profile);
+        if (imgRessource != null && imgRessource.length > 0) {
+            bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
+        }
+        imageUpload.setImageBitmap(bitmap);
     }
 
     @Override
