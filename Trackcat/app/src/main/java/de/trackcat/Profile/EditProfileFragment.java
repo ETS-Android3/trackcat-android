@@ -209,7 +209,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         /*set dayOfBirth*/
         if (user_dayOfBirth != 0) {
-            String curDateString = GlobalFunctions.getDateFromMillis(user_dayOfBirth, "dd.MM.yyyy");
+            String curDateString = GlobalFunctions.getDateFromSeconds(user_dayOfBirth, "dd.MM.yyyy");
             dayOfBirth.setText(curDateString);
         } else {
             GlobalFunctions.setNoInformationStyle(dayOfBirth);
@@ -279,7 +279,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         long_dayOfBirth = 0;
                     }else{
                         try {
-                            long_dayOfBirth = GlobalFunctions.getMillisFromString(input_dayOfBirth, "dd.MM.yyyy");
+                            long_dayOfBirth = GlobalFunctions.getSecondsFromString(input_dayOfBirth, "dd.MM.yyyy");
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }

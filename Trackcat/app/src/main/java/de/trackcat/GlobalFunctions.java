@@ -28,6 +28,15 @@ public class GlobalFunctions {
     }
 
     /* get string date from millis */
+    public static String getDateFromSeconds(long seconds, String dateFormat) {
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(seconds*1000);
+        return formatter.format(calendar.getTime());
+    }
+
+    /* get string date from millis */
     public static String getDateWithTimeFromSeconds(long seconds, String dateFormat) {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
@@ -37,12 +46,20 @@ public class GlobalFunctions {
     }
 
     /* get millis from string date */
+    public static long getSecondsFromString(String str_date, String dateFormat) throws ParseException {
+
+        DateFormat formatter = new SimpleDateFormat(dateFormat);
+        Date date = (Date) formatter.parse(str_date);
+        return date.getTime()/1000;
+    }
+    /* get millis from string date */
     public static long getMillisFromString(String str_date, String dateFormat) throws ParseException {
 
         DateFormat formatter = new SimpleDateFormat(dateFormat);
         Date date = (Date) formatter.parse(str_date);
         return date.getTime();
     }
+
 
     /* function to parse an byte to an Base64 String */
     public static String getBase64FromBytes(byte[] bytes) {
