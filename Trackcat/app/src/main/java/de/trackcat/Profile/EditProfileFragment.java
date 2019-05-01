@@ -306,6 +306,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     /* change values in global DB*/
                     HashMap<String, String> map = new HashMap<>();
                     map.put("image", image);
+                    map.put("email", currentUser.getMail());
                     map.put("firstName", input_firstName);
                     map.put("lastName", input_lastName);
                     map.put("height", input_height);
