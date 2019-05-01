@@ -426,7 +426,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                 Intent intent = new Intent(MainActivity.this, StartActivity.class);
                                 startActivity(intent);
-                                MainActivity.super.onDestroy();
+                                finish();
 
                                 /* remove user from local db */
                                 List<User> deletedUsers = userDAO.readAll();
@@ -584,6 +584,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         menu.findItem(R.id.nav_record).setChecked(false);
         menu.findItem(R.id.nav_recordlist).setChecked(false);
         menu.findItem(R.id.nav_settings).setChecked(false);
+        menu.findItem(R.id.nav_friends).setChecked(false);
     }
 
     /* Laden des Einstellung-Fragments */

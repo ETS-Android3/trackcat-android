@@ -215,8 +215,6 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                           Intent intent = new Intent(getContext(), MainActivity.class);
                                           startActivity(intent);
 
-
-
                                           getActivity().finish();
                                       }
                                   }

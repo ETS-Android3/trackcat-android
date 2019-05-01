@@ -228,6 +228,10 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_save:
+                btnSave.setEnabled(false);
+                btnSave.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
+
+
                 /* Inputfelder auslesen */
                 String input_firstName = firstName.getText().toString();
                 String input_lastName = lastName.getText().toString();
@@ -331,6 +335,10 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                     /* save is Synchronized value as true */
                                     currentUser.isSynchronised(true);
                                     userDAO.update(currentUser.getId(), currentUser);
+
+                                    /* set btn enable */
+                                    btnSave.setEnabled(true);
+                                    btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
                                 }
 
                             } catch (IOException e) {
@@ -342,6 +350,10 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            /* set btn enable */
+                            btnSave.setEnabled(true);
+                            btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
                             call.cancel();
                         }
                     });
@@ -393,19 +405,19 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                 /* get current date */
                                 final Calendar cldr = Calendar.getInstance();
                                 int currentDay = cldr.get(Calendar.DAY_OF_MONTH);
-                                int currentMonth = cldr.get(Calendar.MONTH)+1;
+                                int currentMonth = cldr.get(Calendar.MONTH) + 1;
                                 int currentYear = cldr.get(Calendar.YEAR);
 
                                 /* check if dayOfBirth in future */
 
-                                if(currentMonth==(monthOfYear + 1) && currentYear==year){
-                                    if(dayOfMonth>currentDay){
+                                if (currentMonth == (monthOfYear + 1) && currentYear == year) {
+                                    if (dayOfMonth > currentDay) {
                                         Toast.makeText(getContext(), "Ihr Geburtstag darf nicht in der Zukunft liegen.", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
                                 }
 
-                                    String month = "" + (monthOfYear + 1);
+                                String month = "" + (monthOfYear + 1);
                                 String day = "" + dayOfMonth;
                                 if (monthOfYear + 1 < 10) {
                                     month = "0" + month;
