@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -39,7 +40,7 @@ public class ProfileFragment extends Fragment {
     /* variables */
     TextView name, email, dayOfBirth, gender, weight, size, bmi, lastLogIn, dayOfRegistration;
     CircleImageView image, state;
-    ImageView birthday;
+    ImageView birthday, user_gender_image;
     RelativeLayout loadProfile;
 
     @Override
@@ -72,6 +73,7 @@ public class ProfileFragment extends Fragment {
         lastLogIn = view.findViewById(R.id.user_lastLogIn);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
         image = view.findViewById(R.id.profile_image);
+        user_gender_image = view.findViewById(R.id.user_gender_image);
         loadProfile = view.findViewById(R.id.loadScreen);
 
         /* read profile values from global db */
@@ -183,14 +185,20 @@ public class ProfileFragment extends Fragment {
 
         /* set gender */
         if (user_gender != 2) {
+            InputStream imageStream;
             if (user_gender == 0) {
                 gender.setText("weiblich");
+                imageStream = this.getResources().openRawResource(R.raw.female);
             } else {
                 gender.setText("männlich");
+                imageStream = this.getResources().openRawResource(R.raw.male);
             }
-
+            Bitmap bitmap= BitmapFactory.decodeStream(imageStream);
+            user_gender_image.setImageBitmap(bitmap);
+            user_gender_image.setVisibility(View.VISIBLE);
         } else {
             GlobalFunctions.setNoInformationStyle(gender);
+            user_gender_image.setVisibility(View.GONE);
         }
 
         /* calculate bmi */
