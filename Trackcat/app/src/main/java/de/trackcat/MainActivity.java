@@ -673,13 +673,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* device have connection */
         if (connected) {
 
-            /* check user entrys if user must be synchronised*/
             User currentUser = userDAO.read(activeUser);
 
-            /* send data to db */
+            /* send user timestamp to bb */
             HashMap<String, String> map = new HashMap<>();
             map.put("email", currentUser.getMail());
-            map.put("userTimestamp", ""+currentUser.getTimeStamp());
+            map.put("timestamp", ""+currentUser.getTimeStamp());
 
             Retrofit retrofit = APIConnector.getRetrofit();
             APIClient apiInterface = retrofit.create(APIClient.class);
