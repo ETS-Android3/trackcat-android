@@ -108,6 +108,16 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         weight.setOnClickListener(this);
         imageUpload.setOnClickListener(this);
 
+        loadUser();
+
+        return view;
+    }
+
+
+    private void loadUser() {
+
+        loadEditProfile.setVisibility(View.VISIBLE);
+
         /* get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
         currentUser = userDAO.read(MainActivity.getActiveUser());
@@ -187,9 +197,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
             }
         });
-
-        return view;
     }
+
 
     /* function to set profile values */
     private void setProfileValues(String user_firstName, String user_lastName, long user_dayOfBirth, float user_size, float user_weight, int user_gender, byte[] user_image) {
@@ -315,7 +324,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     }
 
                     /* check if values have changed */
-                    boolean changes=false;
+                    boolean changes = false;
                     HashMap<String, String> map = new HashMap<>();
                     map.put("email", currentUser.getMail());
 
@@ -323,45 +332,45 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         String image = GlobalFunctions.getBase64FromBytes(imageBytes);
                         currentUser.setImage(imageBytes);
                         map.put("image", image);
-                        changes=true;
+                        changes = true;
                     }
 
-                    if(!old_firstName.equals(input_firstName)){
+                    if (!old_firstName.equals(input_firstName)) {
                         currentUser.setFirstName(input_firstName);
                         map.put("firstName", input_firstName);
-                        changes=true;
+                        changes = true;
                     }
 
-                    if(!old_lastName.equals(input_lastName)){
+                    if (!old_lastName.equals(input_lastName)) {
                         currentUser.setLastName(input_lastName);
                         map.put("lastName", input_lastName);
-                        changes=true;
+                        changes = true;
                     }
 
-                    if(!(old_size==Float.valueOf(input_height))){
+                    if (!(old_size == Float.valueOf(input_height))) {
                         currentUser.setSize(Float.valueOf(input_height));
                         map.put("size", input_height);
-                        changes=true;
+                        changes = true;
                     }
 
-                    if(!(old_weight==Float.valueOf(input_weight))){
+                    if (!(old_weight == Float.valueOf(input_weight))) {
                         currentUser.setWeight(Float.valueOf(input_weight));
                         map.put("weight", input_weight);
-                        changes=true;
+                        changes = true;
                     }
 
-                    if(!(old_gender==gender)){
+                    if (!(old_gender == gender)) {
                         currentUser.setGender(gender);
                         map.put("gender", "" + gender);
-                        changes=true;
+                        changes = true;
                     }
-                    if(!(old_dateOfBirth==long_dayOfBirth)){
+                    if (!(old_dateOfBirth == long_dayOfBirth)) {
                         currentUser.setDateOfBirth(long_dayOfBirth);
                         map.put("dateOfBirth", "" + long_dayOfBirth);
-                        changes=true;
+                        changes = true;
                     }
 
-                    if(changes) {
+                    if (changes) {
                         /* change values in local DB */
                         currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
                         currentUser.isSynchronised(false);
@@ -397,6 +406,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                         /* set btn enable */
                                         btnSave.setEnabled(true);
                                         btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+
+                                        loadUser();
                                     }
 
                                 } catch (IOException e) {
@@ -413,6 +424,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                 btnSave.setEnabled(true);
                                 btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
                                 call.cancel();
+                                loadUser();
                             }
                         });
 
@@ -420,7 +432,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         if (MainActivity.getHints()) {
                             Toast.makeText(getContext(), "Benutzer \"" + input_firstName + " " + input_lastName + "\" wurde erfolgreich geändert!", Toast.LENGTH_LONG).show();
                         }
-                    }else{
+                    } else {
                         /* UI-Meldung */
                         if (MainActivity.getHints()) {
                             Toast.makeText(getContext(), "Keine Änderungen!", Toast.LENGTH_LONG).show();
