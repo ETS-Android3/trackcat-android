@@ -7,6 +7,8 @@
     <color name="colorSuccess">#4CAF50</color>
     <color name="colorAccentDisable">#E67064</color>
     <color name="colorLoadFragmentInformation">#4D83838B</color>
+    <color name="colorFemale">#DF99CA</color>
+    <color name="colorMale">#4C84FF</color>
 
 
     <!-- LIGHT THEME COLORS -->

@@ -1,5 +1,6 @@
 package de.trackcat.Profile;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -39,7 +41,7 @@ public class ProfileFragment extends Fragment {
     /* variables */
     TextView name, email, dayOfBirth, gender, weight, size, bmi, lastLogIn, dayOfRegistration;
     CircleImageView image, state;
-    ImageView birthday;
+    ImageView birthday, user_gender_image;
     RelativeLayout loadProfile;
 
     @Override
@@ -72,6 +74,7 @@ public class ProfileFragment extends Fragment {
         lastLogIn = view.findViewById(R.id.user_lastLogIn);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
         image = view.findViewById(R.id.profile_image);
+        user_gender_image = view.findViewById(R.id.user_gender_image);
         loadProfile = view.findViewById(R.id.loadScreen);
 
         /* read profile values from global db */
@@ -183,14 +186,22 @@ public class ProfileFragment extends Fragment {
 
         /* set gender */
         if (user_gender != 2) {
+            InputStream imageStream;
             if (user_gender == 0) {
                 gender.setText("weiblich");
+                gender.setTextColor(getResources().getColor(R.color.colorFemale));
+                imageStream = this.getResources().openRawResource(R.raw.female);
             } else {
                 gender.setText("männlich");
+                imageStream = this.getResources().openRawResource(R.raw.male);
+                gender.setTextColor(getResources().getColor(R.color.colorMale));
             }
-
+            Bitmap bitmap= BitmapFactory.decodeStream(imageStream);
+            user_gender_image.setImageBitmap(bitmap);
+            user_gender_image.setVisibility(View.VISIBLE);
         } else {
             GlobalFunctions.setNoInformationStyle(gender);
+            user_gender_image.setVisibility(View.GONE);
         }
 
         /* calculate bmi */
@@ -575,16 +586,20 @@ public class ProfileFragment extends Fragment {
         /* calculate age */
         int age = currentTime.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
 
+        int day1 = currentTime.get(Calendar.DAY_OF_MONTH);
+        int day2 = dob.get(Calendar.DAY_OF_MONTH);
+
         if ((currentTime.get(Calendar.MONTH) + 1) < dob.get(Calendar.MONTH)) {
             age--;
         } else if ((currentTime.get(Calendar.MONTH) + 1) == dob.get(Calendar.MONTH)) {
-            int day1 = currentTime.get(Calendar.DAY_OF_MONTH);
-            int day2 = dob.get(Calendar.DAY_OF_MONTH);
+
             if (day2 > day1) {
                 age--;
-            } else if (day2 == day1) {
-                todayDayOfBirth = true;
             }
+        }
+
+        if(day2 == day1 &&(currentTime.get(Calendar.MONTH) + 1) == dob.get(Calendar.MONTH)){
+            todayDayOfBirth = true;
         }
 
         return new Integer(age);
