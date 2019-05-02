@@ -412,7 +412,10 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                 int currentYear = cldr.get(Calendar.YEAR);
 
                                 /* check if dayOfBirth in future */
-
+                                if(year > currentYear){
+                                    Toast.makeText(getContext(), "Ihr Geburtstag darf nicht in der Zukunft liegen.", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                                 if (currentMonth == (monthOfYear + 1) && currentYear == year) {
                                     if (dayOfMonth > currentDay) {
                                         Toast.makeText(getContext(), "Ihr Geburtstag darf nicht in der Zukunft liegen.", Toast.LENGTH_SHORT).show();
