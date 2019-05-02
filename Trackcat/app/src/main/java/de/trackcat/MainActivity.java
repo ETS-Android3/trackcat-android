@@ -145,7 +145,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
-        progressDialog.dismiss();
+        try {
+            progressDialog.dismiss();
+        }catch (Exception e){}
         try {
             recordFragment.stopTimer();
             recordFragment = null;
