@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.karan.churi.PermissionManager.PermissionManager;
 
 import org.json.JSONException;
@@ -75,8 +76,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private UserDAO userDAO;
     private static int activeUser;
     public static Boolean isActiv = false;
-    private static boolean isRestart = false;
+    //  private static boolean isRestart = false;
     private static Menu menuInstance;
+
+
+    private ProgressDialog progressDialog;
 
     /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
     public static int randomImg = (int) (Math.random() * ((13 - 0) + 1)) + 0;
@@ -88,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(getInstance(), MainActivity.class);
         intent.putExtra("bundle", temp_bundle);
 
-        isRestart = true;
+        //    isRestart = true;
 
         getInstance().startActivity(intent);
         getInstance().finish();
@@ -143,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
-
+        progressDialog.dismiss();
         try {
             recordFragment.stopTimer();
             recordFragment = null;
@@ -154,10 +158,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         isActiv = false;
 
-        if (!isRestart) {
-            android.os.Process.killProcess(android.os.Process.myPid());
-        }
-        isRestart = false;
+        //   if (!isRestart) {
+        // android.os.Process.killProcess(android.os.Process.myPid());
+        // }
+        // isRestart = false;
 
         super.onDestroy();
     }
@@ -177,31 +181,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userDAO = new UserDAO(this);
 
         List<User> userList = userDAO.readAll();
-        if (userList.size() == 0) {
-            /* Initiale Usererstellung */
-
-            User initialUser = new User("Test", "Testi", "test.testi@mail.de",
-                    null);
-            initialUser.setActive(true);
-            initialUser.setHintsActive(true);
-            initialUser.setDarkThemeActive(false);
-            userDAO.create(initialUser);
-            activeUser = 1;
-            hints = true;
-            darkTheme = false;
-
-        } else {
-
-            hints = userList.get(0).isHintsActive();
-            darkTheme = userList.get(0).isDarkThemeActive();
-            activeUser = userList.get(0).getId();
-        }
-
+        hints = userList.get(0).isHintsActive();
+        darkTheme = userList.get(0).isDarkThemeActive();
+        activeUser = userList.get(0).getId();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
         /* Turn off power saving and battery optimization */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -214,7 +200,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
             }
         }
-
 
         /* Fragt nach noch nicht erteilten Permissions */
         permissionManager.checkAndRequestPermissions(this);
@@ -304,19 +289,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         getProfileColor();
-
-        /* set profile information */
         User currentUser = userDAO.read(activeUser);
-        profileName.setText(currentUser.getFirstName() + " " + currentUser.getLastName());
-        profileEmail.setText(currentUser.getMail());
-
-        /* set image */
-        byte[] imgRessource =currentUser.getImage();
-        Bitmap bitmap = BitmapFactory.decodeResource(getBaseContext().getResources(), R.raw.default_profile);
-        if (imgRessource != null && imgRessource.length > 0) {
-            bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
-        }
-        profileImage.setImageBitmap(bitmap);
+        setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
+        synchronizeUser(currentUser);
 
         /* Menu Toggle */
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -329,6 +304,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* Startseite festlegen - Erster Aufruf */
         loadDashboard();
+    }
+
+    /* set profile information */
+    public void setDrawerInfromation(byte[] imgRessource, String first_name, String last_name, String email){
+
+        profileName.setText(first_name + " " + last_name);
+        profileEmail.setText(email);
+
+        /* set image */
+        Bitmap bitmap = BitmapFactory.decodeResource(getBaseContext().getResources(), R.raw.default_profile);
+        if (imgRessource != null && imgRessource.length > 0) {
+            bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
+        }
+        profileImage.setImageBitmap(bitmap);
+
     }
 
     /* Anpassen der TextFarbe zum Hintergrundbild */
@@ -409,7 +399,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logout:
 
                 /* set wait field */
-                final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this,
+                progressDialog = new ProgressDialog(MainActivity.this,
                         R.style.AppTheme_Dark_Dialog);
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage("Abmeldung...");
@@ -420,11 +410,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             public void run() {
 
                                 //TODO Geschmeidiger Übergang
-                                progressDialog.dismiss();
 
-                                Intent intent = new Intent(MainActivity.this, StartActivity.class);
-                                startActivity(intent);
-                                finish();
 
                                 /* remove user from local db */
                                 List<User> deletedUsers = userDAO.readAll();
@@ -432,7 +418,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     userDAO.delete(user);
                                 }
 
+                                Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                                intent.putExtra("isLogout", true);
 
+                                startActivity(intent);
+                                finish();
                             }
                         }, 3000);
 
@@ -538,7 +528,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String permissionGPS = android.Manifest.permission.ACCESS_FINE_LOCATION;
         int resGPS = getInstance().checkCallingOrSelfPermission(permissionGPS);
 
-        if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED ){//&& getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
+        if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED) {//&& getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
 
             Log.v("loadRecord", "placing Record");
 
@@ -651,7 +641,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_editProfile));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_editPassword));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_friendSystem));
                     }
                     alert.setNegativeButton("Schließen", null);
@@ -680,153 +670,160 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (connected) {
 
             User currentUser = userDAO.read(activeUser);
+            synchronizeUser(currentUser);
+        }
+    }
 
-            /* send user timestamp to bb */
-            HashMap<String, String> map = new HashMap<>();
-            map.put("email", currentUser.getMail());
-            map.put("timeStamp", ""+currentUser.getTimeStamp());
 
-            Retrofit retrofit = APIConnector.getRetrofit();
-            APIClient apiInterface = retrofit.create(APIClient.class);
+    private void synchronizeUser(User currentUser){
+        /* send user timestamp to bb */
+        HashMap<String, String> map = new HashMap<>();
+        map.put("email", currentUser.getMail());
+        map.put("timeStamp", "" + currentUser.getTimeStamp());
 
-            /* start a call */
-            Call<ResponseBody> call = apiInterface.synchronizeData(map);
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
 
-            call.enqueue(new Callback<ResponseBody>() {
+        /* start a call */
+        Call<ResponseBody> call = apiInterface.synchronizeData(map);
 
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+        call.enqueue(new Callback<ResponseBody>() {
 
-                    try {
-                        /* get jsonString from API */
-                        String jsonString = response.body().string();
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                        /* parse json */
-                        JSONObject mainObject = new JSONObject(jsonString);
+                try {
+                    /* get jsonString from API */
+                    String jsonString = response.body().string();
 
-                        /* user on server is new */
-                        if (mainObject.getString("state").equals("0")) {
+                    /* parse json */
+                    JSONObject mainObject = new JSONObject(jsonString);
 
-                            /* get userObject from Json */
-                            JSONObject userObject = mainObject.getJSONObject("user");
+                    /* user on server is new */
+                    if (mainObject.getString("state").equals("0")) {
 
-                            /* save user in db */
-                            currentUser.setIdUsers(userObject.getInt("id"));
-                            currentUser.setMail(userObject.getString("email"));
-                            currentUser.setFirstName(userObject.getString("firstName"));
-                            currentUser.setLastName(userObject.getString("lastName"));
-                            if (userObject.getString("image") != "null") {
-                                currentUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
-                            }
-                            currentUser.setGender(userObject.getInt("gender"));
-                            if (userObject.getInt("darkTheme") == 0) {
-                                currentUser.setDarkThemeActive(false);
-                            } else {
-                                currentUser.setDarkThemeActive(true);
-                            }
+                        /* get userObject from Json */
+                        JSONObject userObject = mainObject.getJSONObject("user");
 
-                            if (userObject.getInt("hints") == 0) {
-                                currentUser.setHintsActive(false);
-                            } else {
-                                currentUser.setHintsActive(true);
-                            }
-
-                            try {
-                                currentUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
-                            } catch (Exception e) {
-                            }
-
-                            try {
-                                currentUser.setLastLogin(userObject.getLong("lastLogin"));
-                            } catch (Exception e) {
-                            }
-
-                            try {
-                                currentUser.setWeight((float) userObject.getDouble("weight"));
-                            } catch (Exception e) {
-                            }
-
-                            try {
-                                currentUser.setSize((float) userObject.getDouble("size"));
-                            } catch (Exception e) {
-                            }
-                            try {
-                                currentUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
-                            } catch (Exception e) {
-                            }
-
-                            currentUser.setPassword(userObject.getString("password"));
-                            currentUser.setTimeStamp(userObject.getLong("timeStamp"));
-                            currentUser.isSynchronised(true);
-                            userDAO.update(currentUser.getId(),currentUser);
-
-                        /* user on device is new */
-                        }else if(mainObject.getString("state").equals("1")){
-
-                            /* change values in global DB*/
-                            HashMap<String, String> map = new HashMap<>();
-                            map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
-                            map.put("email", currentUser.getMail());
-                            map.put("firstName", currentUser.getFirstName());
-                            map.put("lastName", currentUser.getLastName());
-                            map.put("size", ""+ currentUser.getWeight());
-                            map.put("weight", ""+currentUser.getWeight());
-                            map.put("gender", "" + currentUser.getGender());
-                            map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
-                            map.put("timeStamp", "" + currentUser.getTimeStamp());
-
-                            Retrofit retrofit = APIConnector.getRetrofit();
-                            APIClient apiInterface = retrofit.create(APIClient.class);
-
-                            /* start a call */
-                            Call<ResponseBody> call2 = apiInterface.updateUser(map);
-
-                            call2.enqueue(new Callback<ResponseBody>() {
-
-                                @Override
-                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                                    try {
-                                        /* get jsonString from API */
-                                        String jsonString = response.body().string();
-
-                                        /* parse json */
-                                        JSONObject successJSON = new JSONObject(jsonString);
-
-                                        if (successJSON.getString("success").equals("0")) {
-
-                                            /* save is Synchronized value as true */
-                                            currentUser.isSynchronised(true);
-                                            userDAO.update(currentUser.getId(), currentUser);
-
-                                        }
-
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                    call2.cancel();
-                                }
-                            });
+                        /* save user in db */
+                        currentUser.setIdUsers(userObject.getInt("id"));
+                        currentUser.setMail(userObject.getString("email"));
+                        currentUser.setFirstName(userObject.getString("firstName"));
+                        currentUser.setLastName(userObject.getString("lastName"));
+                        if (userObject.getString("image") != "null") {
+                            currentUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
+                        }
+                        currentUser.setGender(userObject.getInt("gender"));
+                        if (userObject.getInt("darkTheme") == 0) {
+                            currentUser.setDarkThemeActive(false);
+                        } else {
+                            currentUser.setDarkThemeActive(true);
                         }
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        if (userObject.getInt("hints") == 0) {
+                            currentUser.setHintsActive(false);
+                        } else {
+                            currentUser.setHintsActive(true);
+                        }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    call.cancel();
+                        try {
+                            currentUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
+                        } catch (Exception e) {
+                        }
+
+                        try {
+                            currentUser.setLastLogin(userObject.getLong("lastLogin"));
+                        } catch (Exception e) {
+                        }
+
+                        try {
+                            currentUser.setWeight((float) userObject.getDouble("weight"));
+                        } catch (Exception e) {
+                        }
+
+                        try {
+                            currentUser.setSize((float) userObject.getDouble("size"));
+                        } catch (Exception e) {
+                        }
+                        try {
+                            currentUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                        } catch (Exception e) {
+                        }
+
+                        currentUser.setPassword(userObject.getString("password"));
+                        currentUser.setTimeStamp(userObject.getLong("timeStamp"));
+                        currentUser.isSynchronised(true);
+                        userDAO.update(currentUser.getId(), currentUser);
+
+                        /* set drawe profile information */
+                        setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
+
+                        /* user on device is new */
+                    } else if (mainObject.getString("state").equals("1")) {
+
+                        /* change values in global DB*/
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
+                        map.put("email", currentUser.getMail());
+                        map.put("firstName", currentUser.getFirstName());
+                        map.put("lastName", currentUser.getLastName());
+                        map.put("size", "" + currentUser.getWeight());
+                        map.put("weight", "" + currentUser.getWeight());
+                        map.put("gender", "" + currentUser.getGender());
+                        map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
+                        map.put("timeStamp", "" + currentUser.getTimeStamp());
+
+                        Retrofit retrofit = APIConnector.getRetrofit();
+                        APIClient apiInterface = retrofit.create(APIClient.class);
+
+                        /* start a call */
+                        Call<ResponseBody> call2 = apiInterface.updateUser(map);
+
+                        call2.enqueue(new Callback<ResponseBody>() {
+
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                                try {
+                                    /* get jsonString from API */
+                                    String jsonString = response.body().string();
+
+                                    /* parse json */
+                                    JSONObject successJSON = new JSONObject(jsonString);
+
+                                    if (successJSON.getString("success").equals("0")) {
+
+                                        /* save is Synchronized value as true */
+                                        currentUser.isSynchronised(true);
+                                        userDAO.update(currentUser.getId(), currentUser);
+
+                                    }
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                call2.cancel();
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                call.cancel();
+            }
+        });
     }
 }
