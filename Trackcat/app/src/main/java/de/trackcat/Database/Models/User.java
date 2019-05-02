@@ -350,7 +350,7 @@ public class User {
      *
      * @return value of type long
      */
-    public float getTimeStamp() {
+    public long getTimeStamp() {
         return timeStamp;
     }
 

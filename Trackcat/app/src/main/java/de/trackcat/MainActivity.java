@@ -30,6 +30,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.karan.churi.PermissionManager.PermissionManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import de.trackcat.Dashboard.DashboardFragment;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
@@ -46,6 +50,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -678,7 +684,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             /* send user timestamp to bb */
             HashMap<String, String> map = new HashMap<>();
             map.put("email", currentUser.getMail());
-            map.put("timestamp", ""+currentUser.getTimeStamp());
+            map.put("timeStamp", ""+currentUser.getTimeStamp());
 
             Retrofit retrofit = APIConnector.getRetrofit();
             APIClient apiInterface = retrofit.create(APIClient.class);
@@ -693,7 +699,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     /* get jsonString from API */
                     /* parse json */
-                    /*
+
                     try {
 
                         String jsonString = response.body().string();
@@ -701,13 +707,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         JSONObject successJSON = new JSONObject(jsonString);
 
-
-
+/*state*/
+/*user*/
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }*/
+                    }
                 }
 
                 @Override
