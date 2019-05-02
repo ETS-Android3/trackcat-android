@@ -696,10 +696,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-
-
-
+                    
                     try {
                         /* get jsonString from API */
                         String jsonString = response.body().string();
