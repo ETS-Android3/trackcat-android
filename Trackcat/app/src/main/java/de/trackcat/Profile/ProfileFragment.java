@@ -1,5 +1,6 @@
 package de.trackcat.Profile;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -188,10 +189,12 @@ public class ProfileFragment extends Fragment {
             InputStream imageStream;
             if (user_gender == 0) {
                 gender.setText("weiblich");
+                gender.setTextColor(getResources().getColor(R.color.colorFemale));
                 imageStream = this.getResources().openRawResource(R.raw.female);
             } else {
                 gender.setText("männlich");
                 imageStream = this.getResources().openRawResource(R.raw.male);
+                gender.setTextColor(getResources().getColor(R.color.colorMale));
             }
             Bitmap bitmap= BitmapFactory.decodeStream(imageStream);
             user_gender_image.setImageBitmap(bitmap);

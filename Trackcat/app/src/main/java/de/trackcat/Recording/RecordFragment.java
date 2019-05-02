@@ -10,8 +10,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -55,6 +59,7 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -292,7 +297,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
          * */
         startMarker = new Marker(mMapView);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_maps_location_flag));
+           // startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_maps_location_flag));
+
+            InputStream imageStream = this.getResources().openRawResource(R.raw.logo_marker_small);
+            Drawable d = Drawable.createFromStream(imageStream, "logo_marker");
+
+            startMarker.setIcon(d);
+
         }
         mPath = new Polyline(mMapView);
 
