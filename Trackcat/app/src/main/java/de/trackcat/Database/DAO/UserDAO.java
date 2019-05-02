@@ -267,33 +267,7 @@ public class UserDAO {
             dbHelper.close();
         }
     }
-
-    /**
-     * Imports a single user from handed over JSON.
-     *
-     * @param jsonString of type string which defines the route to be imported
-     *
-     * <p>
-     *      Creates a user with the attributes which were defined in JSON
-     * </p>
-     */
-    public void importUserFromJson(String jsonString) {
-        User user = gson.fromJson(jsonString, imExportType);
-        user.setActive(false);
-        this.create(user);
-    }
-
-    /**
-     * Creates a JSON string which defines a user object and its attributes.
-     *
-     * @param id of type integer of which user has to be exported
-     * @return a JSON string
-     */
-    public String exportUserToJson(int id) {
-        return gson.toJson(this.read(id));
-    }
-
-
+    
     /**
      * Count the entrys of the userTable
      *
