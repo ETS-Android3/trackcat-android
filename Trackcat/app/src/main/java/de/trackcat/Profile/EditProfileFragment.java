@@ -72,6 +72,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     CircleImageView imageUpload;
     RelativeLayout loadEditProfile;
 
+    /* checkChange Variables */
+    boolean imageChanged;
+    float old_size, old_weight;
+    long old_dateOfBirth;
+    String old_firstName, old_lastName;
+    int old_gender;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -90,6 +97,9 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         btnSave = view.findViewById(R.id.btn_save);
         imageUpload = view.findViewById(R.id.profile_image_upload);
         loadEditProfile = view.findViewById(R.id.loadScreen);
+
+        /* check changed values */
+        imageChanged = false;
 
         /* set onClick Listener */
         btnSave.setOnClickListener(this);
@@ -125,33 +135,34 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     Log.d(getResources().getString(R.string.app_name) + "-EditProfileInformation", "Edit-Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
 
                     /* check values an show  */
-                    float size, weight;
-                    long dateOfBirth;
                     byte[] image = null;
 
                     try {
-                        size = (float) userJSON.getDouble("size");
+                        old_size = (float) userJSON.getDouble("size");
                     } catch (Exception e) {
-                        size = 0;
+                        old_size = 0;
                     }
 
                     try {
-                        weight = (float) userJSON.getDouble("weight");
+                        old_weight = (float) userJSON.getDouble("weight");
                     } catch (Exception e) {
-                        weight = 0;
+                        old_weight = 0;
                     }
 
                     try {
-                        dateOfBirth = userJSON.getLong("dateOfBirth");
+                        old_dateOfBirth = userJSON.getLong("dateOfBirth");
                     } catch (Exception e) {
-                        dateOfBirth = 0;
+                        old_dateOfBirth = 0;
                     }
 
                     if (userJSON.getString("image") != "null") {
                         image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
                     }
+                    old_firstName = userJSON.getString("firstName");
+                    old_lastName = userJSON.getString("lastName");
+                    old_gender = userJSON.getInt("gender");
 
-                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), dateOfBirth, size, weight, userJSON.getInt("gender"), image);
+                    setProfileValues(old_firstName, old_lastName, old_dateOfBirth, old_size, old_weight, old_gender, image);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -165,7 +176,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 call.cancel();
 
                 /* read values from local DB */
-                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getImage());
+                old_firstName = currentUser.getFirstName();
+                old_lastName = currentUser.getLastName();
+                old_dateOfBirth = currentUser.getDateOfBirth();
+                old_size = currentUser.getSize();
+                old_weight = currentUser.getWeight();
+                old_gender = currentUser.getGender();
+                setProfileValues(old_firstName, old_lastName, old_dateOfBirth, old_size, old_weight, old_gender, currentUser.getImage());
                 Log.d(getResources().getString(R.string.app_name) + "-EditProfileInformation", "ERROR: " + t.getMessage());
 
             }
@@ -297,84 +314,121 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         }
                     }
 
-                    String image = GlobalFunctions.getBase64FromBytes(imageBytes);
-
-                    /* change values in local DB */
-                    currentUser.setImage(imageBytes);
-                    currentUser.setFirstName(input_firstName);
-                    currentUser.setLastName(input_lastName);
-                    currentUser.setSize(Float.valueOf(input_height));
-                    currentUser.setWeight(Float.valueOf(input_weight));
-                    currentUser.setGender(gender);
-                    currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
-                    currentUser.isSynchronised(false);
-                    currentUser.setDateOfBirth(long_dayOfBirth);
-                    userDAO.update(currentUser.getId(), currentUser);
-
-                    /* change values in global DB*/
+                    /* check if values have changed */
+                    boolean changes=false;
                     HashMap<String, String> map = new HashMap<>();
-                    map.put("image", image);
                     map.put("email", currentUser.getMail());
-                    map.put("firstName", input_firstName);
-                    map.put("lastName", input_lastName);
-                    map.put("size", input_height);
-                    map.put("weight", input_weight);
-                    map.put("gender", "" + gender);
-                    map.put("dateOfBirth", "" + long_dayOfBirth);
-                    map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
 
-                    Retrofit retrofit = APIConnector.getRetrofit();
-                    APIClient apiInterface = retrofit.create(APIClient.class);
-
-                    /* start a call */
-                    Call<ResponseBody> call = apiInterface.updateUser(map);
-
-                    call.enqueue(new Callback<ResponseBody>() {
-
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                            try {
-                                /* get jsonString from API */
-                                String jsonString = response.body().string();
-
-                                /* parse json */
-                                JSONObject successJSON = new JSONObject(jsonString);
-
-                                if (successJSON.getString("success").equals("0")) {
-
-                                    /* save is Synchronized value as true */
-                                    currentUser.isSynchronised(true);
-                                    userDAO.update(currentUser.getId(), currentUser);
-
-                                    /* set btn enable */
-                                    btnSave.setEnabled(true);
-                                    btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
-                                }
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                            /* set btn enable */
-                            btnSave.setEnabled(true);
-                            btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
-                            call.cancel();
-                        }
-                    });
-
-
-                    /* UI-Meldung */
-                    if (MainActivity.getHints()) {
-                        Toast.makeText(getContext(), "Benutzer \"" + input_firstName + " " + input_lastName + "\" wurde erfolgreich geändert!", Toast.LENGTH_LONG).show();
+                    if (imageChanged) {
+                        String image = GlobalFunctions.getBase64FromBytes(imageBytes);
+                        currentUser.setImage(imageBytes);
+                        map.put("image", image);
+                        changes=true;
                     }
 
+                    if(!old_firstName.equals(input_firstName)){
+                        currentUser.setFirstName(input_firstName);
+                        map.put("firstName", input_firstName);
+                        changes=true;
+                    }
+
+                    if(!old_lastName.equals(input_lastName)){
+                        currentUser.setLastName(input_lastName);
+                        map.put("lastName", input_lastName);
+                        changes=true;
+                    }
+
+                    if(!(old_size==Float.valueOf(input_height))){
+                        currentUser.setSize(Float.valueOf(input_height));
+                        map.put("size", input_height);
+                        changes=true;
+                    }
+
+                    if(!(old_weight==Float.valueOf(input_weight))){
+                        currentUser.setWeight(Float.valueOf(input_weight));
+                        map.put("weight", input_weight);
+                        changes=true;
+                    }
+
+                    if(!(old_gender==gender)){
+                        currentUser.setGender(gender);
+                        map.put("gender", "" + gender);
+                        changes=true;
+                    }
+                    if(!(old_dateOfBirth==long_dayOfBirth)){
+                        currentUser.setDateOfBirth(long_dayOfBirth);
+                        map.put("dateOfBirth", "" + long_dayOfBirth);
+                        changes=true;
+                    }
+
+                    if(changes) {
+                        /* change values in local DB */
+                        currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
+                        currentUser.isSynchronised(false);
+                        userDAO.update(currentUser.getId(), currentUser);
+
+                        /* change values in global DB*/
+                        map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
+
+                        Retrofit retrofit = APIConnector.getRetrofit();
+                        APIClient apiInterface = retrofit.create(APIClient.class);
+
+                        /* start a call */
+                        Call<ResponseBody> call = apiInterface.updateUser(map);
+
+                        call.enqueue(new Callback<ResponseBody>() {
+
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                                try {
+                                    /* get jsonString from API */
+                                    String jsonString = response.body().string();
+
+                                    /* parse json */
+                                    JSONObject successJSON = new JSONObject(jsonString);
+
+                                    if (successJSON.getString("success").equals("0")) {
+
+                                        /* save is Synchronized value as true */
+                                        currentUser.isSynchronised(true);
+                                        userDAO.update(currentUser.getId(), currentUser);
+
+                                        /* set btn enable */
+                                        btnSave.setEnabled(true);
+                                        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                                    }
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                /* set btn enable */
+                                btnSave.setEnabled(true);
+                                btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                                call.cancel();
+                            }
+                        });
+
+                        /* UI-Meldung */
+                        if (MainActivity.getHints()) {
+                            Toast.makeText(getContext(), "Benutzer \"" + input_firstName + " " + input_lastName + "\" wurde erfolgreich geändert!", Toast.LENGTH_LONG).show();
+                        }
+                    }else{
+                        /* UI-Meldung */
+                        if (MainActivity.getHints()) {
+                            Toast.makeText(getContext(), "Keine Änderungen!", Toast.LENGTH_LONG).show();
+                        }
+                        /* set btn enable */
+                        btnSave.setEnabled(true);
+                        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                    }
                 } else {
                     if (MainActivity.getHints()) {
                         Toast.makeText(getContext(), getResources().getString(R.string.tFillAllFields), Toast.LENGTH_LONG).show();
@@ -420,7 +474,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                 int currentYear = cldr.get(Calendar.YEAR);
 
                                 /* check if dayOfBirth in future */
-                                if(year > currentYear){
+                                if (year > currentYear) {
                                     Toast.makeText(getContext(), "Ihr Geburtstag darf nicht in der Zukunft liegen.", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
@@ -568,6 +622,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
+                imageChanged = true;
                 if (MainActivity.getHints()) {
                     Toast.makeText(getContext(), "Bild ausgewählt!", Toast.LENGTH_SHORT).show();
                 }
