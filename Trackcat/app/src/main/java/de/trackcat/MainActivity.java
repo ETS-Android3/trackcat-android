@@ -697,18 +697,126 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                    /* get jsonString from API */
-                    /* parse json */
+
+
 
                     try {
-
+                        /* get jsonString from API */
                         String jsonString = response.body().string();
 
+                        /* parse json */
+                        JSONObject mainObject = new JSONObject(jsonString);
 
-                        JSONObject successJSON = new JSONObject(jsonString);
+                        /* user on server is new */
+                        if (mainObject.getString("state").equals("0")) {
 
-/*state*/
-/*user*/
+                            /* get userObject from Json */
+                            JSONObject userObject = mainObject.getJSONObject("user");
+
+                            /* save user in db */
+                            currentUser.setIdUsers(userObject.getInt("id"));
+                            currentUser.setMail(userObject.getString("email"));
+                            currentUser.setFirstName(userObject.getString("firstName"));
+                            currentUser.setLastName(userObject.getString("lastName"));
+                            if (userObject.getString("image") != "null") {
+                                currentUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
+                            }
+                            currentUser.setGender(userObject.getInt("gender"));
+                            if (userObject.getInt("darkTheme") == 0) {
+                                currentUser.setDarkThemeActive(false);
+                            } else {
+                                currentUser.setDarkThemeActive(true);
+                            }
+
+                            if (userObject.getInt("hints") == 0) {
+                                currentUser.setHintsActive(false);
+                            } else {
+                                currentUser.setHintsActive(true);
+                            }
+
+                            try {
+                                currentUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
+                            } catch (Exception e) {
+                            }
+
+                            try {
+                                currentUser.setLastLogin(userObject.getLong("lastLogin"));
+                            } catch (Exception e) {
+                            }
+
+                            try {
+                                currentUser.setWeight((float) userObject.getDouble("weight"));
+                            } catch (Exception e) {
+                            }
+
+                            try {
+                                currentUser.setSize((float) userObject.getDouble("size"));
+                            } catch (Exception e) {
+                            }
+                            try {
+                                currentUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                            } catch (Exception e) {
+                            }
+
+                            currentUser.setPassword(userObject.getString("password"));
+                            currentUser.isSynchronised(true);
+                            userDAO.update(currentUser.getId(),currentUser);
+
+                        /* user on device is new */
+                        }else if(mainObject.getString("state").equals("1")){
+
+                            /* change values in global DB*/
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
+                            map.put("email", currentUser.getMail());
+                            map.put("firstName", currentUser.getFirstName());
+                            map.put("lastName", currentUser.getLastName());
+                            map.put("size", ""+ currentUser.getWeight());
+                            map.put("weight", ""+currentUser.getWeight());
+                            map.put("gender", "" + currentUser.getGender());
+                            map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
+                            map.put("timeStamp", "" + currentUser.getTimeStamp());
+
+                            Retrofit retrofit = APIConnector.getRetrofit();
+                            APIClient apiInterface = retrofit.create(APIClient.class);
+
+                            /* start a call */
+                            Call<ResponseBody> call2 = apiInterface.updateUser(map);
+
+                            call2.enqueue(new Callback<ResponseBody>() {
+
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                                    try {
+                                        /* get jsonString from API */
+                                        String jsonString = response.body().string();
+
+                                        /* parse json */
+                                        JSONObject successJSON = new JSONObject(jsonString);
+
+                                        if (successJSON.getString("success").equals("0")) {
+
+                                            /* save is Synchronized value as true */
+                                            currentUser.isSynchronised(true);
+                                            userDAO.update(currentUser.getId(), currentUser);
+
+                                        }
+
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    call2.cancel();
+                                }
+                            });
+                        }
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {

@@ -11,9 +11,9 @@ public class APIConnector {
 
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    // .baseUrl("http://safe-harbour.de:4242/")
+                     .baseUrl("http://safe-harbour.de:4242/")
                     // .baseUrl("http://192.168.178.24:5000/")
-                     .baseUrl("http://192.168.178.52:5000/")
+                    // .baseUrl("http://192.168.178.52:5000/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 

@@ -94,4 +94,7 @@
     <string name="noInformation">keine Angabe</string>
     <string name="noBMI">Close</string>
 
+
+    <string name="icon_heart">&#xf004;</string>
+
 </resources>
