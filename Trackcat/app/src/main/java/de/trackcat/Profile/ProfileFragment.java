@@ -2,8 +2,6 @@ package de.trackcat.Profile;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -41,6 +40,7 @@ public class ProfileFragment extends Fragment {
     TextView name, email, dayOfBirth, gender, weight, size, bmi, lastLogIn, dayOfRegistration;
     CircleImageView image, state;
     ImageView birthday;
+    RelativeLayout loadProfile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,6 +72,7 @@ public class ProfileFragment extends Fragment {
         lastLogIn = view.findViewById(R.id.user_lastLogIn);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
         image = view.findViewById(R.id.profile_image);
+        loadProfile = view.findViewById(R.id.loadScreen);
 
         /* read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
@@ -119,7 +120,7 @@ public class ProfileFragment extends Fragment {
                     }
 
                     if (userJSON.getString("image") != "null") {
-                       image =GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
+                        image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
                     }
 
                     setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), image);
@@ -303,7 +304,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 19 && userBmi <= 24) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 25 && userBmi <= 28) {
+                        } else if (userBmi > 24 && userBmi <= 28) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 28) {
                             bmiClass = "starkes Übergewicht";
@@ -313,7 +314,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 20 && userBmi <= 25) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 26 && userBmi <= 29) {
+                        } else if (userBmi > 25 && userBmi <= 29) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 29) {
                             bmiClass = "starkes Übergewicht";
@@ -324,7 +325,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 21 && userBmi <= 26) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 27 && userBmi <= 30) {
+                        } else if (userBmi > 26 && userBmi <= 30) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 30) {
                             bmiClass = "starkes Übergewicht";
@@ -335,7 +336,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 22 && userBmi <= 27) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 28 && userBmi <= 31) {
+                        } else if (userBmi > 27 && userBmi <= 31) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 31) {
                             bmiClass = "starkes Übergewicht";
@@ -346,7 +347,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 23 && userBmi <= 28) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 29 && userBmi <= 32) {
+                        } else if (userBmi > 28 && userBmi <= 32) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 32) {
                             bmiClass = "starkes Übergewicht";
@@ -357,7 +358,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 24 && userBmi <= 29) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 30 && userBmi <= 33) {
+                        } else if (userBmi > 29 && userBmi <= 33) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 33) {
                             bmiClass = "starkes Übergewicht";
@@ -368,7 +369,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 25 && userBmi <= 30) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 31 && userBmi <= 34) {
+                        } else if (userBmi > 30 && userBmi <= 34) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 34) {
                             bmiClass = "starkes Übergewicht";
@@ -474,7 +475,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 19 && userBmi <= 24) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 25 && userBmi <= 28) {
+                        } else if (userBmi > 24 && userBmi <= 28) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 28) {
                             bmiClass = "starkes Übergewicht";
@@ -484,7 +485,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 20 && userBmi <= 25) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 26 && userBmi <= 29) {
+                        } else if (userBmi > 25 && userBmi <= 29) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 29) {
                             bmiClass = "starkes Übergewicht";
@@ -495,7 +496,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 21 && userBmi <= 26) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 27 && userBmi <= 30) {
+                        } else if (userBmi > 26 && userBmi <= 30) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 30) {
                             bmiClass = "starkes Übergewicht";
@@ -506,7 +507,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 22 && userBmi <= 27) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 28 && userBmi <= 31) {
+                        } else if (userBmi > 27 && userBmi <= 31) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 31) {
                             bmiClass = "starkes Übergewicht";
@@ -517,7 +518,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 23 && userBmi <= 28) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 29 && userBmi <= 32) {
+                        } else if (userBmi > 28 && userBmi <= 32) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 32) {
                             bmiClass = "starkes Übergewicht";
@@ -528,7 +529,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 24 && userBmi <= 29) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 30 && userBmi <= 33) {
+                        } else if (userBmi > 29 && userBmi <= 33) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 33) {
                             bmiClass = "starkes Übergewicht";
@@ -557,6 +558,8 @@ public class ProfileFragment extends Fragment {
         }
         image.setImageBitmap(bitmap);
 
+        /* remove loadscreen */
+        loadProfile.setVisibility(View.GONE);
     }
 
     boolean todayDayOfBirth = false;

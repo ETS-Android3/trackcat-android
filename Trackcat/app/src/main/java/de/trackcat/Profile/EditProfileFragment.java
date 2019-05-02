@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +70,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     TextView dayOfBirth, size, weight, label_unit_weight, label_unit_size;
     Button btnSave;
     CircleImageView imageUpload;
+    RelativeLayout loadEditProfile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,6 +89,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         dayOfBirth = view.findViewById(R.id.input_dayOfBirth);
         btnSave = view.findViewById(R.id.btn_save);
         imageUpload = view.findViewById(R.id.profile_image_upload);
+        loadEditProfile = view.findViewById(R.id.loadScreen);
 
         /* set onClick Listener */
         btnSave.setOnClickListener(this);
@@ -182,6 +185,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         if (user_weight != 0) {
             String string1 = ("" + user_weight).replace('.', ',');
             weight.setText("" + string1);
+            label_unit_weight.setVisibility(View.VISIBLE);
         } else {
             GlobalFunctions.setNoInformationStyle(weight);
             label_unit_weight.setVisibility(View.GONE);
@@ -191,6 +195,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         if (user_size != 0) {
             String string2 = ("" + user_size).replace('.', ',');
             size.setText("" + string2);
+            label_unit_size.setVisibility(View.VISIBLE);
         } else {
             GlobalFunctions.setNoInformationStyle(size);
             label_unit_size.setVisibility(View.GONE);
@@ -222,6 +227,9 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
         }
         imageUpload.setImageBitmap(bitmap);
+
+        /* remove loadscreen */
+        loadEditProfile.setVisibility(View.GONE);
     }
 
     @Override

@@ -6,6 +6,7 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorSuccess">#4CAF50</color>
     <color name="colorAccentDisable">#E67064</color>
+    <color name="colorLoadFragmentInformation">#4D83838B</color>
 
 
     <!-- LIGHT THEME COLORS -->

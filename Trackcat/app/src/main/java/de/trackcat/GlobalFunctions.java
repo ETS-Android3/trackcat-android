@@ -1,16 +1,13 @@
 package de.trackcat;
-
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.widget.TextView;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
 
 public class GlobalFunctions {
 
@@ -74,6 +71,7 @@ public class GlobalFunctions {
     /* function to set style of editText */
     public static void setNoInformationStyle(TextView t) {
         t.setTextColor(Color.LTGRAY);
+        t.setText(MainActivity.getInstance().getResources().getString(R.string.noInformation));
         t.setTypeface(null, Typeface.ITALIC);
     }
 
