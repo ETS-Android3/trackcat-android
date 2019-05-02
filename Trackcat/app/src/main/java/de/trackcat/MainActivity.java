@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static MainActivity instance;
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
-    public Boolean firstRun = false;
+    // public Boolean firstRun = false;
     private static boolean hints;
     private static boolean darkTheme;
     private UserDAO userDAO;
@@ -78,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static Boolean isActiv = false;
     //  private static boolean isRestart = false;
     private static Menu menuInstance;
-
-
     private ProgressDialog progressDialog;
 
     /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
@@ -300,14 +298,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         notificationManager = NotificationManagerCompat.from(this);
-        firstRun = true;
+        //  firstRun = true;
 
         /* Startseite festlegen - Erster Aufruf */
         loadDashboard();
     }
 
     /* set profile information */
-    public void setDrawerInfromation(byte[] imgRessource, String first_name, String last_name, String email){
+    public void setDrawerInfromation(byte[] imgRessource, String first_name, String last_name, String email) {
 
         profileName.setText(first_name + " " + last_name);
         profileEmail.setText(email);
@@ -675,7 +673,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void synchronizeUser(User currentUser){
+    private void synchronizeUser(User currentUser) {
         /* send user timestamp to bb */
         HashMap<String, String> map = new HashMap<>();
         map.put("email", currentUser.getMail());
