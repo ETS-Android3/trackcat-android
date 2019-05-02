@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.karan.churi.PermissionManager.PermissionManager;
 
 import org.json.JSONException;
@@ -75,8 +76,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private UserDAO userDAO;
     private static int activeUser;
     public static Boolean isActiv = false;
-    private static boolean isRestart = false;
+    //  private static boolean isRestart = false;
     private static Menu menuInstance;
+
+
+    private ProgressDialog progressDialog;
 
     /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
     public static int randomImg = (int) (Math.random() * ((13 - 0) + 1)) + 0;
@@ -88,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(getInstance(), MainActivity.class);
         intent.putExtra("bundle", temp_bundle);
 
-        isRestart = true;
+        //    isRestart = true;
 
         getInstance().startActivity(intent);
         getInstance().finish();
@@ -143,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
-
+        progressDialog.dismiss();
         try {
             recordFragment.stopTimer();
             recordFragment = null;
@@ -154,10 +158,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         isActiv = false;
 
-        if (!isRestart) {
-            android.os.Process.killProcess(android.os.Process.myPid());
-        }
-        isRestart = false;
+        //   if (!isRestart) {
+        // android.os.Process.killProcess(android.os.Process.myPid());
+        // }
+        // isRestart = false;
 
         super.onDestroy();
     }
@@ -311,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         profileEmail.setText(currentUser.getMail());
 
         /* set image */
-        byte[] imgRessource =currentUser.getImage();
+        byte[] imgRessource = currentUser.getImage();
         Bitmap bitmap = BitmapFactory.decodeResource(getBaseContext().getResources(), R.raw.default_profile);
         if (imgRessource != null && imgRessource.length > 0) {
             bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
@@ -409,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logout:
 
                 /* set wait field */
-                final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this,
+                progressDialog = new ProgressDialog(MainActivity.this,
                         R.style.AppTheme_Dark_Dialog);
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage("Abmeldung...");
@@ -420,11 +424,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             public void run() {
 
                                 //TODO Geschmeidiger Übergang
-                                progressDialog.dismiss();
 
-                                Intent intent = new Intent(MainActivity.this, StartActivity.class);
-                                startActivity(intent);
-                                finish();
 
                                 /* remove user from local db */
                                 List<User> deletedUsers = userDAO.readAll();
@@ -432,7 +432,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     userDAO.delete(user);
                                 }
 
+                                Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                                intent.putExtra("isLogout", true);
 
+                                startActivity(intent);
+                                finish();
                             }
                         }, 3000);
 
@@ -538,7 +542,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String permissionGPS = android.Manifest.permission.ACCESS_FINE_LOCATION;
         int resGPS = getInstance().checkCallingOrSelfPermission(permissionGPS);
 
-        if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED ){//&& getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
+        if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED) {//&& getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
 
             Log.v("loadRecord", "placing Record");
 
@@ -651,7 +655,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_editProfile));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_editPassword));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_friendSystem));
                     }
                     alert.setNegativeButton("Schließen", null);
@@ -684,7 +688,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             /* send user timestamp to bb */
             HashMap<String, String> map = new HashMap<>();
             map.put("email", currentUser.getMail());
-            map.put("timeStamp", ""+currentUser.getTimeStamp());
+            map.put("timeStamp", "" + currentUser.getTimeStamp());
 
             Retrofit retrofit = APIConnector.getRetrofit();
             APIClient apiInterface = retrofit.create(APIClient.class);
@@ -758,10 +762,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             currentUser.setPassword(userObject.getString("password"));
                             currentUser.setTimeStamp(userObject.getLong("timeStamp"));
                             currentUser.isSynchronised(true);
-                            userDAO.update(currentUser.getId(),currentUser);
+                            userDAO.update(currentUser.getId(), currentUser);
 
-                        /* user on device is new */
-                        }else if(mainObject.getString("state").equals("1")){
+                            /* user on device is new */
+                        } else if (mainObject.getString("state").equals("1")) {
 
                             /* change values in global DB*/
                             HashMap<String, String> map = new HashMap<>();
@@ -769,8 +773,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             map.put("email", currentUser.getMail());
                             map.put("firstName", currentUser.getFirstName());
                             map.put("lastName", currentUser.getLastName());
-                            map.put("size", ""+ currentUser.getWeight());
-                            map.put("weight", ""+currentUser.getWeight());
+                            map.put("size", "" + currentUser.getWeight());
+                            map.put("weight", "" + currentUser.getWeight());
                             map.put("gender", "" + currentUser.getGender());
                             map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
                             map.put("timeStamp", "" + currentUser.getTimeStamp());
