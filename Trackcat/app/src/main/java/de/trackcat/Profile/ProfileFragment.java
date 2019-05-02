@@ -575,16 +575,20 @@ public class ProfileFragment extends Fragment {
         /* calculate age */
         int age = currentTime.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
 
+        int day1 = currentTime.get(Calendar.DAY_OF_MONTH);
+        int day2 = dob.get(Calendar.DAY_OF_MONTH);
+
         if ((currentTime.get(Calendar.MONTH) + 1) < dob.get(Calendar.MONTH)) {
             age--;
         } else if ((currentTime.get(Calendar.MONTH) + 1) == dob.get(Calendar.MONTH)) {
-            int day1 = currentTime.get(Calendar.DAY_OF_MONTH);
-            int day2 = dob.get(Calendar.DAY_OF_MONTH);
+
             if (day2 > day1) {
                 age--;
-            } else if (day2 == day1) {
-                todayDayOfBirth = true;
             }
+        }
+
+        if(day2 == day1 &&(currentTime.get(Calendar.MONTH) + 1) == dob.get(Calendar.MONTH)){
+            todayDayOfBirth = true;
         }
 
         return new Integer(age);
