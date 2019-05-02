@@ -131,7 +131,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_marginLeft="10dp"
-                            android:src="@raw/party_cake"
+                            android:src="@raw/birthday"
                             android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
