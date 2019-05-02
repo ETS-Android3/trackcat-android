@@ -696,7 +696,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    
+
                     try {
                         /* get jsonString from API */
                         String jsonString = response.body().string();
@@ -756,6 +756,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
 
                             currentUser.setPassword(userObject.getString("password"));
+                            currentUser.setTimeStamp(userObject.getLong("timeStamp"));
                             currentUser.isSynchronised(true);
                             userDAO.update(currentUser.getId(),currentUser);
 

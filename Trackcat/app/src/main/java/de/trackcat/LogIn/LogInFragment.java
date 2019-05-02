@@ -209,6 +209,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                             }
 
                                             loggedUser.setPassword(userObject.getString("password"));
+                                            loggedUser.setTimeStamp(userObject.getLong("timeStamp"));
                                             loggedUser.isSynchronised(true);
                                             userDAO.create(loggedUser);
 
