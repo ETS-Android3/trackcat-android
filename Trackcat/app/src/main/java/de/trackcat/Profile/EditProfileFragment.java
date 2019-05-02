@@ -73,7 +73,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     RelativeLayout loadEditProfile;
 
     /* checkChange Variables */
-    boolean imageChanged;
+    boolean imageChanged, changedUser;
     float old_size, old_weight;
     long old_dateOfBirth;
     String old_firstName, old_lastName;
@@ -100,6 +100,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         /* check changed values */
         imageChanged = false;
+        changedUser=false;
 
         /* set onClick Listener */
         btnSave.setOnClickListener(this);
@@ -108,14 +109,18 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         weight.setOnClickListener(this);
         imageUpload.setOnClickListener(this);
 
+        /* load user */
         loadUser();
 
         return view;
     }
 
-
+    /* function to load userdata */
     private void loadUser() {
 
+        /* set button enable= false and show loadscreen */
+        btnSave.setEnabled(false);
+        btnSave.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
         loadEditProfile.setVisibility(View.VISIBLE);
 
         /* get current user */
@@ -203,6 +208,9 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     /* function to set profile values */
     private void setProfileValues(String user_firstName, String user_lastName, long user_dayOfBirth, float user_size, float user_weight, int user_gender, byte[] user_image) {
 
+        /* set Drawer Menu */
+        MainActivity.getInstance().setDrawerInfromation(user_image, user_firstName, user_lastName, currentUser.getMail());
+
         /* set first and lastname */
         firstName.setText(user_firstName);
         lastName.setText(user_lastName);
@@ -256,6 +264,19 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         /* remove loadscreen */
         loadEditProfile.setVisibility(View.GONE);
+
+        /* set btn enable */
+        btnSave.setEnabled(true);
+        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+
+        /* show toast if user was changed */
+        if(changedUser) {
+            /* UI-Meldung */
+            if (MainActivity.getHints()) {
+                Toast.makeText(getContext(), "Benutzer \"" + user_firstName + " " + user_lastName + "\" wurde erfolgreich geändert!", Toast.LENGTH_LONG).show();
+            }
+        }
+        changedUser=false;
     }
 
     @Override
@@ -407,7 +428,11 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                         btnSave.setEnabled(true);
                                         btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
 
+                                        /* load user */
                                         loadUser();
+
+                                        /* set change variable */
+                                        changedUser=true;
                                     }
 
                                 } catch (IOException e) {
@@ -423,15 +448,17 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                 /* set btn enable */
                                 btnSave.setEnabled(true);
                                 btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
-                                call.cancel();
+
+                                /* load user */
                                 loadUser();
+
+                                /* set change variable */
+                                changedUser=true;
+
+                                call.cancel();
                             }
                         });
 
-                        /* UI-Meldung */
-                        if (MainActivity.getHints()) {
-                            Toast.makeText(getContext(), "Benutzer \"" + input_firstName + " " + input_lastName + "\" wurde erfolgreich geändert!", Toast.LENGTH_LONG).show();
-                        }
                     } else {
                         /* UI-Meldung */
                         if (MainActivity.getHints()) {
