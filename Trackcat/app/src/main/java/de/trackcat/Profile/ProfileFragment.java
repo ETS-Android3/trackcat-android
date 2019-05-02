@@ -122,7 +122,7 @@ public class ProfileFragment extends Fragment {
                        image =GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
                     }
 
-                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("eMail"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), image);
+                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), image);
 
                 } catch (IOException e) {
                     e.printStackTrace();
