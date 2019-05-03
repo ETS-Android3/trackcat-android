@@ -87,6 +87,7 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
                             String base = currentUser.getMail() + ":" + input_currentPassword;
                             HashMap<String, String> map = new HashMap<>();
                             map.put("newPw", input_password2);
+                            map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
 
                             // TODO hashsalt Password
                             /* start a call */
@@ -101,7 +102,6 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
 
                                         /* get jsonString from API */
                                         String jsonString = response.body().string();
-                                        ;
 
                                         /* parse json */
                                         JSONObject mainObject = new JSONObject(jsonString);
