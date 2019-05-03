@@ -822,9 +822,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         });
                     }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                } catch (Exception e) {
+                    Log.d(getResources().getString(R.string.app_name) + "-SynchroniseData", "Server Error: " + response.raw().message());
                     e.printStackTrace();
                 }
             }
