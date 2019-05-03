@@ -20,6 +20,7 @@ import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import okhttp3.ResponseBody;
@@ -161,6 +162,7 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
     /* function to change password in DB */
     private void changePasswordInLokalDB(String password) {
         currentUser.setPassword(password);
+        currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
         userDAO.update(currentUser.getId(), currentUser);
 
         /* set btn enable */

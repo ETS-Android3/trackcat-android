@@ -398,39 +398,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_logout:
 
-                /* set wait field */
-                progressDialog = new ProgressDialog(MainActivity.this,
-                        R.style.AppTheme_Dark_Dialog);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Abmeldung...");
-                progressDialog.show();
-                /* set waiting handler */
-                new android.os.Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-
-                                //TODO Geschmeidiger Übergang
-
-
-                                /* remove user from local db */
-                                List<User> deletedUsers = userDAO.readAll();
-                                for (User user : deletedUsers) {
-                                    userDAO.delete(user);
-                                }
-
-                                Intent intent = new Intent(MainActivity.this, StartActivity.class);
-                                intent.putExtra("isLogout", true);
-
-                                startActivity(intent);
-                                finish();
-                            }
-                        }, 3000);
+                logout();
 
                 break;
         }
         menuItem.setChecked(true);
         mainDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void logout(){
+        /* set wait field */
+        progressDialog = new ProgressDialog(MainActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Abmeldung...");
+        progressDialog.show();
+        /* set waiting handler */
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+
+                        /* remove user from local db */
+                        List<User> deletedUsers = userDAO.readAll();
+                        for (User user : deletedUsers) {
+                            userDAO.delete(user);
+                        }
+
+                        /* open login fragment */
+                        Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                        intent.putExtra("isLogout", true);
+
+                        startActivity(intent);
+                        finish();
+                    }
+                }, 3000);
     }
 
     /* Stops/pauses Tracking opens App and switch to RecordFragment */
@@ -705,58 +707,65 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         /* get userObject from Json */
                         JSONObject userObject = mainObject.getJSONObject("user");
 
-                        /* save user in db */
-                        currentUser.setIdUsers(userObject.getInt("id"));
-                        currentUser.setMail(userObject.getString("email"));
-                        currentUser.setFirstName(userObject.getString("firstName"));
-                        currentUser.setLastName(userObject.getString("lastName"));
-                        if (userObject.getString("image") != "null") {
-                            currentUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
-                        }
-                        currentUser.setGender(userObject.getInt("gender"));
-                        if (userObject.getInt("darkTheme") == 0) {
-                            currentUser.setDarkThemeActive(false);
-                        } else {
-                            currentUser.setDarkThemeActive(true);
-                        }
+                        /* check if password changed */
+                        if(userObject.getString("password").equals(currentUser.getPassword())) {
 
-                        if (userObject.getInt("hints") == 0) {
-                            currentUser.setHintsActive(false);
-                        } else {
-                            currentUser.setHintsActive(true);
-                        }
+                            /* save user in db */
+                            currentUser.setIdUsers(userObject.getInt("id"));
+                            currentUser.setMail(userObject.getString("email"));
+                            currentUser.setFirstName(userObject.getString("firstName"));
+                            currentUser.setLastName(userObject.getString("lastName"));
+                            if (userObject.getString("image") != "null") {
+                                currentUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
+                            }
+                            currentUser.setGender(userObject.getInt("gender"));
+                            if (userObject.getInt("darkTheme") == 0) {
+                                currentUser.setDarkThemeActive(false);
+                            } else {
+                                currentUser.setDarkThemeActive(true);
+                            }
 
-                        try {
-                            currentUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
-                        } catch (Exception e) {
-                        }
+                            if (userObject.getInt("hints") == 0) {
+                                currentUser.setHintsActive(false);
+                            } else {
+                                currentUser.setHintsActive(true);
+                            }
 
-                        try {
-                            currentUser.setLastLogin(userObject.getLong("lastLogin"));
-                        } catch (Exception e) {
-                        }
+                            try {
+                                currentUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
+                            } catch (Exception e) {
+                            }
 
-                        try {
-                            currentUser.setWeight((float) userObject.getDouble("weight"));
-                        } catch (Exception e) {
-                        }
+                            try {
+                                currentUser.setLastLogin(userObject.getLong("lastLogin"));
+                            } catch (Exception e) {
+                            }
 
-                        try {
-                            currentUser.setSize((float) userObject.getDouble("size"));
-                        } catch (Exception e) {
-                        }
-                        try {
-                            currentUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
-                        } catch (Exception e) {
-                        }
+                            try {
+                                currentUser.setWeight((float) userObject.getDouble("weight"));
+                            } catch (Exception e) {
+                            }
 
-                        currentUser.setPassword(userObject.getString("password"));
-                        currentUser.setTimeStamp(userObject.getLong("timeStamp"));
-                        currentUser.isSynchronised(true);
-                        userDAO.update(currentUser.getId(), currentUser);
+                            try {
+                                currentUser.setSize((float) userObject.getDouble("size"));
+                            } catch (Exception e) {
+                            }
+                            try {
+                                currentUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                            } catch (Exception e) {
+                            }
 
-                        /* set drawe profile information */
-                        setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
+                            currentUser.setPassword(userObject.getString("password"));
+                            currentUser.setTimeStamp(userObject.getLong("timeStamp"));
+                            currentUser.isSynchronised(true);
+                            userDAO.update(currentUser.getId(), currentUser);
+
+                            /* set drawe profile information */
+                            setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
+                        }else{
+                            Toast.makeText(instance, "Ihr Passwort hat sich geändert, bitte loggen Sie sich erneut ein.", Toast.LENGTH_LONG).show();
+                            logout();
+                        }
 
                         /* user on device is new */
                     } else if (mainObject.getString("state").equals("1")) {
