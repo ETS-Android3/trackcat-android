@@ -29,4 +29,8 @@ public interface APIClient {
     @POST("/synchronizeDataAPI")
     Call<ResponseBody> synchronizeData(@Body HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/changeUserPasswordAPI")
+    Call<ResponseBody> changeUserPassword(@Header("Authorization") String authHeader, @Body HashMap<String,String> json);
+
 }
