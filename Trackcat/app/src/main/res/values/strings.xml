@@ -59,6 +59,7 @@
     <string name="tErrorHookDataProtection">Bitte akzeptieren Sie die Datenschutzerklärung!</string>
     <string name="tFillAllFields">Bitte alle Felder ausfüllen!</string>
     <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
+    <string name="tErrorOldPassword">Ihr altes Passwort ist nicht korrekt!</string>
 
     <!-- Regex -->
     <string name="rEmail">"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"</string>
@@ -93,8 +94,5 @@
     <!-- profile strings -->
     <string name="noInformation">keine Angabe</string>
     <string name="noBMI">Close</string>
-
-
-    <string name="icon_heart">&#xf004;</string>
 
 </resources>
