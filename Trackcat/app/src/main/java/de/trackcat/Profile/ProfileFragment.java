@@ -85,7 +85,8 @@ public class ProfileFragment extends Fragment {
         APIClient apiInterface = retrofit.create(APIClient.class);
 
         /* start a call */
-        Call<ResponseBody> call = apiInterface.getUserByEmail(map);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        Call<ResponseBody> call = apiInterface.getUserByEmail(base,map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
