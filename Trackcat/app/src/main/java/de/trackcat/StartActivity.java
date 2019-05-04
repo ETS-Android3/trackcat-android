@@ -97,17 +97,17 @@ public class StartActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     try {
-                        /* get jsonString from API */
-                        String jsonString = response.body().string();
 
-                        /* parse json */
-                        JSONObject userJSON = new JSONObject(jsonString);
-                        Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
 
-                        if (userJSON.getString("password").equals(currentUser.getPassword())) {
-                            fastLogIn = true;
-                        } else {
+                        if(response.code()==401){
                             fastLogIn = false;
+                        }else {
+                            /* get jsonString from API */
+                            String jsonString = response.body().string();
+                            /* parse json */
+                            JSONObject userJSON = new JSONObject(jsonString);
+                            Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
+                            fastLogIn = true;
                         }
                         showLoginPage();
 
