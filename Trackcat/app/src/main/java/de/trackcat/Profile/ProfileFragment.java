@@ -95,42 +95,46 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    /* get jsonString from API */
-                    String jsonString = response.body().string();
 
-                    /* parse json */
-                    JSONObject userJSON = new JSONObject(jsonString);
-                    Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
+                    if(response.code()==401){
+                        MainActivity.getInstance().showNotAuthorizedModal(0);
+                    }else {
+                        /* get jsonString from API */
+                        String jsonString = response.body().string();
 
-                    /* check values an show  */
-                    float size, weight;
-                    long dateOfBirth;
-                    byte[] image = null;
+                        /* parse json */
+                        JSONObject userJSON = new JSONObject(jsonString);
+                        Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
 
-                    try {
-                        size = (float) userJSON.getDouble("size");
-                    } catch (Exception e) {
-                        size = 0;
+                        /* check values an show  */
+                        float size, weight;
+                        long dateOfBirth;
+                        byte[] image = null;
+
+                        try {
+                            size = (float) userJSON.getDouble("size");
+                        } catch (Exception e) {
+                            size = 0;
+                        }
+
+                        try {
+                            weight = (float) userJSON.getDouble("weight");
+                        } catch (Exception e) {
+                            weight = 0;
+                        }
+
+                        try {
+                            dateOfBirth = userJSON.getLong("dateOfBirth");
+                        } catch (Exception e) {
+                            dateOfBirth = 0;
+                        }
+
+                        if (userJSON.getString("image") != "null") {
+                            image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
+                        }
+
+                        setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), image);
                     }
-
-                    try {
-                        weight = (float) userJSON.getDouble("weight");
-                    } catch (Exception e) {
-                        weight = 0;
-                    }
-
-                    try {
-                        dateOfBirth = userJSON.getLong("dateOfBirth");
-                    } catch (Exception e) {
-                        dateOfBirth = 0;
-                    }
-
-                    if (userJSON.getString("image") != "null") {
-                        image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
-                    }
-
-                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), image);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
