@@ -21,6 +21,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -689,7 +690,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
-        Call<ResponseBody> call = apiInterface.synchronizeData(base,map);
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<ResponseBody> call = apiInterface.synchronizeData(authString,map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
@@ -789,7 +791,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         /* start a call */
                         String base = currentUser.getMail() + ":" + currentUser.getPassword();
-                        Call<ResponseBody> call2 = apiInterface.updateUser(base, map);
+                        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+
+                        Call<ResponseBody> call2 = apiInterface.updateUser(authString, map);
 
                         call2.enqueue(new Callback<ResponseBody>() {
 

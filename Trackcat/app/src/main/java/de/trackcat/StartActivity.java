@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 
 import com.karan.churi.PermissionManager.PermissionManager;
@@ -87,7 +88,9 @@ public class StartActivity extends AppCompatActivity {
 
             /* start a call */
             String base = currentUser.getMail() + ":" + currentUser.getPassword();
-            Call<ResponseBody> call = apiInterface.getUserByEmail(base, map);
+            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+            Call<ResponseBody> call = apiInterface.getUserByEmail(authString, map);
 
             call.enqueue(new Callback<ResponseBody>() {
 
@@ -159,7 +162,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onDestroy() {
         try {
             progressDialog.dismiss();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.toString();
         }
         super.onDestroy();

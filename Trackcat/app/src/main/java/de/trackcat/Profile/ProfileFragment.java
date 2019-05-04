@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -86,7 +87,8 @@ public class ProfileFragment extends Fragment {
 
         /* start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
-        Call<ResponseBody> call = apiInterface.getUserByEmail(base,map);
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<ResponseBody> call = apiInterface.getUserByEmail(authString,map);
 
         call.enqueue(new Callback<ResponseBody>() {
 

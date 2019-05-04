@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,7 +137,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         /* start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
-        Call<ResponseBody> call = apiInterface.getUserByEmail(base, map);
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<ResponseBody> call = apiInterface.getUserByEmail(authString, map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
@@ -349,6 +351,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     boolean changes = false;
                     HashMap<String, String> map = new HashMap<>();
                     String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                    String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
                     map.put("email", currentUser.getMail());
 
                     if (imageChanged) {
@@ -406,7 +410,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         APIClient apiInterface = retrofit.create(APIClient.class);
 
                         /* start a call */
-                        Call<ResponseBody> call = apiInterface.updateUser(base,map);
+                        Call<ResponseBody> call = apiInterface.updateUser(authString,map);
 
                         call.enqueue(new Callback<ResponseBody>() {
 
