@@ -76,5 +76,6 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
 
     implementation 'com.soundcloud.android:android-crop:1.0.1@aar'
+    implementation 'com.github.yalantis:ucrop:2.2.3'
 
 }

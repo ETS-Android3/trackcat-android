@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Trackcat</string>
     <string name="recordListTitle">Aufnahmen</string>
     <string name="recordLastListTitle">Letzte Aktivitäten</string>
@@ -94,5 +94,13 @@
     <!-- profile strings -->
     <string name="noInformation">keine Angabe</string>
     <string name="noBMI">Close</string>
+
+    <!-- cropView strings -->
+    <string name="ucrop_crop" tools:ignore="ExtraTranslation">Hallo</string>
+    <string name="ucrop_rotate">Rotieren</string>
+    <string name="ucrop_scale">Skalieren</string>
+
+
+
 
 </resources>

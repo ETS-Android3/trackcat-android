@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -30,6 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.soundcloud.android.crop.Crop;
+import com.yalantis.ucrop.UCrop;
+import com.yalantis.ucrop.UCropActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +62,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class EditProfileFragment extends Fragment implements View.OnClickListener {
@@ -670,13 +675,20 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == READ_REQUEST_CODE && resultCode == RESULT_OK) {
            Bitmap img = null;
             if (resultData != null) {
                 imageChanged = true;
                 if (MainActivity.getHints()) {
                     Toast.makeText(getContext(), "Bild ausgewählt!", Toast.LENGTH_SHORT).show();
+
+
+                    //
                     beginCrop(resultData.getData());
+
+
+
+
                 }
 
                 try {
@@ -686,9 +698,14 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     e.printStackTrace();
                 }
             }
-        }else if (requestCode == Crop.REQUEST_CROP) {
+        }else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
            // print("Crop.REQUEST_CROP called");
-            handleCrop(resultCode, resultData);
+
+
+          //  final Uri resultUri = UCrop.getOutput(resultData);
+            imageUpload.setImageURI(null);
+            imageUpload.setImageURI(UCrop.getOutput(resultData));
+           // handleCrop(resultCode, resultData);
           //  print("handleCrop called and came to next line");
         }
     }
@@ -697,14 +714,39 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
       //  print("Crop has begun");
 
 
-        Uri destination = Uri.fromFile(new File(getContext().getCacheDir(), "cropped"));
-        Crop.of(source, destination).asSquare().start(getActivity(), this, Crop.REQUEST_CROP);
+        /* first version */
+       Uri destination = Uri.fromFile(new File(getContext().getCacheDir(), "cropped"));
+      //  Crop.of(source, destination).asSquare().start(getActivity(), this, Crop.REQUEST_CROP);
+
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+        options.setAllowedGestures(UCropActivity.SCALE,UCropActivity.NONE,UCropActivity.NONE);
+       // options.setCompressionQuality(config.quality);
+        // options.setOvalDimmedLayer(config.isOval);
+       // options.setCircleDimmedLayer(config.isOval);
+        options.setShowCropGrid(true);
+        //options.
+      //  options.set
+     //   options.setHideBottomControls(true);
+      //  options.setShowCropFrame(config.showOutLine);
+       // options.setToolbarColor(config.toolbarColor);
+      //  options.setStatusBarColor(config.statusBarColor);
+      //  options.setActiveWidgetColor(Color.BLACK);
+
+        UCrop.of(source, destination)
+                .withAspectRatio(1, 1)
+                .withOptions(options)
+
+                .withMaxResultSize(1000, 1000)
+                .start(getActivity(),this, UCrop.REQUEST_CROP);
+
+
        // print("Crop has ended");
     }
 
     private void handleCrop(int resultCode, Intent result) {
        // print("Came to handleCrop");
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             //Toast.makeText(getActivity(), Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
            // print("RESULT OK");
             //myTVF.setImageURI(Crop.getOutput(result));
