@@ -19,15 +19,15 @@ public interface APIClient {
 
     @Headers({"Accept: application/json"})
     @POST("/getUserByEmailAPI")
-    Call<ResponseBody> getUserByEmail(@Body HashMap<String,String> json);
+    Call<ResponseBody> getUserByEmail(@Header("Authorization") String authHeader,@Body HashMap<String,String> json);
 
     @Headers({"Accept: application/json"})
     @POST("/updateUserAPI")
-    Call<ResponseBody> updateUser(@Body HashMap<String,String> json);
+    Call<ResponseBody> updateUser(@Header("Authorization") String authHeader,@Body HashMap<String,String> json);
 
     @Headers({"Accept: application/json"})
     @POST("/synchronizeDataAPI")
-    Call<ResponseBody> synchronizeData(@Body HashMap<String,String> json);
+    Call<ResponseBody> synchronizeData(@Header("Authorization") String authHeader,@Body HashMap<String,String> json);
 
     @Headers({"Accept: application/json"})
     @POST("/changeUserPasswordAPI")

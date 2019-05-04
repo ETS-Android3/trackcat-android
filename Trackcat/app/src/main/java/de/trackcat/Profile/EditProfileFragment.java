@@ -135,7 +135,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         APIClient apiInterface = retrofit.create(APIClient.class);
 
         /* start a call */
-        Call<ResponseBody> call = apiInterface.getUserByEmail(map);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        Call<ResponseBody> call = apiInterface.getUserByEmail(base, map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
@@ -347,6 +348,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     /* check if values have changed */
                     boolean changes = false;
                     HashMap<String, String> map = new HashMap<>();
+                    String base = currentUser.getMail() + ":" + currentUser.getPassword();
                     map.put("email", currentUser.getMail());
 
                     if (imageChanged) {
@@ -404,7 +406,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         APIClient apiInterface = retrofit.create(APIClient.class);
 
                         /* start a call */
-                        Call<ResponseBody> call = apiInterface.updateUser(map);
+                        Call<ResponseBody> call = apiInterface.updateUser(base,map);
 
                         call.enqueue(new Callback<ResponseBody>() {
 

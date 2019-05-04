@@ -160,7 +160,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         APIClient apiInterface = retrofit.create(APIClient.class);
 
         /* start a call */
-        Call<ResponseBody> call = apiInterface.updateUser(map);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        Call<ResponseBody> call = apiInterface.updateUser(base, map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
