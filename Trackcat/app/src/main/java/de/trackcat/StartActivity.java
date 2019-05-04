@@ -63,11 +63,6 @@ public class StartActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
 
-            /* Load Screen */
-            fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.replace(R.id.mainFrame, new LoadScreenFragment(),
-                    getResources().getString(R.string.fLoadScreen));
-            fragTransaction.commit();
         }
 
         /* set instance */
@@ -129,6 +124,7 @@ public class StartActivity extends AppCompatActivity {
             fastLogIn = false;
             showLoginPage();
         }
+        Log.v("startTest", "---------------------------------------------------------------------");
     }
 
     private void showLoginPage() {
@@ -160,7 +156,11 @@ public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        progressDialog.dismiss();
+        try {
+            progressDialog.dismiss();
+        }catch (Exception e){
+            e.toString();
+        }
         super.onDestroy();
     }
 }
