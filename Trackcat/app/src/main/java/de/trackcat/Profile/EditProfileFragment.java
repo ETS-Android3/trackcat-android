@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,10 +29,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.soundcloud.android.crop.Crop;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -666,20 +671,46 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+           Bitmap img = null;
             if (resultData != null) {
                 imageChanged = true;
                 if (MainActivity.getHints()) {
                     Toast.makeText(getContext(), "Bild ausgewählt!", Toast.LENGTH_SHORT).show();
+                    beginCrop(resultData.getData());
                 }
-                Bitmap img = null;
+
                 try {
                     InputStream stream = getContext().getContentResolver().openInputStream(resultData.getData());
                     img = BitmapFactory.decodeStream(stream);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                ((CircleImageView) view.findViewById(R.id.profile_image_upload)).setImageBitmap(img);
             }
+        }else if (requestCode == Crop.REQUEST_CROP) {
+           // print("Crop.REQUEST_CROP called");
+            handleCrop(resultCode, resultData);
+          //  print("handleCrop called and came to next line");
+        }
+    }
+
+    private void beginCrop(Uri source) {
+      //  print("Crop has begun");
+
+
+        Uri destination = Uri.fromFile(new File(getContext().getCacheDir(), "cropped"));
+        Crop.of(source, destination).asSquare().start(getActivity(), this, Crop.REQUEST_CROP);
+       // print("Crop has ended");
+    }
+
+    private void handleCrop(int resultCode, Intent result) {
+       // print("Came to handleCrop");
+        if (resultCode == Activity.RESULT_OK) {
+            //Toast.makeText(getActivity(), Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
+           // print("RESULT OK");
+            //myTVF.setImageURI(Crop.getOutput(result));
+            imageUpload.setImageURI(Crop.getOutput(result));
+        } else if (resultCode == Crop.RESULT_ERROR) {
+            Toast.makeText(getActivity(), Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
