@@ -19,7 +19,7 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar.Preview"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
 

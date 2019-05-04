@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } catch (NullPointerException e) {
 
         }
-        MainActivity.getInstance().stopService(new Intent(MainActivity.getInstance(), Locator.class));
+        this.stopService(new Intent(this, Locator.class));
 
         isActiv = false;
 
@@ -215,13 +215,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Startseite definieren */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (isActiv) {
+       /* if (isActiv) {
             Toast.makeText(this, "Die App läuft bereits in einer anderen Instanz",
                     Toast.LENGTH_LONG).show();
             finish();
         } else {
             isActiv = true;
-        }
+        }*/
         /* Instanz für spätere Objekte speichern */
         instance = this;
         recordFragment = new RecordFragment();
@@ -419,6 +419,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Runnable() {
                     public void run() {
 
+                        finish();
+
                         /* remove user from local db */
                         List<User> deletedUsers = userDAO.readAll();
                         for (User user : deletedUsers) {
@@ -430,7 +432,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         intent.putExtra("isLogout", true);
 
                         startActivity(intent);
-                        finish();
                     }
                 }, 3000);
     }
@@ -687,7 +688,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         APIClient apiInterface = retrofit.create(APIClient.class);
 
         /* start a call */
-        Call<ResponseBody> call = apiInterface.synchronizeData(map);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        Call<ResponseBody> call = apiInterface.synchronizeData(base,map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
@@ -786,7 +788,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         APIClient apiInterface = retrofit.create(APIClient.class);
 
                         /* start a call */
-                        Call<ResponseBody> call2 = apiInterface.updateUser(map);
+                        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                        Call<ResponseBody> call2 = apiInterface.updateUser(base, map);
 
                         call2.enqueue(new Callback<ResponseBody>() {
 

@@ -172,4 +172,8 @@
         <item name="android:textColor">?attr/colorAccent</item>
     </style>
 
+    <style name="Theme.AppCompat.Light.NoActionBar.Preview" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
 </resources>
