@@ -710,7 +710,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             //myTVF.setImageURI(Crop.getOutput(result));
             imageUpload.setImageURI(Crop.getOutput(result));
         } else if (resultCode == Crop.RESULT_ERROR) {
-            Toast.makeText(getActivity(), Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
+           // Toast.makeText(getActivity(), Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
