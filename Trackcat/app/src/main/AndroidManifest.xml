@@ -56,5 +56,13 @@
             android:name="de.trackcat.Recording.Locator"
             android:enabled="true" />
 
+        <!-- Crop Image View -->
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.Preview"/>
+
     </application>
 </manifest>
