@@ -31,13 +31,7 @@
     <!-- Einstellungen -->
     <string name="category1">Allgemeines</string>
 
-    <string name="category2">Exportmöglichkeiten</string>
-    <string name="export_options_all_options">Aktueller Benutzer (ohne Routen)</string>
-    <string name="export_options_all_full_user">Aktueller Benutzer (mit Routen) </string>
-    <string name="export_options_all_route">Routen des aktuellen Benutzers</string>
-    <string name="export_options_all_users">Alle Daten (alle Benutzer mit allen Routen)</string>
-
-    <string name="category3">Über TrackCat</string>
+    <string name="category3">Über Trackcat</string>
     <string name="aboutApp">TrackCat ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
     <string name="cVersion_title">Version</string>
     <string name="cVersion_summary">1.6.7</string>
@@ -99,8 +93,5 @@
     <string name="ucrop_rotate">Rotieren</string>
     <string name="ucrop_scale">Skalieren</string>
     <string name="selectImage">Bitte wählen Sie ein Profilbild aus</string>
-
-
-
 
 </resources>
