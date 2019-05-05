@@ -6,6 +6,8 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -13,10 +15,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,8 +48,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -111,7 +118,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         /* check changed values */
         imageChanged = false;
-        changedUser=false;
+        changedUser = false;
 
         /* set onClick Listener */
         btnSave.setOnClickListener(this);
@@ -283,13 +290,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
 
         /* show toast if user was changed */
-        if(changedUser) {
+        if (changedUser) {
             /* UI-Meldung */
             if (MainActivity.getHints()) {
                 Toast.makeText(getContext(), "Benutzer \"" + user_firstName + " " + user_lastName + "\" wurde erfolgreich geändert!", Toast.LENGTH_LONG).show();
             }
         }
-        changedUser=false;
+        changedUser = false;
     }
 
     @Override
@@ -420,7 +427,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         APIClient apiInterface = retrofit.create(APIClient.class);
 
                         /* start a call */
-                        Call<ResponseBody> call = apiInterface.updateUser(authString,map);
+                        Call<ResponseBody> call = apiInterface.updateUser(authString, map);
 
                         call.enqueue(new Callback<ResponseBody>() {
 
@@ -448,7 +455,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                         loadUser();
 
                                         /* set change variable */
-                                        changedUser=true;
+                                        changedUser = true;
                                     }
 
                                 } catch (IOException e) {
@@ -469,7 +476,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                 loadUser();
 
                                 /* set change variable */
-                                changedUser=true;
+                                changedUser = true;
 
                                 call.cancel();
                             }
@@ -492,13 +499,26 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                 break;
             case R.id.profile_image_upload:
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/*");
-                startActivityForResult(intent, READ_REQUEST_CODE);
-                if (MainActivity.getHints()) {
-                    Toast.makeText(getContext(), "Wählen Sie Ihr Profilbild aus!", Toast.LENGTH_LONG).show();
-                }
+
+                /* create intents */
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickPhoto.setType("image/*");
+                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                /*  Add them to a list */
+                List<Intent> intentList = new ArrayList<>();
+                intentList.add(pickPhoto);
+                intentList.add(takePicture);
+
+                /* create chooser */
+                Intent chooserIntent = null;
+                chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),
+                        getContext().getString(R.string.selectImage));
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
+
+                /* startActivityForResult */
+                startActivityForResult(chooserIntent, READ_REQUEST_CODE);
+
                 break;
             case R.id.input_dayOfBirth:
                 int day, month, year;
@@ -676,19 +696,14 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == READ_REQUEST_CODE && resultCode == RESULT_OK) {
-           Bitmap img = null;
+            Bitmap img = null;
             if (resultData != null) {
                 imageChanged = true;
                 if (MainActivity.getHints()) {
                     Toast.makeText(getContext(), "Bild ausgewählt!", Toast.LENGTH_SHORT).show();
 
-
-                    //
+                    /* crop image */
                     beginCrop(resultData.getData());
-
-
-
-
                 }
 
                 try {
@@ -698,63 +713,59 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     e.printStackTrace();
                 }
             }
-        }else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
-           // print("Crop.REQUEST_CROP called");
+        } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
 
-
-          //  final Uri resultUri = UCrop.getOutput(resultData);
+            /* set image in imageView */
             imageUpload.setImageURI(null);
             imageUpload.setImageURI(UCrop.getOutput(resultData));
-           // handleCrop(resultCode, resultData);
-          //  print("handleCrop called and came to next line");
+
         }
     }
 
     private void beginCrop(Uri source) {
-      //  print("Crop has begun");
 
+        /* set destination */
+        Uri destination = Uri.fromFile(new File(getContext().getCacheDir(), "cropped"));
 
-        /* first version */
-       Uri destination = Uri.fromFile(new File(getContext().getCacheDir(), "cropped"));
-      //  Crop.of(source, destination).asSquare().start(getActivity(), this, Crop.REQUEST_CROP);
+        /* get Theme colors */
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getActivity().getTheme();
 
+        /* color Primary */
+        theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true);
+        TypedArray arr = getActivity().obtainStyledAttributes(typedValue.data, new int[]{android.R.attr.colorPrimary});
+        int primaryColor = arr.getColor(0, -1);
+
+        /* color Secondary */
+        theme.resolveAttribute(android.R.attr.statusBarColor, typedValue, true);
+        TypedArray arr2 = getActivity().obtainStyledAttributes(typedValue.data, new int[]{android.R.attr.statusBarColor});
+        int secondaryColor = arr2.getColor(0, -1);
+
+        /* text color primary */
+        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
+        TypedArray arr3 =
+                getActivity().obtainStyledAttributes(typedValue.data, new int[]{
+                        android.R.attr.textColorPrimary});
+        int textColorPrimary = arr3.getColor(0, -1);
+
+        /* set crop options */
         UCrop.Options options = new UCrop.Options();
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
-        options.setAllowedGestures(UCropActivity.SCALE,UCropActivity.NONE,UCropActivity.NONE);
-       // options.setCompressionQuality(config.quality);
-        // options.setOvalDimmedLayer(config.isOval);
-       // options.setCircleDimmedLayer(config.isOval);
+        options.setAllowedGestures(UCropActivity.SCALE, UCropActivity.NONE, UCropActivity.NONE);
+        options.setToolbarColor(primaryColor);
+        options.setToolbarWidgetColor(textColorPrimary);
+        options.setStatusBarColor(secondaryColor);
         options.setShowCropGrid(true);
-        //options.
-      //  options.set
-     //   options.setHideBottomControls(true);
-      //  options.setShowCropFrame(config.showOutLine);
-       // options.setToolbarColor(config.toolbarColor);
-      //  options.setStatusBarColor(config.statusBarColor);
-      //  options.setActiveWidgetColor(Color.BLACK);
 
+        /* crop image */
         UCrop.of(source, destination)
                 .withAspectRatio(1, 1)
                 .withOptions(options)
 
                 .withMaxResultSize(1000, 1000)
-                .start(getActivity(),this, UCrop.REQUEST_CROP);
-
-
-       // print("Crop has ended");
+                .start(getActivity(), this, UCrop.REQUEST_CROP);
     }
 
-    private void handleCrop(int resultCode, Intent result) {
-       // print("Came to handleCrop");
-        if (resultCode == RESULT_OK) {
-            //Toast.makeText(getActivity(), Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
-           // print("RESULT OK");
-            //myTVF.setImageURI(Crop.getOutput(result));
-            imageUpload.setImageURI(Crop.getOutput(result));
-        } else if (resultCode == Crop.RESULT_ERROR) {
-           // Toast.makeText(getActivity(), Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public boolean validate() {
         boolean valid = true;

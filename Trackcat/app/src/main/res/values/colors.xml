@@ -25,7 +25,7 @@
     <!-- REMOVE COLOR RECORDS -->
     <color name="bg_row_background">#fa315b</color>
 
-    <color name="ucrop_color_toolbar">#394b54</color>
-    <color name="ucrop_color_statusbar">#232f34</color>
-<color name="ucrop_color_widget_background">#DD0D0D</color>
+    <!-- COLOR CROPVIEW-->
+    <color name="ucrop_color_widget_background">#DD0D0D</color>
+    <color name="ucrop_color_widget_rotate_mid_line">#DD0D0D</color>
 </resources>

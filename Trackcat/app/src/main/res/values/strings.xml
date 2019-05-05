@@ -96,9 +96,9 @@
     <string name="noBMI">Close</string>
 
     <!-- cropView strings -->
-    <string name="ucrop_crop" tools:ignore="ExtraTranslation">Hallo</string>
     <string name="ucrop_rotate">Rotieren</string>
     <string name="ucrop_scale">Skalieren</string>
+    <string name="selectImage">Bitte wählen Sie ein Profilbild aus</string>
 
 
 
