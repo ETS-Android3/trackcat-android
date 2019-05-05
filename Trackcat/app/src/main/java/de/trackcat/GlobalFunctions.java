@@ -9,12 +9,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.security.AccessController.getContext;
 
@@ -98,6 +102,26 @@ public class GlobalFunctions {
 
         Log.d("LALALALAL", "Time : " + ts);
         return tsLong;
+    }
+
+
+    public static boolean validatePassword(TextView passwordTextView){
+
+        boolean valid= true;
+        String password = passwordTextView.getText().toString();
+
+        /* validate password */
+        Pattern pattern2 = Pattern.compile(MainActivity.getInstance().getResources().getString(R.string.rPassword));
+        Matcher matcher2 = pattern2.matcher(password);
+
+        if (!matcher2.matches()) {
+            passwordTextView.setError(MainActivity.getInstance().getResources().getString(R.string.errorMsgPassword));
+            Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
+            valid = false;
+        } else {
+            passwordTextView.setError(null);
+        }
+        return valid;
     }
 
 

@@ -701,104 +701,136 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 User user = userDAO.read(getActiveUser());
                 TextView password = alertView.findViewById(R.id.input_password);
 
-                Retrofit retrofit = APIConnector.getRetrofit();
-                APIClient apiInterface = retrofit.create(APIClient.class);
-                String base = user.getMail() + ":" + password;
+                if (GlobalFunctions.validatePassword(password)) {
 
-                // TODO hashsalt Password
-                /* start a call */
-                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                Call<ResponseBody> call = apiInterface.getUser(authString);
+                    Retrofit retrofit = APIConnector.getRetrofit();
+                    APIClient apiInterface = retrofit.create(APIClient.class);
+                    String base = user.getMail() + ":" + password.getText();
 
-                call.enqueue(new Callback<ResponseBody>() {
+                    // TODO hashsalt Password
+                    /* start a call */
+                    String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                    Call<ResponseBody> call = apiInterface.getUser(authString);
 
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        try {
+                    call.enqueue(new Callback<ResponseBody>() {
 
-                            /* get jsonString from API */
-                            String jsonString = response.body().string();
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            try {
 
-                            if (response.code() == 401) {
-                              //  showNotAuthorizedModal();
-                                Toast.makeText(instance, "Ihre Eingabe war nicht korrekt!", Toast.LENGTH_LONG).show();
-                            } else {
+                                if (response.code() == 401) {
+                                    showNotAuthorizedModal(type);
+                                    Toast.makeText(instance, "Ihre Eingabe war nicht korrekt!", Toast.LENGTH_LONG).show();
+                                } else {
 
-                                /* parse json */
-                                JSONObject mainObject = new JSONObject(jsonString);
-                                /* open activity if login success*/
-                                if (mainObject.getString("success").equals("0")) {
+                                    /* get jsonString from API */
+                                    String jsonString = response.body().string();
 
-                                    /* get userObject from Json */
-                                    JSONObject userObject = mainObject.getJSONObject("userData");
+                                    /* parse json */
+                                    JSONObject mainObject = new JSONObject(jsonString);
+                                    /* open activity if login success*/
+                                    if (mainObject.getString("success").equals("0")) {
 
-                                    /* save logged user in db */
-                                    User loggedUser = new User();
-                                    loggedUser.setIdUsers(userObject.getInt("id"));
-                                    loggedUser.setMail(userObject.getString("email"));
-                                    loggedUser.setFirstName(userObject.getString("firstName"));
-                                    loggedUser.setLastName(userObject.getString("lastName"));
-                                    if (userObject.getString("image") != "null") {
-                                        loggedUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
-                                    }
-                                    loggedUser.setGender(userObject.getInt("gender"));
-                                    if (userObject.getInt("darkTheme") == 0) {
-                                        loggedUser.setDarkThemeActive(false);
-                                    } else {
-                                        loggedUser.setDarkThemeActive(true);
-                                    }
+                                        /* get userObject from Json */
+                                        JSONObject userObject = mainObject.getJSONObject("userData");
 
-                                    if (userObject.getInt("hints") == 0) {
-                                        loggedUser.setHintsActive(false);
-                                    } else {
-                                        loggedUser.setHintsActive(true);
-                                    }
+                                        /* save logged user in db */
+                                        User loggedUser = new User();
+                                        loggedUser.setIdUsers(userObject.getInt("id"));
+                                        loggedUser.setMail(userObject.getString("email"));
+                                        loggedUser.setFirstName(userObject.getString("firstName"));
+                                        loggedUser.setLastName(userObject.getString("lastName"));
+                                        if (userObject.getString("image") != "null") {
+                                            loggedUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
+                                        }
+                                        loggedUser.setGender(userObject.getInt("gender"));
+                                        if (userObject.getInt("darkTheme") == 0) {
+                                            loggedUser.setDarkThemeActive(false);
+                                        } else {
+                                            loggedUser.setDarkThemeActive(true);
+                                        }
 
-                                    try {
-                                        loggedUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
-                                    } catch (Exception e) {
-                                    }
+                                        if (userObject.getInt("hints") == 0) {
+                                            loggedUser.setHintsActive(false);
+                                        } else {
+                                            loggedUser.setHintsActive(true);
+                                        }
 
-                                    try {
-                                        loggedUser.setLastLogin(userObject.getLong("lastLogin"));
-                                    } catch (Exception e) {
-                                    }
+                                        try {
+                                            loggedUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
+                                        } catch (Exception e) {
+                                        }
 
-                                    try {
-                                        loggedUser.setWeight((float) userObject.getDouble("weight"));
-                                    } catch (Exception e) {
-                                    }
+                                        try {
+                                            loggedUser.setLastLogin(userObject.getLong("lastLogin"));
+                                        } catch (Exception e) {
+                                        }
 
-                                    try {
-                                        loggedUser.setSize((float) userObject.getDouble("size"));
-                                    } catch (Exception e) {
-                                    }
-                                    try {
-                                        loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
-                                    } catch (Exception e) {
-                                    }
+                                        try {
+                                            loggedUser.setWeight((float) userObject.getDouble("weight"));
+                                        } catch (Exception e) {
+                                        }
 
-                                    loggedUser.setPassword(userObject.getString("password"));
-                                    loggedUser.setTimeStamp(userObject.getLong("timeStamp"));
-                                    loggedUser.isSynchronised(true);
-                                    userDAO.update(getActiveUser(), loggedUser);
+                                        try {
+                                            loggedUser.setSize((float) userObject.getDouble("size"));
+                                        } catch (Exception e) {
+                                        }
+                                        try {
+                                            loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                                        } catch (Exception e) {
+                                        }
 
-                                    /* restart Fragment */
-                                    if (type == 0) {
-                                        loadProfile(true);
+                                        loggedUser.setPassword(userObject.getString("password"));
+                                        loggedUser.setTimeStamp(userObject.getLong("timeStamp"));
+                                        loggedUser.isSynchronised(true);
+                                        userDAO.update(getActiveUser(), loggedUser);
+
+                                        /* restart ProfileFragment */
+                                        if (type == 0) {
+                                            loadProfile(false);
+                                            /* restart EditProfileFragment */
+                                        } else if (type == 1) {
+                                            loadEditProfile();
+                                            /* restart Fragement after synchronize Data failed */
+                                        } else if (type == 2) {
+
+                                            if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
+                                                loadDashboard();
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
+                                                loadRecord();
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
+                                                loadRecordList();
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
+                                                //TODO
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
+                                                //TODO
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
+                                                loadProfile(false);
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null) {
+                                                loadEditProfile();
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
+                                                //TODO
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
+                                                loadFriendSystem();
+                                            }
+                                        }
                                     }
                                 }
+                            } catch (Exception e) {
+
                             }
-                        } catch (Exception e) {
-
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        call.cancel();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            call.cancel();
+                            Toast.makeText(instance, "Bitte überprüfen Sie Ihre Internetverbindung.", Toast.LENGTH_LONG).show();
+                            showNotAuthorizedModal(type);
+                        }
+                    });
+                } else {
+                    showNotAuthorizedModal(type);
+                }
             }
         });
 
@@ -831,20 +863,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 try {
-                    /* get jsonString from API */
-                    String jsonString = response.body().string();
+                    if (response.code() == 401) {
+                        MainActivity.getInstance().showNotAuthorizedModal(2);
+                    } else {
+                        /* get jsonString from API */
+                        String jsonString = response.body().string();
 
-                    /* parse json */
-                    JSONObject mainObject = new JSONObject(jsonString);
+                        /* parse json */
+                        JSONObject mainObject = new JSONObject(jsonString);
 
-                    /* user on server is new */
-                    if (mainObject.getString("state").equals("0")) {
+                        /* user on server is new */
+                        if (mainObject.getString("state").equals("0")) {
 
-                        /* get userObject from Json */
-                        JSONObject userObject = mainObject.getJSONObject("user");
-
-                        /* check if password changed */
-                        if (userObject.getString("password").equals(currentUser.getPassword())) {
+                            /* get userObject from Json */
+                            JSONObject userObject = mainObject.getJSONObject("user");
 
                             /* save user in db */
                             currentUser.setIdUsers(userObject.getInt("id"));
@@ -898,68 +930,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             /* set drawe profile information */
                             setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
-                        } else {
-                            Toast.makeText(instance, "Ihr Passwort hat sich geändert, bitte loggen Sie sich erneut ein.", Toast.LENGTH_LONG).show();
-                            logout();
-                        }
-
-                        /* user on device is new */
-                    } else if (mainObject.getString("state").equals("1")) {
-
-                        /* change values in global DB*/
-                        HashMap<String, String> map = new HashMap<>();
-                        map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
-                        map.put("email", currentUser.getMail());
-                        map.put("firstName", currentUser.getFirstName());
-                        map.put("lastName", currentUser.getLastName());
-                        map.put("size", "" + currentUser.getWeight());
-                        map.put("weight", "" + currentUser.getWeight());
-                        map.put("gender", "" + currentUser.getGender());
-                        map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
-                        map.put("timeStamp", "" + currentUser.getTimeStamp());
-
-                        Retrofit retrofit = APIConnector.getRetrofit();
-                        APIClient apiInterface = retrofit.create(APIClient.class);
-
-                        /* start a call */
-                        String base = currentUser.getMail() + ":" + currentUser.getPassword();
-                        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
 
-                        Call<ResponseBody> call2 = apiInterface.updateUser(authString, map);
+                            /* user on device is new */
+                        } else if (mainObject.getString("state").equals("1")) {
 
-                        call2.enqueue(new Callback<ResponseBody>() {
+                            /* change values in global DB*/
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
+                            map.put("email", currentUser.getMail());
+                            map.put("firstName", currentUser.getFirstName());
+                            map.put("lastName", currentUser.getLastName());
+                            map.put("size", "" + currentUser.getWeight());
+                            map.put("weight", "" + currentUser.getWeight());
+                            map.put("gender", "" + currentUser.getGender());
+                            map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
+                            map.put("timeStamp", "" + currentUser.getTimeStamp());
 
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            Retrofit retrofit = APIConnector.getRetrofit();
+                            APIClient apiInterface = retrofit.create(APIClient.class);
 
-                                try {
-                                    /* get jsonString from API */
-                                    String jsonString = response.body().string();
+                            /* start a call */
+                            String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
-                                    /* parse json */
-                                    JSONObject successJSON = new JSONObject(jsonString);
 
-                                    if (successJSON.getString("success").equals("0")) {
+                            Call<ResponseBody> call2 = apiInterface.updateUser(authString, map);
 
-                                        /* save is Synchronized value as true */
-                                        currentUser.isSynchronised(true);
-                                        userDAO.update(currentUser.getId(), currentUser);
+                            call2.enqueue(new Callback<ResponseBody>() {
 
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                                    try {
+                                        /* get jsonString from API */
+                                        String jsonString = response.body().string();
+
+                                        /* parse json */
+                                        JSONObject successJSON = new JSONObject(jsonString);
+
+                                        if (successJSON.getString("success").equals("0")) {
+
+                                            /* save is Synchronized value as true */
+                                            currentUser.isSynchronised(true);
+                                            userDAO.update(currentUser.getId(), currentUser);
+
+                                        }
+
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                call2.cancel();
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    call2.cancel();
+                                }
+                            });
+                        }
                     }
 
                 } catch (Exception e) {

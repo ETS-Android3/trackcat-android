@@ -17,20 +17,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:paddingLeft="10dp"
             android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:text="Sie sind nicht autorisiert. Bitte geben sie entweder Ihr Passwort ein oder melden Sie sich ab."
+            android:text="Sie sind nicht mehr autorisiert!"
             android:textSize="19dip"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/warningText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingTop="10dp"
+            android:text="Bitte geben sie entweder Ihr Passwort erneut ein oder melden Sie sich ab."
+            android:textSize="19dip" />
 
         <!-- Password Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:theme="@style/EditTextTheme">
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="8dp">
 
             <EditText
                 android:id="@+id/input_password"
@@ -39,8 +45,7 @@
                 android:hint="Passwort"
                 android:inputType="textPassword"
                 android:maxLength="@integer/iPassword"
-                android:text="Geheim-123"
-                android:textColor="@color/ap_black" />
+                android:text="Geheim-123" />
         </android.support.design.widget.TextInputLayout>
 
 

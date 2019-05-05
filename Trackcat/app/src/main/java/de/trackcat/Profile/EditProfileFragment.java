@@ -1,6 +1,5 @@
 package de.trackcat.Profile;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -18,7 +16,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
@@ -35,7 +32,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.soundcloud.android.crop.Crop;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
 
@@ -162,42 +158,47 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    /* get jsonString from API */
-                    String jsonString = response.body().string();
 
-                    /* parse json */
-                    JSONObject userJSON = new JSONObject(jsonString);
-                    Log.d(getResources().getString(R.string.app_name) + "-EditProfileInformation", "Edit-Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
+                    if (response.code() == 401) {
+                        MainActivity.getInstance().showNotAuthorizedModal(1);
+                    } else {
+                        /* get jsonString from API */
+                        String jsonString = response.body().string();
 
-                    /* check values an show  */
-                    byte[] image = null;
+                        /* parse json */
+                        JSONObject userJSON = new JSONObject(jsonString);
+                        Log.d(getResources().getString(R.string.app_name) + "-EditProfileInformation", "Edit-Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
 
-                    try {
-                        old_size = (float) userJSON.getDouble("size");
-                    } catch (Exception e) {
-                        old_size = 0;
+                        /* check values an show  */
+                        byte[] image = null;
+
+                        try {
+                            old_size = (float) userJSON.getDouble("size");
+                        } catch (Exception e) {
+                            old_size = 0;
+                        }
+
+                        try {
+                            old_weight = (float) userJSON.getDouble("weight");
+                        } catch (Exception e) {
+                            old_weight = 0;
+                        }
+
+                        try {
+                            old_dateOfBirth = userJSON.getLong("dateOfBirth");
+                        } catch (Exception e) {
+                            old_dateOfBirth = 0;
+                        }
+
+                        if (userJSON.getString("image") != "null") {
+                            image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
+                        }
+                        old_firstName = userJSON.getString("firstName");
+                        old_lastName = userJSON.getString("lastName");
+                        old_gender = userJSON.getInt("gender");
+
+                        setProfileValues(old_firstName, old_lastName, old_dateOfBirth, old_size, old_weight, old_gender, image);
                     }
-
-                    try {
-                        old_weight = (float) userJSON.getDouble("weight");
-                    } catch (Exception e) {
-                        old_weight = 0;
-                    }
-
-                    try {
-                        old_dateOfBirth = userJSON.getLong("dateOfBirth");
-                    } catch (Exception e) {
-                        old_dateOfBirth = 0;
-                    }
-
-                    if (userJSON.getString("image") != "null") {
-                        image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
-                    }
-                    old_firstName = userJSON.getString("firstName");
-                    old_lastName = userJSON.getString("lastName");
-                    old_gender = userJSON.getInt("gender");
-
-                    setProfileValues(old_firstName, old_lastName, old_dateOfBirth, old_size, old_weight, old_gender, image);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -435,27 +436,32 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                                 try {
-                                    /* get jsonString from API */
-                                    String jsonString = response.body().string();
 
-                                    /* parse json */
-                                    JSONObject successJSON = new JSONObject(jsonString);
+                                    if (response.code() == 401) {
+                                        MainActivity.getInstance().showNotAuthorizedModal(1);
+                                    } else {
+                                        /* get jsonString from API */
+                                        String jsonString = response.body().string();
 
-                                    if (successJSON.getString("success").equals("0")) {
+                                        /* parse json */
+                                        JSONObject successJSON = new JSONObject(jsonString);
 
-                                        /* save is Synchronized value as true */
-                                        currentUser.isSynchronised(true);
-                                        userDAO.update(currentUser.getId(), currentUser);
+                                        if (successJSON.getString("success").equals("0")) {
 
-                                        /* set btn enable */
-                                        btnSave.setEnabled(true);
-                                        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                                            /* save is Synchronized value as true */
+                                            currentUser.isSynchronised(true);
+                                            userDAO.update(currentUser.getId(), currentUser);
 
-                                        /* load user */
-                                        loadUser();
+                                            /* set btn enable */
+                                            btnSave.setEnabled(true);
+                                            btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
 
-                                        /* set change variable */
-                                        changedUser = true;
+                                            /* load user */
+                                            loadUser();
+
+                                            /* set change variable */
+                                            changedUser = true;
+                                        }
                                     }
 
                                 } catch (IOException e) {
