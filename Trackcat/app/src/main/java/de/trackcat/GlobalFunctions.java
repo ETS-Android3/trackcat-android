@@ -1,13 +1,22 @@
 package de.trackcat;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
+
+import static java.security.AccessController.getContext;
 
 public class GlobalFunctions {
 
@@ -90,4 +99,6 @@ public class GlobalFunctions {
         Log.d("LALALALAL", "Time : " + ts);
         return tsLong;
     }
+
+
 }

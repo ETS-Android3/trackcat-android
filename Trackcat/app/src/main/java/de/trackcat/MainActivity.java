@@ -2,6 +2,8 @@ package de.trackcat;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -23,11 +25,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +61,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -148,7 +153,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         notificationManager.cancel(getNOTIFICATION_ID());
         try {
             progressDialog.dismiss();
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         try {
             recordFragment.stopTimer();
             recordFragment = null;
@@ -408,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void logout(){
+    private void logout() {
         /* set wait field */
         progressDialog = new ProgressDialog(MainActivity.this,
                 R.style.AppTheme_Dark_Dialog);
@@ -678,6 +684,132 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void showNotAuthorizedModal(int type) {
+        /* create AlertBox */
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        alert.setTitle("Achtung");
+        LayoutInflater layoutInflater = (LayoutInflater) Objects.requireNonNull(MainActivity.this).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_notauthorized, null, true) : null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            alert.setView(alertView);
+
+        }
+
+        alert.setPositiveButton("Autorisieren", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                User user = userDAO.read(getActiveUser());
+                TextView password = alertView.findViewById(R.id.input_password);
+
+                Retrofit retrofit = APIConnector.getRetrofit();
+                APIClient apiInterface = retrofit.create(APIClient.class);
+                String base = user.getMail() + ":" + password;
+
+                // TODO hashsalt Password
+                /* start a call */
+                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                Call<ResponseBody> call = apiInterface.getUser(authString);
+
+                call.enqueue(new Callback<ResponseBody>() {
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        try {
+
+                            /* get jsonString from API */
+                            String jsonString = response.body().string();
+
+                            if (response.code() == 401) {
+                              //  showNotAuthorizedModal();
+                                Toast.makeText(instance, "Ihre Eingabe war nicht korrekt!", Toast.LENGTH_LONG).show();
+                            } else {
+
+                                /* parse json */
+                                JSONObject mainObject = new JSONObject(jsonString);
+                                /* open activity if login success*/
+                                if (mainObject.getString("success").equals("0")) {
+
+                                    /* get userObject from Json */
+                                    JSONObject userObject = mainObject.getJSONObject("userData");
+
+                                    /* save logged user in db */
+                                    User loggedUser = new User();
+                                    loggedUser.setIdUsers(userObject.getInt("id"));
+                                    loggedUser.setMail(userObject.getString("email"));
+                                    loggedUser.setFirstName(userObject.getString("firstName"));
+                                    loggedUser.setLastName(userObject.getString("lastName"));
+                                    if (userObject.getString("image") != "null") {
+                                        loggedUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
+                                    }
+                                    loggedUser.setGender(userObject.getInt("gender"));
+                                    if (userObject.getInt("darkTheme") == 0) {
+                                        loggedUser.setDarkThemeActive(false);
+                                    } else {
+                                        loggedUser.setDarkThemeActive(true);
+                                    }
+
+                                    if (userObject.getInt("hints") == 0) {
+                                        loggedUser.setHintsActive(false);
+                                    } else {
+                                        loggedUser.setHintsActive(true);
+                                    }
+
+                                    try {
+                                        loggedUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
+                                    } catch (Exception e) {
+                                    }
+
+                                    try {
+                                        loggedUser.setLastLogin(userObject.getLong("lastLogin"));
+                                    } catch (Exception e) {
+                                    }
+
+                                    try {
+                                        loggedUser.setWeight((float) userObject.getDouble("weight"));
+                                    } catch (Exception e) {
+                                    }
+
+                                    try {
+                                        loggedUser.setSize((float) userObject.getDouble("size"));
+                                    } catch (Exception e) {
+                                    }
+                                    try {
+                                        loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                                    } catch (Exception e) {
+                                    }
+
+                                    loggedUser.setPassword(userObject.getString("password"));
+                                    loggedUser.setTimeStamp(userObject.getLong("timeStamp"));
+                                    loggedUser.isSynchronised(true);
+                                    userDAO.update(getActiveUser(), loggedUser);
+
+                                    /* restart Fragment */
+                                    if (type == 0) {
+                                        loadProfile(true);
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        call.cancel();
+                    }
+                });
+            }
+        });
+
+        alert.setNegativeButton("Abmelden", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                logout();
+            }
+        });
+        alert.show();
+    }
 
     private void synchronizeUser(User currentUser) {
         /* send user timestamp to bb */
@@ -691,7 +823,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        Call<ResponseBody> call = apiInterface.synchronizeData(authString,map);
+        Call<ResponseBody> call = apiInterface.synchronizeData(authString, map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
@@ -712,7 +844,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         JSONObject userObject = mainObject.getJSONObject("user");
 
                         /* check if password changed */
-                        if(userObject.getString("password").equals(currentUser.getPassword())) {
+                        if (userObject.getString("password").equals(currentUser.getPassword())) {
 
                             /* save user in db */
                             currentUser.setIdUsers(userObject.getInt("id"));
@@ -766,7 +898,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             /* set drawe profile information */
                             setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
-                        }else{
+                        } else {
                             Toast.makeText(instance, "Ihr Passwort hat sich geändert, bitte loggen Sie sich erneut ein.", Toast.LENGTH_LONG).show();
                             logout();
                         }
