@@ -30,6 +30,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
@@ -39,15 +40,22 @@ import android.widget.Toast;
 
 import com.karan.churi.PermissionManager.PermissionManager;
 
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
 import de.trackcat.CustomElements.CustomLocation;
 import de.trackcat.Database.DAO.RouteDAO;
+import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Route;
+import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
 import de.trackcat.NotificationActionReciever;
 import de.trackcat.R;
 import de.trackcat.Recording.Recording_UI.PageViewer;
 import de.trackcat.Statistics.SpeedAverager;
 import de.trackcat.Statistics.mCounter;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Retrofit;
 
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
@@ -64,6 +72,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Objects;
 
 
@@ -574,6 +583,14 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                 RouteDAO dao = new RouteDAO(MainActivity.getInstance());
                 dao.create(model);
+
+                /* send route full to server */
+
+                /* get current user */
+                UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+                User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+                //TODO HALLO FINN
 
                 MainActivity.getInstance().endTracking();
             }

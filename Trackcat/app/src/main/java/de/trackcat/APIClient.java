@@ -37,4 +37,8 @@ public interface APIClient {
     @POST("/deleteUserAPI")
     Call<ResponseBody> deleteUser(@Header("Authorization") String authHeader, @Body HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/uploadTrackAPI")
+    Call<ResponseBody> uploadFullTrack(@Header("Authorization") String authHeader, @Body HashMap<String,String> json);
+
 }
