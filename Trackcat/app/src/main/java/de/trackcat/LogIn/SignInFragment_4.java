@@ -1,32 +1,25 @@
 package de.trackcat.LogIn;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
-import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.StartActivity;
 import okhttp3.ResponseBody;
@@ -38,12 +31,14 @@ import retrofit2.Retrofit;
 public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
     private FragmentTransaction fragTransaction;
+
     /* UI references */
     CheckBox generalTerm, dataProtection;
     ImageView btnBack;
     Button btnSignIn;
     TextView logInInLink, messageBox, messageBoxInfo;
-    String firstName, lastName, email, passwort1, passwort2;
+    String firstName, lastName, email, password1, password2;
+    Boolean checkGeneralTerm, checkDataProtection = false;
     private com.shuhart.stepview.StepView stepView;
 
 
@@ -51,13 +46,13 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        /* get views */
         View view = inflater.inflate(R.layout.fragment_signin_4, container, false);
         generalTerm = view.findViewById(R.id.checkBox_generalTerm);
         dataProtection = view.findViewById(R.id.checkBox_dataProtection);
         btnBack = view.findViewById(R.id.btn_back);
         btnSignIn = view.findViewById(R.id.btn_signin);
         logInInLink = view.findViewById(R.id.link_login);
-
         messageBox = view.findViewById(R.id.messageBox);
         messageBoxInfo = view.findViewById(R.id.messageBoxInfo);
 
@@ -66,11 +61,12 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
             firstName = getArguments().getString("firstName");
             lastName = getArguments().getString("lastName");
             email = getArguments().getString("email");
-            passwort1 = getArguments().getString("password1");
-            passwort2 = getArguments().getString("password2");
-
+            password1 = getArguments().getString("password1");
+            password2 = getArguments().getString("password2");
             generalTerm.setChecked(getArguments().getBoolean("generalTerms"));
             dataProtection.setChecked(getArguments().getBoolean("dataProtection"));
+            checkGeneralTerm = getArguments().getBoolean("generalTerms");
+            checkDataProtection = getArguments().getBoolean("dataProtection");
         }
 
 
@@ -82,6 +78,8 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         btnBack.setOnClickListener(this);
         btnSignIn.setOnClickListener(this);
         logInInLink.setOnClickListener(this);
+        generalTerm.setOnClickListener(this);
+        dataProtection.setOnClickListener(this);
 
         return view;
     }
@@ -119,6 +117,32 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                         getResources().getString(R.string.fLogIn));
                 fragTransaction.commit();
                 break;
+            case R.id.checkBox_generalTerm:
+
+                checkGeneralTerm = generalTerm.isChecked();
+
+                /* change button */
+                if (checkGeneralTerm && checkDataProtection) {
+                    btnSignIn.setEnabled(true);
+                    btnSignIn.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                } else {
+                    btnSignIn.setEnabled(false);
+                    btnSignIn.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
+                }
+                break;
+            case R.id.checkBox_dataProtection:
+
+                checkDataProtection = dataProtection.isChecked();
+
+                /* change button */
+                if (checkGeneralTerm && checkDataProtection) {
+                    btnSignIn.setEnabled(true);
+                    btnSignIn.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                } else {
+                    btnSignIn.setEnabled(false);
+                    btnSignIn.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
+                }
+                break;
         }
     }
 
@@ -140,14 +164,6 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
             progressDialog.setMessage("Account wird erstellt...");
             progressDialog.show();
 
-
-            // TODO: Implement your own signup logic here.
-
-            //  new android.os.Handler().postDelayed(
-            //        new Runnable() {
-            //  public void run() {
-
-
             /* send inputs to server */
             Retrofit retrofit = APIConnector.getRetrofit();
             APIClient apiInterface = retrofit.create(APIClient.class);
@@ -156,7 +172,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
             map.put("firstName", firstName);
             map.put("lastName", lastName);
             map.put("email", email);
-            map.put("password", passwort1);
+            map.put("password", password1);
 
 
             // TODO hashsalt Password

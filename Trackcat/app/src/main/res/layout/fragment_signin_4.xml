@@ -100,7 +100,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/layout_dsgvo"
                     android:layout_marginTop="24dp"
-                    android:background="@color/colorGreyAccent"
+                    android:background="@color/colorAccentDisable"
+                    android:enabled="false"
                     android:padding="12dp"
                     android:text="Account erstellen"
                     android:textColor="@color/ap_white" />
