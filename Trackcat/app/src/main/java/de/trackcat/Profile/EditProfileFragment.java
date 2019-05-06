@@ -143,7 +143,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         /* read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
-        map.put("eMail", currentUser.getMail());
+        map.put("id", ""+currentUser.getIdUsers());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
@@ -151,7 +151,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         /* start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        Call<ResponseBody> call = apiInterface.getUserByEmail(authString, map);
+        Call<ResponseBody> call = apiInterface.getUserById(authString, map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
