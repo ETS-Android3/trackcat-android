@@ -31,7 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +42,7 @@ import org.json.JSONObject;
 import de.trackcat.Dashboard.DashboardFragment;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
-import de.trackcat.FriendsSystem.FriendsFragment;
+import de.trackcat.FriendsSystem.FriendsViewerFragment;
 import de.trackcat.Profile.DeleteAccountFragment;
 import de.trackcat.Profile.EditPasswordFragment;
 import de.trackcat.Profile.ProfileFragment;
@@ -621,7 +620,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void loadFriendSystem() {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Freunde-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new FriendsFragment(),
+        fragTransaction.replace(R.id.mainFrame, new FriendsViewerFragment(),
                 getResources().getString(R.string.fFriendSystem));
         fragTransaction.commit();
     }

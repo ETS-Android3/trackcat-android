@@ -14,7 +14,7 @@
             style="@style/TextAppearance.AppCompat.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Meine Freunde" />
+            android:text="LIVE Freunde" />
 
         <View
             android:id="@+id/divider"
