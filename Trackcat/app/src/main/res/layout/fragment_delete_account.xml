@@ -35,13 +35,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal" >
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/point"
                 android:layout_marginRight="10dp"
+                android:drawableLeft="@drawable/point"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
@@ -55,7 +57,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_width="wrap_content"
@@ -75,7 +78,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="15dp"
             android:orientation="horizontal" >
             <TextView
                 android:layout_width="wrap_content"
@@ -96,12 +100,15 @@
         <TextView
             android:id="@+id/user_deleteAccountText2"
             android:textSize="17dp"
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/deleteAccountInfoText2" />
 
         <CheckBox
             android:id="@+id/checkBoxAccept"
+            android:paddingLeft="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="17dp"
@@ -119,7 +126,7 @@
             android:enabled="false"
             android:background="@color/colorAccentDisable"
             android:padding="12dp"
-            android:text="Account löschen"
+            android:text="Account unwideruflich löschen"
             android:textColor="?attr/colorButtonNormal" />
     </LinearLayout>
 </FrameLayout>
