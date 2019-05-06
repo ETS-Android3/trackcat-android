@@ -32,6 +32,7 @@ final class DbContract {
                     RouteEntry.COL_TYPE + " INTEGER, " +
                     RouteEntry.COL_RIDETIME + " LONG, " +
                     RouteEntry.COL_DISTANCE + " DOUBLE, " +
+                    RouteEntry.COL_TIMESTAMP + " LONG, " +
                     RouteEntry.COL_ISIMPORTED + " BOOLEAN, " +
                     RouteEntry.COL_LOCATIONS + " TEXT) ";
 
@@ -52,6 +53,16 @@ final class DbContract {
                     UserEntry.COL_THEME + " BOOLEAN, " +
                     UserEntry.COL_HINT + " BOOLEAN, " +
                     UserEntry.COL_MAIL + " TEXT, " +
+                    UserEntry.COL_PASSWORD + " TEXT, " +
+                    UserEntry.COL_WEIGHT + " FLOAT, " +
+                    UserEntry.COL_SIZE + " FLOAT, " +
+                    UserEntry.COL_GENDER + " INTEGER, " +
+                    UserEntry.COL_DATEOFBIRTH + " LONG, " +
+                    UserEntry.COL_DATEOFREGISTRATION + " LONG, " +
+                    UserEntry.COL_LASTLOGIN + " LONG, " +
+                    UserEntry.COL_TIMESTAMP + " LONG, " +
+                    UserEntry.COL_IDUSERS + " INTEGER, " +
+                    UserEntry.COL_ISSYNCHRONIZED + " BOOLEAN, " +
                     UserEntry.COL_IMAGE + " BLOB) ";
 
     /*
@@ -74,6 +85,7 @@ final class DbContract {
         static final String COL_RIDETIME = "rideTime";
         static final String COL_DISTANCE = "distance";
         static final String COL_LOCATIONS = "locations";
+        static final String COL_TIMESTAMP = "timestamp";
         static final String COL_ISIMPORTED = "imported";
     }
 
@@ -90,6 +102,16 @@ final class DbContract {
         static final String COL_HINT = "hint";
         static final String COL_THEME = "theme";
         static final String COL_MAIL = "mail";
+        static final String COL_PASSWORD = "password";
+        static final String COL_WEIGHT ="weight";
+        static final String COL_SIZE ="size";
+        static final String COL_GENDER ="gender";
+        static final String COL_DATEOFBIRTH ="dateOfBirth";
+        static final String COL_DATEOFREGISTRATION ="dateOfRegistration";
+        static final String COL_LASTLOGIN ="lastLogin";
+        static final String COL_TIMESTAMP ="timeStamp";
+        static final String COL_IDUSERS ="idUsers";
+        static final String COL_ISSYNCHRONIZED ="isSynchronized";
         static final String COL_IMAGE = "image";
     }
 

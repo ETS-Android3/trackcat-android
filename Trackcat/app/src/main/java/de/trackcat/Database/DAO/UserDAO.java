@@ -72,9 +72,19 @@ public class UserDAO {
         values.put(COL_FIRSTNAME, user.getFirstName());
         values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_MAIL, user.getMail());
+        values.put(COL_PASSWORD, user.getPassword());
+        values.put(COL_WEIGHT, user.getWeight());
+        values.put(COL_SIZE, user.getSize());
+        values.put(COL_GENDER, user.getGender());
+        values.put(COL_DATEOFBIRTH, user.getDateOfBirth());
+        values.put(COL_DATEOFREGISTRATION, user.getDateOfRegistration());
+        values.put(COL_LASTLOGIN, user.getLastLogin());
+        values.put(COL_TIMESTAMP, user.getTimeStamp());
+        values.put(COL_IDUSERS, user.getIdUsers());
         values.put(COL_ISACTIVE, user.isActiveDB());
         values.put(COL_HINT, user.isHintsActiveDB());
         values.put(COL_THEME, user.isDarkThemeActiveDB());
+        values.put(COL_ISSYNCHRONIZED, user.isSynchronizedDB());
         values.put(COL_IMAGE, user.getImage());
         return values;
     }
@@ -96,10 +106,20 @@ public class UserDAO {
                     COL_FIRSTNAME,
                     COL_LASTNAME,
                     COL_MAIL,
+                    COL_PASSWORD,
+                    COL_WEIGHT,
+                    COL_SIZE,
+                    COL_GENDER,
+                    COL_DATEOFBIRTH,
+                    COL_DATEOFREGISTRATION,
+                    COL_LASTLOGIN,
+                    COL_TIMESTAMP,
+                    COL_IDUSERS,
                     COL_ISACTIVE,
                     COL_THEME,
                     COL_HINT,
-                    COL_IMAGE };
+                    COL_IMAGE,
+                    COL_ISSYNCHRONIZED};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
@@ -116,7 +136,17 @@ public class UserDAO {
                     result.setHintsActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)));
                     result.setDarkThemeActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)));
                     result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));
+                    result.setPassword(cursor.getString(cursor.getColumnIndexOrThrow(COL_PASSWORD)));
+                    result.setWeight(cursor.getFloat(cursor.getColumnIndexOrThrow(COL_WEIGHT)));
+                    result.setSize(cursor.getFloat(cursor.getColumnIndexOrThrow(COL_SIZE)));
+                    result.setGender(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GENDER)));
+                    result.setDateOfBirth(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFBIRTH)));
+                    result.setDateOfRegistration(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFREGISTRATION)));
+                    result.setLastLogin(cursor.getLong(cursor.getColumnIndexOrThrow(COL_LASTLOGIN)));
+                    result.setTimeStamp(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
+                    result.setIdUsers(cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)));
                     result.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)));
+                    result.setIsSynchronizedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISSYNCHRONIZED)));
                 }
             }
         } finally {
@@ -150,10 +180,20 @@ public class UserDAO {
                     COL_FIRSTNAME,
                     COL_LASTNAME,
                     COL_MAIL,
+                    COL_PASSWORD,
                     COL_ISACTIVE,
                     COL_IMAGE,
+                    COL_WEIGHT,
+                    COL_SIZE,
+                    COL_GENDER,
+                    COL_DATEOFBIRTH,
+                    COL_DATEOFREGISTRATION,
+                    COL_LASTLOGIN,
+                    COL_TIMESTAMP,
+                    COL_IDUSERS,
                     COL_HINT,
-                    COL_THEME };
+                    COL_THEME,
+                    COL_ISSYNCHRONIZED };
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
@@ -172,7 +212,17 @@ public class UserDAO {
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)),
                                 cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)),
-                                cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE))));
+                                cursor.getString(cursor.getColumnIndexOrThrow(COL_PASSWORD)),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow(COL_WEIGHT)),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow(COL_SIZE)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_GENDER)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFBIRTH)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFREGISTRATION)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_LASTLOGIN)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)),
+                                cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISSYNCHRONIZED))));
                     } while (cursor.moveToNext());
             }
         } finally {
@@ -217,29 +267,26 @@ public class UserDAO {
             dbHelper.close();
         }
     }
-
+    
     /**
-     * Imports a single user from handed over JSON.
+     * Count the entrys of the userTable
      *
-     * @param jsonString of type string which defines the route to be imported
-     *
-     * <p>
-     *      Creates a user with the attributes which were defined in JSON
-     * </p>
+     * @return amount of users in table
      */
-    public void importUserFromJson(String jsonString) {
-        User user = gson.fromJson(jsonString, imExportType);
-        user.setActive(false);
-        this.create(user);
-    }
+    public int userInDB() {
+        DbHelper dbHelper = new DbHelper(context);
+        int result;
+        final String SQL_COUNT_USER_ENTRYS = "SELECT COUNT(*) FROM " + TABLE_NAME;
 
-    /**
-     * Creates a JSON string which defines a user object and its attributes.
-     *
-     * @param id of type integer of which user has to be exported
-     * @return a JSON string
-     */
-    public String exportUserToJson(int id) {
-        return gson.toJson(this.read(id));
+        try {
+
+            Cursor cursor = dbHelper.getWritableDatabase().rawQuery(SQL_COUNT_USER_ENTRYS,null);
+            cursor.moveToFirst();
+            result =cursor.getInt(0);
+
+        } finally {
+            dbHelper.close();
+        }
+        return result;
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="steps">
+        <item>Name</item>
+        <item>Email</item>
+        <item>Passwort</item>
+        <item>Terms</item>
+    </array>
+</resources>

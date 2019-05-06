@@ -3,36 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="de.trackcat">
 
+    <!-- App Permissions  -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar.Preview"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <!-- Main Activity  -->
         <activity
             android:name="de.trackcat.MainActivity"
-            android:hardwareAccelerated="false"
-            android:configChanges="orientation|keyboardHidden">
+            android:configChanges="orientation|keyboardHidden"
+            android:hardwareAccelerated="false"></activity>
 
-        </activity>
-        <!--
-        Diese "activity" wird verwendet um Dateien zu importieren, durch die Intent-Filter
-        können Dateien, welche die Endung .gotrack haben, dirket in diese App gelesen werden
-        -->
-
-        <receiver android:name="de.trackcat.NotificationActionReciever" />
-
-        <service
-            android:name="de.trackcat.Recording.Locator"
-            android:enabled="true" />
-
+        <!-- Start Activity -->
         <activity
             android:name="de.trackcat.StartActivity"
             android:hardwareAccelerated="false"
@@ -43,6 +40,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <!-- Notification Receiver  -->
+        <receiver android:name="de.trackcat.NotificationActionReciever" />
+
+        <!-- Connectivity Receiver  -->
+        <receiver android:name="de.trackcat.ConnectivityChecker">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Recording Locator -->
+        <service
+            android:name="de.trackcat.Recording.Locator"
+            android:enabled="true" />
+
+        <!-- Crop Image View -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.Preview"/>
+
+    </application>
 </manifest>

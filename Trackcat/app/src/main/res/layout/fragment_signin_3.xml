@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/colorGreenLight"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp">
+
+            <!-- header -->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"
+                android:src="@raw/logo" />
+
+            <!-- inputs -->
+            <RelativeLayout
+                android:id="@+id/inputs"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <!-- Password1 Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/layout_password1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:theme="@style/EditTextTheme">
+
+                    <EditText
+                        android:id="@+id/input_password1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Passwort"
+                        android:inputType="textPassword"
+                        android:maxLength="@integer/iPassword"
+                        android:text="Geheim-123" />
+                </android.support.design.widget.TextInputLayout>
+
+                <!-- Password2 Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_below="@+id/layout_password1"
+                    android:layout_marginBottom="8dp"
+                    android:theme="@style/EditTextTheme">
+
+                    <EditText
+                        android:id="@+id/input_password2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Passwort wdh."
+                        android:inputType="textPassword"
+                        android:maxLength="@integer/iPassword"
+                        android:text="Geheim-123" />
+                </android.support.design.widget.TextInputLayout>
+            </RelativeLayout>
+
+
+            <!-- navigation line -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- back Button -->
+                <ImageView
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/signInPagerMargin"
+                    app:srcCompat="@drawable/ic_back" />
+
+                <!-- stepView -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <com.shuhart.stepview.StepView
+                        android:id="@+id/step_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:padding="5dp"
+                        app:sv_steps="@array/steps"
+                        app:sv_animationType="Line"
+                        app:sv_doneCircleColor="@color/colorSuccess"
+                        app:sv_doneCircleRadius="12dp"
+                        app:sv_doneStepLineColor="@color/colorSuccess"
+                        app:sv_doneStepMarkColor="@color/colorBlack"
+                        app:sv_doneTextColor="@color/colorSuccess"
+                        app:sv_nextStepLineColor="@color/colorGreenAccent"
+                        app:sv_nextTextColor="@color/colorGreenAccent"
+                        app:sv_selectedCircleColor="@color/colorGreenAccent"
+                        app:sv_selectedCircleRadius="12dp"
+                        app:sv_selectedStepNumberColor="@color/colorGreenLight"
+                        app:sv_selectedTextColor="@color/colorGreenAccent"
+                        app:sv_stepLineWidth="1dp"
+                        app:sv_stepNumberTextSize="12sp"
+                        app:sv_stepPadding="4dp"
+                        app:sv_stepViewStyle="@style/StepView" />
+                </LinearLayout>
+
+                <!-- next Button -->
+                <ImageView
+                    android:id="@+id/btn_next"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/signInPagerMargin"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/ic_next" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/link_login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="24dp"
+                android:textStyle="italic"
+                android:textColor="@color/colorBlack"
+                android:gravity="center"
+                android:text="Schon Mitglied? Login"
+                android:textSize="@dimen/signInLogInLinkTextSize" />
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

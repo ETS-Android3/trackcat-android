@@ -4,6 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/loadScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorLoadFragmentInformation">
+
+        <ProgressBar
+            android:id="@+id/progressBar4"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+
     <LinearLayout
         style="@style/VerticalThemeLayoutInputs"
         android:layout_width="match_parent"
@@ -56,9 +71,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
-                        android:maxLength="@integer/iName"
                         android:hint="Vorname"
-                        android:inputType="textPersonName" />
+                        android:inputType="textPersonName"
+                        android:maxLength="@integer/iName" />
                 </android.support.design.widget.TextInputLayout>
 
                 <!-- Lastname Label -->
@@ -73,15 +88,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
-                        android:maxLength="@integer/iName"
                         android:hint="Nachname"
-                        android:inputType="textPersonName" />
+                        android:inputType="textPersonName"
+                        android:maxLength="@integer/iName" />
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
         </LinearLayout>
 
-
+        <!-- Gender Label -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -98,21 +113,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="weiblich" />
+                    android:text="Frau" />
 
                 <RadioButton
                     android:id="@+id/radioMale"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="männlich" />
-
-                <RadioButton
-                    android:id="@+id/radioVarious"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="diverses" />
+                    android:text="Herr" />
             </RadioGroup>
         </LinearLayout>
 
@@ -144,13 +152,14 @@
                     android:id="@+id/input_weight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="70,0"
+                    android:text=""
                     android:textSize="19dip" />
 
                 <TextView
                     android:id="@+id/label_unit_weight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:text=" kg"
                     android:textSize="19dip" />
             </LinearLayout>
@@ -167,7 +176,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/label_height"
+                android:id="@+id/label_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -182,16 +191,17 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/input_height"
+                    android:id="@+id/input_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="180,0"
+                    android:text=""
                     android:textSize="19dip" />
 
                 <TextView
-                    android:id="@+id/label_unit_height"
+                    android:id="@+id/label_unit_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:text=" cm"
                     android:textSize="19dip" />
             </LinearLayout>
@@ -220,7 +230,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="12.12.2011"
+                android:text=""
                 android:textSize="19dip" />
 
         </RelativeLayout>

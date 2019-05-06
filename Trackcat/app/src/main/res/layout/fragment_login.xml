@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent">
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,16 +15,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_gravity="center"
             android:paddingLeft="24dp"
-            android:paddingTop="56dp"
             android:paddingRight="24dp">
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="72dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"
                 android:src="@raw/logo" />
+
+            <TextView
+                android:id="@+id/messageBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FEHLER"
+                android:textColor="@color/colorGreyAccent"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="20dip"
+                android:visibility="gone"
+                />
+            <TextView
+                android:id="@+id/messageBoxInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FEHLERInfo"
+                android:textColor="@color/colorGreyAccent"
+                android:gravity="center"
+                android:textSize="16dip"
+                android:visibility="gone"
+                />
 
             <!-- Email Label -->
             <android.support.design.widget.TextInputLayout
@@ -40,7 +63,7 @@
                     android:hint="Email"
                     android:inputType="textEmailAddress"
                     android:maxLength="@integer/iEmail"
-                    android:text="test@quatsch.de"
+                    android:text="test@trackcat.de"
                     android:textColor="@color/ap_black" />
             </android.support.design.widget.TextInputLayout>
 
@@ -59,7 +82,7 @@
                     android:hint="Passwort"
                     android:inputType="textPassword"
                     android:maxLength="@integer/iPassword"
-                    android:text="a2@Ahhhhh"
+                    android:text="Geheim-123"
                     android:textColor="@color/ap_black" />
             </android.support.design.widget.TextInputLayout>
 
@@ -68,24 +91,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-
                 android:background="@color/colorGreyAccent"
                 android:padding="12dp"
                 android:text="Login"
                 android:textColor="@color/ap_white" />
-
-            <TextView
-                android:id="@+id/messageBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="FEHLER"
-                android:textColor="@color/colorGreyAccent"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textSize="20dip"
-                android:visibility="gone"
-                />
 
             <TextView
                 android:id="@+id/link_signup"
@@ -93,8 +102,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:gravity="center"
+                android:textStyle="italic"
+                android:textColor="@color/colorBlack"
                 android:text="Noch keinen Account? Erstelle hier einen."
-                android:textSize="16dip" />
+                android:textSize="@dimen/signInLogInLinkTextSize" />
 
         </LinearLayout>
     </ScrollView>

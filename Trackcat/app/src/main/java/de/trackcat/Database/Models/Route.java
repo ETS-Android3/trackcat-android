@@ -19,6 +19,7 @@ public class Route {
     private long date;
     private long time;
     private long rideTime;
+    private long timeStamp;
     private boolean isImported;
     private double distance;
     private ArrayList<CustomLocation> locations;
@@ -41,7 +42,7 @@ public class Route {
      * @param locations of type array list
      */
     public Route(int id, int userId, String name, long time, long rideTime, double distance,
-                 int type, long date, int isImported, ArrayList<CustomLocation> locations) {
+                 int type, long date, long timeStamp, int isImported, ArrayList<CustomLocation> locations) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -49,6 +50,7 @@ public class Route {
         this.rideTime = rideTime;
         this.distance = distance;
         this.locations = locations;
+        this.timeStamp= timeStamp;
         this.date = date;
         this.type = type;
         this.setImportedDB(isImported);
@@ -228,6 +230,24 @@ public class Route {
      */
     public void setType(int type) {
         this.type = type;
+    }
+
+    /**
+     * Getter for the timeStamp.
+     *
+     * @return value of type long
+     */
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    /**
+     * Setter for the timeStamp.
+     *
+     * @param timeStamp of type long
+     */
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     /**

@@ -4,6 +4,12 @@
     <color name="colorBlack">#2d2d30</color>
     <color name="colorLightGrey">#83838b</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorSuccess">#4CAF50</color>
+    <color name="colorAccentDisable">#E67064</color>
+    <color name="colorLoadFragmentInformation">#4D83838B</color>
+    <color name="colorFemale">#DF99CA</color>
+    <color name="colorMale">#4C84FF</color>
+
 
     <!-- LIGHT THEME COLORS -->
     <color name="colorGreenLight">#f4d27e</color>
@@ -18,4 +24,8 @@
 
     <!-- REMOVE COLOR RECORDS -->
     <color name="bg_row_background">#fa315b</color>
+
+    <!-- COLOR CROPVIEW-->
+    <color name="ucrop_color_widget_background">#DD0D0D</color>
+    <color name="ucrop_color_widget_rotate_mid_line">#DD0D0D</color>
 </resources>

@@ -17,11 +17,25 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.HashMap;
+
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.Recording.RecordFragment;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener {
     SharedPreferences sharedPreferences;
@@ -76,6 +90,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         UserDAO dao = new UserDAO(getActivity());
         User currentUser = dao.read(MainActivity.getActiveUser());
 
+        /* change data in global db */
+        HashMap<String, String> map = new HashMap<>();
+        map.put("email", currentUser.getMail());
+
         /* Wechsel beim Anzeigen der Hilfreichen Tipps */
         if (preference.getKey().equals("help_messages")) {
             if (((CheckBoxPreference) preference).isChecked()) {
@@ -83,6 +101,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 /* Nutzer aktualisieren */
                 currentUser.setHintsActive(true);
                 MainActivity.setHints(true);
+                map.put("hints", "1");
 
             } else {
                 if (MainActivity.getHints()) {
@@ -91,6 +110,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 /* Nutzer aktualisieren */
                 currentUser.setHintsActive(false);
                 MainActivity.setHints(false);
+                map.put("hints", "0");
+
             }
         }
         /* Wechsel des Themes */
@@ -106,6 +127,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 /* Nutzer aktualisieren */
                 currentUser.setDarkThemeActive(true);
                 MainActivity.setDarkTheme(true);
+                map.put("darkTheme", "1");
 
             } else {
                 if (MainActivity.getHints()) {
@@ -115,6 +137,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 /* Nutzer aktualisieren */
                 currentUser.setDarkThemeActive(false);
                 MainActivity.setDarkTheme(false);
+                map.put("darkTheme", "0");
             }
             // Restart Activity
             MainActivity.restart();
@@ -124,7 +147,51 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 Toast.makeText(getActivity(), "Unbekannte Aktion ausgeführt!", Toast.LENGTH_LONG).show();
             }
         }
+
+        /* update user in local db */
+        currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
+        currentUser.isSynchronised(false);
         dao.update(MainActivity.getActiveUser(), currentUser);
+
+        /* change values in global DB*/
+        map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
+
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+
+        /* start a call */
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        Call<ResponseBody> call = apiInterface.updateUser(base, map);
+
+        call.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                try {
+                    /* get jsonString from API */
+                    String jsonString = response.body().string();
+
+                    /* parse json */
+                    JSONObject successJSON = new JSONObject(jsonString);
+
+                    if (successJSON.getString("success").equals("0")) {
+
+                        /* save is Synchronized value as true */
+                        currentUser.isSynchronised(true);
+                        dao.update(currentUser.getId(), currentUser);
+                    }
+
+                } catch (Exception e) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                call.cancel();
+            }
+        });
     }
 
     @Override
