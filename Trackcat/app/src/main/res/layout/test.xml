@@ -4,15 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="5dp">
-    <TextView
-        android:textSize="18.0sp"
-        android:id="@+id/message_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="HAllolololo" />
-    <ImageView
-        android:srcCompat="@drawable/ic_camera"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/icon" />
+
 </RelativeLayout>

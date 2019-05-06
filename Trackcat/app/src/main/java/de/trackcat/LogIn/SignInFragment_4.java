@@ -5,8 +5,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +26,7 @@ import java.util.HashMap;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
+import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.StartActivity;
 import okhttp3.ResponseBody;
@@ -29,6 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import uk.co.deanwild.flowtextview.FlowTextView;
 
 public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
@@ -38,7 +44,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
     CheckBox generalTerm, dataProtection;
     ImageView btnBack;
     Button btnSignIn;
-    TextView logInInLink, messageBox, messageBoxInfo, link_termsOfService, link_dataProtection;
+    TextView logInInLink, messageBox, messageBoxInfo, link_termsOfService, link_dataProtection, text_dataProtection;
     String firstName, lastName, email, password1, password2;
     Boolean checkGeneralTerm, checkDataProtection = false;
     private com.shuhart.stepview.StepView stepView;
@@ -54,6 +60,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         link_termsOfService= view.findViewById(R.id.link_termsOfService);
         dataProtection = view.findViewById(R.id.checkBox_dataProtection);
         link_dataProtection= view.findViewById(R.id.link_dataProtection);
+       // text_dataProtection= view.findViewById(R.id.text_dataProtection);
         btnBack = view.findViewById(R.id.btn_back);
         btnSignIn = view.findViewById(R.id.btn_signin);
         logInInLink = view.findViewById(R.id.link_login);
@@ -100,6 +107,11 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         link_dataProtection.setMovementMethod(LinkMovementMethod.getInstance());
         String text2 = "<a href='"+getString(R.string.link_dataProtection)+"'> Datenschutzerklärung </a>";
         link_dataProtection.setText(Html.fromHtml(text2));
+
+      /*  FlowTextView flowTextView = view.findViewById(R.id.ftv);
+        Spanned html = Html.fromHtml("gelesen und akzeptiert");
+        flowTextView.setText(html);
+        flowTextView.setTextSize(50f); */
 
         return view;
     }

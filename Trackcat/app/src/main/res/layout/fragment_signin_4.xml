@@ -87,6 +87,7 @@
                             android:id="@+id/text_termsOfService"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+
                             android:textColor="@color/colorBlack"
                             android:text=" gelesen und akzeptiert"
                             android:clickable="true" />
@@ -123,13 +124,14 @@
                             android:textColor="@color/colorBlack"
                             android:text="Datenschutzerklärung"
                             android:clickable="true" />
-                        <TextView
-                            android:id="@+id/text_dataProtection"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/colorBlack"
-                            android:text=" gelesen und akzeptiert"
-                            android:clickable="true" />
+
+                            <TextView
+                                android:id="@+id/text_dataProtection"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/colorBlack"
+                                android:text=" gelesen und akzeptiert"
+                                android:clickable="true" />
 
                     </LinearLayout>
 
