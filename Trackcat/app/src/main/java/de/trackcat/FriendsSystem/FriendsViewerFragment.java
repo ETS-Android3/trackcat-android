@@ -33,9 +33,10 @@ public class FriendsViewerFragment extends Fragment {
         FriendsFragment friendsFragment=new FriendsFragment();
         FindFriendsFragment findFriendsFragment=new FindFriendsFragment();
         SharingFriendsFragment sharingFriendsFragment= new SharingFriendsFragment();
-        adapter.addFragment(friendsFragment,"CALLS");
-        adapter.addFragment(sharingFriendsFragment,"CHAT");
-        adapter.addFragment(findFriendsFragment,"CONTACTS");
+        adapter.addFragment(findFriendsFragment,"SUCHEN");
+        adapter.addFragment(friendsFragment,"FREUNDE");
+        adapter.addFragment(sharingFriendsFragment,"LIVE");
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(1);
     }
 }
