@@ -47,6 +47,7 @@ import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.NotificationActionReciever;
 import de.trackcat.R;
@@ -55,8 +56,11 @@ import de.trackcat.Statistics.SpeedAverager;
 import de.trackcat.Statistics.mCounter;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import org.json.JSONObject;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -590,9 +594,33 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 UserDAO userDAO = new UserDAO(MainActivity.getInstance());
                 User currentUser = userDAO.read(MainActivity.getActiveUser());
 
-                //TODO HALLO FINN
+                Retrofit retrofit = APIConnector.getRetrofit();
+                APIClient apiInterface = retrofit.create(APIClient.class);
+                String base = currentUser.getMail() + ":" + currentUser.getPassword();
 
-                MainActivity.getInstance().endTracking();
+
+                /* start a call */
+                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, model);
+
+                call.enqueue(new Callback<ResponseBody>() {
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Log.v("testLog", "hi");
+                        MainActivity.getInstance().endTracking();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                        call.cancel();
+                        MainActivity.getInstance().endTracking();
+
+                    }
+                });
+
             }
         });
 
