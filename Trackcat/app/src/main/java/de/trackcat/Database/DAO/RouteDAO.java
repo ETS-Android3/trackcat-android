@@ -85,6 +85,7 @@ public class RouteDAO {
         values.put(COL_TYPE, route.getType());
         values.put(COL_RIDETIME, route.getRideTime());
         values.put(COL_DISTANCE, route.getDistance());
+        values.put(COL_TIMESTAMP, route.getTimeStamp());
         values.put(COL_ISIMPORTED, route.isImportedDB());
         values.put(COL_LOCATIONS, gson.toJson(route.getLocations(), listType));
 
@@ -112,6 +113,7 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_TIMESTAMP,
                     COL_ISIMPORTED,
                     COL_LOCATIONS};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
@@ -130,6 +132,7 @@ public class RouteDAO {
                     result.setDate(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
                     result.setType(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)));
                     result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
+                    result.setTimeStamp(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
                     result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
                     result.setImportedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)));
                     result.setLocations(gson.fromJson(cursor.getString(
@@ -178,6 +181,7 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_TIMESTAMP,
                     COL_ISIMPORTED,
                     COL_LOCATIONS};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
@@ -199,6 +203,7 @@ public class RouteDAO {
                                 cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
                                 gson.fromJson(cursor.getString(
                                         cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
@@ -232,6 +237,7 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_TIMESTAMP,
                     COL_ISIMPORTED,
                     COL_LOCATIONS};
             long sevenDaysInMillis = 604800000;
@@ -257,6 +263,7 @@ public class RouteDAO {
                                     cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                                    cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
                                     gson.fromJson(cursor.getString(
                                             cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
