@@ -33,4 +33,8 @@ public interface APIClient {
     @POST("/changeUserPasswordAPI")
     Call<ResponseBody> changeUserPassword(@Header("Authorization") String authHeader, @Body HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/deleteUserAPI")
+    Call<ResponseBody> deleteUser(@Header("Authorization") String authHeader, @Body HashMap<String,String> json);
+
 }

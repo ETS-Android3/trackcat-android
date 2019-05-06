@@ -10,19 +10,37 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.BulletSpan;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Objects;
 
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
+import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.User;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
-public class DeleteAccountFragment extends Fragment implements View.OnClickListener{
+public class DeleteAccountFragment extends Fragment implements View.OnClickListener {
 
     Button btnSave;
     CheckBox accept;
@@ -49,11 +67,11 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
             case R.id.checkBoxAccept:
 
                 /* change button */
-                if(btnSave.isEnabled()) {
+                if (btnSave.isEnabled()) {
 
                     btnSave.setEnabled(false);
                     btnSave.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
-                }else{
+                } else {
                     btnSave.setEnabled(true);
                     btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
                 }
@@ -70,6 +88,54 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                 alert.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
+                        /* get current user */
+                        UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+                        User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+                        /* read profile values from global db */
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("id", "" + currentUser.getIdUsers());
+
+                        Retrofit retrofit = APIConnector.getRetrofit();
+                        APIClient apiInterface = retrofit.create(APIClient.class);
+
+                        /* start a call */
+                        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                        Call<ResponseBody> call = apiInterface.deleteUser(authString, map);
+
+                        call.enqueue(new Callback<ResponseBody>() {
+
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                try {
+
+                                    if (response.code() == 401) {
+                                        MainActivity.getInstance().showNotAuthorizedModal(3);
+                                    } else {
+                                        /* get jsonString from API */
+                                        String jsonString = response.body().string();
+
+                                        /* parse json */
+                                        JSONObject mainObject = new JSONObject(jsonString);
+                                        if (mainObject.getString("success").equals("0")) {
+                                            MainActivity.getInstance().logout();
+                                            Toast.makeText(getContext(), "Account wird gelöscht.", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                call.cancel();
+                                Toast.makeText(getContext(), "Account kann nicht gelöscht werden. Bitte überprüfen Sie Ihre Internetverbindung.", Toast.LENGTH_LONG).show();
+                            }
+                        });
 
                     }
                 });

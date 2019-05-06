@@ -69,6 +69,23 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         /* set user dao */
         userDAO = new UserDAO(StartActivity.getInstance());
 
+        if (getArguments() != null) {
+            messageBoxInfo.setVisibility(View.VISIBLE);
+            messageBoxInfo.setText("Bitte Verifizieren Sie Ihre E-Mail und melden Sie sich an!");
+
+            messageBox.setVisibility(View.VISIBLE);
+            messageBox.setText("Anmeldung");
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            messageBox.setVisibility(View.GONE);
+                            messageBox.setText("");
+                            messageBoxInfo.setVisibility(View.GONE);
+                            messageBoxInfo.setText("");
+                        }
+                    }, 10000);
+        }
+
         return view;
     }
 
@@ -137,9 +154,10 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
                     /* get jsonString from API */
                     String jsonString = response.body().string();
+                    progressDialog.dismiss();
 
                     if (jsonString.equals("\"1\"")) {
-                        progressDialog.dismiss();
+
 
                         /* set errror message */
                         Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Anmeldedaten nicht korrekt");
@@ -223,6 +241,23 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                             startActivity(intent);
 
                             getActivity().finish();
+                        }else if(mainObject.getString("success").equals("2")){
+                            messageBoxInfo.setVisibility(View.VISIBLE);
+                            messageBoxInfo.setText("Deine E-Mail Adresse ist noch nicht verifiziert. Bitte verifiziere diese zunächst.");
+
+                            messageBox.setVisibility(View.VISIBLE);
+                            messageBox.setText("Fehlende Verifizierung");
+                            new android.os.Handler().postDelayed(
+                                    new Runnable() {
+                                        public void run() {
+                                            messageBox.setVisibility(View.GONE);
+                                            messageBox.setText("");
+                                            messageBoxInfo.setVisibility(View.GONE);
+                                            messageBoxInfo.setText("");
+                                        }
+                                    }, 10000);
+                            btnLogin.setEnabled(true);
+                            btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
                         }
                     }
                 } catch (Exception e) {

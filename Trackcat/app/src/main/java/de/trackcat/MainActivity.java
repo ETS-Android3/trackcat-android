@@ -418,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void logout() {
+    public void logout() {
         /* set wait field */
         progressDialog = new ProgressDialog(MainActivity.this,
                 R.style.AppTheme_Dark_Dialog);
@@ -827,7 +827,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 //TODO
                                             } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
                                                 loadFriendSystem();
+                                            }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                                                loadDeleteAccount();
                                             }
+                                        }else if(type==3){
+                                            loadDeleteAccount();
                                         }
                                     }
                                 }

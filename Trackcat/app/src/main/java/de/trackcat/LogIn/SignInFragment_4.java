@@ -124,18 +124,15 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
     public void signin() {
 
-
         btnSignIn.setEnabled(false);
+        btnSignIn.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
         generalTerm.setError(null);
         dataProtection.setError(null);
-
 
         /* if generalTerm and dataProtection is checked*/
         if (generalTerm.isChecked() && dataProtection.isChecked()) {
 
             btnSignIn.setEnabled(true);
-
-
 
             final ProgressDialog progressDialog = new ProgressDialog(getContext(),
                     R.style.AppTheme_Dark_Dialog);
@@ -146,97 +143,134 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
             // TODO: Implement your own signup logic here.
 
-            new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            progressDialog.dismiss();
-
-                            /* send inputs to server */
-                            Retrofit retrofit = APIConnector.getRetrofit();
-                            APIClient apiInterface = retrofit.create(APIClient.class);
-
-                            HashMap<String, String> map = new HashMap<>();
-                            map.put("firstName", firstName);
-                            map.put("lastName", lastName);
-                            map.put("email", email);
-                            map.put("password", passwort1);
+            //  new android.os.Handler().postDelayed(
+            //        new Runnable() {
+            //  public void run() {
 
 
-                            // TODO hashsalt Password
-                            /* start a call */
-                            Call<ResponseBody> call = apiInterface.registerUser(map);
+            /* send inputs to server */
+            Retrofit retrofit = APIConnector.getRetrofit();
+            APIClient apiInterface = retrofit.create(APIClient.class);
 
-                            call.enqueue(new Callback<ResponseBody>() {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("firstName", firstName);
+            map.put("lastName", lastName);
+            map.put("email", email);
+            map.put("password", passwort1);
 
-                                @Override
-                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                    try {
-                                        String jsonString = response.body().string();
 
-                                        Log.d(getResources().getString(R.string.app_name) + "-SigninConnection", jsonString);
+            // TODO hashsalt Password
+            /* start a call */
+            Call<ResponseBody> call = apiInterface.registerUser(map);
 
-                                        JSONObject json = new JSONObject(jsonString);
+            call.enqueue(new Callback<ResponseBody>() {
 
-                                        /* open activity if login success*/
-                                        if (json.getString("success").equals("0")) {
-                                            Intent intent = new Intent(getContext(), MainActivity.class);
-                                            startActivity(intent);
-                                        } else {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
 
-                                            /* set errror message */
-                                            messageBox.setVisibility(View.VISIBLE);
-                                            messageBox.setText("FEHLER!");
-                                            new android.os.Handler().postDelayed(
-                                                    new Runnable() {
-                                                        public void run() {
-                                                            messageBox.setVisibility(View.GONE);
-                                                        }
-                                                    }, 7000);
-                                            btnSignIn.setEnabled(true);
+                        progressDialog.dismiss();
+                        String jsonString = response.body().string();
+
+                        Log.d(getResources().getString(R.string.app_name) + "-SigninConnection", jsonString);
+
+                        JSONObject json = new JSONObject(jsonString);
+
+                        /* open activity if login success*/
+                        if (json.getString("success").equals("0")) {
+
+                            /* load LogInFragment */
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean("singIn", true);
+                            LogInFragment login = new LogInFragment();
+                            login.setArguments(bundle);
+
+                            fragTransaction = getFragmentManager().beginTransaction();
+                            fragTransaction.replace(R.id.mainFrame, login,
+                                    getResources().getString(R.string.fLogIn));
+                            fragTransaction.commit();
+                        } else if (json.getString("success").equals("1")) {
+
+                            /* set errror message */
+                            messageBoxInfo.setVisibility(View.VISIBLE);
+                            messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
+
+                            messageBox.setVisibility(View.VISIBLE);
+                            messageBox.setText("Serverfehler");
+                            new android.os.Handler().postDelayed(
+                                    new Runnable() {
+                                        public void run() {
+                                            messageBox.setVisibility(View.GONE);
+                                            messageBox.setText("");
+                                            messageBoxInfo.setVisibility(View.GONE);
+                                            messageBoxInfo.setText("");
                                         }
-                                    } catch (Exception e) {
+                                    }, 10000);
+                            btnSignIn.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                            btnSignIn.setEnabled(true);
+                        } else if (json.getString("success").equals("3")) {
 
-                                        /* show server error message to user */
-                                        Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + response.raw().message());
-                                        messageBoxInfo.setVisibility(View.VISIBLE);
-                                        messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
+                            messageBoxInfo.setVisibility(View.VISIBLE);
+                            messageBoxInfo.setText("Leider ist Ihre E-mail Adresse schon vergeben. Bitte wählen Sie eine andere.");
 
-                                        messageBox.setVisibility(View.VISIBLE);
-                                        messageBox.setText(response.raw().message());
-                                        new android.os.Handler().postDelayed(
-                                                new Runnable() {
-                                                    public void run() {
-                                                        messageBox.setVisibility(View.GONE);
-                                                        messageBoxInfo.setVisibility(View.GONE);
-                                                    }
-                                                }, 10000);
-                                        btnSignIn.setEnabled(true);
-                                    }
-                                }
+                            messageBox.setVisibility(View.VISIBLE);
+                            messageBox.setText("Entschuldigung");
+                            new android.os.Handler().postDelayed(
+                                    new Runnable() {
+                                        public void run() {
+                                            messageBox.setVisibility(View.GONE);
+                                            messageBox.setText("");
+                                            messageBoxInfo.setVisibility(View.GONE);
+                                            messageBoxInfo.setText("");
+                                        }
+                                    }, 10000);
 
-                                @Override
-                                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                    call.cancel();
-
-                                    /* show server error message to user */
-                                    Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + t.getMessage());
-                                    messageBoxInfo.setVisibility(View.VISIBLE);
-                                    messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
-
-                                    messageBox.setVisibility(View.VISIBLE);
-                                    messageBox.setText(t.getMessage());
-                                    new android.os.Handler().postDelayed(
-                                            new Runnable() {
-                                                public void run() {
-                                                    messageBox.setVisibility(View.GONE);
-                                                    messageBoxInfo.setVisibility(View.GONE);
-                                                }
-                                            }, 10000);
-                                    btnSignIn.setEnabled(true);
-                                }
-                            });
+                            btnSignIn.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                            btnSignIn.setEnabled(true);
                         }
-                    }, 3000);
+                    } catch (Exception e) {
+
+                        /* show server error message to user */
+                        Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + response.raw().message());
+                        messageBoxInfo.setVisibility(View.VISIBLE);
+                        messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
+
+                        messageBox.setVisibility(View.VISIBLE);
+                        messageBox.setText(response.raw().message());
+                        new android.os.Handler().postDelayed(
+                                new Runnable() {
+                                    public void run() {
+                                        messageBox.setVisibility(View.GONE);
+                                        messageBoxInfo.setVisibility(View.GONE);
+                                    }
+                                }, 10000);
+                        btnSignIn.setEnabled(true);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    call.cancel();
+
+                    /* show server error message to user */
+                    Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + t.getMessage());
+                    messageBoxInfo.setVisibility(View.VISIBLE);
+                    messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
+
+                    messageBox.setVisibility(View.VISIBLE);
+                    messageBox.setText(t.getMessage());
+                    new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    messageBox.setVisibility(View.GONE);
+                                    messageBoxInfo.setVisibility(View.GONE);
+                                }
+                            }, 10000);
+                    btnSignIn.setEnabled(true);
+                }
+            });
+            //  }
+            //  }, 3000);
 
 
         } else {

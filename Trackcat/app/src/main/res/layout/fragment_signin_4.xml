@@ -26,6 +26,28 @@
                 android:layout_marginBottom="24dp"
                 android:src="@raw/logo" />
 
+            <TextView
+                android:id="@+id/messageBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FEHLER"
+                android:textColor="@color/colorGreyAccent"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="20dip"
+                android:visibility="gone"
+                />
+            <TextView
+                android:id="@+id/messageBoxInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FEHLERInfo"
+                android:textColor="@color/colorGreyAccent"
+                android:gravity="center"
+                android:textSize="16dip"
+                android:visibility="gone"
+                />
+
             <!-- inputs -->
             <RelativeLayout
                 android:id="@+id/inputs"
