@@ -31,11 +31,67 @@
             android:layout_height="wrap_content"
             android:text="@string/deleteAccountInfoText1" />
 
-        <TextView
-            android:id="@+id/user_bullet_list"
-            android:textSize="17dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <!-- BulletList-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/point"
+                android:layout_marginRight="10dp"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bullet_1"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="17dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/point"
+                android:layout_marginRight="10dp"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bullet_2"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="17dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/point"
+                android:layout_marginRight="10dp"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bullet_3"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="17dp" />
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/user_deleteAccountText2"

@@ -7,11 +7,4 @@
         <item>Passwort</item>
         <item>Terms</item>
     </array>
-
-    <string-array name="deletedItems">
-        <item>Personenbezogene Daten (<i>Name, Profilbild, Status</i>)</item>
-        <item>Aufzeichnungen</item>
-        <item>Freunde</item>
-    </string-array>
-
 </resources>

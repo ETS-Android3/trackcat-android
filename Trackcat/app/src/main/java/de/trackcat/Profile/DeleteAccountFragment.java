@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.BulletSpan;
@@ -25,7 +26,7 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
 
     Button btnSave;
     CheckBox accept;
-    TextView bullets;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -35,21 +36,9 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
         /* get fields */
         btnSave = view.findViewById(R.id.btn_delete_account);
         accept = view.findViewById(R.id.checkBoxAccept);
-        bullets= view.findViewById(R.id.user_bullet_list);
 
         btnSave.setOnClickListener(this);
         accept.setOnClickListener(this);
-
-
-
-       // CharSequence t1 = getText(R.string.xxx1);
-        CharSequence t1 = "Hallo";
-        SpannableString s1 = new SpannableString(t1);
-        s1.setSpan(new BulletSpan(15), 0, t1.length(), 0);
-        CharSequence t2 = "gut";
-        SpannableString s2 = new SpannableString(t2);
-        s2.setSpan(new BulletSpan(15), 0, t2.length(), 0);
-        bullets.setText(TextUtils.concat(s1, s2));
 
         return view;
     }
@@ -70,18 +59,13 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                 }
 
                 break;
-            case R.id.btn_save:
+            case R.id.btn_delete_account:
 
                 /* create AlertBox */
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setTitle("Account löschen?");
                 alert.setMessage("Sind Sie sich sicher, dass Sie Ihren Account löschen wollen?");
-               /* LayoutInflater layoutInflater = (LayoutInflater) Objects.requireNonNull(MainActivity.this).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_notauthorized, null, true) : null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    alert.setView(alertView);
 
-                }*/
 
                 alert.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {

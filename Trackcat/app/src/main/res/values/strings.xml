@@ -92,6 +92,10 @@
     <string name="noBMI">Close</string>
     <string name="deleteAccountInfoText1">Wenn Sie Ihren Account löschen, werden alle von Ihnen gespeicherten Daten aus der Datenbank <b>gelöscht</b>.
         \nDies betrifft folgende Daten:</string>
+
+    <string name="bullet_1">Personenbezogene Daten (<i>Name, Profilbild, Status</i>)</string>
+    <string name="bullet_2">Aufzeichnungen</string>
+    <string name="bullet_3">Freunde</string>
     <string name="deleteAccountInfoText2">\nIhre Daten können <b>NICHT</b> wiederhergestellt werden.</string>
     <string name="deleteAccountCheckBox">Ich akzeptiere und möchte meinen Account löschen.</string>
 
