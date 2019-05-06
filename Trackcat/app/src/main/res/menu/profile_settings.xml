@@ -14,6 +14,9 @@
         <item
             android:id="@+id/nav_editPassword"
             android:title="Passwort ändern" />
+        <item
+            android:id="@+id/nav_deleteAccount"
+            android:title="Account löschen" />
     </item>
 
 </menu>

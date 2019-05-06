@@ -17,6 +17,7 @@
     <string name="fEditProfile">EDITPROFILE</string>
     <string name="fEditPassword">EDITPASSWORD</string>
     <string name="fFriendSystem">FREUNDE</string>
+    <string name="fDeleteAccount">DELETEACCOUNT</string>
     <string name="fSettings">SETTINGS</string>
     <string name="fPageViewer">PAGE_VIEWER</string>
     <string name="fLoadScreen">LOADSCREEN</string>
@@ -84,10 +85,19 @@
         ebenfalls ändern.</string>
     <string name="help_editPassword">Hier haben Sie die Möglichkeit Ihr Passwort zu ändern. Hierfür müssen Sie zunächst ihr aktuelles Passwort eingeben.</string>
     <string name="help_friendSystem">Hier sehen sie alle Ihre Freunde.</string>
+    <string name="help_deleteAccount">Hier können Sie Ihren Account löschen.</string>
 
     <!-- profile strings -->
     <string name="noInformation">keine Angabe</string>
     <string name="noBMI">Close</string>
+    <string name="deleteAccountInfoText">Wenn Sie Ihren Account löschen, werden alle von Ihnen gespeicherten Daten aus der Datenbank <b>gelöscht</b>.
+        Dies betrifft folgende Daten:\n\n
+        &#8226;\tPersonenbezogene Daten (<i>Name, Profilbild, Status</i>)\n\t
+        &#8226; \tAufzeichnungen\n\t
+        &#8226; \tFreunde\n\t
+        \nIhre Daten können <b>NICHT</b> wiederhergestellt werden. </string>
+    <string name="deleteAccountCheckBox">Ich akzeptiere und möchte meinen Account löschen.</string>
+
 
     <!-- cropView strings -->
     <string name="ucrop_rotate">Rotieren</string>

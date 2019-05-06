@@ -44,6 +44,7 @@ import de.trackcat.Dashboard.DashboardFragment;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
 import de.trackcat.FriendsSystem.FriendsFragment;
+import de.trackcat.Profile.DeleteAccountFragment;
 import de.trackcat.Profile.EditPasswordFragment;
 import de.trackcat.Profile.ProfileFragment;
 import de.trackcat.Profile.EditProfileFragment;
@@ -363,6 +364,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_editPassword:
                 loadEditPassword();
                 return true;
+            case R.id.nav_deleteAccount:
+                loadDeleteAccount();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -488,7 +492,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadDashboard();
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
             loadRecordList();
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
             loadProfile(false);
         } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
@@ -622,6 +626,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.commit();
     }
 
+    /* Laden des Friends-Fragments */
+    public void loadDeleteAccount() {
+        Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Account-Löschen-Fragment wird geladen.");
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, new DeleteAccountFragment(),
+                getResources().getString(R.string.fDeleteAccount));
+        fragTransaction.commit();
+    }
+
     // set the RecordFragment wich is in use
     public void setRecordFragment(RecordFragment recordFragment) {
         this.recordFragment = recordFragment;
@@ -653,6 +666,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_editPassword));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_friendSystem));
+                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_deleteAccount));
                     }
                     alert.setNegativeButton("Schließen", null);
                     alert.show();
