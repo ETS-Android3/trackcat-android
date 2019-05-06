@@ -75,7 +75,7 @@ dependencies {
     // Im Logcat nach "dbdebug" suchen und Link anklicken
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
 
-    implementation 'com.soundcloud.android:android-crop:1.0.1@aar'
+    // Crop image view
     implementation 'com.github.yalantis:ucrop:2.2.3'
 
 }
