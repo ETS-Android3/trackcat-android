@@ -65,12 +65,33 @@
                     android:layout_marginBottom="8dp"
                     android:theme="@style/EditTextTheme">
 
-                    <CheckBox
-                        android:id="@+id/checkBox_generalTerm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="AGBs gelesen und akzeptiert" />
+                    <LinearLayout
+                        android:id="@+id/generalTerm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <CheckBox
+                            android:id="@+id/checkBox_generalTerm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="" />
+
+                        <TextView
+                            android:id="@+id/link_termsOfService"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorBlack"
+                            android:text="AGBs"
+                            android:clickable="true" />
+                        <TextView
+                            android:id="@+id/text_termsOfService"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorBlack"
+                            android:text=" gelesen und akzeptiert"
+                            android:clickable="true" />
+
+                    </LinearLayout>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -84,12 +105,33 @@
                     android:layout_marginBottom="8dp"
                     android:theme="@style/EditTextTheme">
 
-                    <CheckBox
-                        android:id="@+id/checkBox_dataProtection"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Datenschutzerklärung gelesen und akzeptiert" />
+                    <LinearLayout
+                        android:id="@+id/dataProtection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <CheckBox
+                            android:id="@+id/checkBox_dataProtection"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="" />
+
+                        <TextView
+                            android:id="@+id/link_dataProtection"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorBlack"
+                            android:text="Datenschutzerklärung"
+                            android:clickable="true" />
+                        <TextView
+                            android:id="@+id/text_dataProtection"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorBlack"
+                            android:text=" gelesen und akzeptiert"
+                            android:clickable="true" />
+
+                    </LinearLayout>
 
                 </android.support.design.widget.TextInputLayout>
 

@@ -5,6 +5,10 @@
     <string name="recordLastListMoreLink">Mehr anzeigen</string>
     <string name="recordLastListNothing">Noch keine\nAufnahmen</string>
 
+    <!-- Links -->
+    <string name="link_termsOfService">https://www.urbandictionary.com/define.php?term=hallp</string>
+    <string name="link_dataProtection">http://www.elizabethcastro.com/html/extras/entities.html</string>
+
     <!-- Fragment Namen -->
     <string name="fDashboard">DASHBOARD</string>
     <string name="fDashboardSummary">DASHBOARD_SUMMARY</string>
