@@ -69,7 +69,6 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
             checkDataProtection = getArguments().getBoolean("dataProtection");
         }
 
-
         /* step view */
         stepView = view.findViewById(R.id.step_view);
         stepView.go(3, false);
@@ -80,6 +79,12 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         logInInLink.setOnClickListener(this);
         generalTerm.setOnClickListener(this);
         dataProtection.setOnClickListener(this);
+
+        /* set button enable if necessary */
+        if (checkGeneralTerm && checkDataProtection) {
+            btnSignIn.setEnabled(true);
+            btnSignIn.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+        }
 
         return view;
     }
@@ -95,7 +100,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                 bundleSignIn_1_and_2_and_3_and_4.putString("firstName", firstName);
                 bundleSignIn_1_and_2_and_3_and_4.putString("lastName", lastName);
                 bundleSignIn_1_and_2_and_3_and_4.putString("email", email);
-                bundleSignIn_1_and_2_and_3_and_4.putBoolean("generalTerm", generalTerm.isChecked());
+                bundleSignIn_1_and_2_and_3_and_4.putBoolean("generalTerms", generalTerm.isChecked());
                 bundleSignIn_1_and_2_and_3_and_4.putBoolean("dataProtection", dataProtection.isChecked());
 
                 SignInFragment_3 signInFragment_3 = new SignInFragment_3();

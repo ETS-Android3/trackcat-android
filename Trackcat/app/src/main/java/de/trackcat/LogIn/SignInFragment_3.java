@@ -64,7 +64,7 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
             firstName = getArguments().getString("firstName");
             lastName = getArguments().getString("lastName");
             email = getArguments().getString("email");
-            generalTerm = getArguments().getBoolean("generalTerm");
+            generalTerm = getArguments().getBoolean("generalTerms");
             dataProtection = getArguments().getBoolean("dataProtection");
 
             if (getArguments().getString("password1") != null) {
