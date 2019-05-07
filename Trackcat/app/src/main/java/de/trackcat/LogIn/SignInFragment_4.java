@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +15,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.json.JSONObject;
-
 import java.util.HashMap;
-
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
 import de.trackcat.R;
@@ -36,7 +35,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
     CheckBox generalTerm, dataProtection;
     ImageView btnBack;
     Button btnSignIn;
-    TextView logInInLink, messageBox, messageBoxInfo;
+    TextView logInInLink, messageBox, messageBoxInfo, link_termsOfService, link_dataProtection, text_dataProtection;
     String firstName, lastName, email, password1, password2;
     Boolean checkGeneralTerm, checkDataProtection = false;
     private com.shuhart.stepview.StepView stepView;
@@ -49,7 +48,9 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         /* get views */
         View view = inflater.inflate(R.layout.fragment_signin_4, container, false);
         generalTerm = view.findViewById(R.id.checkBox_generalTerm);
+        link_termsOfService= view.findViewById(R.id.link_termsOfService);
         dataProtection = view.findViewById(R.id.checkBox_dataProtection);
+        link_dataProtection= view.findViewById(R.id.link_dataProtection);
         btnBack = view.findViewById(R.id.btn_back);
         btnSignIn = view.findViewById(R.id.btn_signin);
         logInInLink = view.findViewById(R.id.link_login);
@@ -85,6 +86,17 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
             btnSignIn.setEnabled(true);
             btnSignIn.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
         }
+
+        /* set link */
+        link_termsOfService.setClickable(true);
+        link_termsOfService.setMovementMethod(LinkMovementMethod.getInstance());
+        String text1 = "<a href='"+getString(R.string.link_termsOfService)+"'> AGBs</a>  gelesen und akzeptiert";
+        link_termsOfService.setText(Html.fromHtml(text1));
+
+        link_dataProtection.setClickable(true);
+        link_dataProtection.setMovementMethod(LinkMovementMethod.getInstance());
+        String text2 = "<a href='"+getString(R.string.link_dataProtection)+"'> Datenschutzerklärung</a>  gelesen und akzeptiert";
+        link_dataProtection.setText(Html.fromHtml(text2));
 
         return view;
     }

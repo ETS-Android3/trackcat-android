@@ -77,5 +77,4 @@ dependencies {
 
     // Crop image view
     implementation 'com.github.yalantis:ucrop:2.2.3'
-
 }
