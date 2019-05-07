@@ -9,11 +9,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.trackcat.GlobalFunctions;
 import de.trackcat.LogIn.LogInFragment;
 import de.trackcat.R;
 import de.trackcat.StartActivity;
@@ -96,7 +93,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
             case R.id.btn_next:
                 /* read inputs */
                 String input_email_next = email.getText().toString();
-                if (validate()) {
+                if (GlobalFunctions.validateEMail(email, StartActivity.getInstance())) {
                     /*create bundle*/
                     bundleSignIn_1_and_2 = new Bundle();
                     bundleSignIn_1_and_2.putString("firstName", firstName);
@@ -125,27 +122,5 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                 fragTransaction.commit();
                 break;
         }
-    }
-
-
-    public boolean validate() {
-        boolean valid = true;
-
-        /* read inputs */
-        String input_email = email.getText().toString();
-
-        /* validate email */
-        Pattern pattern = Pattern.compile(getResources().getString(R.string.rEmail));
-        Matcher matcher = pattern.matcher(input_email);
-
-        if (!matcher.matches()) {
-            email.setError(getResources().getString(R.string.errorMsgEMail));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorEmail), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            email.setError(null);
-        }
-
-        return valid;
     }
 }

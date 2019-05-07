@@ -11,10 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import de.trackcat.GlobalFunctions;
 import de.trackcat.LogIn.LogInFragment;
+import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.StartActivity;
 
@@ -103,25 +102,29 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
                 /* read inputs */
                 String input_password1 = password1.getText().toString();
                 String input_password2 = password2.getText().toString();
-                if (input_password1.equals(input_password2) && validate()) {
+                if (input_password1.equals(input_password2)) {
+                    if (GlobalFunctions.validateTwoPassword(password1, password2, StartActivity.getInstance())) {
 
-                    /*create bundle*/
-                    bundleSignIn_1_and_2_and_3.putString("firstName", firstName);
-                    bundleSignIn_1_and_2_and_3.putString("lastName", lastName);
-                    bundleSignIn_1_and_2_and_3.putString("email", email);
-                    bundleSignIn_1_and_2_and_3.putString("password1", input_password1);
-                    bundleSignIn_1_and_2_and_3.putString("password2", input_password2);
-                    bundleSignIn_1_and_2_and_3.putBoolean("generalTerms", generalTerm);
-                    bundleSignIn_1_and_2_and_3.putBoolean("dataProtection", dataProtection);
+                        /*create bundle*/
+                        bundleSignIn_1_and_2_and_3.putString("firstName", firstName);
+                        bundleSignIn_1_and_2_and_3.putString("lastName", lastName);
+                        bundleSignIn_1_and_2_and_3.putString("email", email);
+                        bundleSignIn_1_and_2_and_3.putString("password1", input_password1);
+                        bundleSignIn_1_and_2_and_3.putString("password2", input_password2);
+                        bundleSignIn_1_and_2_and_3.putBoolean("generalTerms", generalTerm);
+                        bundleSignIn_1_and_2_and_3.putBoolean("dataProtection", dataProtection);
 
-                    SignInFragment_4 signInFragment_4 = new SignInFragment_4();
-                    signInFragment_4.setArguments(bundleSignIn_1_and_2_and_3);
+                        SignInFragment_4 signInFragment_4 = new SignInFragment_4();
+                        signInFragment_4.setArguments(bundleSignIn_1_and_2_and_3);
 
-                    /* show next page */
-                    fragTransaction = getFragmentManager().beginTransaction();
-                    fragTransaction.replace(R.id.mainFrame, signInFragment_4,
-                            getResources().getString(R.string.fSignIn_4));
-                    fragTransaction.commit();
+                        /* show next page */
+                        fragTransaction = getFragmentManager().beginTransaction();
+                        fragTransaction.replace(R.id.mainFrame, signInFragment_4,
+                                getResources().getString(R.string.fSignIn_4));
+                        fragTransaction.commit();
+                    }
+                } else {
+                    Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorPasswordNotIdentical), Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -132,27 +135,5 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
                 fragTransaction.commit();
                 break;
         }
-    }
-
-    public boolean validate() {
-        boolean valid = true;
-
-        /* read inputs */
-        String input_password1 = password1.getText().toString();
-
-        /* validate password */
-        Pattern pattern2 = Pattern.compile(getResources().getString(R.string.rPassword));
-        Matcher matcher2 = pattern2.matcher(input_password1);
-
-        if (!matcher2.matches()) {
-            password1.setError(getResources().getString(R.string.errorMsgPassword));
-            password2.setError(getResources().getString(R.string.errorMsgPassword));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            password1.setError(null);
-            password2.setError(null);
-        }
-        return valid;
     }
 }
