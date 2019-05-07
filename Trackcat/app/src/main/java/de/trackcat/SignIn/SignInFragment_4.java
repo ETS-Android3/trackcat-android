@@ -215,7 +215,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
                         /* show server error message to user */
                         Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Unbekannter Fehler");
-                        setErrorMessage("Unbekannter Fehler", getResources().getString(R.string.eUnknownError));
+                        setErrorMessage("Unbekannter Fehler", getResources().getString(R.string.eSignInUnknownError));
 
                     } else if (json.getString("success").equals("3")) {
 

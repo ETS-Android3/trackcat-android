@@ -36,12 +36,12 @@
     <!-- ErrorMessages Connection to Server -->
     <string name="eServer">Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...</string>
     <string name="eCheckConnection">Bitte überprüfen Sie Ihre Internetverbindung.</string>
-    <string name="eUnknownError">Es tut uns leid, leider ist ein unbekannter Fehler aufgetreten. Versuchen Sie es später nochmal...</string>
 
     <!-- SignIn -->
     <string name="eEMailExists" tools:ignore="ExtraTranslation">Es tut uns leid, Ihre E-Mail Adresse ist leider schon vergeben!</string>
     <string name="createAccount">Account wird erstellt...</string>
     <string name="messageAfterCorrectRegist">Ihr Konto wurde erfolgreich erstellt. Bitte überprüfen Sie Ihr E-Mail Postfach und bestätigen Sie Ihre Registrierung, um Zugang zu Ihrem Konto zu erhalten!</string>
+    <string name="eSignInUnknownError">Unbekannter Fehler beim Erstellen des Kontos!</string>
 
     <!-- LogIn -->
     <string name="eEMailNotVerified">Ihre E-Mail Adresse ist noch nicht verifiziert. Bitte gehen Sie in Ihr E-Mail Postfach und verifiziere Sie damit die Echtheit Ihrer E-Mail Adresse.</string>
@@ -109,10 +109,12 @@
     <string name="saveProfileSuccess">Profil erfolgreich gespeichert.</string>
     <string name="birthdayInFuture">Sie sind noch nicht geboren, das könnte schwierig werden!</string>
     <string name="editProfilUnknownError">Unbekannter Fehler beim Bearbeiten der Profilinformationen!</string>
+    <string name="editProfileNoChanges">Keine Änderungen</string>
 
     <!-- change password strings -->
     <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
     <string name="tErrorOldPassword">Authentifizierung fehlgeschlagen!</string>
+    <string name="tChangePasswortUnknownError">Unbekannter Fehler beim Ändern des Passworts!</string>
 
 
     <!-- delete profile strings -->
@@ -124,15 +126,18 @@
     <string name="deleteAccountCheckBox">Ich akzeptiere und möchte meinen Account <b>unwiderruflich</b> löschen.</string>
 
     <string name="deleteAccountModalWindowTitle">Account unwiderruflich löschen?</string>
-    <string name="deleteAccountModalWindow">Beim Löschen Ihres Accounts verlieren Sie den Zugriff auf samtliche damit verbundene Funktionen. \n<b>Sind Sie sich sicher, dass Sie Ihren Account unwiderruflich löschen wollen?</b></string>
+    <string name="deleteAccountModalWindow">Beim Löschen Ihres Accounts verlieren Sie den Zugriff auf sämtliche damit verbundene Funktionen.\n\n<b>Sind Sie sich sicher, dass Sie Ihren Account unwiderruflich löschen wollen?</b></string>
 
     <string name="eDeleteAccountNoConnection">Account kann nicht gelöscht werden. Bitte überprüfen Sie Ihre Internetverbindung.</string>
     <string name="deleteAccountSuccess">Account wird gelöscht.</string>
+    <string name="deleteAccountUnknownError">Unbekannter Fehler beim Löschen des Accounts!</string>
 
 
     <!-- cropView strings -->
     <string name="ucrop_rotate">Rotieren</string>
     <string name="ucrop_scale">Skalieren</string>
     <string name="selectImage">Bitte wählen Sie ein Profilbild aus</string>
+    <string name="ucrop_selectImage">Bild ausgewählt!</string>
+
 
 </resources>

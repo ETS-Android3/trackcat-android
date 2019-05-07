@@ -75,7 +75,7 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                 alert.setMessage(getResources().getString(R.string.deleteAccountModalWindow));
 
 
-                alert.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                alert.setPositiveButton("Account löschen", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
                         /* get current user */
@@ -110,7 +110,14 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                                         JSONObject mainObject = new JSONObject(jsonString);
                                         if (mainObject.getString("success").equals("0")) {
                                             MainActivity.getInstance().logout();
-                                            Toast.makeText(getContext(), getResources().getString(R.string.deleteAccountSuccess), Toast.LENGTH_LONG).show();
+                                            if (MainActivity.getHints()) {
+                                                Toast.makeText(getContext(), getResources().getString(R.string.deleteAccountSuccess), Toast.LENGTH_LONG).show();
+                                            }
+                                        }else if (mainObject.getString("success").equals("1")) {
+                                            MainActivity.getInstance().logout();
+                                            if (MainActivity.getHints()) {
+                                                Toast.makeText(getContext(), getResources().getString(R.string.deleteAccountUnknownError), Toast.LENGTH_LONG).show();
+                                            }
                                         }
                                     }
                                 } catch (IOException e) {
@@ -123,14 +130,15 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
                                 call.cancel();
-                                Toast.makeText(getContext(), getResources().getString(R.string.eDeleteAccountNoConnection), Toast.LENGTH_LONG).show();
+                                if (MainActivity.getHints()) {
+                                    Toast.makeText(getContext(), getResources().getString(R.string.eDeleteAccountNoConnection), Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
-
                     }
                 });
 
-                alert.setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+                alert.setNegativeButton("Abruch", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }

@@ -13,8 +13,6 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
@@ -62,98 +60,101 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
             case R.id.btn_save:
 
                 /* change button */
-                btnSave.setEnabled(false);
-                btnSave.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
+                setButtonDisable();
 
                 /* Inputfelder auslesen */
                 String input_currentPassword = currentPassword.getText().toString();
                 String input_password1 = password1.getText().toString();
                 String input_password2 = password2.getText().toString();
 
-                /* check if all fields are filled and validate inputs*/
-                if (!input_currentPassword.equals("") && !input_password1.equals("") && !input_password2.equals("")) {
+                /* validate password */
+                boolean checkCurrentPassword = GlobalFunctions.validatePassword(currentPassword, MainActivity.getInstance());
+                boolean checkPassword1 = GlobalFunctions.validatePassword(password1, MainActivity.getInstance());
+                boolean checkPassword2 = GlobalFunctions.validatePassword(password2, MainActivity.getInstance());
+                if (checkCurrentPassword && checkPassword1 && checkPassword2) {
 
                     /* check if passwords are equals */
                     if (input_password1.equals(input_password2)) {
 
-                        /* validate password */
-                        if (validate()) {
+                        currentUser = userDAO.read(MainActivity.getActiveUser());
 
-                            currentUser = userDAO.read(MainActivity.getActiveUser());
+                        /* send inputs to server */
+                        Retrofit retrofit = APIConnector.getRetrofit();
+                        APIClient apiInterface = retrofit.create(APIClient.class);
+                        String base = currentUser.getMail() + ":" + input_currentPassword;
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("newPw", input_password2);
+                        map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
 
-                            /* send inputs to server */
-                            Retrofit retrofit = APIConnector.getRetrofit();
-                            APIClient apiInterface = retrofit.create(APIClient.class);
-                            String base = currentUser.getMail() + ":" + input_currentPassword;
-                            HashMap<String, String> map = new HashMap<>();
-                            map.put("newPw", input_password2);
-                            map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
+                        // TODO hashsalt Password
+                        /* start a call */
+                        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                        Call<ResponseBody> call = apiInterface.changeUserPassword(authString, map);
 
-                            // TODO hashsalt Password
-                            /* start a call */
-                            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                            Call<ResponseBody> call = apiInterface.changeUserPassword(authString, map);
+                        call.enqueue(new Callback<ResponseBody>() {
 
-                            call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                try {
 
-                                @Override
-                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                    try {
+                                    /* get jsonString from API */
+                                    String jsonString = response.body().string();
 
-                                        /* get jsonString from API */
-                                        String jsonString = response.body().string();
+                                    /* parse json */
+                                    JSONObject mainObject = new JSONObject(jsonString);
+                                    /*  if change password success*/
+                                    if (mainObject.getString("success").equals("0")) {
 
-                                        /* parse json */
-                                        JSONObject mainObject = new JSONObject(jsonString);
-                                        /*  if change password success*/
-                                        if (mainObject.getString("success").equals("0")) {
-
-                                            /* change password in local DB */
-                                            changePasswordInLokalDB(input_password2);
-                                        }
-
-                                        /* old password not correct */
-                                    } catch (Exception e) {
-                                        Toast.makeText(getContext(), getResources().getString(R.string.tErrorOldPassword), Toast.LENGTH_LONG).show();
-                                        /* set btn enable */
-                                        btnSave.setEnabled(true);
-                                        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
-                                    }
-                                }
-
-                                /* no internet connection */
-                                @Override
-                                public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                                    /* change password in local DB */
-                                    if (input_currentPassword.equals(currentUser.getPassword())) {
+                                        /* change password in local DB */
                                         changePasswordInLokalDB(input_password2);
-                                    } else {
-                                        /* old password not correct */
-                                        Toast.makeText(getContext(), getResources().getString(R.string.tErrorOldPassword), Toast.LENGTH_LONG).show();
-                                        /* set btn enable */
-                                        btnSave.setEnabled(true);
-                                        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                                    } else if (mainObject.getString("success").equals("1")) {
+
+                                        if (MainActivity.getHints()) {
+                                            Toast.makeText(getContext(), getResources().getString(R.string.tChangePasswortUnknownError), Toast.LENGTH_LONG).show();
+                                        }
                                     }
 
-                                    call.cancel();
+                                    /* old password not correct */
+                                } catch (Exception e) {
+                                    if (MainActivity.getHints()) {
+                                        Toast.makeText(getContext(), getResources().getString(R.string.tErrorOldPassword), Toast.LENGTH_LONG).show();
+                                    }
+                                    /* set btn enable */
+                                    setButtonEnable();
                                 }
-                            });
-                        }
+                            }
+
+                            /* no internet connection */
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                /* change password in local DB */
+                                if (input_currentPassword.equals(currentUser.getPassword())) {
+                                    changePasswordInLokalDB(input_password2);
+                                } else {
+                                    /* old password not correct */
+                                    if (MainActivity.getHints()) {
+                                        Toast.makeText(getContext(), getResources().getString(R.string.tErrorOldPassword), Toast.LENGTH_LONG).show();
+                                    }
+                                    /* set btn enable */
+                                    setButtonEnable();
+                                }
+
+                                call.cancel();
+                            }
+                        });
+
                     } else {
-                        Toast.makeText(getContext(), getResources().getString(R.string.tErrorPasswordNotIdentical), Toast.LENGTH_LONG).show();
+                        if (MainActivity.getHints()) {
+                            Toast.makeText(getContext(), getResources().getString(R.string.tErrorPasswordNotIdentical), Toast.LENGTH_LONG).show();
+                        }
                         /* set btn enable */
-                        btnSave.setEnabled(true);
-                        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                        setButtonEnable();
                     }
                 } else {
-                    if (MainActivity.getHints()) {
-                        Toast.makeText(getContext(), getResources().getString(R.string.tFillAllFields), Toast.LENGTH_LONG).show();
-                    }
 
                     /* set btn enable */
-                    btnSave.setEnabled(true);
-                    btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                    setButtonEnable();
                 }
                 break;
         }
@@ -166,8 +167,7 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
         userDAO.update(currentUser.getId(), currentUser);
 
         /* set btn enable */
-        btnSave.setEnabled(true);
-        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+        setButtonEnable();
 
         /* UI-Meldung */
         if (MainActivity.getHints()) {
@@ -175,25 +175,14 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    /* function to validate */
-    public boolean validate() {
-        boolean valid = true;
+    /* functions to enable/disable button */
+    private void setButtonEnable() {
+        btnSave.setEnabled(true);
+        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+    }
 
-        /* read inputs */
-        String input_password = password1.getText().toString();
-
-        /* validate password */
-        String regrex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{8,15}$";
-        Pattern pattern = Pattern.compile(regrex);
-        Matcher matcher = pattern.matcher(input_password);
-
-        if (!matcher.matches()) {
-            password1.setError(getResources().getString(R.string.errorMsgPassword));
-            password2.setError(getResources().getString(R.string.errorMsgPassword));
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
-            valid = false;
-        }
-
-        return valid;
+    private void setButtonDisable() {
+        btnSave.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
+        btnSave.setEnabled(false);
     }
 }
