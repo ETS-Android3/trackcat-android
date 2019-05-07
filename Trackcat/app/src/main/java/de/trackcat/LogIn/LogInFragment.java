@@ -13,12 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONObject;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
@@ -64,21 +60,9 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         /* set user dao */
         userDAO = new UserDAO(StartActivity.getInstance());
 
+        /* set info after correct regist */
         if (getArguments() != null) {
-            messageBoxInfo.setVisibility(View.VISIBLE);
-            messageBoxInfo.setText("Bitte Verifizieren Sie Ihre E-Mail und melden Sie sich an!");
-
-            messageBox.setVisibility(View.VISIBLE);
-            messageBox.setText("Anmeldung");
-            new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            messageBox.setVisibility(View.GONE);
-                            messageBox.setText("");
-                            messageBoxInfo.setVisibility(View.GONE);
-                            messageBoxInfo.setText("");
-                        }
-                    }, 10000);
+            setErrorMessage("Anmeldung", getResources().getString(R.string.messageAfterCorrectRegist));
         }
 
         return view;
@@ -105,238 +89,172 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     public void login() {
 
         /* validate the inputs */
-        if (!validate()) {
-            return;
-        }
-        btnLogin.setEnabled(false);
-        btnLogin.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
+        boolean emailCorrect = GlobalFunctions.validateEMail(emailTextView, StartActivity.getInstance());
+        boolean passwordCorrect = GlobalFunctions.validatePassword(passwordTextView, StartActivity.getInstance());
+        if (emailCorrect && passwordCorrect) {
 
-        /* read the inputs to send */
-        String email = emailTextView.getText().toString();
-        String password = passwordTextView.getText().toString();
+            setButtonDisable();
 
-        /* set wait field */
-        final ProgressDialog progressDialog = new ProgressDialog(getContext(),
-                R.style.AppTheme_Dark_Dialog);
+            /* read the inputs to send */
+            String email = emailTextView.getText().toString();
+            String password = passwordTextView.getText().toString();
 
-        StartActivity.getInstance().progressDialog = progressDialog;
+            /* set wait field */
+            final ProgressDialog progressDialog = new ProgressDialog(getContext(),
+                    R.style.AppTheme_Dark_Dialog);
+            StartActivity.getInstance().progressDialog = progressDialog;
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage(getResources().getString(R.string.login));
+            progressDialog.show();
 
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Anmeldung...");
-        progressDialog.show();
+            /* send inputs to server */
+            Retrofit retrofit = APIConnector.getRetrofit();
+            APIClient apiInterface = retrofit.create(APIClient.class);
+            String base = email + ":" + password;
 
-        /* set waiting handler */
-       /* new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        progressDialog.dismiss();*/
+            // TODO hashsalt Password
+            /* start a call */
+            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+            Call<ResponseBody> call = apiInterface.getUser(authString);
 
-        /* send inputs to server */
-        Retrofit retrofit = APIConnector.getRetrofit();
-        APIClient apiInterface = retrofit.create(APIClient.class);
-        String base = email + ":" + password;
+            call.enqueue(new Callback<ResponseBody>() {
 
-        // TODO hashsalt Password
-        /* start a call */
-        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        Call<ResponseBody> call = apiInterface.getUser(authString);
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        progressDialog.dismiss();
 
-        call.enqueue(new Callback<ResponseBody>() {
+                        /* user not authorized */
+                        if (response.code() == 401) {
+                            /* show server error message to user */
+                            Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + response.raw().message());
+                            setErrorMessage("Daten nicht korrekt", getResources().getString(R.string.eDataNotCorrect));
+                        } else {
 
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
+                            /* get jsonString from API */
+                            String jsonString = response.body().string();
 
-                    /* get jsonString from API */
-                    String jsonString = response.body().string();
-                    progressDialog.dismiss();
+                            /* parse json */
+                            JSONObject mainObject = new JSONObject(jsonString);
 
-                    if (jsonString.equals("\"1\"")) {
+                            /* open activity if login success*/
+                            if (mainObject.getString("success").equals("0")) {
 
+                                /* get userObject from Json */
+                                JSONObject userObject = mainObject.getJSONObject("userData");
 
-                        /* set errror message */
-                        Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Anmeldedaten nicht korrekt");
-                        messageBox.setVisibility(View.VISIBLE);
-                        messageBox.setText("Anmeldedaten sind nicht");
-                        messageBoxInfo.setText("Bitte überprüfen Sie Ihre Anmeldedaten.");
-                        messageBoxInfo.setVisibility(View.VISIBLE);
-                        new android.os.Handler().postDelayed(
-                                new Runnable() {
-                                    public void run() {
-                                        messageBox.setVisibility(View.GONE);
-                                        messageBox.setText("");
-                                        messageBoxInfo.setVisibility(View.GONE);
-                                        messageBoxInfo.setText("");
-                                    }
-                                }, 10000);
-                        btnLogin.setEnabled(true);
-                        btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
-                    } else {
+                                /* save logged user in db */
+                                User loggedUser = new User();
+                                loggedUser.setIdUsers(userObject.getInt("id"));
+                                loggedUser.setMail(userObject.getString("email"));
+                                loggedUser.setFirstName(userObject.getString("firstName"));
+                                loggedUser.setLastName(userObject.getString("lastName"));
+                                if (userObject.getString("image") != "null") {
+                                    loggedUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
+                                }
+                                loggedUser.setGender(userObject.getInt("gender"));
+                                if (userObject.getInt("darkTheme") == 0) {
+                                    loggedUser.setDarkThemeActive(false);
+                                } else {
+                                    loggedUser.setDarkThemeActive(true);
+                                }
 
-                        /* parse json */
-                        JSONObject mainObject = new JSONObject(jsonString);
-                        /* open activity if login success*/
-                        if (mainObject.getString("success").equals("0")) {
+                                if (userObject.getInt("hints") == 0) {
+                                    loggedUser.setHintsActive(false);
+                                } else {
+                                    loggedUser.setHintsActive(true);
+                                }
 
-                            /* get userObject from Json */
-                            JSONObject userObject = mainObject.getJSONObject("userData");
+                                try {
+                                    loggedUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
+                                } catch (Exception e) {
+                                }
 
-                            /* save logged user in db */
-                            User loggedUser = new User();
-                            loggedUser.setIdUsers(userObject.getInt("id"));
-                            loggedUser.setMail(userObject.getString("email"));
-                            loggedUser.setFirstName(userObject.getString("firstName"));
-                            loggedUser.setLastName(userObject.getString("lastName"));
-                            if (userObject.getString("image") != "null") {
-                                loggedUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
+                                try {
+                                    loggedUser.setLastLogin(userObject.getLong("lastLogin"));
+                                } catch (Exception e) {
+                                }
+
+                                try {
+                                    loggedUser.setWeight((float) userObject.getDouble("weight"));
+                                } catch (Exception e) {
+                                }
+
+                                try {
+                                    loggedUser.setSize((float) userObject.getDouble("size"));
+                                } catch (Exception e) {
+                                }
+                                try {
+                                    loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                                } catch (Exception e) {
+                                }
+
+                                loggedUser.setPassword(userObject.getString("password"));
+                                loggedUser.setTimeStamp(userObject.getLong("timeStamp"));
+                                loggedUser.isSynchronised(true);
+                                userDAO.create(loggedUser);
+
+                                /* open MainActivity */
+                                Intent intent = new Intent(getContext(), MainActivity.class);
+                                startActivity(intent);
+                                getActivity().finish();
+
+                            } else if (mainObject.getString("success").equals("2")) {
+
+                                /* show server error message to user */
+                                Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + response.raw().message());
+                                setErrorMessage("Fehlende Verifizierung", getResources().getString(R.string.eEMailNotVerified));
                             }
-                            loggedUser.setGender(userObject.getInt("gender"));
-                            if (userObject.getInt("darkTheme") == 0) {
-                                loggedUser.setDarkThemeActive(false);
-                            } else {
-                                loggedUser.setDarkThemeActive(true);
-                            }
-
-                            if (userObject.getInt("hints") == 0) {
-                                loggedUser.setHintsActive(false);
-                            } else {
-                                loggedUser.setHintsActive(true);
-                            }
-
-                            try {
-                                loggedUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
-                            } catch (Exception e) {
-                            }
-
-                            try {
-                                loggedUser.setLastLogin(userObject.getLong("lastLogin"));
-                            } catch (Exception e) {
-                            }
-
-                            try {
-                                loggedUser.setWeight((float) userObject.getDouble("weight"));
-                            } catch (Exception e) {
-                            }
-
-                            try {
-                                loggedUser.setSize((float) userObject.getDouble("size"));
-                            } catch (Exception e) {
-                            }
-                            try {
-                                loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
-                            } catch (Exception e) {
-                            }
-
-                            loggedUser.setPassword(userObject.getString("password"));
-                            loggedUser.setTimeStamp(userObject.getLong("timeStamp"));
-                            loggedUser.isSynchronised(true);
-                            userDAO.create(loggedUser);
-
-                            Intent intent = new Intent(getContext(), MainActivity.class);
-                            startActivity(intent);
-
-                            getActivity().finish();
-                        }else if(mainObject.getString("success").equals("2")){
-                            messageBoxInfo.setVisibility(View.VISIBLE);
-                            messageBoxInfo.setText("Deine E-Mail Adresse ist noch nicht verifiziert. Bitte verifiziere diese zunächst.");
-
-                            messageBox.setVisibility(View.VISIBLE);
-                            messageBox.setText("Fehlende Verifizierung");
-                            new android.os.Handler().postDelayed(
-                                    new Runnable() {
-                                        public void run() {
-                                            messageBox.setVisibility(View.GONE);
-                                            messageBox.setText("");
-                                            messageBoxInfo.setVisibility(View.GONE);
-                                            messageBoxInfo.setText("");
-                                        }
-                                    }, 10000);
-                            btnLogin.setEnabled(true);
-                            btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
                         }
+                    } catch (Exception e) {
+                        progressDialog.dismiss();
+
+                        /* show server error message to user */
+                        Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + response.raw().message());
+                        setErrorMessage(response.raw().message(), getResources().getString(R.string.eServer));
                     }
-                } catch (Exception e) {
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
                     progressDialog.dismiss();
 
                     /* show server error message to user */
-                    Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + response.raw().message());
-                    messageBoxInfo.setVisibility(View.VISIBLE);
-                    messageBoxInfo.setText(" Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...");
-
-                    messageBox.setVisibility(View.VISIBLE);
-                    messageBox.setText(response.raw().message());
-                    new android.os.Handler().postDelayed(
-                            new Runnable() {
-                                public void run() {
-                                    messageBox.setVisibility(View.GONE);
-                                    messageBox.setText("");
-                                    messageBoxInfo.setVisibility(View.GONE);
-                                    messageBoxInfo.setText("");
-                                }
-                            }, 10000);
-                    btnLogin.setEnabled(true);
-                    btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                    Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + t.getMessage());
+                    setErrorMessage(t.getMessage(), getResources().getString(R.string.eCheckConnection));
+                    call.cancel();
                 }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                progressDialog.dismiss();
-
-                Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + t.getMessage());
-                messageBox.setVisibility(View.VISIBLE);
-                messageBox.setText("Keine Serververbindung!");
-                messageBoxInfo.setText("Bitte überprüfen Sie Ihre Internetverbindung.");
-                messageBoxInfo.setVisibility(View.VISIBLE);
-                new android.os.Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-                                messageBox.setVisibility(View.GONE);
-                                messageBox.setText("");
-                                messageBoxInfo.setVisibility(View.GONE);
-                                messageBoxInfo.setText("");
-                            }
-                        }, 10000);
-                btnLogin.setEnabled(true);
-                btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
-                call.cancel();
-            }
-        });
-        //    }
-        // }, 3000);
+            });
+        }
     }
 
-    /* Function to validate user input */
-    public boolean validate() {
-        boolean valid = true;
+    /* function to set Error */
+    private void setErrorMessage(String messageBoxText, String messageInfoText) {
 
-        String email = emailTextView.getText().toString();
-        String password = passwordTextView.getText().toString();
+        messageBoxInfo.setVisibility(View.VISIBLE);
+        messageBoxInfo.setText(messageInfoText);
 
-        /* validate email */
-        Pattern pattern = Pattern.compile(getResources().getString(R.string.rEmail));
-        Matcher matcher = pattern.matcher(email);
+        messageBox.setVisibility(View.VISIBLE);
+        messageBox.setText(messageBoxText);
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        messageBox.setVisibility(View.GONE);
+                        messageBoxInfo.setVisibility(View.GONE);
+                    }
+                }, 10000);
+        setButtonEnable();
+    }
 
-        if (!matcher.matches()) {
-            emailTextView.setError(getResources().getString(R.string.errorMsgEMail));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorEmail), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            emailTextView.setError(null);
-        }
+    /* functions to enable/disable button */
+    private void setButtonEnable() {
+        btnLogin.setEnabled(true);
+        btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+    }
 
-        /* validate password */
-        Pattern pattern2 = Pattern.compile(getResources().getString(R.string.rPassword));
-        Matcher matcher2 = pattern2.matcher(password);
-
-        if (!matcher2.matches()) {
-            passwordTextView.setError(getResources().getString(R.string.errorMsgPassword));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            passwordTextView.setError(null);
-        }
-        return valid;
+    private void setButtonDisable() {
+        btnLogin.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
+        btnLogin.setEnabled(false);
     }
 }

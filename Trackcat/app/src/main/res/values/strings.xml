@@ -37,11 +37,15 @@
     <string name="eServer">Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...</string>
     <string name="eCheckConnection">Bitte überprüfen Sie Ihre Internetverbindung.</string>
     <string name="eUnknownError">Es tut uns leid, leider ist ein unbekannter Fehler aufgetreten. Versuchen Sie es später nochmal...</string>
-    <string name="eEMailExists">Es tut uns leid, Ihre E-Mail Adresse ist leider schon vergeben.</string>
+    <string name="eEMailExists" tools:ignore="ExtraTranslation">Es tut uns leid, Ihre E-Mail Adresse ist leider schon vergeben.</string>
+    <string name="eEMailNotVerified">Deine E-Mail Adresse ist noch nicht verifiziert. Bitte verifiziere diese zunächst.</string>
+    <string name="eDataNotCorrect" tools:ignore="ExtraTranslation">Ihre Anmeldedaten sind nicht korrekt. Bitte überprüfen Sie Ihre Anmeldedaten.</string>
+
 
     <!-- LogIn/SignIn -->
     <string name="createAccount">Account wird erstellt...</string>
-
+    <string name="login">Anmeldung...</string>
+    <string name="messageAfterCorrectRegist">Bitte Verifizieren Sie Ihre E-Mail und melden Sie sich an!</string>
 
     <!-- Einstellungen -->
     <string name="category1">Allgemeines</string>

@@ -99,25 +99,22 @@ public class GlobalFunctions {
     public static long getTimeStamp() {
 
         Long tsLong = System.currentTimeMillis() / 1000;
-        String ts = tsLong.toString();
-
-        Log.d("LALALALAL", "Time : " + ts);
         return tsLong;
     }
 
 
-    public static boolean validatePassword(TextView passwordTextView){
+    public static boolean validatePassword(TextView passwordTextView, Activity activity){
 
         boolean valid= true;
         String password = passwordTextView.getText().toString();
 
         /* validate password */
-        Pattern pattern2 = Pattern.compile(MainActivity.getInstance().getResources().getString(R.string.rPassword));
+        Pattern pattern2 = Pattern.compile(activity.getResources().getString(R.string.rPassword));
         Matcher matcher2 = pattern2.matcher(password);
 
         if (!matcher2.matches()) {
-            passwordTextView.setError(MainActivity.getInstance().getResources().getString(R.string.errorMsgPassword));
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
+            passwordTextView.setError(activity.getResources().getString(R.string.errorMsgPassword));
+            Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
             valid = false;
         } else {
             passwordTextView.setError(null);
@@ -135,7 +132,7 @@ public class GlobalFunctions {
         Matcher matcher3 = pattern3.matcher(input_name);
         if (!matcher3.matches()) {
             nameTextView.setError(activity.getResources().getString(R.string.errorMsgName));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), activity.getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity.getApplicationContext(), activity.getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
             valid = false;
         } else {
             nameTextView.setError(null);

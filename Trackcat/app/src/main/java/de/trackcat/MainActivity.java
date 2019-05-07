@@ -715,7 +715,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 User user = userDAO.read(getActiveUser());
                 TextView password = alertView.findViewById(R.id.input_password);
 
-                if (GlobalFunctions.validatePassword(password)) {
+                if (GlobalFunctions.validatePassword(password, MainActivity.this)) {
 
                     Retrofit retrofit = APIConnector.getRetrofit();
                     APIClient apiInterface = retrofit.create(APIClient.class);
