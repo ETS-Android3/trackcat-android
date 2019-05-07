@@ -77,7 +77,4 @@ dependencies {
 
     // Crop image view
     implementation 'com.github.yalantis:ucrop:2.2.3'
-
-    implementation 'com.github.deano2390:FlowTextView:2.0.5'
-
 }
