@@ -1,23 +1,15 @@
 package de.trackcat.Profile;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.style.BulletSpan;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -25,13 +17,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Objects;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
-import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import okhttp3.ResponseBody;
@@ -81,8 +71,8 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
 
                 /* create AlertBox */
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                alert.setTitle("Account löschen?");
-                alert.setMessage("Sind Sie sich sicher, dass Sie Ihren Account löschen wollen?");
+                alert.setTitle(getResources().getString(R.string.deleteAccountModalWindowTitle));
+                alert.setMessage(getResources().getString(R.string.deleteAccountModalWindow));
 
 
                 alert.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
@@ -120,7 +110,7 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                                         JSONObject mainObject = new JSONObject(jsonString);
                                         if (mainObject.getString("success").equals("0")) {
                                             MainActivity.getInstance().logout();
-                                            Toast.makeText(getContext(), "Account wird gelöscht.", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getContext(), getResources().getString(R.string.deleteAccountSuccess), Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 } catch (IOException e) {
@@ -133,7 +123,7 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
                                 call.cancel();
-                                Toast.makeText(getContext(), "Account kann nicht gelöscht werden. Bitte überprüfen Sie Ihre Internetverbindung.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), getResources().getString(R.string.eDeleteAccountNoConnection), Toast.LENGTH_LONG).show();
                             }
                         });
 
@@ -146,8 +136,6 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                     }
                 });
                 alert.show();
-
-
                 break;
         }
     }

@@ -6,8 +6,8 @@
     <string name="recordLastListNothing">Noch keine\nAufnahmen</string>
 
     <!-- Links -->
-    <string name="link_termsOfService">https://www.urbandictionary.com/define.php?term=hallp</string>
-    <string name="link_dataProtection">http://www.elizabethcastro.com/html/extras/entities.html</string>
+    <string name="link_termsOfService">http://safe-harbour.de:4242/agb</string>
+    <string name="link_dataProtection">http://safe-harbour.de:4242/datenschutz</string>
 
     <!-- Fragment Namen -->
     <string name="fDashboard">DASHBOARD</string>
@@ -37,15 +37,17 @@
     <string name="eServer">Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...</string>
     <string name="eCheckConnection">Bitte überprüfen Sie Ihre Internetverbindung.</string>
     <string name="eUnknownError">Es tut uns leid, leider ist ein unbekannter Fehler aufgetreten. Versuchen Sie es später nochmal...</string>
+
+    <!-- SignIn -->
     <string name="eEMailExists" tools:ignore="ExtraTranslation">Es tut uns leid, Ihre E-Mail Adresse ist leider schon vergeben.</string>
+    <string name="createAccount">Account wird erstellt...</string>
+    <string name="messageAfterCorrectRegist">Bitte Verifizieren Sie Ihre E-Mail und melden Sie sich an!</string>
+
+    <!-- LogIn -->
     <string name="eEMailNotVerified">Deine E-Mail Adresse ist noch nicht verifiziert. Bitte verifiziere diese zunächst.</string>
     <string name="eDataNotCorrect" tools:ignore="ExtraTranslation">Ihre Anmeldedaten sind nicht korrekt. Bitte überprüfen Sie Ihre Anmeldedaten.</string>
-
-
-    <!-- LogIn/SignIn -->
-    <string name="createAccount">Account wird erstellt...</string>
     <string name="login">Anmeldung...</string>
-    <string name="messageAfterCorrectRegist">Bitte Verifizieren Sie Ihre E-Mail und melden Sie sich an!</string>
+
 
     <!-- Einstellungen -->
     <string name="category1">Allgemeines</string>
@@ -67,12 +69,7 @@
     <string name="tErrorPasswordNotIdentical">Passwörter stimmen nicht überein!</string>
     <string name="tErrorName">Ihr Name ist nicht konform!</string>
     <string name="tErrorEmail">Ihr Email ist nicht konform!</string>
-    <string name="tErrorHook">Bitte akzeptieren Sie die AGBs und die Datenschutzerklärung!</string>
-    <string name="tErrorHookGeneralTerm">Bitte akzeptieren Sie die AGBs!</string>
-    <string name="tErrorHookDataProtection">Bitte akzeptieren Sie die Datenschutzerklärung!</string>
     <string name="tFillAllFields">Bitte alle Felder ausfüllen!</string>
-    <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
-    <string name="tErrorOldPassword">Ihr altes Passwort ist nicht korrekt!</string>
 
     <!-- Regex -->
     <string name="rEmail">"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"</string>
@@ -107,7 +104,11 @@
 
     <!-- profile strings -->
     <string name="noInformation">keine Angabe</string>
-    <string name="noBMI">Close</string>
+
+    <!-- change password strings -->
+    <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
+    <string name="tErrorOldPassword">Ihr altes Passwort ist nicht korrekt!</string>
+
 
     <!-- delete profile strings -->
     <string name="deleteAccountInfoText1">Wenn Sie Ihren Account löschen, werden sämtliche Benutzerdaten gelöscht. Folgende Informationen sind davon betroffen:</string>
@@ -115,7 +116,14 @@
     <string name="bullet_2">Aufzeichnungen</string>
     <string name="bullet_3">Freunde</string>
     <string name="deleteAccountInfoText2">Ihre Daten werden dabei restlos gelöscht und können <b><u>nicht wiederhergestellt</u></b> werden!</string>
-    <string name="deleteAccountCheckBox">Ich akzeptiere und möchte meinen <b>unwiderruflich</b> Account löschen.</string>
+    <string name="deleteAccountCheckBox">Ich akzeptiere und möchte meinen Account <b>unwiderruflich</b> löschen.</string>
+
+    <string name="deleteAccountModalWindowTitle">Account löschen?</string>
+    <string name="deleteAccountModalWindow">Sind Sie sich sicher, dass Sie Ihren Account löschen wollen?</string>
+
+    <string name="eDeleteAccountNoConnection">Account kann nicht gelöscht werden. Bitte überprüfen Sie Ihre Internetverbindung.</string>
+    <string name="deleteAccountSuccess">Account wird gelöscht.</string>
+
 
     <!-- cropView strings -->
     <string name="ucrop_rotate">Rotieren</string>
