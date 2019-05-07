@@ -32,6 +32,7 @@ final class DbContract {
                     RouteEntry.COL_TYPE + " INTEGER, " +
                     RouteEntry.COL_RIDETIME + " LONG, " +
                     RouteEntry.COL_DISTANCE + " DOUBLE, " +
+                    RouteEntry.COL_TIMESTAMP + " LONG, " +
                     RouteEntry.COL_ISIMPORTED + " BOOLEAN, " +
                     RouteEntry.COL_LOCATIONS + " TEXT) ";
 
@@ -84,6 +85,7 @@ final class DbContract {
         static final String COL_RIDETIME = "rideTime";
         static final String COL_DISTANCE = "distance";
         static final String COL_LOCATIONS = "locations";
+        static final String COL_TIMESTAMP = "timestamp";
         static final String COL_ISIMPORTED = "imported";
     }
 

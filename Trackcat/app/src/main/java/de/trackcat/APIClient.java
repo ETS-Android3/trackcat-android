@@ -1,6 +1,8 @@
 package de.trackcat;
 
 import java.util.HashMap;
+
+import de.trackcat.Database.Models.Route;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -36,5 +38,9 @@ public interface APIClient {
     @Headers({"Accept: application/json"})
     @POST("/deleteUserAPI")
     Call<ResponseBody> deleteUser(@Header("Authorization") String authHeader, @Body HashMap<String,String> json);
+
+    @Headers({"Accept: application/json"})
+    @POST("/uploadTrackAPI")
+    Call<ResponseBody> uploadFullTrack(@Header("Authorization") String authHeader, @Body Route track);
 
 }
