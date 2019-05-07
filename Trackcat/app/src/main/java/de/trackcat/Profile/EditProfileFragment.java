@@ -294,7 +294,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         if (changedUser) {
             /* UI-Meldung */
             if (MainActivity.getHints()) {
-                Toast.makeText(getContext(), "Benutzer \"" + user_firstName + " " + user_lastName + "\" wurde erfolgreich geändert!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.saveProfileSuccess), Toast.LENGTH_LONG).show();
             }
         }
         changedUser = false;
@@ -556,12 +556,12 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                                 /* check if dayOfBirth in future */
                                 if (year > currentYear) {
-                                    Toast.makeText(getContext(), "Ihr Geburtstag darf nicht in der Zukunft liegen.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), getResources().getString(R.string.birthdayInFuture), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 if (currentMonth == (monthOfYear + 1) && currentYear == year) {
                                     if (dayOfMonth > currentDay) {
-                                        Toast.makeText(getContext(), "Ihr Geburtstag darf nicht in der Zukunft liegen.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), getResources().getString(R.string.birthdayInFuture), Toast.LENGTH_SHORT).show();
                                         return;
                                     }
                                 }

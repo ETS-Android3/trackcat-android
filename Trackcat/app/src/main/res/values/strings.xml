@@ -39,13 +39,13 @@
     <string name="eUnknownError">Es tut uns leid, leider ist ein unbekannter Fehler aufgetreten. Versuchen Sie es später nochmal...</string>
 
     <!-- SignIn -->
-    <string name="eEMailExists" tools:ignore="ExtraTranslation">Es tut uns leid, Ihre E-Mail Adresse ist leider schon vergeben.</string>
+    <string name="eEMailExists" tools:ignore="ExtraTranslation">Es tut uns leid, Ihre E-Mail Adresse ist leider schon vergeben!</string>
     <string name="createAccount">Account wird erstellt...</string>
-    <string name="messageAfterCorrectRegist">Bitte Verifizieren Sie Ihre E-Mail und melden Sie sich an!</string>
+    <string name="messageAfterCorrectRegist">Ihr Konto wurde erfolgreich erstellt. Bitte überprüfen Sie Ihr E-Mail Postfach und bestätigen Sie Ihre Registrierung, um Zugang zu Ihrem Konto zu erhalten!</string>
 
     <!-- LogIn -->
-    <string name="eEMailNotVerified">Deine E-Mail Adresse ist noch nicht verifiziert. Bitte verifiziere diese zunächst.</string>
-    <string name="eDataNotCorrect" tools:ignore="ExtraTranslation">Ihre Anmeldedaten sind nicht korrekt. Bitte überprüfen Sie Ihre Anmeldedaten.</string>
+    <string name="eEMailNotVerified">Ihre E-Mail Adresse ist noch nicht verifiziert. Bitte gehen Sie in Ihr E-Mail Postfach und verifiziere Sie damit die Echtheit Ihrer E-Mail Adresse.</string>
+    <string name="eDataNotCorrect" tools:ignore="ExtraTranslation">Ihre Anmeldedaten sind nicht korrekt!</string>
     <string name="login">Anmeldung...</string>
 
 
@@ -60,13 +60,13 @@
     <string name="feedback_summary">Haben Sie Fragen oder Anmerkungen?</string>
 
     <!-- Error Messages -->
-    <string name="errorMsgPassword">Das Passwort muss zwischen 8 und 15 Zeichen lang sein und mindestens folgende Parameter enthalten: 1x Groß- und Kleinbuchstabe, 1x Zahl und 1x Sonderzeichen</string>
-    <string name="errorMsgName">Ihr Name darf nicht länger als 16 Zeichen sein und muss den allgemeinen Namensrichtlinien entsprechen.</string>
-    <string name="errorMsgEMail">Ihre Email Adresse entsrpicht nicht dem Standard-Email Format.</string>
+    <string name="errorMsgPassword">Das Passwort wird von unserem System nicht unterstützt: Das Passwort muss zwischen 8 und 15 Zeichen lang sein und mindestens folgende Parameter enthalten: 1x Groß- und Kleinbuchstabe, 1x Zahl und 1x Sonderzeichen</string>
+    <string name="errorMsgName">Der eingegebene Name entspricht keinem gültigen Format!</string>
+    <string name="errorMsgEMail">Bitte kontrolliere deine E-Mail Adresse, sie entspricht keinem gültigen E-Mail Format!</string>
 
     <!-- Toast Messages -->
     <string name="tErrorPassword">Ihr Passwort ist nicht konform!</string>
-    <string name="tErrorPasswordNotIdentical">Passwörter stimmen nicht überein!</string>
+    <string name="tErrorPasswordNotIdentical">Die neu gewählten Passwörter stimmen nicht überein!</string>
     <string name="tErrorName">Ihr Name ist nicht konform!</string>
     <string name="tErrorEmail">Ihr Email ist nicht konform!</string>
     <string name="tFillAllFields">Bitte alle Felder ausfüllen!</string>
@@ -103,11 +103,16 @@
     <string name="help_deleteAccount">Hier können Sie Ihren Account löschen.</string>
 
     <!-- profile strings -->
-    <string name="noInformation">keine Angabe</string>
+    <string name="noInformation" tools:ignore="ExtraTranslation">keine Angabe</string>
+
+    <!-- edit profile strings -->
+    <string name="saveProfileSuccess">Profil erfolgreich gespeichert.</string>
+    <string name="birthdayInFuture">Sie sind noch nicht geboren, das könnte schwierig werden!</string>
+    <string name="editProfilUnknownError">Unbekannter Fehler beim Bearbeiten der Profilinformationen!</string>
 
     <!-- change password strings -->
     <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
-    <string name="tErrorOldPassword">Ihr altes Passwort ist nicht korrekt!</string>
+    <string name="tErrorOldPassword">Authentifizierung fehlgeschlagen!</string>
 
 
     <!-- delete profile strings -->
@@ -118,8 +123,8 @@
     <string name="deleteAccountInfoText2">Ihre Daten werden dabei restlos gelöscht und können <b><u>nicht wiederhergestellt</u></b> werden!</string>
     <string name="deleteAccountCheckBox">Ich akzeptiere und möchte meinen Account <b>unwiderruflich</b> löschen.</string>
 
-    <string name="deleteAccountModalWindowTitle">Account löschen?</string>
-    <string name="deleteAccountModalWindow">Sind Sie sich sicher, dass Sie Ihren Account löschen wollen?</string>
+    <string name="deleteAccountModalWindowTitle">Account unwiderruflich löschen?</string>
+    <string name="deleteAccountModalWindow">Beim Löschen Ihres Accounts verlieren Sie den Zugriff auf samtliche damit verbundene Funktionen. \n<b>Sind Sie sich sicher, dass Sie Ihren Account unwiderruflich löschen wollen?</b></string>
 
     <string name="eDeleteAccountNoConnection">Account kann nicht gelöscht werden. Bitte überprüfen Sie Ihre Internetverbindung.</string>
     <string name="deleteAccountSuccess">Account wird gelöscht.</string>
