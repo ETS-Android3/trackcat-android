@@ -33,6 +33,16 @@
     <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
 
+    <!-- ErrorMessages Connection to Server -->
+    <string name="eServer">Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...</string>
+    <string name="eCheckConnection">Bitte überprüfen Sie Ihre Internetverbindung.</string>
+    <string name="eUnknownError">Es tut uns leid, leider ist ein unbekannter Fehler aufgetreten. Versuchen Sie es später nochmal...</string>
+    <string name="eEMailExists">Es tut uns leid, Ihre E-Mail Adresse ist leider schon vergeben.</string>
+
+    <!-- LogIn/SignIn -->
+    <string name="createAccount">Account wird erstellt...</string>
+
+
     <!-- Einstellungen -->
     <string name="category1">Allgemeines</string>
 
@@ -94,14 +104,14 @@
     <!-- profile strings -->
     <string name="noInformation">keine Angabe</string>
     <string name="noBMI">Close</string>
-    <string name="deleteAccountInfoText1">Wenn Sie Ihren Account löschen, werden sämtliche Benutzerdaten gelöscht. Folgende Informationen sind davon betroffen:</string>
 
+    <!-- delete profile strings -->
+    <string name="deleteAccountInfoText1">Wenn Sie Ihren Account löschen, werden sämtliche Benutzerdaten gelöscht. Folgende Informationen sind davon betroffen:</string>
     <string name="bullet_1">Personenbezogene Daten (<i>Name, Profilbild, Status, etc.</i>)</string>
     <string name="bullet_2">Aufzeichnungen</string>
     <string name="bullet_3">Freunde</string>
     <string name="deleteAccountInfoText2">Ihre Daten werden dabei restlos gelöscht und können <b><u>nicht wiederhergestellt</u></b> werden!</string>
     <string name="deleteAccountCheckBox">Ich akzeptiere und möchte meinen <b>unwiderruflich</b> Account löschen.</string>
-
 
     <!-- cropView strings -->
     <string name="ucrop_rotate">Rotieren</string>

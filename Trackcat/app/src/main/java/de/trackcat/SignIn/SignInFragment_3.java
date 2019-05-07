@@ -1,37 +1,22 @@
-package de.trackcat.LogIn;
+package de.trackcat.SignIn;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.trackcat.APIClient;
-import de.trackcat.APIConnector;
-import de.trackcat.MainActivity;
+import de.trackcat.LogIn.LogInFragment;
 import de.trackcat.R;
 import de.trackcat.StartActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class SignInFragment_3 extends Fragment implements View.OnClickListener {
 
