@@ -1,4 +1,5 @@
 package de.trackcat;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -120,6 +121,24 @@ public class GlobalFunctions {
             valid = false;
         } else {
             passwordTextView.setError(null);
+        }
+        return valid;
+    }
+
+    public static boolean validateName(TextView nameTextView, Activity activity){
+
+        boolean valid= true;
+        String input_name = nameTextView.getText().toString();
+
+        /* validate firstName */
+        Pattern pattern3 = Pattern.compile(activity.getResources().getString(R.string.rName));
+        Matcher matcher3 = pattern3.matcher(input_name);
+        if (!matcher3.matches()) {
+            nameTextView.setError(activity.getResources().getString(R.string.errorMsgName));
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(), activity.getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
+            valid = false;
+        } else {
+            nameTextView.setError(null);
         }
         return valid;
     }
