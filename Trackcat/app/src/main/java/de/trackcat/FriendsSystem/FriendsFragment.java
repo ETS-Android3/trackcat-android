@@ -9,11 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.trackcat.CustomElements.CustomFriend;
+import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
 
@@ -45,9 +47,11 @@ public class FriendsFragment extends Fragment {
         friend3.setEmail("manfred@walter.de");
         friendList.add(friend3);
 
-        FriendListAdapter mAdapter = new FriendListAdapter(this.getContext(),friendList);
+        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(),friendList);
+        ListView friendListView = view.findViewById(R.id.friend_list);
+        friendListView.setAdapter(adapter);
 
-        /* RecyclerView mit Inhalten aus Adapter füllen */
+        /* RecyclerView mit Inhalten aus Adapter füllen
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -56,7 +60,7 @@ public class FriendsFragment extends Fragment {
         recyclerView.setAdapter(mAdapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);*/
 
         return view;
     }

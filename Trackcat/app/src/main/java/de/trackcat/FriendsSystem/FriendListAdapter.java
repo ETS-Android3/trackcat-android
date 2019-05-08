@@ -1,72 +1,125 @@
 package de.trackcat.FriendsSystem;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import android.content.DialogInterface;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Base64;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
 import de.trackcat.CustomElements.CustomFriend;
+import de.trackcat.CustomElements.CustomLocation;
+import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.User;
+import de.trackcat.GlobalFunctions;
+import de.trackcat.MainActivity;
 import de.trackcat.R;
+import de.trackcat.RecordList.RecordDetailsFragment;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
-public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.MyViewHolder> {
-    private Context context;
+public class FriendListAdapter extends ArrayAdapter<String> {
+
     private List<CustomFriend> friends;
     public TextView name, email;
+    LayoutInflater inflater;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-
-
-        public MyViewHolder(View view) {
-            super(view);
-
-            name = view.findViewById(R.id.friend_name);
-            email = view.findViewById(R.id.friend_email);
-        }
-    }
-
-    public FriendListAdapter(Context context, List<CustomFriend> friendsList) {
-        this.context = context;
-        this.friends = friendsList;
+    public FriendListAdapter(Activity context, List<CustomFriend> friends) {
+        super(context, R.layout.friend_list_item);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.friends = friends;
     }
 
     @Override
-    public FriendListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.friend_list_item, parent, false);
-        return new FriendListAdapter.MyViewHolder(itemView);
-    }
-
-    @Override
-    public void onBindViewHolder(FriendListAdapter.MyViewHolder holder, final int position) {
-
-        name.setText(friends.get(position).getFirstName()+" "+friends.get(position).getLastName());
-        email.setText(friends.get(position).getEmail());
-
-       // ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsList), holder.id, holder.type, holder. importedState, holder.name, holder.distance, holder.time, holder.itemView, holder.date);
-    }
-
-    @Override
-    public int getItemCount() {
+    public int getCount() {
         return friends.size();
     }
 
-    public void removeItem(int position) {
-        friends.remove(position);
-        notifyItemRemoved(position);
-    }
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-    public void restoreItem(CustomFriend item, int position) {
-        friends.add(position, item);
-        notifyItemInserted(position);
-    }
+        /* Variablen erstellen */
+        View view = inflater.inflate(R.layout.friend_list_item, parent, false);
+        name = view.findViewById(R.id.friend_name);
+        email = view.findViewById(R.id.friend_email);
+        name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
+        email.setText(friends.get(position).getEmail());
 
-    /* SwipeRefresh - alle Einträge entfernen */
-    public void clear() {
-        friends.clear();
-        notifyDataSetChanged();
+        /* Shows details of routes */
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /* create AlertBox */
+                Dialog alert = new Dialog(getContext());
+                alert.setTitle("Was möchten Sie anzeigen?");
+
+                LayoutInflater layoutInflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_show_friends_alert, null, true) : null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                    alert.setContentView(alertView);
+
+                    /* set button events */
+                    Button btn_profile = alertView.findViewById(R.id.btn_profile);
+
+                    btn_profile.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alert.dismiss();
+                            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                            fragTransaction.replace(R.id.mainFrame, new FriendProfileFragment(),
+                                    MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
+                            fragTransaction.commit();
+
+                        }
+                    });
+
+                    Button btn_live = alertView.findViewById(R.id.btn_live);
+                    btn_live.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alert.dismiss();
+                            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                            fragTransaction.replace(R.id.mainFrame, new FriendLiveFragment(),
+                                    MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
+                            fragTransaction.commit();
+                        }
+                    });
+                }
+
+                alert.show();
+            }
+        });
+
+        // ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsDashbaord), recordId, recordType, importState, recordName, recordDistance, recordTime, recordItem, recordDate);
+        return view;
     }
 }
