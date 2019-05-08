@@ -609,7 +609,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         Log.v("testLog", "hi");
                         MainActivity.getInstance().endTracking();
-
+                        Toast.makeText(getActivity(), "Success Connection",
+                                Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -617,6 +618,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                         call.cancel();
                         MainActivity.getInstance().endTracking();
+                        Toast.makeText(getActivity(), "Error Connection",
+                                Toast.LENGTH_LONG).show();
 
                     }
                 });
