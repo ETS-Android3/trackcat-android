@@ -46,7 +46,7 @@ final class DbContract {
      */
     static final String SQL_CREATE_USER_TABLE =
             "CREATE TABLE IF NOT EXISTS " + UserEntry.TABLE_NAME + " ( " +
-                    UserEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    UserEntry.COL_ID + " INTEGER PRIMARY KEY, " +
                     UserEntry.COL_FIRSTNAME + " TEXT, " +
                     UserEntry.COL_LASTNAME + " TEXT, " +
                     UserEntry.COL_ISACTIVE + " BOOLEAN, " +
