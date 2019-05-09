@@ -54,13 +54,13 @@ public class FriendProfileFragment extends Fragment implements View.OnClickListe
 
         /* set values */
         //TODO values aus der Datenbank anfragen
-       // image.setImageURI();
-      //  state = view.findViewById(R.id.profile_state);
+        // image.setImageURI();
+        //  state = view.findViewById(R.id.profile_state);
         name.setText("Anna Webstar");
         email.setText("anna@web.de");
         dayOfBirth.setText("12.12.1998");
         gender.setText("weiblich");
-      //  user_gender_image = view.findViewById(R.id.user_gender_image);
+        //  user_gender_image = view.findViewById(R.id.user_gender_image);
         amountRecords.setText("20");
         timeRecords.setText("12:20:12");
         dayOfRegistration.setText("13.09.2014");
@@ -79,20 +79,13 @@ public class FriendProfileFragment extends Fragment implements View.OnClickListe
 
                 alert.setPositiveButton("Freund entfernen", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                        fragTransaction.replace(R.id.mainFrame, new FriendLiveFragment(),
-                                MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
-                        fragTransaction.commit();
+                        //TODO Freund entfernen
                     }
                 });
 
                 alert.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                        fragTransaction.replace(R.id.mainFrame, new FriendProfileFragment(),
-                                MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
-                        fragTransaction.commit();
                     }
                 });
 

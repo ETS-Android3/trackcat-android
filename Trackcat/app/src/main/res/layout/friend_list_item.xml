@@ -30,8 +30,6 @@
                     android:gravity="center"
                     android:padding="10dp"
                     android:src="@raw/default_profile"
-                    app:border_color="#FFFFFF"
-                    app:border_width="4dp"
                     app:layout_constraintDimensionRatio="h,1:1" />
 
                 <LinearLayout
@@ -45,12 +43,12 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_state"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:background="@drawable/circle_background"
                         android:src="@raw/lvl3"
                         app:border_color="#FFFFFF"
-                        app:border_width="4dp" />
+                        app:border_width="2dp" />
 
                 </LinearLayout>
 
