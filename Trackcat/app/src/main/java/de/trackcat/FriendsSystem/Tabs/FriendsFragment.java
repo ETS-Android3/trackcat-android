@@ -1,4 +1,4 @@
-package de.trackcat.FriendsSystem;
+package de.trackcat.FriendsSystem.Tabs;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.trackcat.CustomElements.CustomFriend;
+import de.trackcat.FriendsSystem.FriendListAdapter;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
@@ -47,20 +48,9 @@ public class FriendsFragment extends Fragment {
         friend3.setEmail("manfred@walter.de");
         friendList.add(friend3);
 
-        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(),friendList);
+        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(),friendList, false);
         ListView friendListView = view.findViewById(R.id.friend_list);
         friendListView.setAdapter(adapter);
-
-        /* RecyclerView mit Inhalten aus Adapter füllen
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(this.getContext(), DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(mAdapter);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(mAdapter);*/
 
         return view;
     }

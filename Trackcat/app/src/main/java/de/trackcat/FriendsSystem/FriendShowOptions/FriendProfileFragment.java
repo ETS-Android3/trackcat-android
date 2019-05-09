@@ -1,4 +1,4 @@
-package de.trackcat.FriendsSystem;
+package de.trackcat.FriendsSystem.FriendShowOptions;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

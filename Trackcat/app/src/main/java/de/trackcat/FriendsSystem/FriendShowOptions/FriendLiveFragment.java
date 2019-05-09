@@ -1,4 +1,4 @@
-package de.trackcat.FriendsSystem;
+package de.trackcat.FriendsSystem.FriendShowOptions;
 
 import android.graphics.Color;
 import android.os.Bundle;
