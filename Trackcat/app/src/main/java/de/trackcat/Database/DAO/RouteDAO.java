@@ -54,8 +54,8 @@ public class RouteDAO {
     public void create(Route route) {
         DbHelper dbHelper = new DbHelper(context);
         try {
-            route.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null,
-                    valueGenerator(route)));
+            dbHelper.getWritableDatabase().insert(TABLE_NAME, null,
+                    valueGenerator(route));
         } finally {
             dbHelper.close();
         }

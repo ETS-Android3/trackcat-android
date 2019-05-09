@@ -14,11 +14,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
+import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
@@ -39,6 +44,8 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     private EditText emailTextView, passwordTextView;
     private Button btnLogin;
     private TextView signInLink, messageBox, messageBoxInfo;
+    private boolean getRecordData;
+    private int loggedUserId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,6 +72,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
             setErrorMessage("Anmeldung", getResources().getString(R.string.messageAfterCorrectRegist));
         }
 
+        getRecordData=false;
         return view;
     }
 
@@ -145,6 +153,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
                                 /* save logged user in db */
                                 User loggedUser = new User();
+                                loggedUserId=userObject.getInt("id");
                                 loggedUser.setId(userObject.getInt("id"));
                                 loggedUser.setIdUsers(userObject.getInt("id"));
                                 loggedUser.setMail(userObject.getString("email"));
@@ -195,10 +204,31 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 loggedUser.isSynchronised(true);
                                 userDAO.create(loggedUser);
 
+                                getRecordData=true;
+
+
+                                /* set routes */
+                                JSONArray recordsArray = mainObject.getJSONArray("records");
+                                RouteDAO recordDao=new RouteDAO(MainActivity.getInstance());
+                                for ( int i=0;i< recordsArray.length();i++) {
+                                    Route record= new Route();
+                                    record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
+                                    record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
+                                    record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
+                                    record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
+                                    record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
+                                    record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
+                                    record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
+                                    record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
+                                    recordDao.create(record);
+                                }
+
                                 /* open MainActivity */
                                 Intent intent = new Intent(getContext(), MainActivity.class);
                                 startActivity(intent);
                                 getActivity().finish();
+
+
 
                             } else if (mainObject.getString("success").equals("2")) {
 
@@ -227,6 +257,13 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                     call.cancel();
                 }
             });
+
+
+            if(getRecordData) {
+                /* start a call */
+                /* read profile values from global db */
+
+            }
         }
     }
 

@@ -24,7 +24,7 @@ final class DbContract {
      */
     static final String SQL_CREATE_ROUTE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + RouteEntry.TABLE_NAME + " ( " +
-                    RouteEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    RouteEntry.COL_ID + " INTEGER PRIMARY KEY, " +
                     RouteEntry.COL_USER + " INTEGER, " +
                     RouteEntry.COL_NAME + " TEXT, " +
                     RouteEntry.COL_TIME + " LONG, " +

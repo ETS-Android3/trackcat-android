@@ -15,6 +15,9 @@ public interface APIClient {
     @POST("/loginAPI")
     Call<ResponseBody> getUser(@Header("Authorization") String authHeader);
 
+    @POST("/getRecordsByIdAPI")
+    Call<ResponseBody> getRecordsById(@Header("Authorization") String authHeader,@Body HashMap<String,String> json);
+
     @Headers({"Accept: application/json"})
     @POST("/registerAPI")
     Call<ResponseBody> registerUser(@Body HashMap<String,String> json);
