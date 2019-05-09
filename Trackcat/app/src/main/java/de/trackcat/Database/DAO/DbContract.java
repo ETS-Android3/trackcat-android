@@ -48,7 +48,7 @@ final class DbContract {
             "CREATE TABLE IF NOT EXISTS " + LocationEntry.TABLE_NAME + " ( " +
                     LocationEntry.COL_ID + " INTEGER PRIMARY KEY, " +
                     LocationEntry.COL_LATITUDE + " DOUBLE, " +
-                    LocationEntry.COL_LONITUDE + " DOUBLE, " +
+                    LocationEntry.COL_LONGITUDE + " DOUBLE, " +
                     LocationEntry.COL_ALTITUDE + " DOUBLE, " +
                     LocationEntry.COL_TIME + " LONG, " +
                     LocationEntry.COL_SPEED + " FLOAT, " +
@@ -115,7 +115,7 @@ final class DbContract {
         static final String TABLE_NAME = "location_table";
         static final String COL_ID = "id";
         static final String COL_LATITUDE = "latitude";
-        static final String COL_LONITUDE = "lonitude";
+        static final String COL_LONGITUDE = "longitude";
         static final String COL_ALTITUDE = "altitude";
         static final String COL_TIME = "time";
         static final String COL_SPEED = "speed";

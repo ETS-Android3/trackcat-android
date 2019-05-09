@@ -17,7 +17,7 @@ import de.trackcat.Database.Models.Route;
 
 import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_ALTITUDE;
 import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_LATITUDE;
-import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_LONITUDE;
+import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_LONGITUDE;
 import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_RECORD_ID;
 import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_SPEED;
 import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_DATE;
@@ -93,7 +93,7 @@ public class LocationDAO {
         }
         values.put(COL_RECORD_ID, location.getRecordId());
         values.put(COL_LATITUDE, location.getLatitude());
-        values.put(COL_LONITUDE, location.getLongitude());
+        values.put(COL_LONGITUDE, location.getLongitude());
         values.put(COL_ALTITUDE, location.getAltitude());
         values.put(COL_TIME, location.getTime());
         values.put(COL_SPEED, location.getSpeed());
@@ -117,7 +117,7 @@ public class LocationDAO {
                     COL_ID,
                     COL_RECORD_ID,
                     COL_LATITUDE,
-                    COL_LONITUDE,
+                    COL_LONGITUDE,
                     COL_ALTITUDE,
                     COL_TIME,
                     COL_SPEED};
@@ -133,7 +133,7 @@ public class LocationDAO {
                     result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
                     result.setRecordId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_RECORD_ID)));
                     result.setLatitude(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LATITUDE)));
-                    result.setLongitude(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LONITUDE)));
+                    result.setLongitude(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LONGITUDE)));
                     result.setAltitude(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_ALTITUDE)));
                     result.setTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)));
                     result.setSpeed(cursor.getFloat(cursor.getColumnIndexOrThrow(COL_SPEED)));
@@ -176,7 +176,7 @@ public class LocationDAO {
                     COL_ID,
                     COL_RECORD_ID,
                     COL_LATITUDE,
-                    COL_LONITUDE,
+                    COL_LONGITUDE,
                     COL_ALTITUDE,
                     COL_TIME,
                     COL_SPEED};
@@ -194,7 +194,7 @@ public class LocationDAO {
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_RECORD_ID)),
                                 cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LATITUDE)),
-                                cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LONITUDE)),
+                                cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LONGITUDE)),
                                 cursor.getDouble(cursor.getColumnIndexOrThrow(COL_ALTITUDE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
                                 cursor.getFloat(cursor.getColumnIndexOrThrow(COL_SPEED))));
