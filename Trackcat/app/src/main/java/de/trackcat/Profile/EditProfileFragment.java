@@ -49,8 +49,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import de.trackcat.APIClient;
@@ -133,8 +131,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     private void loadUser() {
 
         /* set button enable= false and show loadscreen */
-        btnSave.setEnabled(false);
-        btnSave.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
+        setButtonDisable();
         loadEditProfile.setVisibility(View.VISIBLE);
 
         /* get current user */
@@ -143,7 +140,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         /* read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
-        map.put("id", ""+currentUser.getIdUsers());
+        map.put("id", "" + currentUser.getIdUsers());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
@@ -287,14 +284,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         loadEditProfile.setVisibility(View.GONE);
 
         /* set btn enable */
-        btnSave.setEnabled(true);
-        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+        setButtonEnable();
 
         /* show toast if user was changed */
         if (changedUser) {
             /* UI-Meldung */
             if (MainActivity.getHints()) {
-                Toast.makeText(getContext(), "Benutzer \"" + user_firstName + " " + user_lastName + "\" wurde erfolgreich geändert!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.saveProfileSuccess), Toast.LENGTH_LONG).show();
             }
         }
         changedUser = false;
@@ -304,9 +300,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_save:
-                btnSave.setEnabled(false);
-                btnSave.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
-
+                setButtonDisable();
 
                 /* Inputfelder auslesen */
                 String input_firstName = firstName.getText().toString();
@@ -331,7 +325,9 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 }
 
                 /* check if all fields are filled and  validate inputs*/
-                if (validate()) {
+                boolean validFirstName = GlobalFunctions.validateName(firstName, MainActivity.getInstance());
+                boolean validLastName = GlobalFunctions.validateName(lastName, MainActivity.getInstance());
+                if (validFirstName && validLastName) {
 
                     /* parse imageView into bytes */
                     ImageView imageView = view.findViewById(R.id.profile_image_upload);
@@ -453,14 +449,22 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                             userDAO.update(currentUser.getId(), currentUser);
 
                                             /* set btn enable */
-                                            btnSave.setEnabled(true);
-                                            btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                                            setButtonEnable();
 
                                             /* load user */
                                             loadUser();
 
                                             /* set change variable */
                                             changedUser = true;
+                                        } else if (successJSON.getString("success").equals("1")) {
+
+                                            /* set btn enable */
+                                            setButtonEnable();
+
+                                            /* set Toast */
+                                            if (MainActivity.getHints()) {
+                                                Toast.makeText(getContext(), getResources().getString(R.string.editProfilUnknownError), Toast.LENGTH_LONG).show();
+                                            }
                                         }
                                     }
 
@@ -475,8 +479,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
                                 /* set btn enable */
-                                btnSave.setEnabled(true);
-                                btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                                setButtonEnable();
 
                                 /* load user */
                                 loadUser();
@@ -491,13 +494,14 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     } else {
                         /* UI-Meldung */
                         if (MainActivity.getHints()) {
-                            Toast.makeText(getContext(), "Keine Änderungen!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), getResources().getString(R.string.editProfileNoChanges), Toast.LENGTH_LONG).show();
                         }
                         /* set btn enable */
-                        btnSave.setEnabled(true);
-                        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+                        setButtonEnable();
                     }
                 } else {
+                    /* set btn enable */
+                    setButtonEnable();
                     if (MainActivity.getHints()) {
                         Toast.makeText(getContext(), getResources().getString(R.string.tFillAllFields), Toast.LENGTH_LONG).show();
                     }
@@ -556,12 +560,16 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                                 /* check if dayOfBirth in future */
                                 if (year > currentYear) {
-                                    Toast.makeText(getContext(), "Ihr Geburtstag darf nicht in der Zukunft liegen.", Toast.LENGTH_SHORT).show();
+                                    if (MainActivity.getHints()) {
+                                        Toast.makeText(getContext(), getResources().getString(R.string.birthdayInFuture), Toast.LENGTH_SHORT).show();
+                                    }
                                     return;
                                 }
                                 if (currentMonth == (monthOfYear + 1) && currentYear == year) {
                                     if (dayOfMonth > currentDay) {
-                                        Toast.makeText(getContext(), "Ihr Geburtstag darf nicht in der Zukunft liegen.", Toast.LENGTH_SHORT).show();
+                                        if (MainActivity.getHints()) {
+                                            Toast.makeText(getContext(), getResources().getString(R.string.birthdayInFuture), Toast.LENGTH_SHORT).show();
+                                        }
                                         return;
                                     }
                                 }
@@ -706,7 +714,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             if (resultData != null) {
                 imageChanged = true;
                 if (MainActivity.getHints()) {
-                    Toast.makeText(getContext(), "Bild ausgewählt!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.ucrop_selectImage), Toast.LENGTH_SHORT).show();
 
                     /* crop image */
                     beginCrop(resultData.getData());
@@ -724,7 +732,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             /* set image in imageView */
             imageUpload.setImageURI(null);
             imageUpload.setImageURI(UCrop.getOutput(resultData));
-
         }
     }
 
@@ -772,36 +779,14 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 .start(getActivity(), this, UCrop.REQUEST_CROP);
     }
 
+    /* functions to enable/disable button */
+    private void setButtonEnable() {
+        btnSave.setEnabled(true);
+        btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));
+    }
 
-    public boolean validate() {
-        boolean valid = true;
-
-        /* read inputs */
-        String input_firstName = firstName.getText().toString();
-        String input_lastName = lastName.getText().toString();
-
-        /* validate firstName */
-        Pattern pattern3 = Pattern.compile(getResources().getString(R.string.rName));
-        Matcher matcher3 = pattern3.matcher(input_firstName);
-        if (!matcher3.matches()) {
-            firstName.setError(getResources().getString(R.string.errorMsgName));
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            firstName.setError(null);
-        }
-
-        /* validate lastName */
-        Pattern pattern4 = Pattern.compile(getResources().getString(R.string.rName));
-        Matcher matcher4 = pattern4.matcher(input_lastName);
-        if (!matcher4.matches()) {
-            lastName.setError(getResources().getString(R.string.errorMsgName));
-            Toast.makeText(MainActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            lastName.setError(null);
-        }
-
-        return valid;
+    private void setButtonDisable() {
+        btnSave.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
+        btnSave.setEnabled(false);
     }
 }

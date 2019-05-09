@@ -21,6 +21,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.os.*;
 import android.support.annotation.NonNull;
@@ -609,7 +610,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         Log.v("testLog", "hi");
                         MainActivity.getInstance().endTracking();
-
+                        Toast.makeText(getActivity(), "Success Connection",
+                                Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -617,6 +619,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                         call.cancel();
                         MainActivity.getInstance().endTracking();
+                        Toast.makeText(getActivity(), "Error Connection",
+                                Toast.LENGTH_LONG).show();
 
                     }
                 });
@@ -869,6 +873,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      */
 
 
+
     void updateLocation(Location location) {
 
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
@@ -881,6 +886,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         lon = (float) location.getLongitude();
         alt = (float) location.getAltitude();
         timeOfFix = location.getTime();
+
+
 
         /*
          * move Map

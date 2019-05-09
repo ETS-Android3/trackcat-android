@@ -17,7 +17,7 @@ final class DbContract {
      + defining standard database constants for creation
      */
     static final int DATABASE_VERSION = 1;
-    static final String DATABASE_NAME = "GoTrack.db";
+    static final String DATABASE_NAME = "Trackcat.db";
 
     /*
      + string to create table where routes where stored in
@@ -46,7 +46,7 @@ final class DbContract {
      */
     static final String SQL_CREATE_USER_TABLE =
             "CREATE TABLE IF NOT EXISTS " + UserEntry.TABLE_NAME + " ( " +
-                    UserEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    UserEntry.COL_ID + " INTEGER PRIMARY KEY, " +
                     UserEntry.COL_FIRSTNAME + " TEXT, " +
                     UserEntry.COL_LASTNAME + " TEXT, " +
                     UserEntry.COL_ISACTIVE + " BOOLEAN, " +

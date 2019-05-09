@@ -49,7 +49,7 @@ public class UserDAO {
     public void create(User user) {
         DbHelper dbHelper = new DbHelper(context);
         try {
-            user.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(user)));
+            dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(user));
         } finally {
             dbHelper.close();
         }
