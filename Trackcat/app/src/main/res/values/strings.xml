@@ -137,6 +137,8 @@
     <!-- options for friends -->
     <string name="friendsLive">Ihr Freund teilt immoment eine Route live. Möchten Sie sein Profil ansehen oder zu seiner Liveübertragung wechseln?</string>
 
+    <string name="friendsDelete">Wenn Sie Ihren Freund entfernen. können Sie keine Liveübertragungen von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
+
     <!-- cropView strings -->
     <string name="ucrop_rotate">Rotieren</string>
     <string name="ucrop_scale">Skalieren</string>

@@ -77,7 +77,6 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View v) {
 
-
                 /* create AlertBox */
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setTitle("Was möchten Sie anzeigen?");

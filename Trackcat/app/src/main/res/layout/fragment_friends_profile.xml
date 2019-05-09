@@ -258,6 +258,18 @@
                         android:textSize="19dip" />
                 </RelativeLayout>
 
+                <!-- delete Friend Button -->
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_delete_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/layout_dsgvo"
+                    android:layout_marginTop="24dp"
+                    android:background="@color/colorGreenAccent"
+                    android:padding="12dp"
+                    android:text="Freund entfernen"
+                    android:textColor="@color/ap_white" />
+
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
