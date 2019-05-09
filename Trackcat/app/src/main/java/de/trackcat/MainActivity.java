@@ -493,7 +493,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadRecordList();
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
             loadProfile(false);
-        } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null ||getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
+            loadFriendSystem();
+        }else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
             if (exitApp) {
@@ -667,6 +669,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_friendSystem));
                     }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_deleteAccount));
+                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_friends_profile));
+                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_friends_live_view));
                     }
                     alert.setNegativeButton("Schließen", null);
                     alert.show();

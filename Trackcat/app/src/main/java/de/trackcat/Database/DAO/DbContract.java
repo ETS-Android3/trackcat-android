@@ -17,7 +17,7 @@ final class DbContract {
      + defining standard database constants for creation
      */
     static final int DATABASE_VERSION = 1;
-    static final String DATABASE_NAME = "GoTrack.db";
+    static final String DATABASE_NAME = "Trackcat.db";
 
     /*
      + string to create table where routes where stored in
