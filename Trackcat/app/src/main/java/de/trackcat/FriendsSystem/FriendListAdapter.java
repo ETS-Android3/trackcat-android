@@ -77,43 +77,30 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             @Override
             public void onClick(View v) {
 
+
                 /* create AlertBox */
-                Dialog alert = new Dialog(getContext());
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setTitle("Was möchten Sie anzeigen?");
+                alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsLive));
 
-                LayoutInflater layoutInflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_show_friends_alert, null, true) : null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                alert.setPositiveButton("LIVEÜBERTRAGUNG", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                        fragTransaction.replace(R.id.mainFrame, new FriendLiveFragment(),
+                                MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
+                        fragTransaction.commit();
+                    }
+                });
 
-                    alert.setContentView(alertView);
-
-                    /* set button events */
-                    Button btn_profile = alertView.findViewById(R.id.btn_profile);
-
-                    btn_profile.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            alert.dismiss();
-                            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                            fragTransaction.replace(R.id.mainFrame, new FriendProfileFragment(),
-                                    MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
-                            fragTransaction.commit();
-
-                        }
-                    });
-
-                    Button btn_live = alertView.findViewById(R.id.btn_live);
-                    btn_live.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            alert.dismiss();
-                            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                            fragTransaction.replace(R.id.mainFrame, new FriendLiveFragment(),
-                                    MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
-                            fragTransaction.commit();
-                        }
-                    });
-                }
+                alert.setNeutralButton("PROFIL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                        fragTransaction.replace(R.id.mainFrame, new FriendProfileFragment(),
+                                MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
+                        fragTransaction.commit();
+                    }
+                });
 
                 alert.show();
             }

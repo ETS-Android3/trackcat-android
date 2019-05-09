@@ -134,6 +134,8 @@
     <string name="deleteAccountSuccess">Account wird gelöscht.</string>
     <string name="deleteAccountUnknownError">Unbekannter Fehler beim Löschen des Accounts!</string>
 
+    <!-- options for friends -->
+    <string name="friendsLive">Ihr Freund teilt immoment eine Route live. Möchten Sie sein Profil ansehen oder zu seiner Liveübertragung wechseln?</string>
 
     <!-- cropView strings -->
     <string name="ucrop_rotate">Rotieren</string>
