@@ -103,6 +103,9 @@
     <string name="help_editPassword">Hier haben Sie die Möglichkeit Ihr Passwort zu ändern. Hierfür müssen Sie zunächst ihr aktuelles Passwort eingeben.</string>
     <string name="help_friendSystem">Hier sehen sie alle Ihre Freunde.</string>
     <string name="help_deleteAccount">Hier können Sie Ihren Account löschen.</string>
+    <string name="help_friends_profile">Hier können Sie das Profil Ihres Freudes sehen. Wenn Sie auf den Button "Freund entfernen" klicken, wird die Person aus Ihrer Freundesliste entfernt und
+    Sie können nicht mehr an seinen Liveübertragungen teilnehmen.</string>
+    <string name="help_friends_live_view">Hier können Sie die Liveübertragung Ihres Freundes sehen.</string>
 
     <!-- profile strings -->
     <string name="noInformation" tools:ignore="ExtraTranslation">keine Angabe</string>
