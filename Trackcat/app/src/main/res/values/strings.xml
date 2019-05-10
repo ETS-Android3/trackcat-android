@@ -142,6 +142,10 @@
 
     <string name="friendsDelete">Wenn Sie Ihren Freund entfernen. können Sie keine Liveübertragungen von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
 
+    <!-- edit route name -->
+    <string name="teditRecordName">Routenname wurde erfolgreich geändert.</string>
+    <string name="teditRecordNameUnknownError">Unbekannter Fehler beim Ändern des Routennamens!</string>
+
     <!-- cropView strings -->
     <string name="ucrop_rotate">Rotieren</string>
     <string name="ucrop_scale">Skalieren</string>

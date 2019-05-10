@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.config.IConfigurationProvider;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -28,23 +31,35 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
 import de.trackcat.BuildConfig;
 import de.trackcat.CustomElements.CustomLocation;
 import de.trackcat.Database.DAO.LocationDAO;
 import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
+import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
+import de.trackcat.Database.Models.User;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static org.osmdroid.tileprovider.util.StorageUtils.getStorage;
 
@@ -76,16 +91,16 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
         int id = getArguments().getInt("id");
         temp = getArguments().getBoolean("temp");
-        String locationsAsString= getArguments().getString("locations");
+        String locationsAsString = getArguments().getString("locations");
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
         /* Auslesen der Werte aus der Datenbank */
         locations = Arrays.asList(new Gson().fromJson(locationsAsString, Location[].class));
         dao = new RouteDAO(MainActivity.getInstance());
         tempDAO = new RecordTempDAO(MainActivity.getInstance());
-        if(temp){
+        if (temp) {
             record = tempDAO.read(id);
-        }else {
+        } else {
             record = dao.read(id);
         }
 
@@ -280,20 +295,74 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                         /* Aktualisieren der Route */
                         Route newRecord = record;
                         newRecord.setName(newName);
-                        if(temp){
-                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "TEMP", Toast.LENGTH_LONG).show();
-                         //   tempDAO.update(record.getId(), newRecord);
-                        }else {
-                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "KEIN TEMP", Toast.LENGTH_LONG).show();
+                        newRecord.setTimeStamp(GlobalFunctions.getTimeStamp());
+                        if (temp) {
+                            tempDAO.update(record.getId(), newRecord);
+                            if (MainActivity.getHints()) {
+                                Toast.makeText(getContext(), getResources().getString(R.string.teditRecordName), Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            dao.update(record.getId(), newRecord);
 
-                           // dao.update(record.getId(), newRecord);
+
+                            /* get current user */
+                            UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+                            User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+                            /* read profile values from global db */
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("recordId", "" + record.getId());
+                            map.put("recordName", "" + newName);
+                            map.put("timestamp", "" + newRecord.getTimeStamp());
+
+                            Retrofit retrofit = APIConnector.getRetrofit();
+                            APIClient apiInterface = retrofit.create(APIClient.class);
+
+                            /* start a call */
+                            String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                            Call<ResponseBody> call = apiInterface.updateRecordName(authString, map);
+
+                            call.enqueue(new Callback<ResponseBody>() {
+
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    try {
+
+                                        if (response.code() == 401) {
+                                             MainActivity.getInstance().showNotAuthorizedModal(4);
+                                        } else {
+                                            /* get jsonString from API */
+                                            String jsonString = response.body().string();
+
+                                            /* parse json */
+                                            JSONObject mainObject = new JSONObject(jsonString);
+                                            if (mainObject.getString("success").equals("0")) {
+
+                                                if (MainActivity.getHints()) {
+                                                    Toast.makeText(getContext(), getResources().getString(R.string.teditRecordName), Toast.LENGTH_LONG).show();
+                                                }
+                                            } else if (mainObject.getString("success").equals("1")) {
+
+                                                if (MainActivity.getHints()) {
+                                                    Toast.makeText(getContext(), getResources().getString(R.string.teditRecordNameUnknownError), Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    call.cancel();
+                                }
+                            });
                         }
-
                         recordName.setText(newName);
-                   /*     if (MainActivity.getHints()) {
-                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Name erfolgreich bearbeitet!", Toast.LENGTH_LONG).show();
-                        }*/
-
                     }
                 });
 
