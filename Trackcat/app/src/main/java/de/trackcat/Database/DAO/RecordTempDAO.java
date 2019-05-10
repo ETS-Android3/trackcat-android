@@ -18,6 +18,7 @@ import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_DATE;
 import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_DISTANCE;
 import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_ID;
 import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_ISIMPORTED;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_ISTEMP;
 import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_LOCATIONS;
 import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_NAME;
 import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_RIDETIME;
@@ -100,7 +101,7 @@ public class RecordTempDAO {
         values.put(COL_DISTANCE, route.getDistance());
         values.put(COL_TIMESTAMP, route.getTimeStamp());
         values.put(COL_ISIMPORTED, route.isImportedDB());
-       // values.put(COL_LOCATIONS, gson.toJson(route.getLocations(), listType));
+        values.put(COL_ISTEMP, route.isTempDB());
 
         return values;
     }
@@ -128,6 +129,7 @@ public class RecordTempDAO {
                     COL_DISTANCE,
                     COL_TIMESTAMP,
                     COL_ISIMPORTED,
+                    COL_ISTEMP,
                     COL_LOCATIONS};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
@@ -148,8 +150,7 @@ public class RecordTempDAO {
                     result.setTimeStamp(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
                     result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
                     result.setImportedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)));
-                 //   result.setLocations(gson.fromJson(cursor.getString(
-                  //          cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType));
+                    result.setTempDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP)));
                 }
             }
         } finally {
@@ -193,6 +194,7 @@ public class RecordTempDAO {
                     COL_DISTANCE,
                     COL_TIMESTAMP,
                     COL_ISIMPORTED,
+                    COL_ISTEMP,
                     COL_LOCATIONS};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
@@ -214,7 +216,8 @@ public class RecordTempDAO {
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
-                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED))));
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP))));
 
                     } while (cursor.moveToNext());
             }
@@ -248,6 +251,7 @@ public class RecordTempDAO {
                     COL_DISTANCE,
                     COL_TIMESTAMP,
                     COL_ISIMPORTED,
+                    COL_ISTEMP,
                     COL_LOCATIONS};
             long sevenDaysInMillis = 604800000;
             String having = COL_DATE + " >= " + (System.currentTimeMillis() - sevenDaysInMillis) +
@@ -273,7 +277,8 @@ public class RecordTempDAO {
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
-                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED))));
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP))));
                         }
                     } while (cursor.moveToNext());
             }
@@ -324,70 +329,4 @@ public class RecordTempDAO {
     public void delete(Route route) {
         this.delete(route.getId());
     }
-
-    /**
-     * Imports a single route from handed over JSON.
-     *
-     * @param jsonString of type string which defines the route to be imported
-     * @param userId     of type integer to define the user to whom the route would be associated
-     * @param isImported of type boolean to define if the route is a restore from a backup
-     *                   (case false) or if it is an imported route received by an other user
-     *                   (case true)
-     *
-     *                   <p>
-     *                   Creates a route with the attributes which were defined in JSON
-     *                   </p>
-     */
-    public void importRouteFromJson(String jsonString, int userId, boolean isImported) {
-        Route route = gson.fromJson(jsonString, exImportType);
-        if (!route.isImported()) {
-            route.setImported(isImported);
-        }
-        route.setUserID(userId);
-        this.create(route);
-    }
-
-    /**
-     * Imports all routes from handed over JSON List.
-     *
-     * @param jsonStrings of type List<String> which inherits the routes to be imported
-     * @param userId      of type integer to define the user to whom the route would be associated
-     * @param isImported  of type boolean to define if the route is a restore from a backup
-     *                    (case false) or if it is an imported route received by an other user
-     *                    (case true)
-     *
-     *                    <p>
-     *                    Creates a route for each entry with the attributes which were defined in JSON
-     *                    </p>
-     */
-    public void importRoutesFromJson(List<String> jsonStrings, int userId, boolean isImported) {
-        for (String jsonString : jsonStrings) {
-            this.importRouteFromJson(jsonString, userId, isImported);
-        }
-    }
-
-    /**
-     * Creates a JSON string which defines a route object and its attributes.
-     *
-     * @param id of type integer of which route has to be exported
-     * @return a JSON string
-     */
-    public String exportRouteToJson(int id) {
-        return gson.toJson(this.read(id), exImportType);
-    }
-
-    /**
-     * Creates a List of JSON strings which defines all route objects and its attributes
-     * of a specific user.
-     *
-     * @param userId of type integer of which user routes has to be exported
-     * @return a List of JSON strings
-     */
-   /* public List<String> exportRoutesToJson(int userId) {
-        List<String> result = new ArrayList<>();
-        for (Route route : readAll(userId)) {
-            result.add(exportRouteToJson(route.getId()));
-        }
-        return result;
-    }*/
 }

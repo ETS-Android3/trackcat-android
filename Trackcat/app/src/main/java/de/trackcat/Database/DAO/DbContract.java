@@ -33,6 +33,7 @@ final class DbContract {
                     RouteEntry.COL_RIDETIME + " LONG, " +
                     RouteEntry.COL_DISTANCE + " DOUBLE, " +
                     RouteEntry.COL_TIMESTAMP + " LONG, " +
+                    RouteEntry.COL_ISTEMP + " BOOLEAN, " +
                     RouteEntry.COL_ISIMPORTED + " BOOLEAN, " +
                     RouteEntry.COL_LOCATIONS + " TEXT) ";
 
@@ -74,6 +75,7 @@ final class DbContract {
                     RecordTempEntry.COL_DISTANCE + " DOUBLE, " +
                     RecordTempEntry.COL_TIMESTAMP + " LONG, " +
                     RecordTempEntry.COL_ISIMPORTED + " BOOLEAN, " +
+                    RecordTempEntry.COL_ISTEMP + " BOOLEAN, " +
                     RecordTempEntry.COL_LOCATIONS + " TEXT) ";
 
     /*
@@ -133,7 +135,7 @@ final class DbContract {
      */
     static final class RouteEntry implements BaseColumns {
         private RouteEntry() {}
-        static final String TABLE_NAME = "route_table";
+        static final String TABLE_NAME = "record_table";
         static final String COL_ID = "id";
         static final String COL_USER = "fk_user_id";
         static final String COL_NAME = "name";
@@ -145,6 +147,7 @@ final class DbContract {
         static final String COL_LOCATIONS = "locations";
         static final String COL_TIMESTAMP = "timestamp";
         static final String COL_ISIMPORTED = "imported";
+        static final String COL_ISTEMP = "temp";
     }
 
     /*
@@ -179,6 +182,7 @@ final class DbContract {
         static final String COL_LOCATIONS = "locations";
         static final String COL_TIMESTAMP = "timestamp";
         static final String COL_ISIMPORTED = "imported";
+        static final String COL_ISTEMP = "temp";
     }
 
     /*

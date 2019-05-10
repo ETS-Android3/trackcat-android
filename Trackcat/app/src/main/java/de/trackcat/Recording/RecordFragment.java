@@ -547,6 +547,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         model.setType(type);
         model.setUserID(MainActivity.getActiveUser());
         model.setDate(System.currentTimeMillis());
+        model.setTemp(true);
         Date currentTime = Calendar.getInstance().getTime();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm:ss");
@@ -633,12 +634,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 m.setDistance(model.getDistance());
                 m.setTimeStamp(model.getTimeStamp());
                 m.setLocations(locationTempDAO.readAll(newRecordId));
-
-                /* set Location as Array */
-                //List<de.trackcat.Database.Models.Location> locationTempDAO.readAll(newRecordId);
-
-               // private ArrayList<CustomLocation> locations;
-
 
                 /* start a call */
                 String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);

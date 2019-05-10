@@ -222,7 +222,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                     record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
                                     record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
                                     record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
-                                    record.setImported(false);
+                                    record.setTemp(false);
                                     recordDao.create(record);
                                 }
 

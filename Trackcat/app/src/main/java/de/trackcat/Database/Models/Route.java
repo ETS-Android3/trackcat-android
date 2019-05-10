@@ -22,8 +22,7 @@ public class Route {
     private long timeStamp;
     private boolean isImported;
     private double distance;
-    private ArrayList<CustomLocation> locations;
-
+    private boolean isTemp;
     /**
      * Empty constructor, modifications via getter and setter
      */
@@ -39,20 +38,24 @@ public class Route {
      * @param time      of type long
      * @param rideTime  of type long
      * @param distance  of type double
+     * @param type  of type int
+     * @param date  of type long
+     * @param timeStamp  of type long
+     * @param isTemp  of type int
      */
     public Route(int id, int userId, String name, long time, long rideTime, double distance,
-                 int type, long date, long timeStamp, int isImported) {
+                 int type, long date, long timeStamp,int isImported, int isTemp) {
         this.id = id;
         this.userId = userId;
         this.name = name;
         this.time = time;
         this.rideTime = rideTime;
         this.distance = distance;
-        this.locations = locations;
         this.timeStamp= timeStamp;
         this.date = date;
         this.type = type;
         this.setImportedDB(isImported);
+        this.setTempDB(isTemp);
     }
 
     /**
@@ -145,37 +148,7 @@ public class Route {
         this.distance = distance;
     }
 
-   /**
-     * Getter for the locations.
-     *
-     * @return value of type array list
-     */
-  /*  public ArrayList<CustomLocation> getLocations() {
-        return this.locations;
-    }*/
 
-    /**
-     * Setter for the locations.
-     *
-     * @param locations of type array list
-     */
-   /*  public void setLocations(ArrayList<CustomLocation> locations) {
-        this.locations = locations;
-        if (!locations.isEmpty())
-            this.date = locations.get(0).getTime();
-    }*/
-
-    /**
-     * Setter to add a single location to the other route locations.
-     *
-     * @param location of type location
-     */
-  /*  public void addLocation(CustomLocation location) {
-        if (this.locations == null) {
-            this.locations = new ArrayList<>();
-        }
-        this.locations.add(location);
-    }*/
     /**
      * Getter for the ride time.
      *
@@ -310,5 +283,69 @@ public class Route {
      */
     public void setImportedDB(int isImported) {
         this.isImported = isImported == 1;
+    }
+
+    /**
+     * Getter for temp flag.
+     *
+     * @return value of type boolean
+     *
+     * <p>
+     * Returns true if the route is temp or false if it isn't.
+     * </p>
+     */
+    public boolean isTemp() {
+        return isTemp;
+    }
+
+    /**
+     * Setter for temp flag.
+     *
+     * @param isTemp of type integer
+     *
+     *                   <p>
+     *                   Hand over true to define that the route is temp or false to define that it isn't.
+     *                   </p>
+     */
+    public void setTemp(boolean isTemp) {
+        this.isTemp = isTemp;
+    }
+
+    /**
+     * Getter to define if route is temp or not for database storage purposes.
+     *
+     * @return value of type integer
+     *
+     * <p>
+     * Integer value is necessary due to SQLite Database constraint.
+     * SQLite does not implement boolean values natively as true or false but only as integer.
+     * </p>
+     * <p>
+     * Returns "1" if the route is temp or "0" if it isn't.
+     * </p>
+     */
+    public int isTempDB() {
+        if (isTemp) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Getter to define if route is temp or not for database storage purposes.
+     *
+     * @param isTemp value of type integer
+     *
+     *                   <p>
+     *                   Integer value is necessary due to SQLite Database constraint.
+     *                   SQLite does not implement boolean values natively as true or false but only as integer.
+     *                   </p>
+     *                   <p>
+     *                   Hand over "1" to define that the route is temp or "0" to define that it isn't.
+     *                   </p>
+     */
+    public void setTempDB(int isTemp) {
+        this.isTemp = isTemp == 1;
     }
 }
