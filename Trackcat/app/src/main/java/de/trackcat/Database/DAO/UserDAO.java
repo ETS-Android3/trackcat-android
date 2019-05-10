@@ -258,11 +258,20 @@ public class UserDAO {
         DbHelper dbHelper = new DbHelper(context);
         RouteDAO routeDAO = new RouteDAO(context);
         LocationDAO locationDAO = new LocationDAO(context);
+        RecordTempDAO recordTempDAO = new RecordTempDAO(context);
+        LocationTempDAO locationTempDAO = new LocationTempDAO(context);
         try {
             for (Route route : routeDAO.readAll()) {
                 routeDAO.delete(route.getId());
                 for (Location location : locationDAO.readAll(route.getId())) {
                     locationDAO.delete(location.getId());
+                }
+            }
+
+            for (Route route : recordTempDAO.readAll()) {
+                recordTempDAO.delete(route.getId());
+                for (Location location : locationTempDAO.readAll(route.getId())) {
+                    locationTempDAO.delete(location.getId());
                 }
             }
 
