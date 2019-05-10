@@ -28,10 +28,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import de.trackcat.CustomElements.CustomLocation;
+import de.trackcat.Database.DAO.LocationDAO;
 import de.trackcat.Database.DAO.RouteDAO;
+import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -51,9 +54,10 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     private double altitudeDown = 0;
     private double maxSpeed = 0;
     private MapView mMapView = null;
-    ArrayList<CustomLocation> locations;
+    List<Location> locations;
     Route record;
     RouteDAO dao;
+    LocationDAO locationDao;
     TextView recordName;
 
     @Override
@@ -66,18 +70,19 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         /* Auslesen der Werte aus der Datenbank */
         dao = new RouteDAO(MainActivity.getInstance());
         record = dao.read(id);
-        locations = record.getLocations();
 
+        locationDao = new LocationDAO(MainActivity.getInstance());
+        locations = locationDao.readAll(record.getId());
         /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
             Log.v("iiiiiii------------", i + "");
-            CustomLocation location = locations.get(i);
+            Location location = locations.get(i);
 
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
             GPSData.add(gPt);
 
             if (i > 0) {
-                double difference = location.getAltitude() - record.getLocations().get(i - 1).getAltitude();
+                double difference = location.getAltitude() - locations.get(i - 1).getAltitude();
 
                 /* Berechnung der Höhenmeter */
                 if (difference > 0) {

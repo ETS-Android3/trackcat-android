@@ -7,21 +7,32 @@ import android.database.Cursor;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import de.trackcat.CustomElements.CustomLocation;
-import de.trackcat.Database.Models.Route;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.*;
+import de.trackcat.CustomElements.CustomLocation;
+import de.trackcat.Database.Models.Route;
+
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_DATE;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_DISTANCE;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_ID;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_ISIMPORTED;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_LOCATIONS;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_NAME;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_RIDETIME;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_TIME;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_TIMESTAMP;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_TYPE;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_USER;
+import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.TABLE_NAME;
 
 /**
  * Data access object for routes.
  * Alters database content via CRUD methods.
  * Creates im- and exportable routes as JSON.
  */
-public class RouteDAO {
+public class RecordTempDAO {
     /*
      + attribute to store activity context global
      + the context is needed by the DbHelper and will be handed over by creating an instance
@@ -38,7 +49,7 @@ public class RouteDAO {
      *
      * @param context of type context from calling activity
      */
-    public RouteDAO(Context context) {
+    public RecordTempDAO(Context context) {
         this.context = context;
     }
 
@@ -51,14 +62,16 @@ public class RouteDAO {
      *              Sets the database id to the model.
      *              </p>
      */
-    public void create(Route route) {
+    public int create(Route route) {
         DbHelper dbHelper = new DbHelper(context);
+        long id=0;
         try {
-            dbHelper.getWritableDatabase().insert(TABLE_NAME, null,
-                    valueGenerator(route));
+         //  route.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(route)));
+          id=  dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(route));
         } finally {
             dbHelper.close();
         }
+        return (int)id;
     }
 
     /**
@@ -78,7 +91,6 @@ public class RouteDAO {
         if (route.getId() != 0 && this.read(route.getId()).getId() == 0) {
             values.put(COL_ID, route.getId());
         }
-      //  values.put(COL_ID, route.getId());
         values.put(COL_USER, route.getUserId());
         values.put(COL_NAME, route.getName());
         values.put(COL_TIME, route.getTime());
@@ -203,8 +215,7 @@ public class RouteDAO {
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED))));
-                           /*     gson.fromJson(cursor.getString(
-                                        cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));*/
+
                     } while (cursor.moveToNext());
             }
         } finally {
@@ -263,8 +274,6 @@ public class RouteDAO {
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED))));
-                                 /*   gson.fromJson(cursor.getString(
-                                            cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));*/
                         }
                     } while (cursor.moveToNext());
             }

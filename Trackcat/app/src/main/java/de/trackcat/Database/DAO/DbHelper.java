@@ -34,6 +34,8 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_ROUTE_TABLE);
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_LOCATION_TABLE);
+        db.execSQL(SQL_CREATE_LOCATION_TEMP_TABLE);
+        db.execSQL(SQL_CREATE_RECORD_TEMP_TABLE);
     }
 
     /**
@@ -49,6 +51,8 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_ROUTE_TABLE);
         db.execSQL(SQL_DELETE_USER_TABLE);
         db.execSQL(SQL_CREATE_LOCATION_TABLE);
+        db.execSQL(SQL_CREATE_LOCATION_TEMP_TABLE);
+        db.execSQL(SQL_CREATE_RECORD_TEMP_TABLE);
         onCreate(db);
     }
 
@@ -65,6 +69,8 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_ROUTE_TABLE);
         db.execSQL(SQL_DELETE_USER_TABLE);
         db.execSQL(SQL_DELETE_LOCATION_TABLE);
+        db.execSQL(SQL_DELETE_LOCATION_TEMP_TABLE);
+        db.execSQL(SQL_DELETE_RECORD_TEMP_TABLE);
         onCreate(db);
     }
 }

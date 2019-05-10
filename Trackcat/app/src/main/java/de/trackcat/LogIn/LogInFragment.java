@@ -211,7 +211,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
                                 /* set routes */
                                 JSONArray recordsArray = mainObject.getJSONArray("records");
-                                RouteDAO recordDao=new RouteDAO(MainActivity.getInstance());
+                                RouteDAO recordDao=new RouteDAO(StartActivity.getInstance());
                                 for ( int i=0;i< recordsArray.length();i++) {
                                     Route record= new Route();
                                     record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
@@ -228,7 +228,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
                                 /* set routes */
                                 JSONArray locationArray = mainObject.getJSONArray("locations");
-                                LocationDAO locationDao=new LocationDAO(MainActivity.getInstance());
+                                LocationDAO locationDao=new LocationDAO(StartActivity.getInstance());
                                 for ( int i=0;i< locationArray.length();i++) {
                                     Location location= new Location();
                                     location.setRecordId(((JSONObject) locationArray.get(i)).getInt("record_id"));

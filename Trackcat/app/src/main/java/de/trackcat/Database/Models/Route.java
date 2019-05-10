@@ -39,10 +39,9 @@ public class Route {
      * @param time      of type long
      * @param rideTime  of type long
      * @param distance  of type double
-     * @param locations of type array list
      */
     public Route(int id, int userId, String name, long time, long rideTime, double distance,
-                 int type, long date, long timeStamp, int isImported, ArrayList<CustomLocation> locations) {
+                 int type, long date, long timeStamp, int isImported) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -146,38 +145,37 @@ public class Route {
         this.distance = distance;
     }
 
-    /**
+   /**
      * Getter for the locations.
      *
      * @return value of type array list
      */
-    public ArrayList<CustomLocation> getLocations() {
+  /*  public ArrayList<CustomLocation> getLocations() {
         return this.locations;
-    }
+    }*/
 
     /**
      * Setter for the locations.
      *
      * @param locations of type array list
      */
-    public void setLocations(ArrayList<CustomLocation> locations) {
+   /*  public void setLocations(ArrayList<CustomLocation> locations) {
         this.locations = locations;
         if (!locations.isEmpty())
             this.date = locations.get(0).getTime();
-    }
+    }*/
 
     /**
      * Setter to add a single location to the other route locations.
      *
      * @param location of type location
      */
-    public void addLocation(CustomLocation location) {
+  /*  public void addLocation(CustomLocation location) {
         if (this.locations == null) {
             this.locations = new ArrayList<>();
         }
         this.locations.add(location);
-    }
-
+    }*/
     /**
      * Getter for the ride time.
      *

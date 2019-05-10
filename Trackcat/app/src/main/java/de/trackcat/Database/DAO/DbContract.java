@@ -60,6 +60,46 @@ final class DbContract {
     static final String SQL_DELETE_LOCATION_TABLE = "DROP TABLE IF EXISTS " + LocationEntry.TABLE_NAME;
 
     /*
+     + string to create table where records where temporary stored in
+     */
+    static final String SQL_CREATE_RECORD_TEMP_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + RecordTempEntry.TABLE_NAME + " ( " +
+                    RecordTempEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    RecordTempEntry.COL_USER + " INTEGER, " +
+                    RecordTempEntry.COL_NAME + " TEXT, " +
+                    RecordTempEntry.COL_TIME + " LONG, " +
+                    RecordTempEntry.COL_DATE + " LONG, " +
+                    RecordTempEntry.COL_TYPE + " INTEGER, " +
+                    RecordTempEntry.COL_RIDETIME + " LONG, " +
+                    RecordTempEntry.COL_DISTANCE + " DOUBLE, " +
+                    RecordTempEntry.COL_TIMESTAMP + " LONG, " +
+                    RecordTempEntry.COL_ISIMPORTED + " BOOLEAN, " +
+                    RecordTempEntry.COL_LOCATIONS + " TEXT) ";
+
+    /*
+     + string to delete temporary record table
+     */
+    static final String SQL_DELETE_RECORD_TEMP_TABLE = "DROP TABLE IF EXISTS " + RecordTempEntry.TABLE_NAME;
+
+    /*
+    + string to create table where locations temporary where stored in
+    */
+    static final String SQL_CREATE_LOCATION_TEMP_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + LocationTempEntry.TABLE_NAME + " ( " +
+                    LocationTempEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    LocationTempEntry.COL_LATITUDE + " DOUBLE, " +
+                    LocationTempEntry.COL_LONGITUDE + " DOUBLE, " +
+                    LocationTempEntry.COL_ALTITUDE + " DOUBLE, " +
+                    LocationTempEntry.COL_TIME + " LONG, " +
+                    LocationTempEntry.COL_SPEED + " FLOAT, " +
+                    LocationTempEntry.COL_RECORD_ID + " INTEGER)";
+
+    /*
+    + string to delete location temorary table
+    */
+    static final String SQL_DELETE_LOCATION_TEMP_TABLE = "DROP TABLE IF EXISTS " + LocationTempEntry.TABLE_NAME;
+
+    /*
      + string to create table where users where stored in
      */
     static final String SQL_CREATE_USER_TABLE =
@@ -113,6 +153,40 @@ final class DbContract {
     static final class LocationEntry implements BaseColumns {
         private LocationEntry() {}
         static final String TABLE_NAME = "location_table";
+        static final String COL_ID = "id";
+        static final String COL_LATITUDE = "latitude";
+        static final String COL_LONGITUDE = "longitude";
+        static final String COL_ALTITUDE = "altitude";
+        static final String COL_TIME = "time";
+        static final String COL_SPEED = "speed";
+        static final String COL_RECORD_ID = "fk_record_id";
+    }
+
+    /*
+    + class to declare columns for route table
+    */
+    static final class RecordTempEntry implements BaseColumns {
+        private RecordTempEntry() {}
+        static final String TABLE_NAME = "record_temp_table";
+        static final String COL_ID = "id";
+        static final String COL_USER = "fk_user_id";
+        static final String COL_NAME = "name";
+        static final String COL_TIME = "time";
+        static final String COL_DATE = "date";
+        static final String COL_TYPE = "type";
+        static final String COL_RIDETIME = "rideTime";
+        static final String COL_DISTANCE = "distance";
+        static final String COL_LOCATIONS = "locations";
+        static final String COL_TIMESTAMP = "timestamp";
+        static final String COL_ISIMPORTED = "imported";
+    }
+
+    /*
+    + class to declare columns for route table
+    */
+    static final class LocationTempEntry implements BaseColumns {
+        private LocationTempEntry() {}
+        static final String TABLE_NAME = "location_temp_table";
         static final String COL_ID = "id";
         static final String COL_LATITUDE = "latitude";
         static final String COL_LONGITUDE = "longitude";

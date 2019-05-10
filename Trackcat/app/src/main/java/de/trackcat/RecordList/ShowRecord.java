@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.TimeZone;
 
 import de.trackcat.CustomElements.CustomLocation;
+import de.trackcat.Database.DAO.LocationDAO;
+import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -67,7 +69,8 @@ public class ShowRecord {
             @Override
             public void onClick(View v) {
                 /* get Location Data */
-                ArrayList<CustomLocation> locations = records.get(position).getLocations();
+                LocationDAO locationDao = new LocationDAO(MainActivity.getInstance());
+                List<Location> locations = locationDao.readAll(records.get(position).getId());
                 int size;
                 int run;
                 int step;
@@ -88,7 +91,7 @@ public class ShowRecord {
                 double[] speedValues = new double[size + 1];
                 double[] altitudeValues = new double[size + 1];
                 for (int i = 0; i < run; i += step) {
-                    CustomLocation location = locations.get(i);
+                    Location location = locations.get(i);
                     speedValues[n] = location.getSpeed() * 3.931;
                     altitudeValues[n] = location.getAltitude();
                     n++;
