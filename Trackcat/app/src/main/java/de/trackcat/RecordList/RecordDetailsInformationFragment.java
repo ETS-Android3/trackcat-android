@@ -39,6 +39,7 @@ import java.util.TimeZone;
 import de.trackcat.BuildConfig;
 import de.trackcat.CustomElements.CustomLocation;
 import de.trackcat.Database.DAO.LocationDAO;
+import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
@@ -65,20 +66,28 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     List<Location> locations;
     Route record;
     RouteDAO dao;
+    RecordTempDAO tempDAO;
     TextView recordName;
+    boolean temp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         int id = getArguments().getInt("id");
+        temp = getArguments().getBoolean("temp");
         String locationsAsString= getArguments().getString("locations");
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
         /* Auslesen der Werte aus der Datenbank */
         locations = Arrays.asList(new Gson().fromJson(locationsAsString, Location[].class));
         dao = new RouteDAO(MainActivity.getInstance());
-        record = dao.read(id);
+        tempDAO = new RecordTempDAO(MainActivity.getInstance());
+        if(temp){
+            record = tempDAO.read(id);
+        }else {
+            record = dao.read(id);
+        }
 
         /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
@@ -271,12 +280,19 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                         /* Aktualisieren der Route */
                         Route newRecord = record;
                         newRecord.setName(newName);
-                        dao.update(record.getId(), newRecord);
+                        if(temp){
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "TEMP", Toast.LENGTH_LONG).show();
+                         //   tempDAO.update(record.getId(), newRecord);
+                        }else {
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "KEIN TEMP", Toast.LENGTH_LONG).show();
+
+                           // dao.update(record.getId(), newRecord);
+                        }
 
                         recordName.setText(newName);
-                        if (MainActivity.getHints()) {
+                   /*     if (MainActivity.getHints()) {
                             Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Name erfolgreich bearbeitet!", Toast.LENGTH_LONG).show();
-                        }
+                        }*/
 
                     }
                 });

@@ -43,6 +43,16 @@
                 app:layout_constraintEnd_toEndOf="@+id/activity_type"
                 app:layout_constraintTop_toTopOf="@+id/activity_type" />
 
+            <ImageView
+                android:id="@+id/temp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_warning_black_24dp"
+                android:visibility="invisible"
+                app:layout_constraintDimensionRatio="w,1:1"
+                app:layout_constraintEnd_toEndOf="@+id/activity_type"
+                app:layout_constraintBottom_toBottomOf="@+id/activity_type" />
+
         </android.support.constraint.ConstraintLayout>
 
         <LinearLayout

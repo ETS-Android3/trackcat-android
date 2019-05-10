@@ -19,6 +19,7 @@ import java.util.TimeZone;
 
 import de.trackcat.CustomElements.CustomLocation;
 import de.trackcat.Database.DAO.LocationDAO;
+import de.trackcat.Database.DAO.LocationTempDAO;
 import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
@@ -27,13 +28,20 @@ import de.trackcat.Statistics.SpeedAverager;
 
 public class ShowRecord {
 
-    public static void show(List<Route> records, int position, String TAG, TextView recordId, ImageView recordType, ImageView importState, TextView recordName, TextView recordDostance, TextView recordTime, View recordItem, TextView recordDate) {
+    public static void show(List<Route> records, int position, String TAG, TextView recordId, ImageView recordType, ImageView importState, ImageView temp,TextView recordName, TextView recordDostance, TextView recordTime, View recordItem, TextView recordDate) {
 
         /* show ID */
         recordId.setText("" + (position + 1));
 
         /* symbolize type */
         recordType.setImageResource(SpeedAverager.getTypeIcon(records.get(position).getType(), true));
+
+        /* import status */
+        if (records.get(position).isTemp()) {
+            temp.setVisibility(View.VISIBLE);
+        } else {
+            temp.setVisibility(View.INVISIBLE);
+        }
 
         /* import status */
         if (records.get(position).isImported()) {
@@ -72,8 +80,15 @@ public class ShowRecord {
             @Override
             public void onClick(View v) {
                 /* get Location Data */
-                LocationDAO locationDao = new LocationDAO(MainActivity.getInstance());
-                List<Location> locations = locationDao.readAll(records.get(position).getId());
+                List<Location> locations;
+                if (records.get(position).isTemp()){
+                    LocationTempDAO locationTempDAO = new LocationTempDAO(MainActivity.getInstance());
+                    locations = locationTempDAO.readAll(records.get(position).getId());
+                }else{
+                    LocationDAO locationDao = new LocationDAO(MainActivity.getInstance());
+                   locations = locationDao.readAll(records.get(position).getId());
+                }
+
                 int size;
                 int run;
                 int step;
@@ -111,6 +126,7 @@ public class ShowRecord {
                 bundle.putDoubleArray("speedArray", speedValues);
                 bundle.putString("locations", locationsAsString);
                 bundle.putInt("id", records.get(position).getId());
+                bundle.putBoolean("temp", records.get(position).isTemp());
 
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);

@@ -42,9 +42,11 @@ public class RecordListDetailsPageViewer extends Fragment {
         /* Anzeige der allgemeinen Informationen */
         int id = getArguments().getInt("id");
         String locationsAsString= getArguments().getString("locations");
+        boolean temp = getArguments().getBoolean("temp");
         Bundle bundleInformation = new Bundle();
         bundleInformation.putInt("id", id);
         bundleInformation.putString("locations", locationsAsString);
+        bundleInformation.putBoolean("temp", temp);
 
         RecordDetailsInformationFragment recordDetailsInformationFragment = new RecordDetailsInformationFragment();
         recordDetailsInformationFragment.setArguments(bundleInformation);
