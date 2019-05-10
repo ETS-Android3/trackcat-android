@@ -44,6 +44,7 @@ import com.karan.churi.PermissionManager.PermissionManager;
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
 import de.trackcat.CustomElements.CustomLocation;
+import de.trackcat.CustomElements.RecordModelForServer;
 import de.trackcat.Database.DAO.LocationTempDAO;
 import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
@@ -605,8 +606,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     model.setName(recordName != null ? recordName.getText().toString() : null);
                 }
 
-                RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-                dao.create(model);
+                model.setTimeStamp(GlobalFunctions.getTimeStamp());
+             /*   RouteDAO dao = new RouteDAO(MainActivity.getInstance());
+                dao.create(model);*/
+
+             recordTempDAO.update(newRecordId, model);
 
                 /* send route full to server */
 
@@ -618,10 +622,27 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 APIClient apiInterface = retrofit.create(APIClient.class);
                 String base = currentUser.getMail() + ":" + currentUser.getPassword();
 
+                RecordModelForServer m= new RecordModelForServer();
+                m.setId(model.getId());
+                m.setUserID(MainActivity.getActiveUser());
+                m.setName(model.getName());
+                m.setType(model.getType());
+                m.setTime(model.getTime());
+                m.setDate(model.getDate());
+                m.setRideTime(model.getRideTime());
+                m.setDistance(model.getDistance());
+                m.setTimeStamp(model.getTimeStamp());
+                m.setLocations(locationTempDAO.readAll(newRecordId));
+
+                /* set Location as Array */
+                //List<de.trackcat.Database.Models.Location> locationTempDAO.readAll(newRecordId);
+
+               // private ArrayList<CustomLocation> locations;
+
 
                 /* start a call */
                 String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, model);
+                Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, m);
 
                 call.enqueue(new Callback<ResponseBody>() {
 
@@ -635,7 +656,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                        Log.v("testLog", "Message:"+t.getMessage());
                         call.cancel();
                         MainActivity.getInstance().endTracking();
                         Toast.makeText(getActivity(), "Error Connection",

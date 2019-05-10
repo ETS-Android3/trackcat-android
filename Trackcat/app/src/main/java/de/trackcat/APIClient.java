@@ -2,6 +2,7 @@ package de.trackcat;
 
 import java.util.HashMap;
 
+import de.trackcat.CustomElements.RecordModelForServer;
 import de.trackcat.Database.Models.Route;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -44,6 +45,6 @@ public interface APIClient {
 
     @Headers({"Accept: application/json"})
     @POST("/uploadTrackAPI")
-    Call<ResponseBody> uploadFullTrack(@Header("Authorization") String authHeader, @Body Route track);
+    Call<ResponseBody> uploadFullTrack(@Header("Authorization") String authHeader, @Body RecordModelForServer track);
 
 }

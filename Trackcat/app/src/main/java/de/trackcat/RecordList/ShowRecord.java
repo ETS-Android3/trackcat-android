@@ -7,8 +7,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -97,10 +100,16 @@ public class ShowRecord {
                     n++;
                 }
 
+                ArrayList<Location> locationsArrayList = new ArrayList<>(locations.size());
+                locationsArrayList.addAll(locations);
+
+                String locationsAsString = new Gson().toJson(locations);
+
                 /* Create new Fragment and put bundle */
                 Bundle bundle = new Bundle();
                 bundle.putDoubleArray("altitudeArray", altitudeValues);
                 bundle.putDoubleArray("speedArray", speedValues);
+                bundle.putString("locations", locationsAsString);
                 bundle.putInt("id", records.get(position).getId());
 
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();

@@ -18,12 +18,14 @@ public class RecordDetailsFragment extends Fragment {
         /* Auslesen der Daten aus dem Bundle */
         double[] altitudeArray = getArguments().getDoubleArray("altitudeArray");
         double[] speedArray = getArguments().getDoubleArray("speedArray");
+        String locationsAsString= getArguments().getString("locations");
         int id = getArguments().getInt("id");
 
         /* Neues Fragment erstellen */
         Bundle bundle = new Bundle();
         bundle.putDoubleArray("altitudeArray", altitudeArray);
         bundle.putDoubleArray("speedArray", speedArray);
+        bundle.putString("locations", locationsAsString);
         bundle.putInt("id", id);
         RecordListDetailsPageViewer recordListDetailsPageViewer = new RecordListDetailsPageViewer();
         recordListDetailsPageViewer.setArguments(bundle);

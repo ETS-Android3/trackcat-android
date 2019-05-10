@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -26,6 +28,7 @@ import org.osmdroid.views.overlay.Polyline;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -57,7 +60,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     List<Location> locations;
     Route record;
     RouteDAO dao;
-    LocationDAO locationDao;
     TextView recordName;
 
     @Override
@@ -65,14 +67,14 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                              Bundle savedInstanceState) {
 
         int id = getArguments().getInt("id");
+        String locationsAsString= getArguments().getString("locations");
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
         /* Auslesen der Werte aus der Datenbank */
+        locations = Arrays.asList(new Gson().fromJson(locationsAsString, Location[].class));
         dao = new RouteDAO(MainActivity.getInstance());
         record = dao.read(id);
 
-        locationDao = new LocationDAO(MainActivity.getInstance());
-        locations = locationDao.readAll(record.getId());
         /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
             Log.v("iiiiiii------------", i + "");
