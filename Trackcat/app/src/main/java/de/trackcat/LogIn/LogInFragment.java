@@ -21,8 +21,10 @@ import java.util.HashMap;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
+import de.trackcat.Database.DAO.LocationDAO;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.GlobalFunctions;
@@ -220,7 +222,22 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                     record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
                                     record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
                                     record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
+                                    record.setImported(false);
                                     recordDao.create(record);
+                                }
+
+                                /* set routes */
+                                JSONArray locationArray = mainObject.getJSONArray("locations");
+                                LocationDAO locationDao=new LocationDAO(MainActivity.getInstance());
+                                for ( int i=0;i< locationArray.length();i++) {
+                                    Location location= new Location();
+                                    location.setRecordId(((JSONObject) locationArray.get(i)).getInt("record_id"));
+                                    location.setLatitude(((JSONObject) locationArray.get(i)).getDouble("lat"));
+                                    location.setLongitude(((JSONObject) locationArray.get(i)).getDouble("lng"));
+                                    location.setAltitude(((JSONObject) locationArray.get(i)).getDouble("altitude"));
+                                    location.setTime(((JSONObject) locationArray.get(i)).getLong("time"));
+                                    location.setSpeed((float)((JSONObject) locationArray.get(i)).getDouble("speed"));
+                                    locationDao.create(location);
                                 }
 
                                 /* open MainActivity */
@@ -242,7 +259,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
                         /* show server error message to user */
                         Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + response.raw().message());
-                        setErrorMessage(response.raw().message(), getResources().getString(R.string.eServer));
+                        setErrorMessage(e.toString(), getResources().getString(R.string.eServer));
                     }
                 }
 

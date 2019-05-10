@@ -46,7 +46,7 @@ final class DbContract {
     */
     static final String SQL_CREATE_LOCATION_TABLE =
             "CREATE TABLE IF NOT EXISTS " + LocationEntry.TABLE_NAME + " ( " +
-                    LocationEntry.COL_ID + " INTEGER PRIMARY KEY, " +
+                    LocationEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     LocationEntry.COL_LATITUDE + " DOUBLE, " +
                     LocationEntry.COL_LONGITUDE + " DOUBLE, " +
                     LocationEntry.COL_ALTITUDE + " DOUBLE, " +

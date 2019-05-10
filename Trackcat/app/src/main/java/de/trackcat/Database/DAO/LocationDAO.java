@@ -3,35 +3,20 @@ package de.trackcat.Database.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.trackcat.CustomElements.CustomLocation;
+
 import de.trackcat.Database.Models.Location;
-import de.trackcat.Database.Models.Route;
 
 import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_ALTITUDE;
 import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_LATITUDE;
 import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_LONGITUDE;
 import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_RECORD_ID;
 import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_SPEED;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_DATE;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_DISTANCE;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_ID;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_ISIMPORTED;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_LOCATIONS;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_NAME;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_RIDETIME;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_TIME;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_TIMESTAMP;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_TYPE;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.COL_USER;
-import static de.trackcat.Database.DAO.DbContract.RouteEntry.TABLE_NAME;
+import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_ID;
+import static de.trackcat.Database.DAO.DbContract.LocationEntry.COL_TIME;
+import static de.trackcat.Database.DAO.DbContract.LocationEntry.TABLE_NAME;
 
 /**
  * Data access object for routes.
@@ -67,8 +52,8 @@ public class LocationDAO {
     public void create(Location location) {
         DbHelper dbHelper = new DbHelper(context);
         try {
-            dbHelper.getWritableDatabase().insert(TABLE_NAME, null,
-                    valueGenerator(location));
+           location.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null,
+                    valueGenerator(location)));
         } finally {
             dbHelper.close();
         }
@@ -169,7 +154,7 @@ public class LocationDAO {
     private List<Location> readAll(int recordId, String[] orderArgs) {
         DbHelper dbHelper = new DbHelper(context);
         List<Location> result = new ArrayList<>();
-        String selection = COL_USER + " = ?";
+        String selection = COL_RECORD_ID + " = ?";
         try {
             String[] selectionArgs = {String.valueOf(recordId)};
             String[] projection = {

@@ -47,7 +47,7 @@ public class RecordListFragment extends Fragment {
 
         /* Routen Aufzeichnungen von Datenbank abfragen */
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-        records = dao.readAll(MainActivity.getActiveUser());
+        records = dao.readAll();
 
         /* Elemente aus View holen und Adapter definieren */
         recyclerView = view.findViewById(R.id.recycler_view);

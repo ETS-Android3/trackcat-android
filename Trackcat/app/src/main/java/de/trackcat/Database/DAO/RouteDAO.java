@@ -148,30 +148,27 @@ public class RouteDAO {
     /**
      * Reads all routes of a specific user.
      *
-     * @param userId id of specific user of whom routes has to be selected
      * @return List of all routes belong to specific user in database sorted ascending after id,
      * if routes with matching userId was found else an empty List
      */
-    public List<Route> readAll(int userId) {
-        return this.readAll(userId, new String[]{"id", "ASC"});
+    public List<Route> readAll() {
+        return this.readAll(new String[]{"id", "ASC"});
     }
 
     /**
      * Reads all routes of a specific user.
      *
-     * @param userId    id of specific user of whom routes has to be selected
      * @param orderArgs String[] { column to sort, ASC / DESC }
      *                  use COL_ID, COL_NAME, COL_TIME or COL_DISTANCE etc from DbContract
      *                  as columns and ASC for ascending or DESC for descending order
      * @return List of all routes belong to specific user in database sorted after
      * orderArgs, if routes with matching userId was found else an empty List
      */
-    private List<Route> readAll(int userId, String[] orderArgs) {
+    private List<Route> readAll(String[] orderArgs) {
         DbHelper dbHelper = new DbHelper(context);
-        List<Route> result = new ArrayList<>();
-        String selection = COL_USER + " = ?";
+        ArrayList<Route> result = new ArrayList<>();
         try {
-            String[] selectionArgs = {String.valueOf(userId)};
+
             String[] projection = {
                     COL_ID,
                     COL_USER,
@@ -187,8 +184,8 @@ public class RouteDAO {
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
-                    selection,
-                    selectionArgs,
+                    null,
+                    null,
                     null,
                     null,
                     orderArgs[0] + " " + orderArgs[1])) {
@@ -376,11 +373,11 @@ public class RouteDAO {
      * @param userId of type integer of which user routes has to be exported
      * @return a List of JSON strings
      */
-    public List<String> exportRoutesToJson(int userId) {
+   /* public List<String> exportRoutesToJson(int userId) {
         List<String> result = new ArrayList<>();
         for (Route route : readAll(userId)) {
             result.add(exportRouteToJson(route.getId()));
         }
         return result;
-    }
+    }*/
 }

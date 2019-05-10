@@ -34,7 +34,7 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
         Button firstRecordBtn = view.findViewById(R.id.create_first_record);
 
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-        List<Route> records = dao.readAll(MainActivity.getActiveUser());
+        List<Route> records = dao.readAll();
 
         List<Route> mList = new ArrayList<>();
         mList.clear();

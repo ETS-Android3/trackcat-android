@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import com.google.gson.Gson;
 
+import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import java.lang.reflect.Type;
@@ -256,10 +257,15 @@ public class UserDAO {
     public void delete(User user) {
         DbHelper dbHelper = new DbHelper(context);
         RouteDAO routeDAO = new RouteDAO(context);
+        LocationDAO locationDAO = new LocationDAO(context);
         try {
-            for (Route route : routeDAO.readAll(user.getId())) {
+            for (Route route : routeDAO.readAll()) {
                 routeDAO.delete(route.getId());
+                for (Location location : locationDAO.readAll(route.getId())) {
+                    locationDAO.delete(location.getId());
+                }
             }
+
             String selection = COL_ID + " LIKE ?";
             String[] selectionArgs = {String.valueOf(user.getId())};
             dbHelper.getWritableDatabase().delete(TABLE_NAME, selection, selectionArgs);
