@@ -215,16 +215,13 @@ public class RouteDAO {
     /**
      * Reads all routes of a specific user which are recorded within the last seven days.
      *
-     * @param userId id of specific user of whom routes has to be selected
      * @return List of all routes belong to specific user in database sorted descending after
      * date, if routes with matching userId was found else an empty List
      */
-    public List<Route> readLastSevenDays(int userId) {
+    public List<Route> readLastSevenDays() {
         DbHelper dbHelper = new DbHelper(context);
         List<Route> result = new ArrayList<>();
         try {
-            String selection = COL_USER + " = ?";
-            String[] selectionArgs = {String.valueOf(userId)};
             String[] projection = {
                     COL_ID,
                     COL_USER,
@@ -244,8 +241,8 @@ public class RouteDAO {
             try (Cursor cursor = dbHelper.getWritableDatabase().query(
                     TABLE_NAME,
                     projection,
-                    selection,
-                    selectionArgs,
+                    null,
+                    null,
                     COL_DATE,
                     having,
                     COL_DATE + " DESC")) {
