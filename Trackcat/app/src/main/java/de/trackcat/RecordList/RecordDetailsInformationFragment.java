@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.osmdroid.config.Configuration;
+import org.osmdroid.config.IConfigurationProvider;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -34,6 +36,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import de.trackcat.BuildConfig;
 import de.trackcat.CustomElements.CustomLocation;
 import de.trackcat.Database.DAO.LocationDAO;
 import de.trackcat.Database.DAO.RouteDAO;
@@ -41,6 +44,8 @@ import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
+
+import static org.osmdroid.tileprovider.util.StorageUtils.getStorage;
 
 public class RecordDetailsInformationFragment extends Fragment implements View.OnClickListener {
     public RecordDetailsInformationFragment() {
@@ -231,6 +236,12 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         mPath.setPoints(GPSData);
         mPath.setColor(Color.RED);
         mPath.setWidth(4);
+
+        /* load map by big routes */
+        IConfigurationProvider provider = Configuration.getInstance();
+        provider.setUserAgentValue(BuildConfig.APPLICATION_ID);
+        provider.setOsmdroidBasePath(getStorage());
+        provider.setOsmdroidTileCache(getStorage());
 
     }
 
