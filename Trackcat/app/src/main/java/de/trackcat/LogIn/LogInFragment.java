@@ -132,7 +132,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     try {
-                        progressDialog.dismiss();
+
 
                         /* user not authorized */
                         if (response.code() == 401) {
@@ -254,6 +254,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 setErrorMessage("Fehlende Verifizierung", getResources().getString(R.string.eEMailNotVerified));
                             }
                         }
+                        progressDialog.dismiss();
                     } catch (Exception e) {
                         progressDialog.dismiss();
 
