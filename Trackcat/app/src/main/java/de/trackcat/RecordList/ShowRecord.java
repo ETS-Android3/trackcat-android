@@ -2,12 +2,17 @@ package de.trackcat.RecordList;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,6 +29,7 @@ import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
+import de.trackcat.StartActivity;
 import de.trackcat.Statistics.SpeedAverager;
 
 public class ShowRecord {
@@ -80,13 +86,29 @@ public class ShowRecord {
             @Override
             public void onClick(View v) {
                 /* get Location Data */
-                List<Location> locations;
+                List<Location> locations = null;
                 if (records.get(position).isTemp()){
                     LocationTempDAO locationTempDAO = new LocationTempDAO(MainActivity.getInstance());
                     locations = locationTempDAO.readAll(records.get(position).getId());
+
                 }else{
-                    LocationDAO locationDao = new LocationDAO(MainActivity.getInstance());
-                   locations = locationDao.readAll(records.get(position).getId());
+                    JSONArray locationArray = null;
+                    try {
+                        locationArray = new JSONArray(records.get(position).getLocations());
+
+                        for ( int i=0;i< locationArray.length();i++) {
+                            Location location= new Location();
+                            location.setRecordId(((JSONObject) locationArray.get(i)).getInt("record_id"));
+                            location.setLatitude(((JSONObject) locationArray.get(i)).getDouble("lat"));
+                            location.setLongitude(((JSONObject) locationArray.get(i)).getDouble("lng"));
+                            location.setAltitude(((JSONObject) locationArray.get(i)).getDouble("altitude"));
+                            location.setTime(((JSONObject) locationArray.get(i)).getLong("time"));
+                            location.setSpeed((float)((JSONObject) locationArray.get(i)).getDouble("speed"));
+                            locations.add(location);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 int size;
