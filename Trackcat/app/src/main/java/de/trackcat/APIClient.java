@@ -45,7 +45,7 @@ public interface APIClient {
 
     @Headers({"Accept: application/json"})
     @POST("/uploadTrackAPI")
-    Call<ResponseBody> uploadFullTrack(@Header("Authorization") String authHeader, @Body Route track);
+    Call<ResponseBody> uploadFullTrack(@Header("Authorization") String authHeader, @Body RecordModelForServer track);
 
     @Headers({"Accept: application/json"})
     @POST("/editRecordAPI")

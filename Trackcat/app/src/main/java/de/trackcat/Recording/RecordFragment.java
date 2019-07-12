@@ -56,6 +56,7 @@ import de.trackcat.MainActivity;
 import de.trackcat.NotificationActionReciever;
 import de.trackcat.R;
 import de.trackcat.Recording.Recording_UI.PageViewer;
+import de.trackcat.StartActivity;
 import de.trackcat.Statistics.SpeedAverager;
 import de.trackcat.Statistics.mCounter;
 import okhttp3.ResponseBody;
@@ -627,7 +628,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 APIClient apiInterface = retrofit.create(APIClient.class);
                 String base = currentUser.getMail() + ":" + currentUser.getPassword();
 
-                Route m = new Route();
+                RecordModelForServer m = new RecordModelForServer();
                 m.setId(model.getId());
                 m.setUserID(MainActivity.getActiveUser());
                 m.setName(model.getName());
@@ -637,8 +638,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 m.setRideTime(model.getRideTime());
                 m.setDistance(model.getDistance());
                 m.setTimeStamp(model.getTimeStamp());
-                JSONArray locations= new JSONArray(locationTempDAO.readAll(newRecordId));
-                m.setLocations(locations.toString());
+                m.setLocations(locationTempDAO.readAll(newRecordId));
 
                 /* start a call */
                 String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
@@ -661,18 +661,32 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             if (mainObject.getString("success").equals("0")) {
 
                                 MainActivity.getInstance().endTracking();
-                                Toast.makeText(getActivity(), "Route erfolgreich auf dem Server gespeichert",
+                                Toast.makeText(getActivity(), "Route erfolgreich auf dem Server gespeichert.",
                                         Toast.LENGTH_LONG).show();
 
                                 /* save in DB*/
-                                recordDAO=new RouteDAO(MainActivity.getInstance());
-                                recordDAO.create(m);
+                                recordDAO = new RouteDAO(MainActivity.getInstance());
 
-                                /*remove from temp*/
-                                recordTempDAO.delete(model);
+                                if (mainObject.getJSONArray("record") != null) {
+                                    JSONObject recordJSON = mainObject.getJSONObject("record");
 
+                                    Route record = new Route();
+                                    record.setId(recordJSON.getInt("id"));
+                                    record.setName(recordJSON.getString("name"));
+                                    record.setTime(recordJSON.getLong("time"));
+                                    record.setDate(recordJSON.getLong("date"));
+                                    record.setType(recordJSON.getInt("type"));
+                                    record.setRideTime(recordJSON.getInt("ridetime"));
+                                    record.setDistance(recordJSON.getDouble("distance"));
+                                    record.setTimeStamp(recordJSON.getLong("timestamp"));
+                                    record.setTemp(false);
+                                    record.setLocations(recordJSON.getString("locations"));
+                                    recordDAO.create(record);
+
+                                    /*remove from temp*/
+                                    recordTempDAO.delete(record);
+                                }
                             }
-
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
