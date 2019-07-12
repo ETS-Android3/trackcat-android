@@ -64,6 +64,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
@@ -75,6 +77,7 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -181,6 +184,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      * */
     private RecordTempDAO recordTempDAO;
     private LocationTempDAO locationTempDAO;
+    private RouteDAO recordDAO;
 
 
     @Override
@@ -611,7 +615,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
              /*   RouteDAO dao = new RouteDAO(MainActivity.getInstance());
                 dao.create(model);*/
 
-             recordTempDAO.update(newRecordId, model);
+                recordTempDAO.update(newRecordId, model);
 
                 /* send route full to server */
 
@@ -623,7 +627,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 APIClient apiInterface = retrofit.create(APIClient.class);
                 String base = currentUser.getMail() + ":" + currentUser.getPassword();
 
-                RecordModelForServer m= new RecordModelForServer();
+                Route m = new Route();
                 m.setId(model.getId());
                 m.setUserID(MainActivity.getActiveUser());
                 m.setName(model.getName());
@@ -633,7 +637,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 m.setRideTime(model.getRideTime());
                 m.setDistance(model.getDistance());
                 m.setTimeStamp(model.getTimeStamp());
-                m.setLocations(locationTempDAO.readAll(newRecordId));
+                JSONArray locations= new JSONArray(locationTempDAO.readAll(newRecordId));
+                m.setLocations(locations.toString());
 
                 /* start a call */
                 String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
@@ -643,15 +648,41 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        Log.v("testLog", "hi");
-                        MainActivity.getInstance().endTracking();
-                        Toast.makeText(getActivity(), "Success Connection",
-                                Toast.LENGTH_LONG).show();
+
+                        /* get jsonString from API */
+                        String jsonString = null;
+
+                        try {
+                            jsonString = response.body().string();
+
+                            /* parse json */
+                            JSONObject mainObject = new JSONObject(jsonString);
+
+                            if (mainObject.getString("success").equals("0")) {
+
+                                MainActivity.getInstance().endTracking();
+                                Toast.makeText(getActivity(), "Route erfolgreich auf dem Server gespeichert",
+                                        Toast.LENGTH_LONG).show();
+
+                                /* save in DB*/
+                                recordDAO=new RouteDAO(MainActivity.getInstance());
+                                recordDAO.create(m);
+
+                                /*remove from temp*/
+                                recordTempDAO.delete(model);
+
+                            }
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.v("testLog", "Message:"+t.getMessage());
+                        Log.v("testLog", "Message:" + t.getMessage());
                         call.cancel();
                         MainActivity.getInstance().endTracking();
                         Toast.makeText(getActivity(), "Error Connection",
