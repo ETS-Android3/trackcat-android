@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.trackcat.CustomElements.CustomLocation;
+import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 
 import static de.trackcat.Database.DAO.DbContract.RecordTempEntry.COL_DATE;
@@ -315,6 +316,11 @@ public class RecordTempDAO {
         String selection = COL_ID + " LIKE ?";
         String[] selectionArgs = {String.valueOf(id)};
         try {
+            /*delete locations*/
+            LocationDAO locationDAO = new LocationDAO(context);
+            for (Location location : locationDAO.readAll(id)) {
+                locationDAO.delete(location.getId());
+            }
             dbHelper.getWritableDatabase().delete(TABLE_NAME, selection, selectionArgs);
         } finally {
             dbHelper.close();
