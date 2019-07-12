@@ -89,6 +89,7 @@ public class RouteDAO {
         values.put(COL_TIMESTAMP, route.getTimeStamp());
         values.put(COL_ISIMPORTED, route.isImportedDB());
         values.put(COL_ISTEMP, route.isTempDB());
+        values.put(COL_LOCATIONS, route.getLocations());
 
         return values;
     }
@@ -116,7 +117,8 @@ public class RouteDAO {
                     COL_DISTANCE,
                     COL_TIMESTAMP,
                     COL_ISIMPORTED,
-                    COL_ISTEMP};
+                    COL_ISTEMP,
+                    COL_LOCATIONS};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
@@ -137,6 +139,7 @@ public class RouteDAO {
                     result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
                     result.setImportedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)));
                     result.setTempDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP)));
+                    result.setLocations(cursor.getString(cursor.getColumnIndexOrThrow(COL_LOCATIONS)));
                 }
             }
         } finally {
@@ -180,7 +183,8 @@ public class RouteDAO {
                     COL_DISTANCE,
                     COL_TIMESTAMP,
                     COL_ISIMPORTED,
-                    COL_ISTEMP};
+                    COL_ISTEMP,
+            COL_LOCATIONS};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
@@ -202,7 +206,8 @@ public class RouteDAO {
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP))));
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP)),
+                                cursor.getString(cursor.getColumnIndexOrThrow(COL_LOCATIONS))));
 
                     } while (cursor.moveToNext());
             }
@@ -260,7 +265,8 @@ public class RouteDAO {
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP))));
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP)),
+                                    cursor.getString(cursor.getColumnIndexOrThrow(COL_LOCATIONS))));
 
                         }
                     } while (cursor.moveToNext());
