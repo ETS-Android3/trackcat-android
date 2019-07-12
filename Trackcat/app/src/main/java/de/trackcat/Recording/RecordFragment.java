@@ -667,7 +667,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                 /* save in DB*/
                                 recordDAO = new RouteDAO(MainActivity.getInstance());
 
-                                if (mainObject.getJSONArray("record") != null) {
+                                if (mainObject.getJSONObject("record") != null) {
                                     JSONObject recordJSON = mainObject.getJSONObject("record");
 
                                     Route record = new Route();
