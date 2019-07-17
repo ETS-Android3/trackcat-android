@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,6 +18,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 
 import de.trackcat.MainActivity;
@@ -52,6 +54,17 @@ public class Locator extends Service {
          * initialize locationListener
          * */
         locationManager = (LocationManager) MainActivity.getInstance().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.addNmeaListener(mNmeaListener);
 
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
@@ -77,6 +90,49 @@ public class Locator extends Service {
 
         /* start locating */
         startTracking();
+    }
+
+    private GpsStatus.NmeaListener mNmeaListener = new GpsStatus.NmeaListener() {
+        @Override
+        public void onNmeaReceived(long timestamp, String nmea) {
+            parseNmeaString(nmea);
+        }
+    };
+
+    private void parseNmeaString(String line) {
+        if (line.startsWith("$")) {
+            String[] tokens = line.split(",");
+            String type = tokens[0];
+
+            // Parse altitude above sea level, Detailed description of NMEA string here http://aprs.gids.nl/nmea/#gga
+            if (type.startsWith("$GPGGA")) {
+                double lat=0;
+                double lon=0;
+                double altitude=0;
+                double h=0;
+                double geoId=0;
+                double H=0;
+                if (!tokens[2].isEmpty()) {
+                    lat = Double.parseDouble(tokens[2]);
+                }
+                if (!tokens[4].isEmpty()) {
+                    lon = Double.parseDouble(tokens[4]);
+                }
+
+                if (!tokens[9].isEmpty()) {
+                    altitude = Double.parseDouble(tokens[9]);
+                }
+
+                if (!tokens[11].isEmpty()) {
+                    geoId = Double.parseDouble(tokens[11]);
+                }
+
+              //  altitude=h-geoId;
+
+
+                Log.d("TESTFÜRALTITUDE", "Lat: "+lat+" Lon: "+lon+" Altitude: "+altitude);
+            }
+        }
     }
 
     /*

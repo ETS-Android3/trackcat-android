@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import de.trackcat.FriendsSystem.Tabs.FindFriendsFragment;
+import de.trackcat.FriendsSystem.Tabs.FriendsFragment;
+import de.trackcat.FriendsSystem.Tabs.SharingFriendsFragment;
 import de.trackcat.R;
 
 public class FriendsViewerFragment extends Fragment {

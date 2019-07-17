@@ -1,6 +1,5 @@
 package de.trackcat.Profile;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -40,7 +39,7 @@ import retrofit2.Retrofit;
 public class ProfileFragment extends Fragment {
 
     /* variables */
-    TextView name, email, dayOfBirth, gender, weight, size, bmi, lastLogIn, dayOfRegistration;
+    TextView name, email, dayOfBirth, gender, weight, size, bmi, lastLogIn, dayOfRegistration, amountRecords, amountTime, amountDistance;
     CircleImageView image, state;
     ImageView birthday, user_gender_image;
     RelativeLayout loadProfile;
@@ -72,6 +71,9 @@ public class ProfileFragment extends Fragment {
         size = view.findViewById(R.id.user_size);
         bmi = view.findViewById(R.id.user_bmi);
         state = view.findViewById(R.id.profile_state);
+        amountRecords = view.findViewById(R.id.user_amount_records);
+        amountTime = view.findViewById(R.id.user_amount_time_records);
+        amountDistance = view.findViewById(R.id.user_amount_distance_records);
         lastLogIn = view.findViewById(R.id.user_lastLogIn);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
         image = view.findViewById(R.id.profile_image);

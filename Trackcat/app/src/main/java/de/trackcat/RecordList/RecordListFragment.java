@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
@@ -47,7 +48,15 @@ public class RecordListFragment extends Fragment {
 
         /* Routen Aufzeichnungen von Datenbank abfragen */
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-        records = dao.readAll(MainActivity.getActiveUser());
+        records = dao.readAll();
+
+        /* get temp routes and add to list*/
+        RecordTempDAO tempDAO = new RecordTempDAO(MainActivity.getInstance());
+        List<Route> tempRecords =tempDAO.readAll();
+
+        for (Route route : tempRecords) {
+            records.add(route);
+        }
 
         /* Elemente aus View holen und Adapter definieren */
         recyclerView = view.findViewById(R.id.recycler_view);
