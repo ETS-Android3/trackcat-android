@@ -131,7 +131,8 @@ public class RecordListFragment extends Fragment {
             @Override
             public void onRefresh() {
                 mAdapter.clear();
-                MainActivity.getInstance().loadRecordList();
+                MainActivity.getInstance().synchronizeRecords();
+              //  MainActivity.getInstance().loadRecordList();
                 swipeContainer.setRefreshing(false);
             }
         });

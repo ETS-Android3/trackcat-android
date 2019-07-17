@@ -1,5 +1,6 @@
 package de.trackcat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.trackcat.CustomElements.RecordModelForServer;
@@ -48,7 +49,11 @@ public interface APIClient {
     Call<ResponseBody> uploadFullTrack(@Header("Authorization") String authHeader, @Body RecordModelForServer track);
 
     @Headers({"Accept: application/json"})
+    @POST("/synchronizeRecordsAPI")
+    Call<ResponseBody> synchronizeRecords(@Header("Authorization") String authHeader, @Body ArrayList<HashMap<String, String>>  json);
+
+    @Headers({"Accept: application/json"})
     @POST("/editRecordAPI")
-    Call<ResponseBody> updateRecordName(@Header("Authorization") String authHeader, @Body HashMap<String,String> json);
+    Call<ResponseBody> updateRecordName(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
 
 }

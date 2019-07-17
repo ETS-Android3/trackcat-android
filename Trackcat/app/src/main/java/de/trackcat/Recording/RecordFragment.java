@@ -331,17 +331,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
          * */
         startMarker = new Marker(mMapView);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_maps_location_flag));
-
-            InputStream imageStream = this.getResources().openRawResource(R.raw.logo_marker_small);
-            Drawable d = Drawable.createFromStream(imageStream, "logo_marker");
-
-            startMarker.setIcon(d);
-
+            startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_logo_marker));
         }
+
         mPath = new Polyline(mMapView);
-
-
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
 
@@ -661,7 +654,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             if (mainObject.getString("success").equals("0")) {
 
                                 MainActivity.getInstance().endTracking();
-                                Toast.makeText(getActivity(), "Route erfolgreich auf dem Server gespeichert.",
+                                Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOnServer),
                                         Toast.LENGTH_LONG).show();
 
                                 /* save in DB*/
@@ -696,10 +689,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.v("testLog", "Message:" + t.getMessage());
                         call.cancel();
                         MainActivity.getInstance().endTracking();
-                        Toast.makeText(getActivity(), "Error Connection",
+                        Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
                                 Toast.LENGTH_LONG).show();
 
                     }

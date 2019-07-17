@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,11 +37,17 @@ import android.widget.Toast;
 
 import com.karan.churi.PermissionManager.PermissionManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.trackcat.CustomElements.RecordModelForServer;
 import de.trackcat.Dashboard.DashboardFragment;
+import de.trackcat.Database.DAO.LocationTempDAO;
+import de.trackcat.Database.DAO.RecordTempDAO;
+import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.FriendsSystem.FriendsViewerFragment;
 import de.trackcat.Profile.DeleteAccountFragment;
@@ -48,6 +55,7 @@ import de.trackcat.Profile.EditPasswordFragment;
 import de.trackcat.Profile.ProfileFragment;
 import de.trackcat.Profile.EditProfileFragment;
 import de.trackcat.RecordList.RecordListFragment;
+import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
 import de.trackcat.Recording.Locator;
 import de.trackcat.Recording.RecordFragment;
 import de.trackcat.Settings.SettingsFragment;
@@ -58,6 +66,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -493,9 +502,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadRecordList();
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
             loadProfile(false);
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null ||getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
             loadFriendSystem();
-        }else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+        } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
             if (exitApp) {
@@ -667,11 +676,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_editPassword));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_friendSystem));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_deleteAccount));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_friends_profile));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_friends_live_view));
                     }
                     alert.setNegativeButton("Schließen", null);
@@ -701,6 +710,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             User currentUser = userDAO.read(activeUser);
             synchronizeUser(currentUser);
+            synchronizeOfflineRoutes(currentUser);
         }
     }
 
@@ -832,12 +842,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 //TODO
                                             } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
                                                 loadFriendSystem();
-                                            }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
                                                 loadDeleteAccount();
                                             }
-                                        }else if(type==3){
+                                        } else if (type == 3) {
                                             loadDeleteAccount();
-                                        }else if(type==4){
+                                        } else if (type == 4) {
                                             loadRecordList();
                                         }
                                     }
@@ -1020,6 +1030,196 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 } catch (Exception e) {
                     Log.d(getResources().getString(R.string.app_name) + "-SynchroniseData", "Server Error: " + response.raw().message());
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                call.cancel();
+            }
+        });
+    }
+
+    private void synchronizeOfflineRoutes(User currentUser) {
+        /* send user timestamp to bb */
+        HashMap<String, String> map = new HashMap<>();
+        map.put("email", currentUser.getMail());
+        map.put("timeStamp", "" + currentUser.getTimeStamp());
+
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+
+        /* start a call */
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+        /* get all temp routes */
+        RecordTempDAO recordTempDAO = new RecordTempDAO(this);
+        List<Route> recordList = recordTempDAO.readAll();
+        LocationTempDAO locationTempDAO = new LocationTempDAO((this));
+        RouteDAO recordDAO = new RouteDAO(this);
+
+        for (int i = 0; i < recordList.size(); i++) {
+            RecordModelForServer m = new RecordModelForServer();
+            m.setId(recordList.get(i).getId());
+            m.setUserID(MainActivity.getActiveUser());
+            m.setName(recordList.get(i).getName());
+            m.setType(recordList.get(i).getType());
+            m.setTime(recordList.get(i).getTime());
+            m.setDate(recordList.get(i).getDate());
+            m.setRideTime(recordList.get(i).getRideTime());
+            m.setDistance(recordList.get(i).getDistance());
+            m.setTimeStamp(recordList.get(i).getTimeStamp());
+            m.setLocations(locationTempDAO.readAll(recordList.get(i).getId()));
+
+
+            Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, m);
+
+            call.enqueue(new Callback<ResponseBody>() {
+
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                    /* get jsonString from API */
+                    String jsonString = null;
+
+                    try {
+                        jsonString = response.body().string();
+
+                        /* parse json */
+                        JSONObject mainObject = new JSONObject(jsonString);
+
+                        if (mainObject.getString("success").equals("0")) {
+
+                            /* save in DB*/
+                            if (mainObject.getJSONObject("record") != null) {
+                                JSONObject recordJSON = mainObject.getJSONObject("record");
+
+                                Route record = new Route();
+                                record.setId(recordJSON.getInt("id"));
+                                record.setName(recordJSON.getString("name"));
+                                record.setTime(recordJSON.getLong("time"));
+                                record.setDate(recordJSON.getLong("date"));
+                                record.setType(recordJSON.getInt("type"));
+                                record.setRideTime(recordJSON.getInt("ridetime"));
+                                record.setDistance(recordJSON.getDouble("distance"));
+                                record.setTimeStamp(recordJSON.getLong("timestamp"));
+                                record.setTemp(false);
+                                record.setLocations(recordJSON.getString("locations"));
+                                recordDAO.create(record);
+
+                                /*remove from temp*/
+                                recordTempDAO.delete(record);
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    call.cancel();
+                }
+            });
+        }
+    }
+
+    public void synchronizeRecords() {
+
+        /* get all records routes */
+        RecordTempDAO recordTempDAO = new RecordTempDAO(this);
+        RouteDAO recordDAO = new RouteDAO(this);
+        List<Route> records = recordDAO.readAll();
+        List<Route> tempRecords = recordTempDAO.readAll();
+
+        for (Route route : tempRecords) {
+            records.add(route);
+        }
+
+        /* add maps to result */
+        ArrayList<HashMap<String, String>> result = new ArrayList<>();
+        for (int i = 0; i < records.size(); i++) {
+
+            HashMap<String, String> map = new HashMap<>();
+            map.put("id", "" + records.get(i).getId());
+            map.put("timeStamp", "" + records.get(i).getTimeStamp());
+            map.put("name", "" + records.get(i).getName());
+            result.add(map);
+        }
+
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+
+        /* start a call */
+        User currentUser = userDAO.read(activeUser);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+        Call<ResponseBody> call = apiInterface.synchronizeRecords(authString, result);
+
+        call.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                /* get jsonString from API */
+                String jsonString = null;
+
+                try {
+                    jsonString = response.body().string();
+
+                    /* parse json */
+                    JSONObject mainObject = new JSONObject(jsonString);
+
+                    /* update records in local db */
+                    if (mainObject.getJSONArray("newerOnServer") != null && mainObject.getJSONArray("newerOnServer").length() > 0) {
+
+                        for (int i = 0; i < mainObject.getJSONArray("newerOnServer").length(); i++) {
+                            JSONArray newRecords = mainObject.getJSONArray("newerOnServer");
+                            int recordId = ((JSONObject) newRecords.get(i)).getInt("id");
+                            String name = ((JSONObject) newRecords.get(i)).getString("name");
+
+                            Route newRecord = recordDAO.read(recordId);
+                            newRecord.setName(name);
+                            newRecord.setTimeStamp(((JSONObject) newRecords.get(i)).getLong("timeStamp"));
+                            recordDAO.update(recordId, newRecord);
+                        }
+                    }
+                    /* save records from server ind db */
+                    if (mainObject.getJSONArray("onServer") != null && mainObject.getJSONArray("onServer").length() > 0) {
+
+                        JSONArray recordsArray = mainObject.getJSONArray("onServer");
+                        for (int i = 0; i < recordsArray.length(); i++) {
+                            Route record = new Route();
+                            record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
+                            record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
+                            record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
+                            record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
+                            record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
+                            record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
+                            record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
+                            record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
+                            record.setTemp(false);
+                            record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
+                            recordDAO.create(record);
+                        }
+                    }
+                    /* send records to server */
+                    if (mainObject.getJSONArray("missingId") != null && mainObject.getJSONArray("missingId").length() > 0) {
+                        Toast.makeText(MainActivity.getInstance(), "!!!!!!ES KOMMT VOR!!!!",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                    /*load view*/
+                    loadRecordList();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
