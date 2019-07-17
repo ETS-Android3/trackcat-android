@@ -63,6 +63,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -1122,5 +1123,76 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
         }
+    }
+
+    public void synchronizeRecords() {
+
+        /* get all temp routes */
+        RecordTempDAO recordTempDAO = new RecordTempDAO(this);
+        RouteDAO recordDAO= new RouteDAO(this);
+        List<Route> records = recordDAO.readAll();
+
+        List<Route> tempRecords = recordTempDAO.readAll();
+
+        for (Route route : tempRecords) {
+            records.add(route);
+        }
+
+        /* add maps to result */
+        ArrayList<HashMap<String,String>> result = new ArrayList<>();
+        for (int i = 0; i < records.size(); i++) {
+
+            HashMap<String, String> map = new HashMap<>();
+            map.put("id", "" + records.get(i).getId());
+            map.put("timeStamp", "" +records.get(i).getTimeStamp());
+            map.put("name", "" + records.get(i).getName());
+            result.add(map);
+        }
+
+
+
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+
+        /* start a call */
+        User currentUser = userDAO.read(activeUser);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+        Call<ResponseBody> call = apiInterface.synchronizeRecords(authString, result);
+
+        call.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                /* get jsonString from API */
+                String jsonString = null;
+
+                try {
+                    jsonString = response.body().string();
+
+                    /* parse json */
+                    JSONObject mainObject = new JSONObject(jsonString);
+
+                    if (mainObject.getString("success").equals("0")) {
+
+                        /* save in DB*/
+                        if (mainObject.getJSONObject("record") != null) {
+
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                call.cancel();
+            }
+        });
     }
 }

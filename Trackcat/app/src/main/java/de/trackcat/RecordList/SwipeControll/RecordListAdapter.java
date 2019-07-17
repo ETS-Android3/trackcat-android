@@ -7,7 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
+
+import de.trackcat.Database.DAO.RecordTempDAO;
+import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -69,6 +74,23 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
     /* SwipeRefresh - alle Einträge entfernen */
     public void clear() {
         records.clear();
+
+        MainActivity.getInstance().synchronizeRecords();
+
+        /* Routen Aufzeichnungen von Datenbank abfragen */
+        RouteDAO dao = new RouteDAO(MainActivity.getInstance());
+        records = dao.readAll();
+
+        /* get temp routes and add to list*/
+        RecordTempDAO tempDAO = new RecordTempDAO(MainActivity.getInstance());
+        List<Route> tempRecords =tempDAO.readAll();
+
+        for (Route route : tempRecords) {
+            records.add(route);
+        }
+
+        Toast.makeText(MainActivity.getInstance(), "REFRESH",
+                Toast.LENGTH_LONG).show();
         notifyDataSetChanged();
     }
 }
