@@ -17,14 +17,10 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
-import de.trackcat.Database.DAO.LocationDAO;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
-import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.GlobalFunctions;

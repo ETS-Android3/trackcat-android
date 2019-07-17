@@ -317,7 +317,7 @@ public class RecordTempDAO {
         String[] selectionArgs = {String.valueOf(id)};
         try {
             /*delete locations*/
-            LocationDAO locationDAO = new LocationDAO(context);
+            LocationTempDAO locationDAO = new LocationTempDAO(context);
             for (Location location : locationDAO.readAll(id)) {
                 locationDAO.delete(location.getId());
             }

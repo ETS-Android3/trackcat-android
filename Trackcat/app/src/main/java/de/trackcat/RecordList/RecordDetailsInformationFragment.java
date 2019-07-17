@@ -44,8 +44,6 @@ import java.util.TimeZone;
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
 import de.trackcat.BuildConfig;
-import de.trackcat.CustomElements.CustomLocation;
-import de.trackcat.Database.DAO.LocationDAO;
 import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;

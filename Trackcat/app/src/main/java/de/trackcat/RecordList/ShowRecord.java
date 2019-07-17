@@ -2,7 +2,6 @@ package de.trackcat.RecordList;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,20 +15,16 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import de.trackcat.CustomElements.CustomLocation;
-import de.trackcat.Database.DAO.LocationDAO;
 import de.trackcat.Database.DAO.LocationTempDAO;
 import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
-import de.trackcat.StartActivity;
 import de.trackcat.Statistics.SpeedAverager;
 
 public class ShowRecord {
