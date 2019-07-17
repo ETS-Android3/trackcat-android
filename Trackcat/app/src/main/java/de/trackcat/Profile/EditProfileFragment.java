@@ -367,8 +367,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     String base = currentUser.getMail() + ":" + currentUser.getPassword();
                     String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
-                    map.put("email", currentUser.getMail());
-
                     if (imageChanged) {
                         String image = GlobalFunctions.getBase64FromBytes(imageBytes);
                         currentUser.setImage(imageBytes);
