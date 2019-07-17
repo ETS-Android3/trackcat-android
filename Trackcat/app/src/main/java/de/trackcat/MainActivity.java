@@ -1058,7 +1058,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         RecordTempDAO recordTempDAO = new RecordTempDAO(this);
         List<Route> recordList = recordTempDAO.readAll();
         LocationTempDAO locationTempDAO = new LocationTempDAO((this));
-        RouteDAO recordDAO= new RouteDAO(this);
+        RouteDAO recordDAO = new RouteDAO(this);
 
         for (int i = 0; i < recordList.size(); i++) {
             RecordModelForServer m = new RecordModelForServer();
@@ -1128,13 +1128,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void synchronizeRecords(RecordListAdapter adapter) {
+    public void synchronizeRecords() {
 
-        /* get all temp routes */
+        /* get all records routes */
         RecordTempDAO recordTempDAO = new RecordTempDAO(this);
-        RouteDAO recordDAO= new RouteDAO(this);
+        RouteDAO recordDAO = new RouteDAO(this);
         List<Route> records = recordDAO.readAll();
-
         List<Route> tempRecords = recordTempDAO.readAll();
 
         for (Route route : tempRecords) {
@@ -1142,17 +1141,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         /* add maps to result */
-        ArrayList<HashMap<String,String>> result = new ArrayList<>();
+        ArrayList<HashMap<String, String>> result = new ArrayList<>();
         for (int i = 0; i < records.size(); i++) {
 
             HashMap<String, String> map = new HashMap<>();
             map.put("id", "" + records.get(i).getId());
-            map.put("timeStamp", "" +records.get(i).getTimeStamp());
+            map.put("timeStamp", "" + records.get(i).getTimeStamp());
             map.put("name", "" + records.get(i).getName());
             result.add(map);
         }
-
-
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
@@ -1178,50 +1175,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     /* parse json */
                     JSONObject mainObject = new JSONObject(jsonString);
 
+                    /* update records in local db */
+                    if (mainObject.getJSONArray("newerOnServer") != null && mainObject.getJSONArray("newerOnServer").length() > 0) {
 
+                        for (int i = 0; i < mainObject.getJSONArray("newerOnServer").length(); i++) {
+                            JSONArray newRecords = mainObject.getJSONArray("newerOnServer");
+                            int recordId = ((JSONObject) newRecords.get(i)).getInt("id");
+                            String name = ((JSONObject) newRecords.get(i)).getString("name");
 
-                        /* update records in local db*/
-                        if (mainObject.getJSONArray("newerOnServer") != null) {
-
-                            for (int i = 0; i < mainObject.getJSONArray("newerOnServer").length(); i++) {
-                                JSONArray newRecords=mainObject.getJSONArray("newerOnServer");
-                                int recordId=((JSONObject) newRecords.get(i)).getInt("id");
-                                String name = ((JSONObject) newRecords.get(i)).getString("name");
-
-                                Route newRecord= recordDAO.read(recordId);
-                                newRecord.setName(name);
-                                newRecord.setTimeStamp(((JSONObject) newRecords.get(i)).getLong("timeStamp"));
-                                recordDAO.update(recordId, newRecord);
-                            }
-
-                            /* save records from server ind db */
+                            Route newRecord = recordDAO.read(recordId);
+                            newRecord.setName(name);
+                            newRecord.setTimeStamp(((JSONObject) newRecords.get(i)).getLong("timeStamp"));
+                            recordDAO.update(recordId, newRecord);
                         }
-                        if(mainObject.getJSONArray("onServer") != null){
+                    }
+                    /* save records from server ind db */
+                    if (mainObject.getJSONArray("onServer") != null && mainObject.getJSONArray("onServer").length() > 0) {
 
-                            JSONArray recordsArray = mainObject.getJSONArray("onServer");
-                            for (int i = 0; i < recordsArray.length(); i++) {
-                                Route record = new Route();
-                                record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
-                                record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
-                                record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
-                                record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
-                                record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
-                                record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
-                                record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
-                                record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
-                                record.setTemp(false);
-                                record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
-                                recordDAO.create(record);
-                            }
-
-                            /* send records to server */
+                        JSONArray recordsArray = mainObject.getJSONArray("onServer");
+                        for (int i = 0; i < recordsArray.length(); i++) {
+                            Route record = new Route();
+                            record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
+                            record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
+                            record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
+                            record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
+                            record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
+                            record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
+                            record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
+                            record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
+                            record.setTemp(false);
+                            record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
+                            recordDAO.create(record);
                         }
-                        if(mainObject.getJSONArray("missingId") != null){
-                            Toast.makeText(MainActivity.getInstance(), "!!!!!!ES KOMMT VOR!!!!",
-                                    Toast.LENGTH_LONG).show();
-                        }
+                    }
+                    /* send records to server */
+                    if (mainObject.getJSONArray("missingId") != null && mainObject.getJSONArray("missingId").length() > 0) {
+                        Toast.makeText(MainActivity.getInstance(), "!!!!!!ES KOMMT VOR!!!!",
+                                Toast.LENGTH_LONG).show();
+                    }
 
-                    adapter.notifyDataSetChanged();
+                    /*load view*/
+                    loadRecordList();
 
                 } catch (IOException e) {
                     e.printStackTrace();

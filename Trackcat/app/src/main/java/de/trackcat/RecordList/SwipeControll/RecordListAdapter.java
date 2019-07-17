@@ -74,9 +74,8 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
     /* SwipeRefresh - alle Einträge entfernen */
     public void clear() {
         records.clear();
-
         /* synchronize records */
-        MainActivity.getInstance().synchronizeRecords(this);
+
 
         /* get routes from db
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
@@ -92,6 +91,15 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 */
         Toast.makeText(MainActivity.getInstance(), "REFRESH",
                 Toast.LENGTH_LONG).show();
-      //  notifyDataSetChanged();
+        notifyDataSetChanged();
+      //
+    }
+
+    public void updateList(List<Route> cartList){
+
+       // this.records = cartList;
+
+        Toast.makeText(MainActivity.getInstance(), "UPDATE",
+                Toast.LENGTH_LONG).show();
     }
 }
