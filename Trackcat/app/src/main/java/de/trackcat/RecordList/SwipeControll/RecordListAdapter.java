@@ -74,32 +74,6 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
     /* SwipeRefresh - alle Einträge entfernen */
     public void clear() {
         records.clear();
-        /* synchronize records */
-
-
-        /* get routes from db
-        RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-        records = dao.readAll();
-
-        /* get temp routes and add to list
-        RecordTempDAO tempDAO = new RecordTempDAO(MainActivity.getInstance());
-        List<Route> tempRecords =tempDAO.readAll();
-
-        for (Route route : tempRecords) {
-            records.add(route);
-        }
-*/
-        Toast.makeText(MainActivity.getInstance(), "REFRESH",
-                Toast.LENGTH_LONG).show();
         notifyDataSetChanged();
-      //
-    }
-
-    public void updateList(List<Route> cartList){
-
-       // this.records = cartList;
-
-        Toast.makeText(MainActivity.getInstance(), "UPDATE",
-                Toast.LENGTH_LONG).show();
     }
 }

@@ -90,8 +90,7 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
         /* ActionHandler */
         switch (v.getId()) {
             case R.id.show_more_records:
-                fragTransaction.replace(R.id.mainFrame, new RecordListFragment(), getResources().getString(R.string.fRecordlist));
-                fragTransaction.commit();
+                MainActivity.getInstance().synchronizeRecords();
 
                 /* Aktuell ausgewählten Menüpunkt markieren */
                 menu.findItem(R.id.nav_recordlist).setChecked(true);
