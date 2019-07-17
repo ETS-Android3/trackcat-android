@@ -472,8 +472,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void startTracking() {
-        recordFragment.startTracking();
         startActivity(getIntent());
+        recordFragment.startTracking();
         try {
             loadRecord();
         } catch (RuntimeException e) {
