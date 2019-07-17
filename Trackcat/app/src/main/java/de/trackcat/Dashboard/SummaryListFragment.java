@@ -46,10 +46,22 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
 
         List<Route> mList = new ArrayList<>();
         mList.clear();
-        for (int i = records.size()-1; i > (records.size()-1-getResources().getInteger(R.integer.summaryRecordListAmount)); i--) {
-            mList.add(records.get(i));
-        }
 
+        /* add Elements to List */
+        if (!records.isEmpty() && records.size() > getResources().getInteger(R.integer.summaryRecordListAmount)) {
+
+            for (int i = records.size() - 1; i > (records.size() - 1 - getResources().getInteger(R.integer.summaryRecordListAmount)); i--) {
+                mList.add(records.get(i));
+            }
+        } else {
+            if (records.size() == 2) {
+                mList.add(records.get(1));
+                mList.add(records.get(0));
+            }
+            if (records.size() == 1) {
+                mList.add(records.get(0));
+            }
+        }
         CustomRecordListAdapter adapter = new CustomRecordListAdapter(MainActivity.getInstance(), mList);
         ListView recordList = view.findViewById(R.id.record_list);
         recordList.setAdapter(adapter);

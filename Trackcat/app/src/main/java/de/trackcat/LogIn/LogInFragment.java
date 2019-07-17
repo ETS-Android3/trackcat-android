@@ -17,14 +17,10 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
-import de.trackcat.Database.DAO.LocationDAO;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
-import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.GlobalFunctions;
@@ -210,24 +206,30 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
 
                                 /* set routes */
-                                JSONArray recordsArray = mainObject.getJSONArray("records");
-                                RouteDAO recordDao=new RouteDAO(StartActivity.getInstance());
-                                for ( int i=0;i< recordsArray.length();i++) {
-                                    Route record= new Route();
-                                    record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
-                                    record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
-                                    record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
-                                    record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
-                                    record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
-                                    record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
-                                    record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
-                                    record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
-                                    record.setTemp(false);
-                                    recordDao.create(record);
+
+                                if(mainObject.getJSONArray("records")!=null) {
+                                    JSONArray recordsArray = mainObject.getJSONArray("records");
+                                    Log.d("TEST", "" + recordsArray);
+                                    RouteDAO recordDao = new RouteDAO(StartActivity.getInstance());
+                                    for (int i = 0; i < recordsArray.length(); i++) {
+                                        Route record = new Route();
+                                        record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
+                                        record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
+                                        record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
+                                        record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
+                                        record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
+                                        record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
+                                        record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
+                                        record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
+                                        record.setTemp(false);
+                                        record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
+                                        recordDao.create(record);
+                                    }
                                 }
 
-                                /* set routes */
+                                /* set locations
                                 JSONArray locationArray = mainObject.getJSONArray("locations");
+                                Log.d("TEST", ""+locationArray);
                                 LocationDAO locationDao=new LocationDAO(StartActivity.getInstance());
                                 for ( int i=0;i< locationArray.length();i++) {
                                     Location location= new Location();
@@ -239,7 +241,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                     location.setSpeed((float)((JSONObject) locationArray.get(i)).getDouble("speed"));
                                     locationDao.create(location);
                                 }
-
+*/
                                 /* open MainActivity */
                                 Intent intent = new Intent(getContext(), MainActivity.class);
                                 startActivity(intent);

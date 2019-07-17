@@ -1,5 +1,7 @@
 package de.trackcat.Database.Models;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import de.trackcat.CustomElements.CustomLocation;
@@ -23,10 +25,42 @@ public class Route {
     private boolean isImported;
     private double distance;
     private boolean isTemp;
+    private String locations;
     /**
      * Empty constructor, modifications via getter and setter
      */
     public Route() {
+    }
+
+    /**
+     * Constructor to save route information from database read.
+     *
+     * @param id        of type integer
+     * @param userId    of type integer
+     * @param name      of type string
+     * @param time      of type long
+     * @param rideTime  of type long
+     * @param distance  of type double
+     * @param type  of type int
+     * @param date  of type long
+     * @param timeStamp  of type long
+     * @param isTemp  of type int
+     * @param locations  of type string
+     */
+    public Route(int id, int userId, String name, long time, long rideTime, double distance,
+                 int type, long date, long timeStamp,int isImported, int isTemp, String locations) {
+        this.id = id;
+        this.userId = userId;
+        this.name = name;
+        this.time = time;
+        this.rideTime = rideTime;
+        this.distance = distance;
+        this.timeStamp= timeStamp;
+        this.date = date;
+        this.type = type;
+        this.setImportedDB(isImported);
+        this.setTempDB(isTemp);
+        this.locations = locations;
     }
 
     /**
@@ -347,5 +381,23 @@ public class Route {
      */
     public void setTempDB(int isTemp) {
         this.isTemp = isTemp == 1;
+    }
+
+    /**
+     * Getter for the locations of the route.
+     *
+     * @return value of type Text
+     */
+    public String getLocations() {
+        return locations;
+    }
+
+    /**
+     * Setter for the locations of the route.
+     *
+     * @param locations value of type string
+     */
+    public void setLocations(String locations) {
+        this.locations = locations;
     }
 }

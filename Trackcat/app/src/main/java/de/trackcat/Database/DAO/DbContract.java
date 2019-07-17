@@ -43,24 +43,6 @@ final class DbContract {
     static final String SQL_DELETE_ROUTE_TABLE = "DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME;
 
     /*
-    + string to create table where locations where stored in
-    */
-    static final String SQL_CREATE_LOCATION_TABLE =
-            "CREATE TABLE IF NOT EXISTS " + LocationEntry.TABLE_NAME + " ( " +
-                    LocationEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    LocationEntry.COL_LATITUDE + " DOUBLE, " +
-                    LocationEntry.COL_LONGITUDE + " DOUBLE, " +
-                    LocationEntry.COL_ALTITUDE + " DOUBLE, " +
-                    LocationEntry.COL_TIME + " LONG, " +
-                    LocationEntry.COL_SPEED + " FLOAT, " +
-                    LocationEntry.COL_RECORD_ID + " INTEGER)";
-
-    /*
-    + string to delete location table
-    */
-    static final String SQL_DELETE_LOCATION_TABLE = "DROP TABLE IF EXISTS " + LocationEntry.TABLE_NAME;
-
-    /*
      + string to create table where records where temporary stored in
      */
     static final String SQL_CREATE_RECORD_TEMP_TABLE =
@@ -148,21 +130,6 @@ final class DbContract {
         static final String COL_TIMESTAMP = "timestamp";
         static final String COL_ISIMPORTED = "imported";
         static final String COL_ISTEMP = "temp";
-    }
-
-    /*
-    + class to declare columns for route table
-    */
-    static final class LocationEntry implements BaseColumns {
-        private LocationEntry() {}
-        static final String TABLE_NAME = "location_table";
-        static final String COL_ID = "id";
-        static final String COL_LATITUDE = "latitude";
-        static final String COL_LONGITUDE = "longitude";
-        static final String COL_ALTITUDE = "altitude";
-        static final String COL_TIME = "time";
-        static final String COL_SPEED = "speed";
-        static final String COL_RECORD_ID = "fk_record_id";
     }
 
     /*
