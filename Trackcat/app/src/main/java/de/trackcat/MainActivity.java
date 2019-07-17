@@ -39,8 +39,13 @@ import com.karan.churi.PermissionManager.PermissionManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.trackcat.CustomElements.RecordModelForServer;
 import de.trackcat.Dashboard.DashboardFragment;
+import de.trackcat.Database.DAO.LocationTempDAO;
+import de.trackcat.Database.DAO.RecordTempDAO;
+import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.FriendsSystem.FriendsViewerFragment;
 import de.trackcat.Profile.DeleteAccountFragment;
@@ -493,9 +498,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadRecordList();
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
             loadProfile(false);
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null ||getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
             loadFriendSystem();
-        }else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+        } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
             if (exitApp) {
@@ -667,11 +672,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_editPassword));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_friendSystem));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_deleteAccount));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_friends_profile));
-                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
+                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_friends_live_view));
                     }
                     alert.setNegativeButton("Schließen", null);
@@ -701,6 +706,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             User currentUser = userDAO.read(activeUser);
             synchronizeUser(currentUser);
+            synchronizeOfflineRoutes(currentUser);
         }
     }
 
@@ -832,12 +838,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 //TODO
                                             } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
                                                 loadFriendSystem();
-                                            }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
                                                 loadDeleteAccount();
                                             }
-                                        }else if(type==3){
+                                        } else if (type == 3) {
                                             loadDeleteAccount();
-                                        }else if(type==4){
+                                        } else if (type == 4) {
                                             loadRecordList();
                                         }
                                     }
@@ -1029,5 +1035,92 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 call.cancel();
             }
         });
+    }
+
+    private void synchronizeOfflineRoutes(User currentUser) {
+        /* send user timestamp to bb */
+        HashMap<String, String> map = new HashMap<>();
+        map.put("email", currentUser.getMail());
+        map.put("timeStamp", "" + currentUser.getTimeStamp());
+
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+
+        /* start a call */
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+        /* get all temp routes */
+        RecordTempDAO recordTempDAO = new RecordTempDAO(this);
+        List<Route> recordList = recordTempDAO.readAll();
+        LocationTempDAO locationTempDAO = new LocationTempDAO((this));
+        RouteDAO recordDAO= new RouteDAO(this);
+
+        for (int i = 0; i < recordList.size(); i++) {
+            RecordModelForServer m = new RecordModelForServer();
+            m.setId(recordList.get(i).getId());
+            m.setUserID(MainActivity.getActiveUser());
+            m.setName(recordList.get(i).getName());
+            m.setType(recordList.get(i).getType());
+            m.setTime(recordList.get(i).getTime());
+            m.setDate(recordList.get(i).getDate());
+            m.setRideTime(recordList.get(i).getRideTime());
+            m.setDistance(recordList.get(i).getDistance());
+            m.setTimeStamp(recordList.get(i).getTimeStamp());
+            m.setLocations(locationTempDAO.readAll(recordList.get(i).getId()));
+
+
+            Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, m);
+
+            call.enqueue(new Callback<ResponseBody>() {
+
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                    /* get jsonString from API */
+                    String jsonString = null;
+
+                    try {
+                        jsonString = response.body().string();
+
+                        /* parse json */
+                        JSONObject mainObject = new JSONObject(jsonString);
+
+                        if (mainObject.getString("success").equals("0")) {
+
+                            /* save in DB*/
+                            if (mainObject.getJSONObject("record") != null) {
+                                JSONObject recordJSON = mainObject.getJSONObject("record");
+
+                                Route record = new Route();
+                                record.setId(recordJSON.getInt("id"));
+                                record.setName(recordJSON.getString("name"));
+                                record.setTime(recordJSON.getLong("time"));
+                                record.setDate(recordJSON.getLong("date"));
+                                record.setType(recordJSON.getInt("type"));
+                                record.setRideTime(recordJSON.getInt("ridetime"));
+                                record.setDistance(recordJSON.getDouble("distance"));
+                                record.setTimeStamp(recordJSON.getLong("timestamp"));
+                                record.setTemp(false);
+                                record.setLocations(recordJSON.getString("locations"));
+                                recordDAO.create(record);
+
+                                /*remove from temp*/
+                                recordTempDAO.delete(record);
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    call.cancel();
+                }
+            });
+        }
     }
 }
