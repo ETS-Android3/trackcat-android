@@ -102,6 +102,9 @@ final class DbContract {
                     UserEntry.COL_DATEOFBIRTH + " LONG, " +
                     UserEntry.COL_DATEOFREGISTRATION + " LONG, " +
                     UserEntry.COL_LASTLOGIN + " LONG, " +
+                    UserEntry.COL_AMOUNTRECORD + " LONG, " +
+                    UserEntry.COL_TOTALTIME + " LONG, " +
+                    UserEntry.COL_TOTALDISTANCE + " LONG, " +
                     UserEntry.COL_TIMESTAMP + " LONG, " +
                     UserEntry.COL_IDUSERS + " INTEGER, " +
                     UserEntry.COL_ISSYNCHRONIZED + " BOOLEAN, " +
@@ -187,6 +190,9 @@ final class DbContract {
         static final String COL_DATEOFBIRTH ="dateOfBirth";
         static final String COL_DATEOFREGISTRATION ="dateOfRegistration";
         static final String COL_LASTLOGIN ="lastLogin";
+        static final String COL_AMOUNTRECORD ="amountRecord";
+        static final String COL_TOTALTIME ="totalTime";
+        static final String COL_TOTALDISTANCE ="totalDistance";
         static final String COL_TIMESTAMP ="timeStamp";
         static final String COL_IDUSERS ="idUsers";
         static final String COL_ISSYNCHRONIZED ="isSynchronized";

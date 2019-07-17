@@ -22,6 +22,9 @@ public class User {
     private long dateOfBirth;
     private long dateOfRegistration;
     private long lastLogin;
+    private long amountRecord;
+    private long totalTime;
+    private long totalDistance;
     private long timeStamp;
     private int idUsers;
     private boolean isSynchronized;
@@ -53,7 +56,7 @@ public class User {
      */
     public User(int id, String firstName, String lastName, int active, int hintsActive,
                 int themeActive, String eMail, String password ,float weight, float size, int gender, long dateOfBirth,
-                long dateOfRegistration, long lastLogin, long timeStamp, int idUsers, byte[] image, int isSynchronized) {
+                long dateOfRegistration, long lastLogin,  long amountRecord,  long totalTime,  long totalDistance,long timeStamp, int idUsers, byte[] image, int isSynchronized) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -65,6 +68,9 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.dateOfRegistration = dateOfRegistration;
         this.lastLogin = lastLogin;
+        this.amountRecord = amountRecord;
+        this.totalTime = totalTime;
+        this.totalDistance = totalDistance;
         this.timeStamp = timeStamp;
         this.idUsers = idUsers;
         this.image = image;
@@ -344,6 +350,63 @@ public class User {
     public void setLastLogin(long lastLogin) {
         this.lastLogin = lastLogin;
     }
+
+
+    /**
+     * Getter for the amountRecord.
+     *
+     * @return value of type long
+     */
+    public long getAmountRecord() {
+        return amountRecord;
+    }
+
+    /**
+     * Setter for the amountRecord.
+     *
+     * @param amountRecord of type long
+     */
+    public void setAmountRecord(long amountRecord) {
+        this.amountRecord = amountRecord;
+    }
+
+    /**
+     * Getter for the totalTime.
+     *
+     * @return value of type long
+     */
+    public long getTotalTime() {
+        return totalTime;
+    }
+
+    /**
+     * Setter for the totalTime.
+     *
+     * @param totalTime of type long
+     */
+    public void setTotalTime(long totalTime) {
+        this.totalTime = totalTime;
+    }
+
+
+    /**
+     * Getter for the totalDistance.
+     *
+     * @return value of type long
+     */
+    public long getTotalDistance() {
+        return totalDistance;
+    }
+
+    /**
+     * Setter for the totalDistance.
+     *
+     * @param totalDistance of type long
+     */
+    public void setTotalDistance(long totalDistance) {
+        this.totalDistance = totalDistance;
+    }
+
 
     /**
      * Getter for the timeStamp.

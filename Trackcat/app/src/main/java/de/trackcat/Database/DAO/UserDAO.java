@@ -80,6 +80,9 @@ public class UserDAO {
         values.put(COL_DATEOFBIRTH, user.getDateOfBirth());
         values.put(COL_DATEOFREGISTRATION, user.getDateOfRegistration());
         values.put(COL_LASTLOGIN, user.getLastLogin());
+        values.put(COL_AMOUNTRECORD, user.getAmountRecord());
+        values.put(COL_TOTALTIME, user.getTotalTime());
+        values.put(COL_TOTALDISTANCE, user.getTotalDistance());
         values.put(COL_TIMESTAMP, user.getTimeStamp());
         values.put(COL_IDUSERS, user.getIdUsers());
         values.put(COL_ISACTIVE, user.isActiveDB());
@@ -114,6 +117,9 @@ public class UserDAO {
                     COL_DATEOFBIRTH,
                     COL_DATEOFREGISTRATION,
                     COL_LASTLOGIN,
+                    COL_AMOUNTRECORD,
+                    COL_TOTALTIME,
+                    COL_TOTALDISTANCE,
                     COL_TIMESTAMP,
                     COL_IDUSERS,
                     COL_ISACTIVE,
@@ -144,6 +150,9 @@ public class UserDAO {
                     result.setDateOfBirth(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFBIRTH)));
                     result.setDateOfRegistration(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFREGISTRATION)));
                     result.setLastLogin(cursor.getLong(cursor.getColumnIndexOrThrow(COL_LASTLOGIN)));
+                    result.setAmountRecord(cursor.getLong(cursor.getColumnIndexOrThrow(COL_AMOUNTRECORD)));
+                    result.setTotalTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALTIME)));
+                    result.setTotalDistance(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALDISTANCE)));
                     result.setTimeStamp(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
                     result.setIdUsers(cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)));
                     result.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)));
@@ -190,6 +199,9 @@ public class UserDAO {
                     COL_DATEOFBIRTH,
                     COL_DATEOFREGISTRATION,
                     COL_LASTLOGIN,
+                    COL_AMOUNTRECORD,
+                    COL_TOTALTIME,
+                    COL_TOTALDISTANCE,
                     COL_TIMESTAMP,
                     COL_IDUSERS,
                     COL_HINT,
@@ -220,6 +232,9 @@ public class UserDAO {
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFBIRTH)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFREGISTRATION)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_LASTLOGIN)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_AMOUNTRECORD)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALTIME)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALDISTANCE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)),
                                 cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)),
