@@ -837,6 +837,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             }
                                         }else if(type==3){
                                             loadDeleteAccount();
+                                        }else if(type==4){
+                                            loadRecordList();
                                         }
                                     }
                                 }

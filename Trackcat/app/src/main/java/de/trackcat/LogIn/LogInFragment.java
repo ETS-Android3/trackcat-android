@@ -14,11 +14,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
+import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
@@ -39,6 +42,8 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     private EditText emailTextView, passwordTextView;
     private Button btnLogin;
     private TextView signInLink, messageBox, messageBoxInfo;
+    private boolean getRecordData;
+    private int loggedUserId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,6 +70,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
             setErrorMessage("Anmeldung", getResources().getString(R.string.messageAfterCorrectRegist));
         }
 
+        getRecordData=false;
         return view;
     }
 
@@ -122,7 +128,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     try {
-                        progressDialog.dismiss();
+
 
                         /* user not authorized */
                         if (response.code() == 401) {
@@ -145,6 +151,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
                                 /* save logged user in db */
                                 User loggedUser = new User();
+                                loggedUserId=userObject.getInt("id");
                                 loggedUser.setId(userObject.getInt("id"));
                                 loggedUser.setIdUsers(userObject.getInt("id"));
                                 loggedUser.setMail(userObject.getString("email"));
@@ -195,10 +202,52 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 loggedUser.isSynchronised(true);
                                 userDAO.create(loggedUser);
 
+                                getRecordData=true;
+
+
+                                /* set routes */
+
+                                if(mainObject.getJSONArray("records")!=null) {
+                                    JSONArray recordsArray = mainObject.getJSONArray("records");
+                                    Log.d("TEST", "" + recordsArray);
+                                    RouteDAO recordDao = new RouteDAO(StartActivity.getInstance());
+                                    for (int i = 0; i < recordsArray.length(); i++) {
+                                        Route record = new Route();
+                                        record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
+                                        record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
+                                        record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
+                                        record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
+                                        record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
+                                        record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
+                                        record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
+                                        record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
+                                        record.setTemp(false);
+                                        record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
+                                        recordDao.create(record);
+                                    }
+                                }
+
+                                /* set locations
+                                JSONArray locationArray = mainObject.getJSONArray("locations");
+                                Log.d("TEST", ""+locationArray);
+                                LocationDAO locationDao=new LocationDAO(StartActivity.getInstance());
+                                for ( int i=0;i< locationArray.length();i++) {
+                                    Location location= new Location();
+                                    location.setRecordId(((JSONObject) locationArray.get(i)).getInt("record_id"));
+                                    location.setLatitude(((JSONObject) locationArray.get(i)).getDouble("lat"));
+                                    location.setLongitude(((JSONObject) locationArray.get(i)).getDouble("lng"));
+                                    location.setAltitude(((JSONObject) locationArray.get(i)).getDouble("altitude"));
+                                    location.setTime(((JSONObject) locationArray.get(i)).getLong("time"));
+                                    location.setSpeed((float)((JSONObject) locationArray.get(i)).getDouble("speed"));
+                                    locationDao.create(location);
+                                }
+*/
                                 /* open MainActivity */
                                 Intent intent = new Intent(getContext(), MainActivity.class);
                                 startActivity(intent);
                                 getActivity().finish();
+
+
 
                             } else if (mainObject.getString("success").equals("2")) {
 
@@ -207,12 +256,13 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 setErrorMessage("Fehlende Verifizierung", getResources().getString(R.string.eEMailNotVerified));
                             }
                         }
+                        progressDialog.dismiss();
                     } catch (Exception e) {
                         progressDialog.dismiss();
 
                         /* show server error message to user */
                         Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + response.raw().message());
-                        setErrorMessage(response.raw().message(), getResources().getString(R.string.eServer));
+                        setErrorMessage(e.toString(), getResources().getString(R.string.eServer));
                     }
                 }
 
@@ -227,6 +277,13 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                     call.cancel();
                 }
             });
+
+
+            if(getRecordData) {
+                /* start a call */
+                /* read profile values from global db */
+
+            }
         }
     }
 

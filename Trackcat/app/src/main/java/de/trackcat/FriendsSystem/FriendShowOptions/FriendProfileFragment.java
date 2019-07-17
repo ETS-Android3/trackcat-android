@@ -21,7 +21,7 @@ public class FriendProfileFragment extends Fragment implements View.OnClickListe
 
     RelativeLayout loadProfile;
     Button btn_delete_friend;
-    TextView name, email, dayOfBirth, gender, amountRecords, timeRecords, dayOfRegistration;
+    TextView name, email, dayOfBirth, gender, amountRecords, amountTime, amountDistance, dayOfRegistration;
     CircleImageView image, state;
     ImageView birthday, user_gender_image;
 
@@ -42,7 +42,8 @@ public class FriendProfileFragment extends Fragment implements View.OnClickListe
         gender = view.findViewById(R.id.user_gender);
         user_gender_image = view.findViewById(R.id.user_gender_image);
         amountRecords = view.findViewById(R.id.user_amount_records);
-        timeRecords = view.findViewById(R.id.user_time_records);
+        amountTime = view.findViewById(R.id.user_amount_time_records);
+        amountDistance = view.findViewById(R.id.user_amount_distance_records);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
         btn_delete_friend = view.findViewById(R.id.btn_delete_friend);
 
@@ -62,7 +63,8 @@ public class FriendProfileFragment extends Fragment implements View.OnClickListe
         gender.setText("weiblich");
         //  user_gender_image = view.findViewById(R.id.user_gender_image);
         amountRecords.setText("20");
-        timeRecords.setText("12:20:12");
+        amountTime.setText("12:20:12");
+        amountDistance.setText("20km");
         dayOfRegistration.setText("13.09.2014");
 
         return view;

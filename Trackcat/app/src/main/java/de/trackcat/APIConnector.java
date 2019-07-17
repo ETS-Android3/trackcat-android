@@ -14,6 +14,8 @@ public class APIConnector {
                     .baseUrl("http://safe-harbour.de:4242/")
                     // .baseUrl("http://192.168.178.24:5000/")
                     // .baseUrl("http://192.168.178.52:5000/")
+                   // .baseUrl("http://192.168.178.46:5000/")
+                   // .baseUrl("http://jt-networker.myds.me:4242/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 

@@ -44,6 +44,9 @@ import com.karan.churi.PermissionManager.PermissionManager;
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
 import de.trackcat.CustomElements.CustomLocation;
+import de.trackcat.CustomElements.RecordModelForServer;
+import de.trackcat.Database.DAO.LocationTempDAO;
+import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Route;
@@ -53,6 +56,7 @@ import de.trackcat.MainActivity;
 import de.trackcat.NotificationActionReciever;
 import de.trackcat.R;
 import de.trackcat.Recording.Recording_UI.PageViewer;
+import de.trackcat.StartActivity;
 import de.trackcat.Statistics.SpeedAverager;
 import de.trackcat.Statistics.mCounter;
 import okhttp3.ResponseBody;
@@ -61,6 +65,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
@@ -72,12 +78,14 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -170,6 +178,14 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      * Model of Route
      * */
     private Route model;
+    private int newRecordId;
+
+    /*
+     * Daos
+     * */
+    private RecordTempDAO recordTempDAO;
+    private LocationTempDAO locationTempDAO;
+    private RouteDAO recordDAO;
 
 
     @Override
@@ -229,6 +245,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
         /* Fragt nach noch nicht erteilten Permissions */
         permissionManager.checkAndRequestPermissions(MainActivity.getInstance());
+
+        /* set DAOS */
+        recordTempDAO = new RecordTempDAO(MainActivity.getInstance());
+        locationTempDAO = new LocationTempDAO(MainActivity.getInstance());
 
         /* ----------------------------------------------------------------------------------handler
          * recieves messages from another thread
@@ -311,7 +331,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
          * */
         startMarker = new Marker(mMapView);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-           // startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_maps_location_flag));
+            // startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_maps_location_flag));
 
             InputStream imageStream = this.getResources().openRawResource(R.raw.logo_marker_small);
             Drawable d = Drawable.createFromStream(imageStream, "logo_marker");
@@ -439,8 +459,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     } else {
                         startTracking();
                     }
+
+                    /* get location data */
+                    List<de.trackcat.Database.Models.Location> locations = locationTempDAO.readAll(newRecordId);
+
+
                     /* if there is any data collectet Tracked Route is saveable */
-                    if (timer.getTime() > 0 && model.getLocations() != null && model.getLocations().size() > 2) {
+                    if (timer.getTime() > 0 && locations != null && locations.size() > 2) {
                         /* store starttime for holdDown */
                         startTime = event.getEventTime();
                         /* timer for Progressbar */
@@ -527,6 +552,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         model.setType(type);
         model.setUserID(MainActivity.getActiveUser());
         model.setDate(System.currentTimeMillis());
+        model.setTemp(true);
         Date currentTime = Calendar.getInstance().getTime();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm:ss");
@@ -586,8 +612,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     model.setName(recordName != null ? recordName.getText().toString() : null);
                 }
 
-                RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-                dao.create(model);
+                model.setTimeStamp(GlobalFunctions.getTimeStamp());
+             /*   RouteDAO dao = new RouteDAO(MainActivity.getInstance());
+                dao.create(model);*/
+
+                recordTempDAO.update(newRecordId, model);
 
                 /* send route full to server */
 
@@ -599,24 +628,75 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 APIClient apiInterface = retrofit.create(APIClient.class);
                 String base = currentUser.getMail() + ":" + currentUser.getPassword();
 
+                RecordModelForServer m = new RecordModelForServer();
+                m.setId(model.getId());
+                m.setUserID(MainActivity.getActiveUser());
+                m.setName(model.getName());
+                m.setType(model.getType());
+                m.setTime(model.getTime());
+                m.setDate(model.getDate());
+                m.setRideTime(model.getRideTime());
+                m.setDistance(model.getDistance());
+                m.setTimeStamp(model.getTimeStamp());
+                m.setLocations(locationTempDAO.readAll(newRecordId));
 
                 /* start a call */
                 String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, model);
+                Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, m);
 
                 call.enqueue(new Callback<ResponseBody>() {
 
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        Log.v("testLog", "hi");
-                        MainActivity.getInstance().endTracking();
-                        Toast.makeText(getActivity(), "Success Connection",
-                                Toast.LENGTH_LONG).show();
+
+                        /* get jsonString from API */
+                        String jsonString = null;
+
+                        try {
+                            jsonString = response.body().string();
+
+                            /* parse json */
+                            JSONObject mainObject = new JSONObject(jsonString);
+
+                            if (mainObject.getString("success").equals("0")) {
+
+                                MainActivity.getInstance().endTracking();
+                                Toast.makeText(getActivity(), "Route erfolgreich auf dem Server gespeichert.",
+                                        Toast.LENGTH_LONG).show();
+
+                                /* save in DB*/
+                                recordDAO = new RouteDAO(MainActivity.getInstance());
+
+                                if (mainObject.getJSONObject("record") != null) {
+                                    JSONObject recordJSON = mainObject.getJSONObject("record");
+
+                                    Route record = new Route();
+                                    record.setId(recordJSON.getInt("id"));
+                                    record.setName(recordJSON.getString("name"));
+                                    record.setTime(recordJSON.getLong("time"));
+                                    record.setDate(recordJSON.getLong("date"));
+                                    record.setType(recordJSON.getInt("type"));
+                                    record.setRideTime(recordJSON.getInt("ridetime"));
+                                    record.setDistance(recordJSON.getDouble("distance"));
+                                    record.setTimeStamp(recordJSON.getLong("timestamp"));
+                                    record.setTemp(false);
+                                    record.setLocations(recordJSON.getString("locations"));
+                                    recordDAO.create(record);
+
+                                    /*remove from temp*/
+                                    recordTempDAO.delete(record);
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                        Log.v("testLog", "Message:" + t.getMessage());
                         call.cancel();
                         MainActivity.getInstance().endTracking();
                         Toast.makeText(getActivity(), "Error Connection",
@@ -685,8 +765,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mMapView.setBuiltInZoomControls(false);
         mMapView.setMultiTouchControls(true);
 
+        /* get location */
+        List<de.trackcat.Database.Models.Location> locations = locationTempDAO.readAll(newRecordId);
+
         /* Marker und Polyline zeichnen */
-        GeoPoint gPt = new GeoPoint(model.getLocations().get(0).getLatitude(), model.getLocations().get(0).getLongitude());
+        GeoPoint gPt = new GeoPoint(locations.get(0).getLatitude(), locations.get(0).getLongitude());
         Marker startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -696,7 +779,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
         }
 
-        gPt = new GeoPoint(model.getLocations().get(model.getLocations().size() - 1).getLatitude(), model.getLocations().get(model.getLocations().size() - 1).getLongitude());
+        gPt = new GeoPoint(locations.get(locations.size() - 1).getLatitude(), locations.get(locations.size() - 1).getLongitude());
         Marker stopMarker = new Marker(mMapView);
         stopMarker.setPosition(gPt);
         stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -760,8 +843,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         /* instantiate if null */
         if (kmCounter == null) {
 
-            // instatiate new ModelRoute
+            // instatiate new ModelRoute ann add to DB
             model = new Route();
+            newRecordId = recordTempDAO.create(model);
 
             // start Locator
             //locatorGPS = new Locator(MainActivity.getInstance(), this);
@@ -873,7 +957,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      */
 
 
-
     void updateLocation(Location location) {
 
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
@@ -930,16 +1013,26 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         try {
             if (isTracking) {
 
-                CustomLocation toSave = new CustomLocation();
+            /*    CustomLocation toSave = new CustomLocation();
                 toSave.setAltitude(location.getAltitude());
                 toSave.setLatitude(location.getLatitude());
                 toSave.setLongitude(location.getLongitude());
                 toSave.setSpeed(location.getSpeed());
                 toSave.setTime(location.getTime());
+                model.addLocation(toSave);
+                */
 
 
                 // add Location to Model
-                model.addLocation(toSave);
+                de.trackcat.Database.Models.Location newLocation = new de.trackcat.Database.Models.Location();
+                newLocation.setAltitude(location.getAltitude());
+                newLocation.setLatitude(location.getLatitude());
+                newLocation.setLongitude(location.getLongitude());
+                newLocation.setSpeed(location.getSpeed());
+                newLocation.setTime(location.getTime());
+                newLocation.setRecordId(newRecordId);
+                locationTempDAO.create(newLocation);
+
 
                 // add to List
                 GPSData.add(gPt);
