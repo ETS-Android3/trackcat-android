@@ -661,7 +661,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             if (mainObject.getString("success").equals("0")) {
 
                                 MainActivity.getInstance().endTracking();
-                                Toast.makeText(getActivity(), "Route erfolgreich auf dem Server gespeichert.",
+                                Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOnServer),
                                         Toast.LENGTH_LONG).show();
 
                                 /* save in DB*/
@@ -696,10 +696,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.v("testLog", "Message:" + t.getMessage());
                         call.cancel();
                         MainActivity.getInstance().endTracking();
-                        Toast.makeText(getActivity(), "Error Connection",
+                        Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
                                 Toast.LENGTH_LONG).show();
 
                     }
