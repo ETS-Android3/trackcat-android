@@ -1228,6 +1228,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
+
+                /*load view*/
+                loadRecordList();
             }
         });
     }
