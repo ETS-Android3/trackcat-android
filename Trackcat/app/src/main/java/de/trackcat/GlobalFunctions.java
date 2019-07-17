@@ -1,13 +1,27 @@
 package de.trackcat;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.security.AccessController.getContext;
 
 public class GlobalFunctions {
 
@@ -85,9 +99,89 @@ public class GlobalFunctions {
     public static long getTimeStamp() {
 
         Long tsLong = System.currentTimeMillis() / 1000;
-        String ts = tsLong.toString();
-
-        Log.d("LALALALAL", "Time : " + ts);
         return tsLong;
     }
+
+
+    public static boolean validatePassword(TextView passwordTextView, Activity activity){
+
+        boolean valid= true;
+        String password = passwordTextView.getText().toString();
+
+        /* validate password */
+        Pattern pattern2 = Pattern.compile(activity.getResources().getString(R.string.rPassword));
+        Matcher matcher2 = pattern2.matcher(password);
+
+        if (!matcher2.matches()) {
+            passwordTextView.setError(activity.getResources().getString(R.string.errorMsgPassword));
+            Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
+            valid = false;
+        } else {
+            passwordTextView.setError(null);
+        }
+        return valid;
+    }
+
+    public static boolean validateName(TextView nameTextView, Activity activity){
+
+        boolean valid= true;
+        String input_name = nameTextView.getText().toString();
+
+        /* validate name */
+        Pattern pattern3 = Pattern.compile(activity.getResources().getString(R.string.rName));
+        Matcher matcher3 = pattern3.matcher(input_name);
+        if (!matcher3.matches()) {
+            nameTextView.setError(activity.getResources().getString(R.string.errorMsgName));
+            Toast.makeText(activity.getApplicationContext(), activity.getResources().getString(R.string.tErrorName), Toast.LENGTH_SHORT).show();
+            valid = false;
+        } else {
+            nameTextView.setError(null);
+        }
+        return valid;
+    }
+
+    public static boolean validateEMail(TextView emailTextView, Activity activity){
+        boolean valid = true;
+
+        /* read inputs */
+        String input_email = emailTextView.getText().toString();
+
+        /* validate email */
+        Pattern pattern = Pattern.compile(activity.getResources().getString(R.string.rEmail));
+        Matcher matcher = pattern.matcher(input_email);
+
+        if (!matcher.matches()) {
+            emailTextView.setError(activity.getResources().getString(R.string.errorMsgEMail));
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(), activity.getResources().getString(R.string.tErrorEmail), Toast.LENGTH_SHORT).show();
+            valid = false;
+        } else {
+            emailTextView.setError(null);
+        }
+
+        return valid;
+    }
+
+    public static boolean validateTwoPassword(TextView password1TextView, TextView password2TextView,Activity activity) {
+        boolean valid = true;
+
+        /* read inputs */
+        String input_password1 = password1TextView.getText().toString();
+
+        /* validate password */
+        Pattern pattern2 = Pattern.compile(activity.getResources().getString(R.string.rPassword));
+        Matcher matcher2 = pattern2.matcher(input_password1);
+
+        if (!matcher2.matches()) {
+            password1TextView.setError(activity.getResources().getString(R.string.errorMsgPassword));
+            password2TextView.setError(activity.getResources().getString(R.string.errorMsgPassword));
+            Toast.makeText(StartActivity.getInstance().getApplicationContext(), activity.getResources().getString(R.string.tErrorPassword), Toast.LENGTH_SHORT).show();
+            valid = false;
+        } else {
+            password1TextView.setError(null);
+            password2TextView.setError(null);
+        }
+        return valid;
+    }
+
+
 }

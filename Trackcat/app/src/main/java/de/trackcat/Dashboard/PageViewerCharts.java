@@ -54,7 +54,7 @@ public class PageViewerCharts extends Fragment {
 
         /* Read Last seven Days from DB and init various Variables */
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-        List<Route> records = dao.readLastSevenDays(MainActivity.getActiveUser());
+        List<Route> records = dao.readLastSevenDays();
         double[] distanceArrayKm = {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 timeArray = {0, 0, 0, 0, 0, 0, 0, 0, 0},
                 timeArrayMinutes = {0, 0, 0, 0, 0, 0, 0, 0, 0},

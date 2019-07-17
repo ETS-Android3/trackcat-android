@@ -15,6 +15,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
@@ -34,14 +35,33 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
         Button firstRecordBtn = view.findViewById(R.id.create_first_record);
 
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-        List<Route> records = dao.readAll(MainActivity.getActiveUser());
+        List<Route> records = dao.readAll();
+
+        RecordTempDAO tempDAO = new RecordTempDAO(MainActivity.getInstance());
+        List<Route> tempRecords = tempDAO.readAll();
+
+        for (Route route : tempRecords) {
+            records.add(route);
+        }
 
         List<Route> mList = new ArrayList<>();
         mList.clear();
-        for (int i = 0; i < getResources().getInteger(R.integer.summaryRecordListAmount) && i < records.size(); i++) {
-            mList.add(records.get(i));
-        }
 
+        /* add Elements to List */
+        if (!records.isEmpty() && records.size() > getResources().getInteger(R.integer.summaryRecordListAmount)) {
+
+            for (int i = records.size() - 1; i > (records.size() - 1 - getResources().getInteger(R.integer.summaryRecordListAmount)); i--) {
+                mList.add(records.get(i));
+            }
+        } else {
+            if (records.size() == 2) {
+                mList.add(records.get(1));
+                mList.add(records.get(0));
+            }
+            if (records.size() == 1) {
+                mList.add(records.get(0));
+            }
+        }
         CustomRecordListAdapter adapter = new CustomRecordListAdapter(MainActivity.getInstance(), mList);
         ListView recordList = view.findViewById(R.id.record_list);
         recordList.setAdapter(adapter);

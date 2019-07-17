@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import com.google.gson.Gson;
 
+import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import java.lang.reflect.Type;
@@ -49,7 +50,7 @@ public class UserDAO {
     public void create(User user) {
         DbHelper dbHelper = new DbHelper(context);
         try {
-            user.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(user)));
+            dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(user));
         } finally {
             dbHelper.close();
         }
@@ -79,6 +80,9 @@ public class UserDAO {
         values.put(COL_DATEOFBIRTH, user.getDateOfBirth());
         values.put(COL_DATEOFREGISTRATION, user.getDateOfRegistration());
         values.put(COL_LASTLOGIN, user.getLastLogin());
+        values.put(COL_AMOUNTRECORD, user.getAmountRecord());
+        values.put(COL_TOTALTIME, user.getTotalTime());
+        values.put(COL_TOTALDISTANCE, user.getTotalDistance());
         values.put(COL_TIMESTAMP, user.getTimeStamp());
         values.put(COL_IDUSERS, user.getIdUsers());
         values.put(COL_ISACTIVE, user.isActiveDB());
@@ -113,6 +117,9 @@ public class UserDAO {
                     COL_DATEOFBIRTH,
                     COL_DATEOFREGISTRATION,
                     COL_LASTLOGIN,
+                    COL_AMOUNTRECORD,
+                    COL_TOTALTIME,
+                    COL_TOTALDISTANCE,
                     COL_TIMESTAMP,
                     COL_IDUSERS,
                     COL_ISACTIVE,
@@ -143,6 +150,9 @@ public class UserDAO {
                     result.setDateOfBirth(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFBIRTH)));
                     result.setDateOfRegistration(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFREGISTRATION)));
                     result.setLastLogin(cursor.getLong(cursor.getColumnIndexOrThrow(COL_LASTLOGIN)));
+                    result.setAmountRecord(cursor.getLong(cursor.getColumnIndexOrThrow(COL_AMOUNTRECORD)));
+                    result.setTotalTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALTIME)));
+                    result.setTotalDistance(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALDISTANCE)));
                     result.setTimeStamp(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
                     result.setIdUsers(cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)));
                     result.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)));
@@ -189,6 +199,9 @@ public class UserDAO {
                     COL_DATEOFBIRTH,
                     COL_DATEOFREGISTRATION,
                     COL_LASTLOGIN,
+                    COL_AMOUNTRECORD,
+                    COL_TOTALTIME,
+                    COL_TOTALDISTANCE,
                     COL_TIMESTAMP,
                     COL_IDUSERS,
                     COL_HINT,
@@ -219,6 +232,9 @@ public class UserDAO {
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFBIRTH)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATEOFREGISTRATION)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_LASTLOGIN)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_AMOUNTRECORD)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALTIME)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALDISTANCE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)),
                                 cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)),
@@ -256,10 +272,20 @@ public class UserDAO {
     public void delete(User user) {
         DbHelper dbHelper = new DbHelper(context);
         RouteDAO routeDAO = new RouteDAO(context);
+        RecordTempDAO recordTempDAO = new RecordTempDAO(context);
+        LocationTempDAO locationTempDAO = new LocationTempDAO(context);
         try {
-            for (Route route : routeDAO.readAll(user.getId())) {
+            for (Route route : routeDAO.readAll()) {
                 routeDAO.delete(route.getId());
             }
+
+            for (Route route : recordTempDAO.readAll()) {
+                recordTempDAO.delete(route.getId());
+                for (Location location : locationTempDAO.readAll(route.getId())) {
+                    locationTempDAO.delete(location.getId());
+                }
+            }
+
             String selection = COL_ID + " LIKE ?";
             String[] selectionArgs = {String.valueOf(user.getId())};
             dbHelper.getWritableDatabase().delete(TABLE_NAME, selection, selectionArgs);
@@ -267,33 +293,7 @@ public class UserDAO {
             dbHelper.close();
         }
     }
-
-    /**
-     * Imports a single user from handed over JSON.
-     *
-     * @param jsonString of type string which defines the route to be imported
-     *
-     * <p>
-     *      Creates a user with the attributes which were defined in JSON
-     * </p>
-     */
-    public void importUserFromJson(String jsonString) {
-        User user = gson.fromJson(jsonString, imExportType);
-        user.setActive(false);
-        this.create(user);
-    }
-
-    /**
-     * Creates a JSON string which defines a user object and its attributes.
-     *
-     * @param id of type integer of which user has to be exported
-     * @return a JSON string
-     */
-    public String exportUserToJson(int id) {
-        return gson.toJson(this.read(id));
-    }
-
-
+    
     /**
      * Count the entrys of the userTable
      *

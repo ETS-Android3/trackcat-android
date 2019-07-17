@@ -74,4 +74,7 @@ dependencies {
     // Im Terminal "adb forward tcp:8080 tcp:8080" eingeben
     // Im Logcat nach "dbdebug" suchen und Link anklicken
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+
+    // Crop image view
+    implementation 'com.github.yalantis:ucrop:2.2.3'
 }

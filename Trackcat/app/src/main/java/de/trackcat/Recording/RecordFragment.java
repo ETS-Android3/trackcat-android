@@ -21,6 +21,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.os.*;
 import android.support.annotation.NonNull;
@@ -30,6 +31,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
@@ -39,16 +41,33 @@ import android.widget.Toast;
 
 import com.karan.churi.PermissionManager.PermissionManager;
 
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
 import de.trackcat.CustomElements.CustomLocation;
+import de.trackcat.CustomElements.RecordModelForServer;
+import de.trackcat.Database.DAO.LocationTempDAO;
+import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
+import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Route;
+import de.trackcat.Database.Models.User;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.NotificationActionReciever;
 import de.trackcat.R;
 import de.trackcat.Recording.Recording_UI.PageViewer;
+import de.trackcat.StartActivity;
 import de.trackcat.Statistics.SpeedAverager;
 import de.trackcat.Statistics.mCounter;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -59,11 +78,14 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -121,7 +143,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      * Notification stuff
      * */
     private NotificationManagerCompat notificationManager;
-    private static final String CHANNEL_ID = "GoTrack_Notification_Channel_ID";
+    private static final String CHANNEL_ID = "Trackcat_Notification_Channel_ID";
 
     /*
      * Play/Pause Button + ProgressBar on hold
@@ -156,6 +178,14 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      * Model of Route
      * */
     private Route model;
+    private int newRecordId;
+
+    /*
+     * Daos
+     * */
+    private RecordTempDAO recordTempDAO;
+    private LocationTempDAO locationTempDAO;
+    private RouteDAO recordDAO;
 
 
     @Override
@@ -216,6 +246,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         /* Fragt nach noch nicht erteilten Permissions */
         permissionManager.checkAndRequestPermissions(MainActivity.getInstance());
 
+        /* set DAOS */
+        recordTempDAO = new RecordTempDAO(MainActivity.getInstance());
+        locationTempDAO = new LocationTempDAO(MainActivity.getInstance());
+
         /* ----------------------------------------------------------------------------------handler
          * recieves messages from another thread
          *
@@ -241,7 +275,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
 
                     } catch (NullPointerException e) {
-                        Log.v("GOTRACK", e.toString());
+                        Log.v(getResources().getString(R.string.app_name), e.toString());
                     }
 
                     try {
@@ -249,7 +283,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                         issueNotification(notificationContent);
                     } catch (Exception e) {
-                        Log.v("GOTRACK", e.toString());
+                        Log.v(getResources().getString(R.string.app_name), e.toString());
                     }
 
                     /*
@@ -260,7 +294,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                         String toSet = Math.round((kmhAverager.getAvgSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
                         average_speed_TextView.setText(toSet);
                     } catch (NullPointerException e) {
-                        Log.v("GOTRACK", e.toString());
+                        Log.v(getResources().getString(R.string.app_name), e.toString());
 
                     }
                 } else if (msg.what == 2) {
@@ -297,17 +331,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
          * */
         startMarker = new Marker(mMapView);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-           // startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_maps_location_flag));
-
-            InputStream imageStream = this.getResources().openRawResource(R.raw.logo_marker_small);
-            Drawable d = Drawable.createFromStream(imageStream, "logo_marker");
-
-            startMarker.setIcon(d);
-
+            startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_logo_marker));
         }
+
         mPath = new Polyline(mMapView);
-
-
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
 
@@ -425,8 +452,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     } else {
                         startTracking();
                     }
+
+                    /* get location data */
+                    List<de.trackcat.Database.Models.Location> locations = locationTempDAO.readAll(newRecordId);
+
+
                     /* if there is any data collectet Tracked Route is saveable */
-                    if (timer.getTime() > 0 && model.getLocations() != null && model.getLocations().size() > 2) {
+                    if (timer.getTime() > 0 && locations != null && locations.size() > 2) {
                         /* store starttime for holdDown */
                         startTime = event.getEventTime();
                         /* timer for Progressbar */
@@ -513,6 +545,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         model.setType(type);
         model.setUserID(MainActivity.getActiveUser());
         model.setDate(System.currentTimeMillis());
+        model.setTemp(true);
         Date currentTime = Calendar.getInstance().getTime();
         @SuppressLint("SimpleDateFormat")
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm:ss");
@@ -572,10 +605,98 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     model.setName(recordName != null ? recordName.getText().toString() : null);
                 }
 
-                RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-                dao.create(model);
+                model.setTimeStamp(GlobalFunctions.getTimeStamp());
+             /*   RouteDAO dao = new RouteDAO(MainActivity.getInstance());
+                dao.create(model);*/
 
-                MainActivity.getInstance().endTracking();
+                recordTempDAO.update(newRecordId, model);
+
+                /* send route full to server */
+
+                /* get current user */
+                UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+                User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+                Retrofit retrofit = APIConnector.getRetrofit();
+                APIClient apiInterface = retrofit.create(APIClient.class);
+                String base = currentUser.getMail() + ":" + currentUser.getPassword();
+
+                RecordModelForServer m = new RecordModelForServer();
+                m.setId(model.getId());
+                m.setUserID(MainActivity.getActiveUser());
+                m.setName(model.getName());
+                m.setType(model.getType());
+                m.setTime(model.getTime());
+                m.setDate(model.getDate());
+                m.setRideTime(model.getRideTime());
+                m.setDistance(model.getDistance());
+                m.setTimeStamp(model.getTimeStamp());
+                m.setLocations(locationTempDAO.readAll(newRecordId));
+
+                /* start a call */
+                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, m);
+
+                call.enqueue(new Callback<ResponseBody>() {
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        /* get jsonString from API */
+                        String jsonString = null;
+
+                        try {
+                            jsonString = response.body().string();
+
+                            /* parse json */
+                            JSONObject mainObject = new JSONObject(jsonString);
+
+                            if (mainObject.getString("success").equals("0")) {
+
+                                MainActivity.getInstance().endTracking();
+                                Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOnServer),
+                                        Toast.LENGTH_LONG).show();
+
+                                /* save in DB*/
+                                recordDAO = new RouteDAO(MainActivity.getInstance());
+
+                                if (mainObject.getJSONObject("record") != null) {
+                                    JSONObject recordJSON = mainObject.getJSONObject("record");
+
+                                    Route record = new Route();
+                                    record.setId(recordJSON.getInt("id"));
+                                    record.setName(recordJSON.getString("name"));
+                                    record.setTime(recordJSON.getLong("time"));
+                                    record.setDate(recordJSON.getLong("date"));
+                                    record.setType(recordJSON.getInt("type"));
+                                    record.setRideTime(recordJSON.getInt("ridetime"));
+                                    record.setDistance(recordJSON.getDouble("distance"));
+                                    record.setTimeStamp(recordJSON.getLong("timestamp"));
+                                    record.setTemp(false);
+                                    record.setLocations(recordJSON.getString("locations"));
+                                    recordDAO.create(record);
+
+                                    /*remove from temp*/
+                                    recordTempDAO.delete(record);
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        call.cancel();
+                        MainActivity.getInstance().endTracking();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
+                                Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
             }
         });
 
@@ -636,8 +757,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mMapView.setBuiltInZoomControls(false);
         mMapView.setMultiTouchControls(true);
 
+        /* get location */
+        List<de.trackcat.Database.Models.Location> locations = locationTempDAO.readAll(newRecordId);
+
         /* Marker und Polyline zeichnen */
-        GeoPoint gPt = new GeoPoint(model.getLocations().get(0).getLatitude(), model.getLocations().get(0).getLongitude());
+        GeoPoint gPt = new GeoPoint(locations.get(0).getLatitude(), locations.get(0).getLongitude());
         Marker startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -647,7 +771,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
         }
 
-        gPt = new GeoPoint(model.getLocations().get(model.getLocations().size() - 1).getLatitude(), model.getLocations().get(model.getLocations().size() - 1).getLongitude());
+        gPt = new GeoPoint(locations.get(locations.size() - 1).getLatitude(), locations.get(locations.size() - 1).getLongitude());
         Marker stopMarker = new Marker(mMapView);
         stopMarker.setPosition(gPt);
         stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -711,8 +835,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         /* instantiate if null */
         if (kmCounter == null) {
 
-            // instatiate new ModelRoute
+            // instatiate new ModelRoute ann add to DB
             model = new Route();
+            newRecordId = recordTempDAO.create(model);
 
             // start Locator
             //locatorGPS = new Locator(MainActivity.getInstance(), this);
@@ -801,7 +926,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     private void createNotificationChannel() {
         // create Notification Channel. needed from API 26
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "GoTrack";
+            CharSequence name = getResources().getString(R.string.app_name);
             String description = "Shows Tracking";
             int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
@@ -837,6 +962,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         alt = (float) location.getAltitude();
         timeOfFix = location.getTime();
 
+
+
         /*
          * move Map
          * */
@@ -852,7 +979,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             FloatingActionButton fab = view.findViewById(R.id.fabButton);
             fab.setImageResource(SpeedAverager.getTypeIcon(SpeedAverager.getRouteType(kmhAverager.getAvgSpeed()), false));
         } catch (Exception e) {
-            Log.v("GOTRACK", e.toString());
+            Log.v(getResources().getString(R.string.app_name), e.toString());
         }
 
         try {
@@ -872,22 +999,32 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             }
 
         } catch (NullPointerException e) {
-            Log.v("GOTRACK", e.toString());
+            Log.v(getResources().getString(R.string.app_name), e.toString());
         }
 
         try {
             if (isTracking) {
 
-                CustomLocation toSave = new CustomLocation();
+            /*    CustomLocation toSave = new CustomLocation();
                 toSave.setAltitude(location.getAltitude());
                 toSave.setLatitude(location.getLatitude());
                 toSave.setLongitude(location.getLongitude());
                 toSave.setSpeed(location.getSpeed());
                 toSave.setTime(location.getTime());
+                model.addLocation(toSave);
+                */
 
 
                 // add Location to Model
-                model.addLocation(toSave);
+                de.trackcat.Database.Models.Location newLocation = new de.trackcat.Database.Models.Location();
+                newLocation.setAltitude(location.getAltitude());
+                newLocation.setLatitude(location.getLatitude());
+                newLocation.setLongitude(location.getLongitude());
+                newLocation.setSpeed(location.getSpeed());
+                newLocation.setTime(location.getTime());
+                newLocation.setRecordId(newRecordId);
+                locationTempDAO.create(newLocation);
+
 
                 // add to List
                 GPSData.add(gPt);
@@ -903,7 +1040,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     mPath.setColor(Color.RED);
                     mPath.setWidth(4);
                 } catch (NullPointerException e) {
-                    Log.v("GOTRACK", e.toString());
+                    Log.v(getResources().getString(R.string.app_name), e.toString());
                 }
 
 
@@ -946,21 +1083,21 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     String toSet = (Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
                     kmh_TextView.setText(toSet);
                 } catch (NullPointerException e) {
-                    Log.v("GOTRACK", e.toString());
+                    Log.v(getResources().getString(R.string.app_name), e.toString());
                 }
                 try {
                     TextView distance_TextView = view.findViewById(R.id.distance_TextView);
                     String toSet = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
                     distance_TextView.setText(toSet);
                 } catch (NullPointerException e) {
-                    Log.v("GOTRACK", e.toString());
+                    Log.v(getResources().getString(R.string.app_name), e.toString());
                 }
                 try {
                     TextView altimeter_TextView = view.findViewById(R.id.altimeter_TextView);
                     String toSet = Math.round(location.getAltitude()) + " m";
                     altimeter_TextView.setText(toSet);
                 } catch (NullPointerException e) {
-                    Log.v("GOTRACK", e.toString());
+                    Log.v(getResources().getString(R.string.app_name), e.toString());
                 }
             }
         } catch (NullPointerException e) {
@@ -983,7 +1120,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             String toSet = "0.0 km/h";
             kmh_TextView.setText(toSet);
         } catch (NullPointerException e) {
-            Log.v("GOTRACK", e.toString());
+            Log.v(getResources().getString(R.string.app_name), e.toString());
         }
 
         playPause.setImageResource(R.drawable.record_playbtn_white);

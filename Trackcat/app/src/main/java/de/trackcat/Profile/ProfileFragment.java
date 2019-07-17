@@ -1,10 +1,10 @@
 package de.trackcat.Profile;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -19,8 +19,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import de.trackcat.APIClient;
@@ -39,7 +42,7 @@ import retrofit2.Retrofit;
 public class ProfileFragment extends Fragment {
 
     /* variables */
-    TextView name, email, dayOfBirth, gender, weight, size, bmi, lastLogIn, dayOfRegistration;
+    TextView name, email, dayOfBirth, gender, weight, size, bmi, lastLogIn, dayOfRegistration, amountRecords, totalTime, totalDistance;
     CircleImageView image, state;
     ImageView birthday, user_gender_image;
     RelativeLayout loadProfile;
@@ -71,6 +74,9 @@ public class ProfileFragment extends Fragment {
         size = view.findViewById(R.id.user_size);
         bmi = view.findViewById(R.id.user_bmi);
         state = view.findViewById(R.id.profile_state);
+        amountRecords = view.findViewById(R.id.user_amount_records);
+        totalTime = view.findViewById(R.id.user_amount_time_records);
+        totalDistance = view.findViewById(R.id.user_amount_distance_records);
         lastLogIn = view.findViewById(R.id.user_lastLogIn);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
         image = view.findViewById(R.id.profile_image);
@@ -79,55 +85,61 @@ public class ProfileFragment extends Fragment {
 
         /* read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
-        map.put("eMail", currentUser.getMail());
+        map.put("id", ""+currentUser.getIdUsers());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
         /* start a call */
-        Call<ResponseBody> call = apiInterface.getUserByEmail(map);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<ResponseBody> call = apiInterface.getUserById(authString,map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    /* get jsonString from API */
-                    String jsonString = response.body().string();
 
-                    /* parse json */
-                    JSONObject userJSON = new JSONObject(jsonString);
-                    Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
+                    if(response.code()==401){
+                        MainActivity.getInstance().showNotAuthorizedModal(0);
+                    }else {
+                        /* get jsonString from API */
+                        String jsonString = response.body().string();
 
-                    /* check values an show  */
-                    float size, weight;
-                    long dateOfBirth;
-                    byte[] image = null;
+                        /* parse json */
+                        JSONObject userJSON = new JSONObject(jsonString);
+                        Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
 
-                    try {
-                        size = (float) userJSON.getDouble("size");
-                    } catch (Exception e) {
-                        size = 0;
+                        /* check values an show  */
+                        float size, weight;
+                        long dateOfBirth;
+                        byte[] image = null;
+
+                        try {
+                            size = (float) userJSON.getDouble("size");
+                        } catch (Exception e) {
+                            size = 0;
+                        }
+
+                        try {
+                            weight = (float) userJSON.getDouble("weight");
+                        } catch (Exception e) {
+                            weight = 0;
+                        }
+
+                        try {
+                            dateOfBirth = userJSON.getLong("dateOfBirth");
+                        } catch (Exception e) {
+                            dateOfBirth = 0;
+                        }
+
+                        if (userJSON.getString("image") != "null") {
+                            image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
+                        }
+
+                        setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), userJSON.getLong("amountRecords"),userJSON.getLong("totalDistance"), userJSON.getLong("totalTime"),image);
                     }
-
-                    try {
-                        weight = (float) userJSON.getDouble("weight");
-                    } catch (Exception e) {
-                        weight = 0;
-                    }
-
-                    try {
-                        dateOfBirth = userJSON.getLong("dateOfBirth");
-                    } catch (Exception e) {
-                        dateOfBirth = 0;
-                    }
-
-                    if (userJSON.getString("image") != "null") {
-                        image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
-                    }
-
-                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), image);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -140,7 +152,7 @@ public class ProfileFragment extends Fragment {
                 call.cancel();
 
                 /* read values from local DB */
-                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin(), currentUser.getImage());
+                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin(), currentUser.getAmountRecord(), currentUser.getTotalDistance(), currentUser.getTotalTime(), currentUser.getImage());
                 Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "ERROR: " + t.getMessage());
             }
         });
@@ -149,7 +161,7 @@ public class ProfileFragment extends Fragment {
     }
 
     /* Function to set profile information in fields */
-    private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight, int user_gender, long user_dateOfRegistration, long user_lastLogin, byte[] user_image) {
+    private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight, int user_gender, long user_dateOfRegistration, long user_lastLogin, long user_amountRecords, long user_totalDistance, long user_totalTime, byte[] user_image) {
         int age = 0;
 
         /*set name and email*/
@@ -560,6 +572,25 @@ public class ProfileFragment extends Fragment {
         /* set lastLogin*/
         String curLastLoginString = GlobalFunctions.getDateWithTimeFromSeconds(user_lastLogin, "dd.MM.yyyy HH:MM");
         lastLogIn.setText(curLastLoginString);
+
+        /*set amount records*/
+        amountRecords.setText(""+user_amountRecords);
+
+        /* set total distance */
+        double distance = Math.round(user_totalDistance);
+        if (distance >= 1000) {
+            String d = "" + distance / 1000L;
+            totalDistance.setText(d.replace('.', ',') + " km");
+        } else {
+            totalDistance.setText((int) distance + " m");
+        }
+
+        /* set total time */
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        df.setTimeZone(tz);
+        String time = df.format(new Date(user_totalTime * 1000));
+        totalTime.setText(time);
 
         /* set profile image */
         byte[] imgRessource = user_image;

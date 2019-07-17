@@ -1,34 +1,19 @@
-package de.trackcat.LogIn;
+package de.trackcat.SignIn;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import de.trackcat.APIClient;
-import de.trackcat.APIConnector;
-import de.trackcat.MainActivity;
+import de.trackcat.GlobalFunctions;
+import de.trackcat.LogIn.LogInFragment;
 import de.trackcat.R;
 import de.trackcat.StartActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class SignInFragment_2 extends Fragment implements View.OnClickListener {
 
@@ -60,7 +45,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
             lastName = getArguments().getString("lastName");
             password1 = getArguments().getString("password1");
             password2 = getArguments().getString("password2");
-            generalTerm = getArguments().getBoolean("generalTerm");
+            generalTerm = getArguments().getBoolean("generalTerms");
             dataProtection = getArguments().getBoolean("dataProtection");
             if (getArguments().getString("email") != null) {
                 email.setText(getArguments().getString("email"));
@@ -108,7 +93,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
             case R.id.btn_next:
                 /* read inputs */
                 String input_email_next = email.getText().toString();
-                if (validate()) {
+                if (GlobalFunctions.validateEMail(email, StartActivity.getInstance())) {
                     /*create bundle*/
                     bundleSignIn_1_and_2 = new Bundle();
                     bundleSignIn_1_and_2.putString("firstName", firstName);
@@ -137,27 +122,5 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                 fragTransaction.commit();
                 break;
         }
-    }
-
-
-    public boolean validate() {
-        boolean valid = true;
-
-        /* read inputs */
-        String input_email = email.getText().toString();
-
-        /* validate email */
-        Pattern pattern = Pattern.compile(getResources().getString(R.string.rEmail));
-        Matcher matcher = pattern.matcher(input_email);
-
-        if (!matcher.matches()) {
-            email.setError(getResources().getString(R.string.errorMsgEMail));
-            Toast.makeText(StartActivity.getInstance().getApplicationContext(), getResources().getString(R.string.tErrorEmail), Toast.LENGTH_SHORT).show();
-            valid = false;
-        } else {
-            email.setError(null);
-        }
-
-        return valid;
     }
 }

@@ -1,9 +1,13 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Trackcat</string>
     <string name="recordListTitle">Aufnahmen</string>
     <string name="recordLastListTitle">Letzte Aktivitäten</string>
     <string name="recordLastListMoreLink">Mehr anzeigen</string>
     <string name="recordLastListNothing">Noch keine\nAufnahmen</string>
+
+    <!-- Links -->
+    <string name="link_termsOfService">http://safe-harbour.de:4242/agb</string>
+    <string name="link_dataProtection">http://safe-harbour.de:4242/datenschutz</string>
 
     <!-- Fragment Namen -->
     <string name="fDashboard">DASHBOARD</string>
@@ -17,6 +21,7 @@
     <string name="fEditProfile">EDITPROFILE</string>
     <string name="fEditPassword">EDITPASSWORD</string>
     <string name="fFriendSystem">FREUNDE</string>
+    <string name="fDeleteAccount">DELETEACCOUNT</string>
     <string name="fSettings">SETTINGS</string>
     <string name="fPageViewer">PAGE_VIEWER</string>
     <string name="fLoadScreen">LOADSCREEN</string>
@@ -27,17 +32,29 @@
     <string name="fSignIn_4">SIGNIN_4</string>
     <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
+    <string name="fFriendProfile">FRIENDPROFILE</string>
+    <string name="fFriendLiveView">FRIENDLIVEVIEW</string>
+
+    <!-- ErrorMessages Connection to Server -->
+    <string name="eServer">Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...</string>
+    <string name="eCheckConnection">Bitte überprüfen Sie Ihre Internetverbindung.</string>
+
+    <!-- SignIn -->
+    <string name="eEMailExists" tools:ignore="ExtraTranslation">Es tut uns leid, Ihre E-Mail Adresse ist leider schon vergeben!</string>
+    <string name="createAccount">Account wird erstellt...</string>
+    <string name="messageAfterCorrectRegist">Ihr Konto wurde erfolgreich erstellt. Bitte überprüfen Sie Ihr E-Mail Postfach und bestätigen Sie Ihre Registrierung, um Zugang zu Ihrem Konto zu erhalten!</string>
+    <string name="eSignInUnknownError">Unbekannter Fehler beim Erstellen des Kontos!</string>
+
+    <!-- LogIn -->
+    <string name="eEMailNotVerified">Ihre E-Mail Adresse ist noch nicht verifiziert. Bitte gehen Sie in Ihr E-Mail Postfach und verifiziere Sie damit die Echtheit Ihrer E-Mail Adresse.</string>
+    <string name="eDataNotCorrect" tools:ignore="ExtraTranslation">Ihre Anmeldedaten sind nicht korrekt!</string>
+    <string name="login">Anmeldung...</string>
+
 
     <!-- Einstellungen -->
     <string name="category1">Allgemeines</string>
 
-    <string name="category2">Exportmöglichkeiten</string>
-    <string name="export_options_all_options">Aktueller Benutzer (ohne Routen)</string>
-    <string name="export_options_all_full_user">Aktueller Benutzer (mit Routen) </string>
-    <string name="export_options_all_route">Routen des aktuellen Benutzers</string>
-    <string name="export_options_all_users">Alle Daten (alle Benutzer mit allen Routen)</string>
-
-    <string name="category3">Über TrackCat</string>
+    <string name="category3">Über Trackcat</string>
     <string name="aboutApp">TrackCat ist eine App, die es dir ermöglicht, deine Bewegungs- und Trainingseinheiten aufzuzeichnen und anschließend mit Freunden zu teilen. Weitere Features sind in Arbeit...</string>
     <string name="cVersion_title">Version</string>
     <string name="cVersion_summary">1.6.7</string>
@@ -45,20 +62,16 @@
     <string name="feedback_summary">Haben Sie Fragen oder Anmerkungen?</string>
 
     <!-- Error Messages -->
-    <string name="errorMsgPassword">Das Passwort muss zwischen 8 und 15 Zeichen lang sein und mindestens folgende Parameter enthalten: 1x Groß- und Kleinbuchstabe, 1x Zahl und 1x Sonderzeichen</string>
-    <string name="errorMsgName">Ihr Name darf nicht länger als 16 Zeichen sein und muss den allgemeinen Namensrichtlinien entsprechen.</string>
-    <string name="errorMsgEMail">Ihre Email Adresse entsrpicht nicht dem Standard-Email Format.</string>
+    <string name="errorMsgPassword">Das Passwort wird von unserem System nicht unterstützt: Das Passwort muss zwischen 8 und 15 Zeichen lang sein und mindestens folgende Parameter enthalten: 1x Groß- und Kleinbuchstabe, 1x Zahl und 1x Sonderzeichen</string>
+    <string name="errorMsgName">Der eingegebene Name entspricht keinem gültigen Format!</string>
+    <string name="errorMsgEMail">Bitte kontrolliere deine E-Mail Adresse, sie entspricht keinem gültigen E-Mail Format!</string>
 
     <!-- Toast Messages -->
     <string name="tErrorPassword">Ihr Passwort ist nicht konform!</string>
-    <string name="tErrorPasswordNotIdentical">Passwörter stimmen nicht überein!</string>
+    <string name="tErrorPasswordNotIdentical">Die neu gewählten Passwörter stimmen nicht überein!</string>
     <string name="tErrorName">Ihr Name ist nicht konform!</string>
     <string name="tErrorEmail">Ihr Email ist nicht konform!</string>
-    <string name="tErrorHook">Bitte akzeptieren Sie die AGBs und die Datenschutzerklärung!</string>
-    <string name="tErrorHookGeneralTerm">Bitte akzeptieren Sie die AGBs!</string>
-    <string name="tErrorHookDataProtection">Bitte akzeptieren Sie die Datenschutzerklärung!</string>
     <string name="tFillAllFields">Bitte alle Felder ausfüllen!</string>
-    <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
 
     <!-- Regex -->
     <string name="rEmail">"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"</string>
@@ -89,12 +102,59 @@
         ebenfalls ändern.</string>
     <string name="help_editPassword">Hier haben Sie die Möglichkeit Ihr Passwort zu ändern. Hierfür müssen Sie zunächst ihr aktuelles Passwort eingeben.</string>
     <string name="help_friendSystem">Hier sehen sie alle Ihre Freunde.</string>
+    <string name="help_deleteAccount">Hier können Sie Ihren Account löschen.</string>
+    <string name="help_friends_profile">Hier können Sie das Profil Ihres Freudes sehen. Wenn Sie auf den Button "Freund entfernen" klicken, wird die Person aus Ihrer Freundesliste entfernt und
+    Sie können nicht mehr an seinen Liveübertragungen teilnehmen.</string>
+    <string name="help_friends_live_view">Hier können Sie die Liveübertragung Ihres Freundes sehen.</string>
 
     <!-- profile strings -->
-    <string name="noInformation">keine Angabe</string>
-    <string name="noBMI">Close</string>
+    <string name="noInformation" tools:ignore="ExtraTranslation">keine Angabe</string>
+
+    <!-- edit profile strings -->
+    <string name="saveProfileSuccess">Profil erfolgreich gespeichert.</string>
+    <string name="birthdayInFuture">Sie sind noch nicht geboren, das könnte schwierig werden!</string>
+    <string name="editProfilUnknownError">Unbekannter Fehler beim Bearbeiten der Profilinformationen!</string>
+    <string name="editProfileNoChanges">Keine Änderungen</string>
+
+    <!-- change password strings -->
+    <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
+    <string name="tErrorOldPassword">Authentifizierung fehlgeschlagen!</string>
+    <string name="tChangePasswortUnknownError">Unbekannter Fehler beim Ändern des Passworts!</string>
+
+    <!-- change password strings -->
+    <string name="saveRouteOnServer">Route erfolgreich auf dem Server gespeichert.</string>
+    <string name="saveRouteOffline">Route nur lokal gespeichert.</string>
 
 
-    <string name="icon_heart">&#xf004;</string>
+    <!-- delete profile strings -->
+    <string name="deleteAccountInfoText1">Wenn Sie Ihren Account löschen, werden sämtliche Benutzerdaten gelöscht. Folgende Informationen sind davon betroffen:</string>
+    <string name="bullet_1">Personenbezogene Daten (<i>Name, Profilbild, Status, etc.</i>)</string>
+    <string name="bullet_2">Aufzeichnungen</string>
+    <string name="bullet_3">Freunde</string>
+    <string name="deleteAccountInfoText2">Ihre Daten werden dabei restlos gelöscht und können <b><u>nicht wiederhergestellt</u></b> werden!</string>
+    <string name="deleteAccountCheckBox">Ich akzeptiere und möchte meinen Account <b>unwiderruflich</b> löschen.</string>
+
+    <string name="deleteAccountModalWindowTitle">Account unwiderruflich löschen?</string>
+    <string name="deleteAccountModalWindow">Beim Löschen Ihres Accounts verlieren Sie den Zugriff auf sämtliche damit verbundene Funktionen.\n\n<b>Sind Sie sich sicher, dass Sie Ihren Account unwiderruflich löschen wollen?</b></string>
+
+    <string name="eDeleteAccountNoConnection">Account kann nicht gelöscht werden. Bitte überprüfen Sie Ihre Internetverbindung.</string>
+    <string name="deleteAccountSuccess">Account wird gelöscht.</string>
+    <string name="deleteAccountUnknownError">Unbekannter Fehler beim Löschen des Accounts!</string>
+
+    <!-- options for friends -->
+    <string name="friendsLive">Ihr Freund teilt immoment eine Route live. Möchten Sie sein Profil ansehen oder zu seiner Liveübertragung wechseln?</string>
+
+    <string name="friendsDelete">Wenn Sie Ihren Freund entfernen. können Sie keine Liveübertragungen von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
+
+    <!-- edit route name -->
+    <string name="teditRecordName">Routenname wurde erfolgreich geändert.</string>
+    <string name="teditRecordNameUnknownError">Unbekannter Fehler beim Ändern des Routennamens!</string>
+
+    <!-- cropView strings -->
+    <string name="ucrop_rotate">Rotieren</string>
+    <string name="ucrop_scale">Skalieren</string>
+    <string name="selectImage">Bitte wählen Sie ein Profilbild aus</string>
+    <string name="ucrop_selectImage">Bild ausgewählt!</string>
+
 
 </resources>

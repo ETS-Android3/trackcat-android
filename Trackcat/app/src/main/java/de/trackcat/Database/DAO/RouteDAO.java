@@ -54,8 +54,8 @@ public class RouteDAO {
     public void create(Route route) {
         DbHelper dbHelper = new DbHelper(context);
         try {
-            route.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null,
-                    valueGenerator(route)));
+            dbHelper.getWritableDatabase().insert(TABLE_NAME, null,
+                    valueGenerator(route));
         } finally {
             dbHelper.close();
         }
@@ -78,6 +78,7 @@ public class RouteDAO {
         if (route.getId() != 0 && this.read(route.getId()).getId() == 0) {
             values.put(COL_ID, route.getId());
         }
+      //  values.put(COL_ID, route.getId());
         values.put(COL_USER, route.getUserId());
         values.put(COL_NAME, route.getName());
         values.put(COL_TIME, route.getTime());
@@ -85,8 +86,10 @@ public class RouteDAO {
         values.put(COL_TYPE, route.getType());
         values.put(COL_RIDETIME, route.getRideTime());
         values.put(COL_DISTANCE, route.getDistance());
+        values.put(COL_TIMESTAMP, route.getTimeStamp());
         values.put(COL_ISIMPORTED, route.isImportedDB());
-        values.put(COL_LOCATIONS, gson.toJson(route.getLocations(), listType));
+        values.put(COL_ISTEMP, route.isTempDB());
+        values.put(COL_LOCATIONS, route.getLocations());
 
         return values;
     }
@@ -112,7 +115,9 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_TIMESTAMP,
                     COL_ISIMPORTED,
+                    COL_ISTEMP,
                     COL_LOCATIONS};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
@@ -130,10 +135,11 @@ public class RouteDAO {
                     result.setDate(cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)));
                     result.setType(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)));
                     result.setRideTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_RIDETIME)));
+                    result.setTimeStamp(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
                     result.setDistance(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)));
                     result.setImportedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)));
-                    result.setLocations(gson.fromJson(cursor.getString(
-                            cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType));
+                    result.setTempDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP)));
+                    result.setLocations(cursor.getString(cursor.getColumnIndexOrThrow(COL_LOCATIONS)));
                 }
             }
         } finally {
@@ -145,30 +151,27 @@ public class RouteDAO {
     /**
      * Reads all routes of a specific user.
      *
-     * @param userId id of specific user of whom routes has to be selected
      * @return List of all routes belong to specific user in database sorted ascending after id,
      * if routes with matching userId was found else an empty List
      */
-    public List<Route> readAll(int userId) {
-        return this.readAll(userId, new String[]{"id", "ASC"});
+    public List<Route> readAll() {
+        return this.readAll(new String[]{"id", "ASC"});
     }
 
     /**
      * Reads all routes of a specific user.
      *
-     * @param userId    id of specific user of whom routes has to be selected
      * @param orderArgs String[] { column to sort, ASC / DESC }
      *                  use COL_ID, COL_NAME, COL_TIME or COL_DISTANCE etc from DbContract
      *                  as columns and ASC for ascending or DESC for descending order
      * @return List of all routes belong to specific user in database sorted after
      * orderArgs, if routes with matching userId was found else an empty List
      */
-    private List<Route> readAll(int userId, String[] orderArgs) {
+    private List<Route> readAll(String[] orderArgs) {
         DbHelper dbHelper = new DbHelper(context);
-        List<Route> result = new ArrayList<>();
-        String selection = COL_USER + " = ?";
+        ArrayList<Route> result = new ArrayList<>();
         try {
-            String[] selectionArgs = {String.valueOf(userId)};
+
             String[] projection = {
                     COL_ID,
                     COL_USER,
@@ -178,13 +181,15 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_TIMESTAMP,
                     COL_ISIMPORTED,
-                    COL_LOCATIONS};
+                    COL_ISTEMP,
+            COL_LOCATIONS};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
-                    selection,
-                    selectionArgs,
+                    null,
+                    null,
                     null,
                     null,
                     orderArgs[0] + " " + orderArgs[1])) {
@@ -199,9 +204,11 @@ public class RouteDAO {
                                 cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                                gson.fromJson(cursor.getString(
-                                        cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP)),
+                                cursor.getString(cursor.getColumnIndexOrThrow(COL_LOCATIONS))));
+
                     } while (cursor.moveToNext());
             }
         } finally {
@@ -213,16 +220,13 @@ public class RouteDAO {
     /**
      * Reads all routes of a specific user which are recorded within the last seven days.
      *
-     * @param userId id of specific user of whom routes has to be selected
      * @return List of all routes belong to specific user in database sorted descending after
      * date, if routes with matching userId was found else an empty List
      */
-    public List<Route> readLastSevenDays(int userId) {
+    public List<Route> readLastSevenDays() {
         DbHelper dbHelper = new DbHelper(context);
         List<Route> result = new ArrayList<>();
         try {
-            String selection = COL_USER + " = ?";
-            String[] selectionArgs = {String.valueOf(userId)};
             String[] projection = {
                     COL_ID,
                     COL_USER,
@@ -232,7 +236,9 @@ public class RouteDAO {
                     COL_TYPE,
                     COL_RIDETIME,
                     COL_DISTANCE,
+                    COL_TIMESTAMP,
                     COL_ISIMPORTED,
+                    COL_ISTEMP,
                     COL_LOCATIONS};
             long sevenDaysInMillis = 604800000;
             String having = COL_DATE + " >= " + (System.currentTimeMillis() - sevenDaysInMillis) +
@@ -240,8 +246,8 @@ public class RouteDAO {
             try (Cursor cursor = dbHelper.getWritableDatabase().query(
                     TABLE_NAME,
                     projection,
-                    selection,
-                    selectionArgs,
+                    null,
+                    null,
                     COL_DATE,
                     having,
                     COL_DATE + " DESC")) {
@@ -257,9 +263,11 @@ public class RouteDAO {
                                     cursor.getDouble(cursor.getColumnIndexOrThrow(COL_DISTANCE)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_TYPE)),
                                     cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE)),
+                                    cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
                                     cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISIMPORTED)),
-                                    gson.fromJson(cursor.getString(
-                                            cursor.getColumnIndexOrThrow(COL_LOCATIONS)), listType)));
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISTEMP)),
+                                    cursor.getString(cursor.getColumnIndexOrThrow(COL_LOCATIONS))));
+
                         }
                     } while (cursor.moveToNext());
             }
@@ -369,11 +377,11 @@ public class RouteDAO {
      * @param userId of type integer of which user routes has to be exported
      * @return a List of JSON strings
      */
-    public List<String> exportRoutesToJson(int userId) {
+   /* public List<String> exportRoutesToJson(int userId) {
         List<String> result = new ArrayList<>();
         for (Route route : readAll(userId)) {
             result.add(exportRouteToJson(route.getId()));
         }
         return result;
-    }
+    }*/
 }

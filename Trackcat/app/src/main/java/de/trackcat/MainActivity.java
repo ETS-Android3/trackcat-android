@@ -2,6 +2,8 @@ package de.trackcat;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,7 +23,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +42,8 @@ import org.json.JSONObject;
 import de.trackcat.Dashboard.DashboardFragment;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
-import de.trackcat.FriendsSystem.FriendsFragment;
+import de.trackcat.FriendsSystem.FriendsViewerFragment;
+import de.trackcat.Profile.DeleteAccountFragment;
 import de.trackcat.Profile.EditPasswordFragment;
 import de.trackcat.Profile.ProfileFragment;
 import de.trackcat.Profile.EditProfileFragment;
@@ -56,6 +61,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -70,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static MainActivity instance;
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
-    public Boolean firstRun = false;
+    // public Boolean firstRun = false;
     private static boolean hints;
     private static boolean darkTheme;
     private UserDAO userDAO;
@@ -78,8 +84,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static Boolean isActiv = false;
     //  private static boolean isRestart = false;
     private static Menu menuInstance;
-
-
     private ProgressDialog progressDialog;
 
     /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
@@ -147,14 +151,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         /* Entferne die Benachrichtigung, wenn App läuft */
         notificationManager.cancel(getNOTIFICATION_ID());
-        progressDialog.dismiss();
+        try {
+            progressDialog.dismiss();
+        } catch (Exception e) {
+        }
         try {
             recordFragment.stopTimer();
             recordFragment = null;
         } catch (NullPointerException e) {
 
         }
-        MainActivity.getInstance().stopService(new Intent(MainActivity.getInstance(), Locator.class));
+        this.stopService(new Intent(this, Locator.class));
 
         isActiv = false;
 
@@ -215,13 +222,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Startseite definieren */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (isActiv) {
+       /* if (isActiv) {
             Toast.makeText(this, "Die App läuft bereits in einer anderen Instanz",
                     Toast.LENGTH_LONG).show();
             finish();
         } else {
             isActiv = true;
-        }
+        }*/
         /* Instanz für spätere Objekte speichern */
         instance = this;
         recordFragment = new RecordFragment();
@@ -300,14 +307,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         notificationManager = NotificationManagerCompat.from(this);
-        firstRun = true;
+        //  firstRun = true;
 
         /* Startseite festlegen - Erster Aufruf */
         loadDashboard();
     }
 
     /* set profile information */
-    public void setDrawerInfromation(byte[] imgRessource, String first_name, String last_name, String email){
+    public void setDrawerInfromation(byte[] imgRessource, String first_name, String last_name, String email) {
 
         profileName.setText(first_name + " " + last_name);
         profileEmail.setText(email);
@@ -356,6 +363,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_editPassword:
                 loadEditPassword();
                 return true;
+            case R.id.nav_deleteAccount:
+                loadDeleteAccount();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -398,39 +408,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_logout:
 
-                /* set wait field */
-                progressDialog = new ProgressDialog(MainActivity.this,
-                        R.style.AppTheme_Dark_Dialog);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Abmeldung...");
-                progressDialog.show();
-                /* set waiting handler */
-                new android.os.Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-
-                                //TODO Geschmeidiger Übergang
-
-
-                                /* remove user from local db */
-                                List<User> deletedUsers = userDAO.readAll();
-                                for (User user : deletedUsers) {
-                                    userDAO.delete(user);
-                                }
-
-                                Intent intent = new Intent(MainActivity.this, StartActivity.class);
-                                intent.putExtra("isLogout", true);
-
-                                startActivity(intent);
-                                finish();
-                            }
-                        }, 3000);
+                logout();
 
                 break;
         }
         menuItem.setChecked(true);
         mainDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void logout() {
+        /* set wait field */
+        progressDialog = new ProgressDialog(MainActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Abmeldung...");
+        progressDialog.show();
+        /* set waiting handler */
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+
+                        finish();
+
+                        /* remove user from local db */
+                        List<User> deletedUsers = userDAO.readAll();
+                        for (User user : deletedUsers) {
+                            userDAO.delete(user);
+                        }
+
+                        /* open login fragment */
+                        Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                        intent.putExtra("isLogout", true);
+
+                        startActivity(intent);
+                    }
+                }, 3000);
     }
 
     /* Stops/pauses Tracking opens App and switch to RecordFragment */
@@ -478,9 +491,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadDashboard();
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
             loadRecordList();
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
             loadProfile(false);
-        } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null ||getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
+            loadFriendSystem();
+        }else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
             if (exitApp) {
@@ -607,8 +622,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void loadFriendSystem() {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Freunde-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new FriendsFragment(),
+        fragTransaction.replace(R.id.mainFrame, new FriendsViewerFragment(),
                 getResources().getString(R.string.fFriendSystem));
+        fragTransaction.commit();
+    }
+
+    /* Laden des Friends-Fragments */
+    public void loadDeleteAccount() {
+        Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Account-Löschen-Fragment wird geladen.");
+        FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+        fragTransaction.replace(R.id.mainFrame, new DeleteAccountFragment(),
+                getResources().getString(R.string.fDeleteAccount));
         fragTransaction.commit();
     }
 
@@ -643,6 +667,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         alert.setMessage(getResources().getString(R.string.help_editPassword));
                     } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
                         alert.setMessage(getResources().getString(R.string.help_friendSystem));
+                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_deleteAccount));
+                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_friends_profile));
+                    }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
+                        alert.setMessage(getResources().getString(R.string.help_friends_live_view));
                     }
                     alert.setNegativeButton("Schließen", null);
                     alert.show();
@@ -674,8 +704,172 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void showNotAuthorizedModal(int type) {
+        /* create AlertBox */
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        alert.setTitle("Achtung");
+        LayoutInflater layoutInflater = (LayoutInflater) Objects.requireNonNull(MainActivity.this).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_notauthorized, null, true) : null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            alert.setView(alertView);
 
-    private void synchronizeUser(User currentUser){
+        }
+
+        alert.setPositiveButton("Autorisieren", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                User user = userDAO.read(getActiveUser());
+                TextView password = alertView.findViewById(R.id.input_password);
+
+                if (GlobalFunctions.validatePassword(password, MainActivity.this)) {
+
+                    Retrofit retrofit = APIConnector.getRetrofit();
+                    APIClient apiInterface = retrofit.create(APIClient.class);
+                    String base = user.getMail() + ":" + password.getText();
+
+                    // TODO hashsalt Password
+                    /* start a call */
+                    String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                    Call<ResponseBody> call = apiInterface.getUser(authString);
+
+                    call.enqueue(new Callback<ResponseBody>() {
+
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            try {
+
+                                if (response.code() == 401) {
+                                    showNotAuthorizedModal(type);
+                                    Toast.makeText(instance, "Ihre Eingabe war nicht korrekt!", Toast.LENGTH_LONG).show();
+                                } else {
+
+                                    /* get jsonString from API */
+                                    String jsonString = response.body().string();
+
+                                    /* parse json */
+                                    JSONObject mainObject = new JSONObject(jsonString);
+                                    /* open activity if login success*/
+                                    if (mainObject.getString("success").equals("0")) {
+
+                                        /* get userObject from Json */
+                                        JSONObject userObject = mainObject.getJSONObject("userData");
+
+                                        /* save logged user in db */
+                                        User loggedUser = new User();
+                                        loggedUser.setIdUsers(userObject.getInt("id"));
+                                        loggedUser.setMail(userObject.getString("email"));
+                                        loggedUser.setFirstName(userObject.getString("firstName"));
+                                        loggedUser.setLastName(userObject.getString("lastName"));
+                                        if (userObject.getString("image") != "null") {
+                                            loggedUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
+                                        }
+                                        loggedUser.setGender(userObject.getInt("gender"));
+                                        if (userObject.getInt("darkTheme") == 0) {
+                                            loggedUser.setDarkThemeActive(false);
+                                        } else {
+                                            loggedUser.setDarkThemeActive(true);
+                                        }
+
+                                        if (userObject.getInt("hints") == 0) {
+                                            loggedUser.setHintsActive(false);
+                                        } else {
+                                            loggedUser.setHintsActive(true);
+                                        }
+
+                                        try {
+                                            loggedUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
+                                        } catch (Exception e) {
+                                        }
+
+                                        try {
+                                            loggedUser.setLastLogin(userObject.getLong("lastLogin"));
+                                        } catch (Exception e) {
+                                        }
+
+                                        try {
+                                            loggedUser.setWeight((float) userObject.getDouble("weight"));
+                                        } catch (Exception e) {
+                                        }
+
+                                        try {
+                                            loggedUser.setSize((float) userObject.getDouble("size"));
+                                        } catch (Exception e) {
+                                        }
+                                        try {
+                                            loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                                        } catch (Exception e) {
+                                        }
+
+                                        loggedUser.setPassword(userObject.getString("password"));
+                                        loggedUser.setTimeStamp(userObject.getLong("timeStamp"));
+                                        loggedUser.isSynchronised(true);
+                                        userDAO.update(getActiveUser(), loggedUser);
+
+                                        /* restart ProfileFragment */
+                                        if (type == 0) {
+                                            loadProfile(false);
+                                            /* restart EditProfileFragment */
+                                        } else if (type == 1) {
+                                            loadEditProfile();
+                                            /* restart Fragement after synchronize Data failed */
+                                        } else if (type == 2) {
+
+                                            if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
+                                                loadDashboard();
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
+                                                loadRecord();
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
+                                                loadRecordList();
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
+                                                //TODO
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
+                                                //TODO
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
+                                                loadProfile(false);
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null) {
+                                                loadEditProfile();
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
+                                                //TODO
+                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
+                                                loadFriendSystem();
+                                            }else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                                                loadDeleteAccount();
+                                            }
+                                        }else if(type==3){
+                                            loadDeleteAccount();
+                                        }else if(type==4){
+                                            loadRecordList();
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            call.cancel();
+                            Toast.makeText(instance, "Bitte überprüfen Sie Ihre Internetverbindung.", Toast.LENGTH_LONG).show();
+                            showNotAuthorizedModal(type);
+                        }
+                    });
+                } else {
+                    showNotAuthorizedModal(type);
+                }
+            }
+        });
+
+        alert.setNegativeButton("Abmelden", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                logout();
+            }
+        });
+        alert.show();
+    }
+
+    private void synchronizeUser(User currentUser) {
         /* send user timestamp to bb */
         HashMap<String, String> map = new HashMap<>();
         map.put("email", currentUser.getMail());
@@ -685,7 +879,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         APIClient apiInterface = retrofit.create(APIClient.class);
 
         /* start a call */
-        Call<ResponseBody> call = apiInterface.synchronizeData(map);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<ResponseBody> call = apiInterface.synchronizeData(authString, map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
@@ -693,129 +889,137 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 try {
-                    /* get jsonString from API */
-                    String jsonString = response.body().string();
+                    if (response.code() == 401) {
+                        MainActivity.getInstance().showNotAuthorizedModal(2);
+                    } else {
+                        /* get jsonString from API */
+                        String jsonString = response.body().string();
 
-                    /* parse json */
-                    JSONObject mainObject = new JSONObject(jsonString);
+                        /* parse json */
+                        JSONObject mainObject = new JSONObject(jsonString);
 
-                    /* user on server is new */
-                    if (mainObject.getString("state").equals("0")) {
+                        /* user on server is new */
+                        if (mainObject.getString("state").equals("0")) {
 
-                        /* get userObject from Json */
-                        JSONObject userObject = mainObject.getJSONObject("user");
+                            /* get userObject from Json */
+                            JSONObject userObject = mainObject.getJSONObject("user");
 
-                        /* save user in db */
-                        currentUser.setIdUsers(userObject.getInt("id"));
-                        currentUser.setMail(userObject.getString("email"));
-                        currentUser.setFirstName(userObject.getString("firstName"));
-                        currentUser.setLastName(userObject.getString("lastName"));
-                        if (userObject.getString("image") != "null") {
-                            currentUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
-                        }
-                        currentUser.setGender(userObject.getInt("gender"));
-                        if (userObject.getInt("darkTheme") == 0) {
-                            currentUser.setDarkThemeActive(false);
-                        } else {
-                            currentUser.setDarkThemeActive(true);
-                        }
+                            /* save user in db */
+                            currentUser.setIdUsers(userObject.getInt("id"));
+                            currentUser.setMail(userObject.getString("email"));
+                            currentUser.setFirstName(userObject.getString("firstName"));
+                            currentUser.setLastName(userObject.getString("lastName"));
+                            if (userObject.getString("image") != "null") {
+                                currentUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
+                            }
+                            currentUser.setGender(userObject.getInt("gender"));
+                            if (userObject.getInt("darkTheme") == 0) {
+                                currentUser.setDarkThemeActive(false);
+                            } else {
+                                currentUser.setDarkThemeActive(true);
+                            }
 
-                        if (userObject.getInt("hints") == 0) {
-                            currentUser.setHintsActive(false);
-                        } else {
-                            currentUser.setHintsActive(true);
-                        }
+                            if (userObject.getInt("hints") == 0) {
+                                currentUser.setHintsActive(false);
+                            } else {
+                                currentUser.setHintsActive(true);
+                            }
 
-                        try {
-                            currentUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
-                        } catch (Exception e) {
-                        }
+                            try {
+                                currentUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
+                            } catch (Exception e) {
+                            }
 
-                        try {
-                            currentUser.setLastLogin(userObject.getLong("lastLogin"));
-                        } catch (Exception e) {
-                        }
+                            try {
+                                currentUser.setLastLogin(userObject.getLong("lastLogin"));
+                            } catch (Exception e) {
+                            }
 
-                        try {
-                            currentUser.setWeight((float) userObject.getDouble("weight"));
-                        } catch (Exception e) {
-                        }
+                            try {
+                                currentUser.setWeight((float) userObject.getDouble("weight"));
+                            } catch (Exception e) {
+                            }
 
-                        try {
-                            currentUser.setSize((float) userObject.getDouble("size"));
-                        } catch (Exception e) {
-                        }
-                        try {
-                            currentUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
-                        } catch (Exception e) {
-                        }
+                            try {
+                                currentUser.setSize((float) userObject.getDouble("size"));
+                            } catch (Exception e) {
+                            }
+                            try {
+                                currentUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
+                            } catch (Exception e) {
+                            }
 
-                        currentUser.setPassword(userObject.getString("password"));
-                        currentUser.setTimeStamp(userObject.getLong("timeStamp"));
-                        currentUser.isSynchronised(true);
-                        userDAO.update(currentUser.getId(), currentUser);
+                            currentUser.setPassword(userObject.getString("password"));
+                            currentUser.setTimeStamp(userObject.getLong("timeStamp"));
+                            currentUser.isSynchronised(true);
+                            userDAO.update(currentUser.getId(), currentUser);
 
-                        /* set drawe profile information */
-                        setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
+                            /* set drawe profile information */
+                            setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
 
-                        /* user on device is new */
-                    } else if (mainObject.getString("state").equals("1")) {
 
-                        /* change values in global DB*/
-                        HashMap<String, String> map = new HashMap<>();
-                        map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
-                        map.put("email", currentUser.getMail());
-                        map.put("firstName", currentUser.getFirstName());
-                        map.put("lastName", currentUser.getLastName());
-                        map.put("size", "" + currentUser.getWeight());
-                        map.put("weight", "" + currentUser.getWeight());
-                        map.put("gender", "" + currentUser.getGender());
-                        map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
-                        map.put("timeStamp", "" + currentUser.getTimeStamp());
+                            /* user on device is new */
+                        } else if (mainObject.getString("state").equals("1")) {
 
-                        Retrofit retrofit = APIConnector.getRetrofit();
-                        APIClient apiInterface = retrofit.create(APIClient.class);
+                            /* change values in global DB*/
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
+                            map.put("email", currentUser.getMail());
+                            map.put("firstName", currentUser.getFirstName());
+                            map.put("lastName", currentUser.getLastName());
+                            map.put("size", "" + currentUser.getWeight());
+                            map.put("weight", "" + currentUser.getWeight());
+                            map.put("gender", "" + currentUser.getGender());
+                            map.put("dateOfBirth", "" + currentUser.getDateOfBirth());
+                            map.put("timeStamp", "" + currentUser.getTimeStamp());
 
-                        /* start a call */
-                        Call<ResponseBody> call2 = apiInterface.updateUser(map);
+                            Retrofit retrofit = APIConnector.getRetrofit();
+                            APIClient apiInterface = retrofit.create(APIClient.class);
 
-                        call2.enqueue(new Callback<ResponseBody>() {
+                            /* start a call */
+                            String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                                try {
-                                    /* get jsonString from API */
-                                    String jsonString = response.body().string();
+                            Call<ResponseBody> call2 = apiInterface.updateUser(authString, map);
 
-                                    /* parse json */
-                                    JSONObject successJSON = new JSONObject(jsonString);
+                            call2.enqueue(new Callback<ResponseBody>() {
 
-                                    if (successJSON.getString("success").equals("0")) {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                                        /* save is Synchronized value as true */
-                                        currentUser.isSynchronised(true);
-                                        userDAO.update(currentUser.getId(), currentUser);
+                                    try {
+                                        /* get jsonString from API */
+                                        String jsonString = response.body().string();
 
+                                        /* parse json */
+                                        JSONObject successJSON = new JSONObject(jsonString);
+
+                                        if (successJSON.getString("success").equals("0")) {
+
+                                            /* save is Synchronized value as true */
+                                            currentUser.isSynchronised(true);
+                                            userDAO.update(currentUser.getId(), currentUser);
+
+                                        }
+
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                call2.cancel();
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    call2.cancel();
+                                }
+                            });
+                        }
                     }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                } catch (Exception e) {
+                    Log.d(getResources().getString(R.string.app_name) + "-SynchroniseData", "Server Error: " + response.raw().message());
                     e.printStackTrace();
                 }
             }

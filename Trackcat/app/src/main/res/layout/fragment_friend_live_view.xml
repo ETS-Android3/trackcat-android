@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/mapview"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"></org.osmdroid.views.MapView>
+
+            <LinearLayout
+                android:id="@+id/main"
+                style="@style/Main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-15dp"
+                android:layout_weight="0"
+                android:background="@drawable/shape"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingTop="35dp"
+                android:paddingRight="15dp"
+                android:paddingBottom="20dp">
+
+                <LinearLayout
+                    android:id="@+id/sharing_user_Layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TextAppearanceRecord"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Übertragung von Max Mustermann"
+                        android:textSize="17dp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="25dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="right|center_vertical"
+                        android:orientation="vertical">
+
+
+                        <LinearLayout
+                            android:id="@+id/average_speed_Layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:id="@+id/average_speed_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0"
+                                app:srcCompat="@drawable/record_average_speed_white" />
+
+                            <TextView
+                                android:id="@+id/average_speed_TextView"
+                                style="@style/TextAppearanceRecord"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:gravity="center"
+                                android:text="0.0 km/h" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/distance_Layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:id="@+id/distance_Icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                app:srcCompat="@drawable/record_distance_white" />
+
+                            <TextView
+                                android:id="@+id/distance_TextView"
+                                style="@style/TextAppearanceRecord"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0"
+                                android:gravity="center"
+                                android:text="0.0 km" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/altimeter_Layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:id="@+id/altimeter_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0"
+                                app:srcCompat="@drawable/record_altimeter_white" />
+
+                            <TextView
+                                android:id="@+id/altimeter_TextView"
+                                style="@style/TextAppearanceRecord"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="0.0 m" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/other_Layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:id="@+id/accuracy_icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0"
+                                app:srcCompat="@drawable/ic_signal_cellular_0_bar_black_24dp" />
+
+                            <TextView
+                                android:id="@+id/accuracy_TextView"
+                                style="@style/TextAppearanceRecord"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="--" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:translationY="-15dp"
+            app:fabSize="normal"
+            app:layout_anchor="@id/mapview"
+            app:layout_anchorGravity="bottom|center"
+            app:srcCompat="@drawable/activity_running_record" />
+    </android.support.design.widget.CoordinatorLayout>
+
+    <Button
+        android:id="@+id/compBtn"
+        android:layout_width="48dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="9dp"
+        android:alpha="0"
+        android:text=""
+        tools:ignore="RtlCompat" />
+
+</FrameLayout>
