@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 
 import com.karan.churi.PermissionManager.PermissionManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,6 +55,7 @@ import de.trackcat.Profile.EditPasswordFragment;
 import de.trackcat.Profile.ProfileFragment;
 import de.trackcat.Profile.EditProfileFragment;
 import de.trackcat.RecordList.RecordListFragment;
+import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
 import de.trackcat.Recording.Locator;
 import de.trackcat.Recording.RecordFragment;
 import de.trackcat.Settings.SettingsFragment;
@@ -1125,7 +1128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void synchronizeRecords() {
+    public void synchronizeRecords(RecordListAdapter adapter) {
 
         /* get all temp routes */
         RecordTempDAO recordTempDAO = new RecordTempDAO(this);
@@ -1175,13 +1178,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     /* parse json */
                     JSONObject mainObject = new JSONObject(jsonString);
 
-                    if (mainObject.getString("success").equals("0")) {
 
-                        /* save in DB*/
-                        if (mainObject.getJSONObject("record") != null) {
 
+                        /* update records in local db*/
+                        if (mainObject.getJSONArray("newerOnServer") != null) {
+
+                            for (int i = 0; i < mainObject.getJSONArray("newerOnServer").length(); i++) {
+                                JSONArray newRecords=mainObject.getJSONArray("newerOnServer");
+                                int recordId=((JSONObject) newRecords.get(i)).getInt("id");
+                                String name = ((JSONObject) newRecords.get(i)).getString("name");
+
+                                Route newRecord= recordDAO.read(recordId);
+                                newRecord.setName(name);
+                                newRecord.setTimeStamp(((JSONObject) newRecords.get(i)).getLong("timeStamp"));
+                                recordDAO.update(recordId, newRecord);
+                            }
+
+                            /* save records from server ind db */
                         }
-                    }
+                        if(mainObject.getJSONArray("onServer") != null){
+
+                            JSONArray recordsArray = mainObject.getJSONArray("onServer");
+                            for (int i = 0; i < recordsArray.length(); i++) {
+                                Route record = new Route();
+                                record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
+                                record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
+                                record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
+                                record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
+                                record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
+                                record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
+                                record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
+                                record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
+                                record.setTemp(false);
+                                record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
+                                recordDAO.create(record);
+                            }
+
+                            /* send records to server */
+                        }
+                        if(mainObject.getJSONArray("missingId") != null){
+                            Toast.makeText(MainActivity.getInstance(), "!!!!!!ES KOMMT VOR!!!!",
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                    adapter.notifyDataSetChanged();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {

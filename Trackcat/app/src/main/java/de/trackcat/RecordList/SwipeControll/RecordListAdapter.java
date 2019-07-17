@@ -75,22 +75,23 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
     public void clear() {
         records.clear();
 
-        MainActivity.getInstance().synchronizeRecords();
+        /* synchronize records */
+        MainActivity.getInstance().synchronizeRecords(this);
 
-        /* Routen Aufzeichnungen von Datenbank abfragen */
+        /* get routes from db
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         records = dao.readAll();
 
-        /* get temp routes and add to list*/
+        /* get temp routes and add to list
         RecordTempDAO tempDAO = new RecordTempDAO(MainActivity.getInstance());
         List<Route> tempRecords =tempDAO.readAll();
 
         for (Route route : tempRecords) {
             records.add(route);
         }
-
+*/
         Toast.makeText(MainActivity.getInstance(), "REFRESH",
                 Toast.LENGTH_LONG).show();
-        notifyDataSetChanged();
+      //  notifyDataSetChanged();
     }
 }

@@ -217,15 +217,11 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 loggedUser.setTimeStamp(userObject.getLong("timeStamp"));
                                 loggedUser.isSynchronised(true);
                                 userDAO.create(loggedUser);
-
                                 getRecordData=true;
 
-
                                 /* set routes */
-
                                 if(mainObject.getJSONArray("records")!=null) {
                                     JSONArray recordsArray = mainObject.getJSONArray("records");
-                                    Log.d("TEST", "" + recordsArray);
                                     RouteDAO recordDao = new RouteDAO(StartActivity.getInstance());
                                     for (int i = 0; i < recordsArray.length(); i++) {
                                         Route record = new Route();
