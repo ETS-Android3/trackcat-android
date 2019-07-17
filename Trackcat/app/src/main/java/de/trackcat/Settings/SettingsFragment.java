@@ -93,7 +93,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         /* change data in global db */
         HashMap<String, String> map = new HashMap<>();
-        map.put("id", "" + currentUser.getIdUsers());
 
         /* Wechsel beim Anzeigen der Hilfreichen Tipps */
         if (preference.getKey().equals("help_messages")) {
