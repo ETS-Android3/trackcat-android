@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v7.preference.*;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,7 +93,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         /* change data in global db */
         HashMap<String, String> map = new HashMap<>();
-        map.put("email", currentUser.getMail());
+        map.put("id", "" + currentUser.getIdUsers());
 
         /* Wechsel beim Anzeigen der Hilfreichen Tipps */
         if (preference.getKey().equals("help_messages")) {
@@ -161,7 +162,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         /* start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
-        Call<ResponseBody> call = apiInterface.updateUser(base, map);
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<ResponseBody> call = apiInterface.updateUser(authString, map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
