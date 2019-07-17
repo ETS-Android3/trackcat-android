@@ -331,17 +331,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
          * */
         startMarker = new Marker(mMapView);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_maps_location_flag));
-
-            InputStream imageStream = this.getResources().openRawResource(R.raw.logo_marker_small);
-            Drawable d = Drawable.createFromStream(imageStream, "logo_marker");
-
-            startMarker.setIcon(d);
-
+            startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_logo_marker));
         }
+
         mPath = new Polyline(mMapView);
-
-
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
 
