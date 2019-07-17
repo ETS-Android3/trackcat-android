@@ -394,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_recordlist:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
                     menuInstance.clear();
-                    loadRecordList();
+                    synchronizeRecords();
                 }
                 break;
             case R.id.nav_record:
@@ -1128,6 +1128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /* function to synchronize all records */
     public void synchronizeRecords() {
 
         /* get all records routes */
@@ -1227,6 +1228,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
+
+                /*load view*/
+                loadRecordList();
             }
         });
     }
