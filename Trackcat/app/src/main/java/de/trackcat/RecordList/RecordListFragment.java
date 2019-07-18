@@ -25,14 +25,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
+import de.trackcat.Database.DAO.LocationTempDAO;
 import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
@@ -58,6 +62,8 @@ public class RecordListFragment extends Fragment {
 
     private boolean restore = false;
     private RouteDAO recordDAO;
+    private RecordTempDAO recordTempDAO;
+    private LocationTempDAO locationTempDAO;
 
 
     @Override
@@ -66,13 +72,14 @@ public class RecordListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_record_list, container, false);
 
-        /* Routen Aufzeichnungen von Datenbank abfragen */
+        /* create daos */
         recordDAO = new RouteDAO(MainActivity.getInstance());
-        records = recordDAO.readAll();
+        recordTempDAO = new RecordTempDAO(MainActivity.getInstance());
+        locationTempDAO = new LocationTempDAO(MainActivity.getInstance());
 
-        /* get temp routes and add to list*/
-        RecordTempDAO tempDAO = new RecordTempDAO(MainActivity.getInstance());
-        List<Route> tempRecords = tempDAO.readAll();
+        /* get temp routes and add to routeList */
+        records = recordDAO.readAll();
+        List<Route> tempRecords = recordTempDAO.readAll();
 
         for (Route route : tempRecords) {
             records.add(route);
@@ -105,7 +112,9 @@ public class RecordListFragment extends Fragment {
 
                 /* Item aus Recycler View und Datenbank entfernen */
                 mAdapter.removeItem(position);
-                recordDAO.delete(deletedItem);
+                if (!deletedItem.isTemp()) {
+                    recordDAO.delete(deletedItem);
+                }
 
                 /* Snackbar mit 'Rückgängig' Funnktion anzeigen */
                 Snackbar snackbar = Snackbar.make(mainLayout, "Aufzeichnung \"" + name + "\" wurde entfernt!", Snackbar.LENGTH_LONG);
@@ -116,7 +125,9 @@ public class RecordListFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         /* restore item */
-                        restoreItem(deletedItem, deletedIndex);
+                        if (!deletedItem.isTemp()) {
+                            restoreItem(deletedItem, deletedIndex);
+                        }
                         restore = true;
                     }
                 });
@@ -127,9 +138,7 @@ public class RecordListFragment extends Fragment {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
                         /* check if route resotred or not */
-                        if (!restore) {
-                            Log.d("TEEEEST", "OBJEKT LÖSCHEN!");
-
+                        if (!restore && !deletedItem.isTemp()) {
                             Retrofit retrofit = APIConnector.getRetrofit();
                             APIClient apiInterface = retrofit.create(APIClient.class);
 
@@ -161,7 +170,7 @@ public class RecordListFragment extends Fragment {
                                         if (mainObject.getString("success").equals("0")) {
                                             Toast.makeText(MainActivity.getInstance(), "Aufnahme '" + deletedItem.getName() + "' erfolgreich gelöscht.",
                                                     Toast.LENGTH_LONG).show();
-                                        }else{
+                                        } else {
                                             Toast.makeText(MainActivity.getInstance(), "Aufnahme '" + deletedItem.getName() + "' konnte nicht gelöscht werden.",
                                                     Toast.LENGTH_LONG).show();
                                             /* restore item */
@@ -194,8 +203,9 @@ public class RecordListFragment extends Fragment {
                                     restoreItem(deletedItem, deletedIndex);
                                 }
                             });
+                        }else if(deletedItem.isTemp()){
+                            recordTempDAO.delete(deletedItem);
                         }
-
                     }
                 });
             }
@@ -209,7 +219,6 @@ public class RecordListFragment extends Fragment {
                         " wurde erstellt.");
             } */
         });
-
 
 
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
@@ -244,7 +253,7 @@ public class RecordListFragment extends Fragment {
     }
 
     /* function to restore item */
-    private void restoreItem(Route deletedItem, int deletedIndex){
+    private void restoreItem(Route deletedItem, int deletedIndex) {
         mAdapter.restoreItem(deletedItem, deletedIndex);
         recordDAO.create(deletedItem);
     }
