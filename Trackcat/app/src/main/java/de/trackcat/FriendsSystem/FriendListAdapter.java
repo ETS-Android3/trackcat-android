@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import de.trackcat.CustomElements.CustomFriend;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendLiveFragment;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendProfileFragment;
@@ -26,6 +27,7 @@ public class FriendListAdapter extends ArrayAdapter<String> {
     private List<CustomFriend> friends;
     public TextView name, email, registSince;
     LayoutInflater inflater;
+    CircleImageView image, state;
     boolean newFriend;
 
     public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type) {
@@ -50,6 +52,8 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             view = inflater.inflate(R.layout.friend_list_item, parent, false);
             name = view.findViewById(R.id.friend_name);
             email = view.findViewById(R.id.friend_email);
+            image = view.findViewById(R.id.profile_image);
+            state = view.findViewById(R.id.profile_state);
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
            // email.setText(friends.get(position).getEmail());
 
@@ -86,13 +90,17 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                 }
             });
         } else {
-            /* Variablen erstellen */
+            /* find views */
             view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
             name = view.findViewById(R.id.friend_name);
             registSince = view.findViewById(R.id.friend_regist_since);
+            image = view.findViewById(R.id.profile_image);
+            state = view.findViewById(R.id.profile_state);
+
+            /* add values */
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
-           // email.setText(friends.get(position).getEmail());
             registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy HH:MM"));
+            state.setImageBitmap(GlobalFunctions.findLevel(friends.get(position).getTotalDistance()));
 
             ImageView addFriend = view.findViewById(R.id.add_friend);
             addFriend.setOnClickListener(new View.OnClickListener() {
