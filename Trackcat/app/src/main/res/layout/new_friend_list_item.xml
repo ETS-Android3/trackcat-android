@@ -97,19 +97,6 @@
 
             </LinearLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/add_friend"
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_person_add_black_24dp" />
-            </RelativeLayout>
-
         </LinearLayout>
 
     </LinearLayout>
