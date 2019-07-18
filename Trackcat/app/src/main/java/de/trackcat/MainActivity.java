@@ -1217,9 +1217,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     /*delete records, that was deleted on server */
                     if (mainObject.getJSONArray("deletedOnServer") != null && mainObject.getJSONArray("deletedOnServer").length() > 0) {
-                        Toast.makeText(MainActivity.getInstance(), "!!!!!!HALLO!!!!",
-                                Toast.LENGTH_LONG).show();
-
                         JSONArray deletedIdArray = mainObject.getJSONArray("deletedOnServer");
                         for (int i = 0; i < deletedIdArray.length(); i++) {
                             Route deletedRecord = recordDAO.read(((JSONObject) deletedIdArray.get(i)).getInt("id"));
