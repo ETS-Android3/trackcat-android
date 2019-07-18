@@ -191,9 +191,9 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         HashMap<String, String> map = new HashMap<>();
         map.put("firstName", firstName);
         map.put("lastName", lastName);
-        map.put("genderRadio",""+gender);
+        map.put("gender",""+gender);
         map.put("email", email);
-        map.put("birthday", ""+GlobalFunctions.getSecondsFromString(dayOfBirth, "dd.MM.yyyy"));
+        map.put("dateOfBirth", ""+GlobalFunctions.getSecondsFromString(dayOfBirth, "dd.MM.yyyy"));
         map.put("password", password1);
 
         // TODO hashsalt Password
