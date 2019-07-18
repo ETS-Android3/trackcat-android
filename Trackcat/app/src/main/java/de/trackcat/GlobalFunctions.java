@@ -48,11 +48,12 @@ public class GlobalFunctions {
 
     /* get string date from millis */
     public static String getDateWithTimeFromSeconds(long seconds, String dateFormat) {
-        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(seconds * 1000);
-        return formatter.format(calendar.getTime());
+        Date date = new java.util.Date(seconds*1000);
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat(dateFormat);
+        String formattedDate = sdf.format(date);
+
+        return formattedDate;
     }
 
     /* get millis from string date */

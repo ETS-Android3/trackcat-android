@@ -596,11 +596,11 @@ public class ProfileFragment extends Fragment {
         }
 
         /* set dateOfRegistration*/
-        String curdayIfRegistrationString = GlobalFunctions.getDateWithTimeFromSeconds(user_dateOfRegistration, "dd.MM.yyyy HH:MM");
+        String curdayIfRegistrationString = GlobalFunctions.getDateWithTimeFromSeconds(user_dateOfRegistration, "dd.MM.yyyy HH:mm");
         dayOfRegistration.setText(curdayIfRegistrationString);
 
         /* set lastLogin*/
-        String curLastLoginString = GlobalFunctions.getDateWithTimeFromSeconds(user_lastLogin, "dd.MM.yyyy HH:MM");
+        String curLastLoginString = GlobalFunctions.getDateWithTimeFromSeconds(user_lastLogin, "dd.MM.yyyy HH:mm");
         lastLogIn.setText(curLastLoginString);
 
         /*set amount records*/
