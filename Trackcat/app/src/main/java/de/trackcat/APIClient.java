@@ -56,4 +56,8 @@ public interface APIClient {
     @POST("/editRecordAPI")
     Call<ResponseBody> updateRecordName(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/deleteRecordAPI")
+    Call<ResponseBody> deleteRecord(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
+
 }
