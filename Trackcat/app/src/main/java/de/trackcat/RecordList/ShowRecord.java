@@ -93,7 +93,6 @@ public class ShowRecord {
 
                         for ( int i=0;i< locationArray.length();i++) {
                             Location location= new Location();
-                            location.setRecordId(((JSONObject) locationArray.get(i)).getInt("recordId"));
                             location.setLatitude(((JSONObject) locationArray.get(i)).getDouble("latitude"));
                             location.setLongitude(((JSONObject) locationArray.get(i)).getDouble("longitude"));
                             location.setAltitude(((JSONObject) locationArray.get(i)).getDouble("altitude"));
