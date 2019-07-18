@@ -91,7 +91,6 @@ final class DbContract {
                     UserEntry.COL_ID + " INTEGER PRIMARY KEY, " +
                     UserEntry.COL_FIRSTNAME + " TEXT, " +
                     UserEntry.COL_LASTNAME + " TEXT, " +
-                    UserEntry.COL_ISACTIVE + " BOOLEAN, " +
                     UserEntry.COL_THEME + " BOOLEAN, " +
                     UserEntry.COL_HINT + " BOOLEAN, " +
                     UserEntry.COL_MAIL + " TEXT, " +
@@ -106,7 +105,6 @@ final class DbContract {
                     UserEntry.COL_TOTALTIME + " LONG, " +
                     UserEntry.COL_TOTALDISTANCE + " LONG, " +
                     UserEntry.COL_TIMESTAMP + " LONG, " +
-                    UserEntry.COL_IDUSERS + " INTEGER, " +
                     UserEntry.COL_ISSYNCHRONIZED + " BOOLEAN, " +
                     UserEntry.COL_IMAGE + " BLOB) ";
 
@@ -179,7 +177,6 @@ final class DbContract {
         static final String COL_ID = "id";
         static final String COL_LASTNAME = "lastname";
         static final String COL_FIRSTNAME = "firstname";
-        static final String COL_ISACTIVE = "active";
         static final String COL_HINT = "hint";
         static final String COL_THEME = "theme";
         static final String COL_MAIL = "mail";
@@ -194,7 +191,6 @@ final class DbContract {
         static final String COL_TOTALTIME ="totalTime";
         static final String COL_TOTALDISTANCE ="totalDistance";
         static final String COL_TIMESTAMP ="timeStamp";
-        static final String COL_IDUSERS ="idUsers";
         static final String COL_ISSYNCHRONIZED ="isSynchronized";
         static final String COL_IMAGE = "image";
     }

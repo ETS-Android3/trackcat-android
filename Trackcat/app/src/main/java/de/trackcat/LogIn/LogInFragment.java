@@ -153,7 +153,6 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 User loggedUser = new User();
                                 loggedUserId=userObject.getInt("id");
                                 loggedUser.setId(userObject.getInt("id"));
-                                loggedUser.setIdUsers(userObject.getInt("id"));
                                 loggedUser.setMail(userObject.getString("email"));
                                 loggedUser.setFirstName(userObject.getString("firstName"));
                                 loggedUser.setLastName(userObject.getString("lastName"));

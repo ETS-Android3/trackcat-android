@@ -10,7 +10,6 @@ public class User {
      */
     private String firstName;
     private String lastName;
-    private boolean isActive;
     private boolean darkThemeActive;
     private boolean hintsActive;
     private int id;
@@ -26,7 +25,6 @@ public class User {
     private long totalTime;
     private long totalDistance;
     private long timeStamp;
-    private int idUsers;
     private boolean isSynchronized;
     private byte[] image;
 
@@ -54,9 +52,9 @@ public class User {
      * @param idUsers    of type int
      * @param isSynchronized     of type integer
      */
-    public User(int id, String firstName, String lastName, int active, int hintsActive,
+    public User(int id, String firstName, String lastName, int hintsActive,
                 int themeActive, String eMail, String password ,float weight, float size, int gender, long dateOfBirth,
-                long dateOfRegistration, long lastLogin,  long amountRecord,  long totalTime,  long totalDistance,long timeStamp, int idUsers, byte[] image, int isSynchronized) {
+                long dateOfRegistration, long lastLogin,  long amountRecord,  long totalTime,  long totalDistance,long timeStamp, byte[] image, int isSynchronized) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -72,10 +70,8 @@ public class User {
         this.totalTime = totalTime;
         this.totalDistance = totalDistance;
         this.timeStamp = timeStamp;
-        this.idUsers = idUsers;
         this.image = image;
         this.setIsSynchronizedDB(isSynchronized);
-        this.setActiveDB(active);
         this.setDarkThemeActiveDB(themeActive);
         this.setHintsActiveDB(hintsActive);
     }
@@ -427,24 +423,6 @@ public class User {
     }
 
     /**
-     * Getter for the idUsers.
-     *
-     * @return value of type int
-     */
-    public float getIdUsers() {
-        return idUsers;
-    }
-
-    /**
-     * Setter for the idUsers.
-     *
-     * @param idUsers of type long
-     */
-    public void setIdUsers(int idUsers) {
-        this.idUsers = idUsers;
-    }
-
-    /**
      * Getter for the user profile image.
      *
      * @return value of type byte array
@@ -460,71 +438,6 @@ public class User {
      */
     public void setImage(byte[] image) {
         this.image = image;
-    }
-
-    /**
-     * Getter to define if user is currently active user or not.
-     *
-     * @return native boolean for logic purposes
-     *
-     * <p>
-     * Returns true if the user is currently the active one or false if it isn't.
-     * </p>
-     */
-    public boolean isActive() {
-        return isActive;
-    }
-
-    /**
-     * Getter to define if user is currently active user or not for database storage purposes.
-     *
-     * @return value of type integer
-     *
-     * <p>
-     * Integer value is necessary due to SQLite Database constraint. SQLite does not implement
-     * boolean values natively as true or false but only as integer.
-     * </p>
-     * <p>
-     * Returns "1" if the user is currently the active one or "0" if it isn't.
-     * </p>
-     */
-    public int isActiveDB() {
-        if (isActive)
-            return 1;
-        else
-            return 0;
-    }
-
-    /**
-     * Setter to decide if user is currently active user or not for UI purposes.
-     *
-     * @param active boolean value
-     *
-     *               <p>
-     *               Hand over true to define that the user is currently the active one or false
-     *               to define that it isn't.
-     *               </p>
-     */
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    /**
-     * Setter to define if user is currently active user or not for database storage purposes.
-     *
-     * @param active of type integer
-     *
-     *               <p>
-     *               Integer value is necessary due to SQLite Database constraint. SQLite does not implement
-     *               boolean values natively as true or false but only as integer.
-     *               </p>
-     *               <p>
-     *               Hand over "1" to define that the user is currently the active one or "0"
-     *               to define that it isn't.
-     *               </p>
-     */
-    public void setActiveDB(int active) {
-        this.isActive = active == 1;
     }
 
     /**

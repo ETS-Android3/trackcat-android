@@ -140,7 +140,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         /* read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
-        map.put("id", "" + currentUser.getIdUsers());
+        map.put("id", "" + currentUser.getId());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);

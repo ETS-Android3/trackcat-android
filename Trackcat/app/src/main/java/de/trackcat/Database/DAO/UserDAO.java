@@ -70,6 +70,7 @@ public class UserDAO {
      */
     private ContentValues valueGenerator(User user) {
         ContentValues values = new ContentValues();
+        values.put(COL_ID, user.getId());
         values.put(COL_FIRSTNAME, user.getFirstName());
         values.put(COL_LASTNAME, user.getLastName());
         values.put(COL_MAIL, user.getMail());
@@ -84,8 +85,6 @@ public class UserDAO {
         values.put(COL_TOTALTIME, user.getTotalTime());
         values.put(COL_TOTALDISTANCE, user.getTotalDistance());
         values.put(COL_TIMESTAMP, user.getTimeStamp());
-        values.put(COL_IDUSERS, user.getIdUsers());
-        values.put(COL_ISACTIVE, user.isActiveDB());
         values.put(COL_HINT, user.isHintsActiveDB());
         values.put(COL_THEME, user.isDarkThemeActiveDB());
         values.put(COL_ISSYNCHRONIZED, user.isSynchronizedDB());
@@ -121,8 +120,6 @@ public class UserDAO {
                     COL_TOTALTIME,
                     COL_TOTALDISTANCE,
                     COL_TIMESTAMP,
-                    COL_IDUSERS,
-                    COL_ISACTIVE,
                     COL_THEME,
                     COL_HINT,
                     COL_IMAGE,
@@ -139,7 +136,6 @@ public class UserDAO {
                     result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
                     result.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(COL_FIRSTNAME)));
                     result.setLastName(cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)));
-                    result.setActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)));
                     result.setHintsActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)));
                     result.setDarkThemeActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)));
                     result.setMail(cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)));
@@ -154,7 +150,6 @@ public class UserDAO {
                     result.setTotalTime(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALTIME)));
                     result.setTotalDistance(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALDISTANCE)));
                     result.setTimeStamp(cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)));
-                    result.setIdUsers(cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)));
                     result.setImage(cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)));
                     result.setIsSynchronizedDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISSYNCHRONIZED)));
                 }
@@ -191,7 +186,6 @@ public class UserDAO {
                     COL_LASTNAME,
                     COL_MAIL,
                     COL_PASSWORD,
-                    COL_ISACTIVE,
                     COL_IMAGE,
                     COL_WEIGHT,
                     COL_SIZE,
@@ -203,7 +197,6 @@ public class UserDAO {
                     COL_TOTALTIME,
                     COL_TOTALDISTANCE,
                     COL_TIMESTAMP,
-                    COL_IDUSERS,
                     COL_HINT,
                     COL_THEME,
                     COL_ISSYNCHRONIZED };
@@ -221,7 +214,6 @@ public class UserDAO {
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                                 cursor.getString(cursor.getColumnIndexOrThrow(COL_FIRSTNAME)),
                                 cursor.getString(cursor.getColumnIndexOrThrow(COL_LASTNAME)),
-                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISACTIVE)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)),
                                 cursor.getString(cursor.getColumnIndexOrThrow(COL_MAIL)),
@@ -236,7 +228,6 @@ public class UserDAO {
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALTIME)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TOTALDISTANCE)),
                                 cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIMESTAMP)),
-                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDUSERS)),
                                 cursor.getBlob(cursor.getColumnIndexOrThrow(COL_IMAGE)),
                                 cursor.getInt(cursor.getColumnIndexOrThrow(COL_ISSYNCHRONIZED))));
                     } while (cursor.moveToNext());
