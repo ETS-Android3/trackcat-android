@@ -261,7 +261,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             case 1:
                 gender.check(R.id.radioMale);
                 break;
-
         }
 
         /*set dayOfBirth*/

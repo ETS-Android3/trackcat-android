@@ -24,6 +24,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
     TextView logInInLink;
     String firstName, lastName, password1, password2;
     Boolean generalTerm, dataProtection;
+    int gender;
     private com.shuhart.stepview.StepView stepView;
 
 
@@ -43,6 +44,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
         if (getArguments() != null) {
             firstName = getArguments().getString("firstName");
             lastName = getArguments().getString("lastName");
+            gender= getArguments().getInt("gender");
             password1 = getArguments().getString("password1");
             password2 = getArguments().getString("password2");
             generalTerm = getArguments().getBoolean("generalTerms");
@@ -75,6 +77,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                 bundleSignIn_1_and_2 = new Bundle();
                 bundleSignIn_1_and_2.putString("firstName", firstName);
                 bundleSignIn_1_and_2.putString("lastName", lastName);
+                bundleSignIn_1_and_2.putInt("gender", gender);
                 bundleSignIn_1_and_2.putString("email", input_email_back);
                 bundleSignIn_1_and_2.putString("password1", password1);
                 bundleSignIn_1_and_2.putString("password2", password2);
@@ -98,6 +101,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                     bundleSignIn_1_and_2 = new Bundle();
                     bundleSignIn_1_and_2.putString("firstName", firstName);
                     bundleSignIn_1_and_2.putString("lastName", lastName);
+                    bundleSignIn_1_and_2.putInt("gender", gender);
                     bundleSignIn_1_and_2.putString("email", input_email_next);
                     bundleSignIn_1_and_2.putString("password1", password1);
                     bundleSignIn_1_and_2.putString("password2", password2);

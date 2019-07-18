@@ -40,6 +40,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
     TextView logInInLink, messageBox, messageBoxInfo, link_termsOfService, link_dataProtection;
     String firstName, lastName, email, password1, password2;
     Boolean checkGeneralTerm, checkDataProtection = false;
+    int gender;
     private com.shuhart.stepview.StepView stepView;
 
 
@@ -63,6 +64,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         if (getArguments() != null) {
             firstName = getArguments().getString("firstName");
             lastName = getArguments().getString("lastName");
+            gender= getArguments().getInt("gender");
             email = getArguments().getString("email");
             password1 = getArguments().getString("password1");
             password2 = getArguments().getString("password2");
@@ -112,6 +114,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                 Bundle bundleSignIn_1_and_2_and_3_and_4 = new Bundle();
                 bundleSignIn_1_and_2_and_3_and_4.putString("firstName", firstName);
                 bundleSignIn_1_and_2_and_3_and_4.putString("lastName", lastName);
+                bundleSignIn_1_and_2_and_3_and_4.putInt("gender", gender);
                 bundleSignIn_1_and_2_and_3_and_4.putString("email", email);
                 bundleSignIn_1_and_2_and_3_and_4.putBoolean("generalTerms", generalTerm.isChecked());
                 bundleSignIn_1_and_2_and_3_and_4.putBoolean("dataProtection", dataProtection.isChecked());
@@ -180,6 +183,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         HashMap<String, String> map = new HashMap<>();
         map.put("firstName", firstName);
         map.put("lastName", lastName);
+        map.put("gender",""+gender);
         map.put("email", email);
         map.put("password", password1);
 
