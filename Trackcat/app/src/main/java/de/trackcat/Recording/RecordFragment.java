@@ -622,7 +622,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 String base = currentUser.getMail() + ":" + currentUser.getPassword();
 
                 RecordModelForServer m = new RecordModelForServer();
-                m.setId(model.getId());
+                m.setId(newRecordId);
                 m.setUserID(MainActivity.getActiveUser());
                 m.setName(model.getName());
                 m.setType(model.getType());
@@ -675,6 +675,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                     record.setTemp(false);
                                     record.setLocations(recordJSON.getString("locations"));
                                     recordDAO.create(record);
+
+                                    /* delete old record */
+                                    int tempRecordId= mainObject.getInt("oldId");
+                                    record.setId(tempRecordId);
 
                                     /*remove from temp*/
                                     recordTempDAO.delete(record);

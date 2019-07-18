@@ -313,14 +313,14 @@ public class RecordTempDAO {
      */
     void delete(int id) {
         DbHelper dbHelper = new DbHelper(context);
-        String selection = COL_ID + " LIKE ?";
-        String[] selectionArgs = {String.valueOf(id)};
+        LocationTempDAO locationDAO = new LocationTempDAO(context);
         try {
             /*delete locations*/
-            LocationTempDAO locationDAO = new LocationTempDAO(context);
             for (Location location : locationDAO.readAll(id)) {
                 locationDAO.delete(location.getId());
             }
+            String selection = COL_ID + " LIKE ?";
+            String[] selectionArgs = {String.valueOf(id)};
             dbHelper.getWritableDatabase().delete(TABLE_NAME, selection, selectionArgs);
         } finally {
             dbHelper.close();
