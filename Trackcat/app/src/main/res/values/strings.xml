@@ -33,6 +33,7 @@
     <string name="fRecordDetailsChartSpeed">RECORD_DETAILS_CHART_SPEED</string>
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
     <string name="fFriendProfile">FRIENDPROFILE</string>
+    <string name="fPublicPersonProfile">PUBLICPERSONPROFILE</string>
     <string name="fFriendLiveView">FRIENDLIVEVIEW</string>
 
     <!-- ErrorMessages Connection to Server -->

@@ -504,7 +504,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadProfile(false);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
             loadFriendSystem();
-        } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfile)) != null){
+            loadFriendSystem();
+        }
+        else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
             if (exitApp) {
@@ -766,7 +769,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                         /* save logged user in db */
                                         User loggedUser = new User();
-                                        loggedUser.setIdUsers(userObject.getInt("id"));
+                                        loggedUser.setId(userObject.getInt("id"));
                                         loggedUser.setMail(userObject.getString("email"));
                                         loggedUser.setFirstName(userObject.getString("firstName"));
                                         loggedUser.setLastName(userObject.getString("lastName"));
@@ -915,7 +918,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             JSONObject userObject = mainObject.getJSONObject("user");
 
                             /* save user in db */
-                            currentUser.setIdUsers(userObject.getInt("id"));
+                            currentUser.setId(userObject.getInt("id"));
                             currentUser.setMail(userObject.getString("email"));
                             currentUser.setFirstName(userObject.getString("firstName"));
                             currentUser.setLastName(userObject.getString("lastName"));

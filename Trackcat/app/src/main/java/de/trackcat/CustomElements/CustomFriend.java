@@ -2,18 +2,18 @@ package de.trackcat.CustomElements;
 
 public class CustomFriend {
 
-    private String email;
+    private long dateOfRegistration;
     private String firstName;
     private String lastName;
     private byte[] image;
-    private int state;
+    private long totalDistance;
 
-    public String getEmail() {
-        return email;
+    public long getDateOfRegistration() {
+        return dateOfRegistration;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setDateOfRegistration(long dateOfRegistration) {
+        this.dateOfRegistration = dateOfRegistration;
     }
 
     public String getFirstName() {
@@ -40,11 +40,11 @@ public class CustomFriend {
         this.image = image;
     }
 
-    public int getState() {
-        return state;
+    public long getTotalDistance() {
+        return totalDistance;
     }
 
-    public void setState(int state) {
-        this.state = state;
+    public void setTotalDistance(long totalDistance) {
+        this.totalDistance = totalDistance;
     }
 }

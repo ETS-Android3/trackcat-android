@@ -17,10 +17,12 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.HashMap;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.LogIn.LogInFragment;
 import de.trackcat.R;
 import okhttp3.ResponseBody;
@@ -38,8 +40,9 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
     ImageView btnBack;
     Button btnSignIn;
     TextView logInInLink, messageBox, messageBoxInfo, link_termsOfService, link_dataProtection;
-    String firstName, lastName, email, password1, password2;
+    String firstName, lastName, email, password1, password2, dayOfBirth;
     Boolean checkGeneralTerm, checkDataProtection = false;
+    int gender;
     private com.shuhart.stepview.StepView stepView;
 
 
@@ -63,7 +66,9 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         if (getArguments() != null) {
             firstName = getArguments().getString("firstName");
             lastName = getArguments().getString("lastName");
+            gender= getArguments().getInt("gender");
             email = getArguments().getString("email");
+            dayOfBirth= getArguments().getString("dayOfBirth");
             password1 = getArguments().getString("password1");
             password2 = getArguments().getString("password2");
             generalTerm.setChecked(getArguments().getBoolean("generalTerms"));
@@ -112,7 +117,9 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                 Bundle bundleSignIn_1_and_2_and_3_and_4 = new Bundle();
                 bundleSignIn_1_and_2_and_3_and_4.putString("firstName", firstName);
                 bundleSignIn_1_and_2_and_3_and_4.putString("lastName", lastName);
+                bundleSignIn_1_and_2_and_3_and_4.putInt("gender", gender);
                 bundleSignIn_1_and_2_and_3_and_4.putString("email", email);
+                bundleSignIn_1_and_2_and_3_and_4.putString("dayOfBirth", dayOfBirth);
                 bundleSignIn_1_and_2_and_3_and_4.putBoolean("generalTerms", generalTerm.isChecked());
                 bundleSignIn_1_and_2_and_3_and_4.putBoolean("dataProtection", dataProtection.isChecked());
 
@@ -127,7 +134,11 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
                 break;
             case R.id.btn_signin:
-                signin();
+                try {
+                    signin();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.link_login:
                 fragTransaction = getFragmentManager().beginTransaction();
@@ -161,7 +172,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
     }
 
     /* function for signIn */
-    public void signin() {
+    public void signin() throws ParseException {
 
         /* set button enabled */
         setButtonDisable();
@@ -180,7 +191,9 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         HashMap<String, String> map = new HashMap<>();
         map.put("firstName", firstName);
         map.put("lastName", lastName);
+        map.put("gender",""+gender);
         map.put("email", email);
+        map.put("dateOfBirth", ""+GlobalFunctions.getSecondsFromString(dayOfBirth, "dd.MM.yyyy"));
         map.put("password", password1);
 
         // TODO hashsalt Password

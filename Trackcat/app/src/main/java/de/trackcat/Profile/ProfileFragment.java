@@ -85,7 +85,7 @@ public class ProfileFragment extends Fragment {
 
         /* read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
-        map.put("id", ""+currentUser.getIdUsers());
+        map.put("id", ""+currentUser.getId());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
@@ -596,11 +596,11 @@ public class ProfileFragment extends Fragment {
         }
 
         /* set dateOfRegistration*/
-        String curdayIfRegistrationString = GlobalFunctions.getDateWithTimeFromSeconds(user_dateOfRegistration, "dd.MM.yyyy HH:MM");
+        String curdayIfRegistrationString = GlobalFunctions.getDateWithTimeFromSeconds(user_dateOfRegistration, "dd.MM.yyyy HH:mm");
         dayOfRegistration.setText(curdayIfRegistrationString);
 
         /* set lastLogin*/
-        String curLastLoginString = GlobalFunctions.getDateWithTimeFromSeconds(user_lastLogin, "dd.MM.yyyy HH:MM");
+        String curLastLoginString = GlobalFunctions.getDateWithTimeFromSeconds(user_lastLogin, "dd.MM.yyyy HH:mm");
         lastLogIn.setText(curLastLoginString);
 
         /*set amount records*/
@@ -608,10 +608,13 @@ public class ProfileFragment extends Fragment {
 
         /* set total distance */
         double distance = Math.round(user_totalDistance);
+        double levelDistance;
         if (distance >= 1000) {
-            String d = "" + distance / 1000L;
+            String d = "" + Math.round((distance / 1000L)*100)/100.0;
             totalDistance.setText(d.replace('.', ',') + " km");
+            levelDistance=distance / 1000L;
         } else {
+            levelDistance= distance/1000;
             totalDistance.setText((int) distance + " m");
         }
 
@@ -621,6 +624,9 @@ public class ProfileFragment extends Fragment {
         df.setTimeZone(tz);
         String time = df.format(new Date(user_totalTime * 1000));
         totalTime.setText(time);
+
+        /* set state */
+        state.setImageBitmap(GlobalFunctions.findLevel(levelDistance));
 
         /* set profile image */
         byte[] imgRessource = user_image;

@@ -58,7 +58,7 @@ public class ShowRecord {
         TextView recordDistance = recordItem.findViewById(R.id.record_distance);
         double distance = Math.round(records.get(position).getDistance());
         if (distance >= 1000) {
-            String d = "" + distance / 1000L;
+            String d = "" + Math.round((distance / 1000L)*100)/100.0;
             recordDistance.setText(d.replace('.', ',') + " km |");
         } else {
             recordDistance.setText((int) distance + " m |");
@@ -93,7 +93,6 @@ public class ShowRecord {
 
                         for ( int i=0;i< locationArray.length();i++) {
                             Location location= new Location();
-                            location.setRecordId(((JSONObject) locationArray.get(i)).getInt("recordId"));
                             location.setLatitude(((JSONObject) locationArray.get(i)).getDouble("latitude"));
                             location.setLongitude(((JSONObject) locationArray.get(i)).getDouble("longitude"));
                             location.setAltitude(((JSONObject) locationArray.get(i)).getDouble("altitude"));

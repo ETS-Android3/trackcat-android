@@ -33,19 +33,19 @@ public class FriendsFragment extends Fragment {
         CustomFriend friend1= new CustomFriend();
         friend1.setFirstName("Max");
         friend1.setLastName("Mustermann");
-        friend1.setEmail("max@mustermann.de");
+        //friend1.setEmail("max@mustermann.de");
         friendList.add(friend1);
 
         CustomFriend friend2= new CustomFriend();
         friend2.setFirstName("Mimi");
         friend2.setLastName("Mensch");
-        friend2.setEmail("mimi@mensch.de");
+        //friend2.setEmail("mimi@mensch.de");
         friendList.add(friend2);
 
         CustomFriend friend3= new CustomFriend();
         friend3.setFirstName("Manfred");
         friend3.setLastName("Walter");
-        friend3.setEmail("manfred@walter.de");
+      //  friend3.setEmail("manfred@walter.de");
         friendList.add(friend3);
 
         FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(),friendList, false);
