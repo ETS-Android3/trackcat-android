@@ -60,4 +60,8 @@ public interface APIClient {
     @POST("/deleteRecordAPI")
     Call<ResponseBody> deleteRecord(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/searchFriendsAPI")
+    Call<ResponseBody> findFriend(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
+
 }
