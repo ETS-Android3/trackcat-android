@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,6 +103,13 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
             registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy HH:MM"));
             state.setImageBitmap(GlobalFunctions.findLevel(friends.get(position).getTotalDistance()));
+            /* set profile image */
+            byte[] imgRessource = friends.get(position).getImage();
+            Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.default_profile);
+            if (imgRessource != null && imgRessource.length > 3) {
+                bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
+            }
+            image.setImageBitmap(bitmap);
 
             ImageView addFriend = view.findViewById(R.id.add_friend);
             addFriend.setOnClickListener(new View.OnClickListener() {
