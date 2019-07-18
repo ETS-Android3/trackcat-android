@@ -67,6 +67,14 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                 day_Of_Birth.setText(getArguments().getString("dayOfBirth"));
             }
         }
+        /* get current date */
+        if(day_Of_Birth.getText().toString().equals("null")){
+            final Calendar cldr = Calendar.getInstance();
+            int currentDay = cldr.get(Calendar.DAY_OF_MONTH);
+            int currentMonth = cldr.get(Calendar.MONTH) + 1;
+            int currentYear = cldr.get(Calendar.YEAR);
+            day_Of_Birth.setText(currentDay + "." + currentMonth + "." + currentYear);
+        }
 
         /* stepview */
         stepView = view.findViewById(R.id.step_view);

@@ -59,7 +59,7 @@
                       android:layout_height="wrap_content"
                         android:inputType="none"
                       android:hint="Geburtstag"
-                      android:text="01.01.1970"
+                      android:text="null"
                       android:textSize="19dip" />
 
      >
