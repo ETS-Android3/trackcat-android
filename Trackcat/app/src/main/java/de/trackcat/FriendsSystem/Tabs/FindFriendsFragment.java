@@ -41,12 +41,13 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
 
     EditText findFriend;
     private UserDAO userDAO;
+    View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_friends_find, container, false);
+        view = inflater.inflate(R.layout.fragment_friends_find, container, false);
 
         userDAO = new UserDAO(MainActivity.getInstance());
 
@@ -54,24 +55,6 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
         findFriend = view.findViewById(R.id.findFriend);
         findFriend.setOnKeyListener(this);
 
-        List<CustomFriend> friendList= new ArrayList<>();
-
-        CustomFriend friend1= new CustomFriend();
-        friend1.setFirstName("neuer Max");
-        friend1.setLastName("Mustermann");
-        friend1.setEmail("max@mustermann.de");
-        friendList.add(friend1);
-
-        CustomFriend friend2= new CustomFriend();
-        friend2.setFirstName("neue Mimi");
-        friend2.setLastName("Mensch");
-        friend2.setEmail("mimi@mensch.de");
-        friendList.add(friend2);
-
-
-        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(),friendList, true);
-        ListView friendListView = view.findViewById(R.id.friend_list);
-        friendListView.setAdapter(adapter);
 
         return view;
     }
@@ -80,8 +63,8 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-           String find=  findFriend.getText().toString();
-            Toast.makeText(getContext(), "Suche nach '"+find+"' gestartet.", Toast.LENGTH_SHORT).show();
+            String find = findFriend.getText().toString();
+            Toast.makeText(getContext(), "Suche nach '" + find + "' gestartet.", Toast.LENGTH_SHORT).show();
 
 
             HashMap<String, String> map = new HashMap<>();
@@ -89,46 +72,55 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
             map.put("page", "1");
 
 
-        Retrofit retrofit = APIConnector.getRetrofit();
-        APIClient apiInterface = retrofit.create(APIClient.class);
+            Retrofit retrofit = APIConnector.getRetrofit();
+            APIClient apiInterface = retrofit.create(APIClient.class);
 
-        /* start a call */
-        User currentUser = userDAO.read(MainActivity.getActiveUser());
-        String base = currentUser.getMail() + ":" + currentUser.getPassword();
-        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+            /* start a call */
+            User currentUser = userDAO.read(MainActivity.getActiveUser());
+            String base = currentUser.getMail() + ":" + currentUser.getPassword();
+            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
-        Call<ResponseBody> call = apiInterface.findFriend(authString, map);
+            Call<ResponseBody> call = apiInterface.findFriend(authString, map);
 
-        call.enqueue(new Callback<ResponseBody>() {
+            call.enqueue(new Callback<ResponseBody>() {
 
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                /* get jsonString from API */
-                String jsonString = null;
+                    /* get jsonString from API */
+                    String jsonString = null;
 
-                try {
-                    jsonString = response.body().string();
+                    try {
+                        jsonString = response.body().string();
 
-                    /* parse json */
-                    JSONObject mainObject = new JSONObject(jsonString);
+                        /* parse json */
+                        JSONArray friends = new JSONArray(jsonString);
 
+                        List<CustomFriend> friendList = new ArrayList<>();
 
+                        for (int i = 0; i < friends.length(); i++) {
+                            CustomFriend friend = new CustomFriend();
+                            friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
+                            friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
+                            friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
+                            friendList.add(friend);
+                        }
+                        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true);
+                        ListView friendListView = view.findViewById(R.id.friend_list);
+                        friendListView.setAdapter(adapter);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                call.cancel();
-            }
-        });
-
-
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    call.cancel();
+                }
+            });
 
 
             return true;

@@ -2,18 +2,18 @@ package de.trackcat.CustomElements;
 
 public class CustomFriend {
 
-    private String email;
+    private long dateOfRegistration;
     private String firstName;
     private String lastName;
     private byte[] image;
     private int state;
 
-    public String getEmail() {
-        return email;
+    public long getDateOfRegistration() {
+        return dateOfRegistration;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setDateOfRegistration(long dateOfRegistration) {
+        this.dateOfRegistration = dateOfRegistration;
     }
 
     public String getFirstName() {

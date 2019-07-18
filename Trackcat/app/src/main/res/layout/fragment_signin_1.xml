@@ -27,6 +27,33 @@
                 android:src="@raw/logo" />
 
             <!-- inputs -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- Gender Label -->
+                <RadioGroup
+                    android:id="@+id/input_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioFemale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Frau" />
+
+                    <RadioButton
+                        android:id="@+id/radioMale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Herr" />
+                </RadioGroup>
+            </LinearLayout>
+
             <RelativeLayout
                 android:id="@+id/inputs"
                 android:layout_width="match_parent"

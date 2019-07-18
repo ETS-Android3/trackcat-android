@@ -50,7 +50,7 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             name = view.findViewById(R.id.friend_name);
             email = view.findViewById(R.id.friend_email);
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
-            email.setText(friends.get(position).getEmail());
+           // email.setText(friends.get(position).getEmail());
 
             /* Shows details of routes */
             view.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +90,7 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             name = view.findViewById(R.id.friend_name);
             email = view.findViewById(R.id.friend_email);
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
-            email.setText(friends.get(position).getEmail());
+           // email.setText(friends.get(position).getEmail());
 
             ImageView addFriend = view.findViewById(R.id.add_friend);
             addFriend.setOnClickListener(new View.OnClickListener() {
