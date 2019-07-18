@@ -34,34 +34,64 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <!-- day of birth Label -->
-                <RelativeLayout
+                <!-- Email Label -->
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/layout_dayOfBirth"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:orientation="horizontal">
+                    android:id="@+id/layout_dayOfBirth"
+                    android:theme="@style/EditTextTheme">
 
-                    <TextView
-                        android:id="@+id/label_dayOfBirth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:text="Geburtstag:"
-                        android:textSize="19dip"
-                        android:textStyle="bold" />
+                <!--    <EditText
+                      android:id="@+id/input_dayOfBirth"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:ems="10"
+                      android:hint="E-Mail"
+                      android:text="max@mustermann.de"
+                      android:inputType="textEmailAddress"
+                      android:maxLength="@integer/iEmail" />-->
 
-                    <TextView
-                        android:id="@+id/input_dayOfBirth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:text=""
-                        android:textSize="19dip" />
+                    <EditText
+                      android:id="@+id/input_dayOfBirth"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                        android:inputType="none"
+                      android:hint="Geburtstag"
+                      android:text="01.01.1970"
+                      android:textSize="19dip" />
 
-                </RelativeLayout>
+     >
+              </android.support.design.widget.TextInputLayout>
+              <!-- day of birth Label
+              <RelativeLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/layout_dayOfBirth"
+                  android:layout_marginLeft="4dp"
+                  android:layout_marginTop="8dp"
+                  android:layout_marginBottom="8dp"
+                  android:orientation="horizontal">
+
+                  <TextView
+                      android:id="@+id/label_dayOfBirth"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_alignParentLeft="true"
+                      android:text="Geburtstag:"
+                      android:textSize="19dip"
+                      android:textStyle="bold" />
+
+                  <TextView
+                      android:id="@+id/input_dayOfBirth"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_alignParentRight="true"
+                      android:text=""
+                      android:textSize="19dip" />
+
+              </RelativeLayout> -->
 
                 <!-- Email Label -->
                 <android.support.design.widget.TextInputLayout

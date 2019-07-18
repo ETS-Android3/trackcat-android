@@ -24,7 +24,7 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
     EditText password1, password2;
     ImageView btnBack, btnNext;
     TextView logInInLink, messageBox, messageBoxInfo;
-    String firstName, lastName, email;
+    String firstName, lastName, email, dayOfBirth;
     Boolean generalTerm, dataProtection;
     int gender;
     private com.shuhart.stepview.StepView stepView;
@@ -50,6 +50,7 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
             lastName = getArguments().getString("lastName");
             gender= getArguments().getInt("gender");
             email = getArguments().getString("email");
+            dayOfBirth= getArguments().getString("dayOfBirth");
             generalTerm = getArguments().getBoolean("generalTerms");
             dataProtection = getArguments().getBoolean("dataProtection");
 
@@ -85,6 +86,7 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
                 bundleSignIn_1_and_2_and_3.putString("lastName", lastName);
                 bundleSignIn_1_and_2_and_3.putInt("gender", gender);
                 bundleSignIn_1_and_2_and_3.putString("email", email);
+                bundleSignIn_1_and_2_and_3.putString("dayOfBirth", dayOfBirth);
                 bundleSignIn_1_and_2_and_3.putString("password1", password1.getText().toString());
                 bundleSignIn_1_and_2_and_3.putString("password2", password2.getText().toString());
                 bundleSignIn_1_and_2_and_3.putBoolean("generalTerms", generalTerm);
@@ -113,6 +115,7 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
                         bundleSignIn_1_and_2_and_3.putString("lastName", lastName);
                         bundleSignIn_1_and_2_and_3.putInt("gender", gender);
                         bundleSignIn_1_and_2_and_3.putString("email", email);
+                        bundleSignIn_1_and_2_and_3.putString("dayOfBirth", dayOfBirth);
                         bundleSignIn_1_and_2_and_3.putString("password1", input_password1);
                         bundleSignIn_1_and_2_and_3.putString("password2", input_password2);
                         bundleSignIn_1_and_2_and_3.putBoolean("generalTerms", generalTerm);

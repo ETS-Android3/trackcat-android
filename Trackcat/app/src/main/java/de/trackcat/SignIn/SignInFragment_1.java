@@ -23,7 +23,7 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
     EditText  firstName, lastName;
     ImageView btnNext;
     TextView logInInLink;
-    String first_Name, last_Name, email, password1, password2;
+    String first_Name, last_Name, email, password1, password2, dayOfBirth;
     int gender;
     Boolean generalTerm, dataProtection;
     RadioGroup gender_group;
@@ -59,6 +59,7 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
                     break;
             }
             email = getArguments().getString("email");
+            dayOfBirth= getArguments().getString("dayOfBirth");
             password1 = getArguments().getString("password1");
             password2 = getArguments().getString("password2");
             generalTerm = getArguments().getBoolean("generalTerms");
@@ -105,6 +106,7 @@ public class SignInFragment_1 extends Fragment implements View.OnClickListener {
                     bundleSignIn_1.putString("lastName", input_lastName);
                     bundleSignIn_1.putInt("gender", gender);
                     bundleSignIn_1.putString("email", email);
+                    bundleSignIn_1.putString("dayOfBirth", dayOfBirth);
                     bundleSignIn_1.putString("password1", password1);
                     bundleSignIn_1.putString("password2", password2);
                     bundleSignIn_1.putBoolean("generalTerms", generalTerm);
