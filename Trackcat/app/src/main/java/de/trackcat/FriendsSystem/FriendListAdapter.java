@@ -17,13 +17,14 @@ import java.util.List;
 import de.trackcat.CustomElements.CustomFriend;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendLiveFragment;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendProfileFragment;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 
 public class FriendListAdapter extends ArrayAdapter<String> {
 
     private List<CustomFriend> friends;
-    public TextView name, email;
+    public TextView name, email, registSince;
     LayoutInflater inflater;
     boolean newFriend;
 
@@ -88,9 +89,10 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             /* Variablen erstellen */
             view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
             name = view.findViewById(R.id.friend_name);
-            email = view.findViewById(R.id.friend_email);
+            registSince = view.findViewById(R.id.friend_regist_since);
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
            // email.setText(friends.get(position).getEmail());
+            registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy HH:MM"));
 
             ImageView addFriend = view.findViewById(R.id.add_friend);
             addFriend.setOnClickListener(new View.OnClickListener() {

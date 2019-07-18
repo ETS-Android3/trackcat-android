@@ -29,6 +29,7 @@ import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.FriendsSystem.FriendListAdapter;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import okhttp3.ResponseBody;
@@ -103,6 +104,8 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                             friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
                             friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
                             friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
+                            friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
+                            friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
                             friendList.add(friend);
                         }
                         FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true);

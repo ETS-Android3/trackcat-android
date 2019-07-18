@@ -6,7 +6,7 @@ public class CustomFriend {
     private String firstName;
     private String lastName;
     private byte[] image;
-    private int state;
+    private long totalDistance;
 
     public long getDateOfRegistration() {
         return dateOfRegistration;
@@ -40,11 +40,11 @@ public class CustomFriend {
         this.image = image;
     }
 
-    public int getState() {
-        return state;
+    public long getTotalDistance() {
+        return totalDistance;
     }
 
-    public void setState(int state) {
-        this.state = state;
+    public void setTotalDistance(long totalDistance) {
+        this.totalDistance = totalDistance;
     }
 }
