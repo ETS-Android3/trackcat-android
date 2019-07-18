@@ -504,7 +504,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadProfile(false);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
             loadFriendSystem();
-        } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfile)) != null){
+            loadFriendSystem();
+        }
+        else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
             if (exitApp) {

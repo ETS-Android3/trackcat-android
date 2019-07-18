@@ -14,12 +14,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Arrays;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import de.trackcat.CustomElements.CustomFriend;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendLiveFragment;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendProfileFragment;
+import de.trackcat.FriendsSystem.FriendShowOptions.PublicPersonProfileFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -57,38 +59,45 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             image = view.findViewById(R.id.profile_image);
             state = view.findViewById(R.id.profile_state);
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
-           // email.setText(friends.get(position).getEmail());
+            // email.setText(friends.get(position).getEmail());
 
             /* Shows details of routes */
             view.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
+                    AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
+                    alertdialogbuilder.setTitle("Benutzeroptionenen");
+                    String[] value = new String[]{
+                            "Profil anzeigen",
+                            "Live-Übertragung anzeigen",
+                            "Freund entfernen",
+                    };
 
-                    /* create AlertBox */
-                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                    alert.setTitle("Was möchten Sie anzeigen?");
-                    alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsLive));
-
-                    alert.setPositiveButton("LIVEÜBERTRAGUNG", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                            fragTransaction.replace(R.id.mainFrame, new FriendLiveFragment(),
-                                    MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
-                            fragTransaction.commit();
-                        }
-                    });
-
-                    alert.setNeutralButton("PROFIL", new DialogInterface.OnClickListener() {
+                    alertdialogbuilder.setItems(value, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                            fragTransaction.replace(R.id.mainFrame, new FriendProfileFragment(),
-                                    MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
-                            fragTransaction.commit();
+                        public void onClick(DialogInterface dialog, int which) {
+                            String selectedText = Arrays.asList(value).get(which);
+                            if(selectedText=="Profil anzeigen"){
+                                FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                                fragTransaction.replace(R.id.mainFrame, new FriendProfileFragment(),
+                                        MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
+                                fragTransaction.commit();
+                            }
+                            if(selectedText=="Live-Übertragung anzeigen"){
+                                FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                                fragTransaction.replace(R.id.mainFrame, new FriendLiveFragment(),
+                                        MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
+                                fragTransaction.commit();
+                            }
+                            if(selectedText=="Freund entfernen"){
+
+                            }
                         }
                     });
 
-                    alert.show();
+                    AlertDialog dialog = alertdialogbuilder.create();
+                    dialog.show();
                 }
             });
         } else {
@@ -111,33 +120,37 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             }
             image.setImageBitmap(bitmap);
 
-            ImageView addFriend = view.findViewById(R.id.add_friend);
-            addFriend.setOnClickListener(new View.OnClickListener() {
+            // ImageView addFriend = view.findViewById(R.id.add_friend);
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
+                    alertdialogbuilder.setTitle("Benutzeroptionenen");
+                    String[] value = new String[]{
+                            "Profil anzeigen",
+                            "Freund hinzufügen",
+                    };
 
-                    /* create AlertBox */
-                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                    alert.setTitle("Freund hinzufügen?");
-                    alert.setMessage("Möchten Sie '" + name.getText().toString() + "' zu Ihren Freunden hinzufügen, um seine Liveübertragunen und sein Profil anzeigen zu können?");
-
-                    alert.setPositiveButton("Freund hinzufügen", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            //TODO add user als freund
-                        }
-                    });
-
-                    alert.setNegativeButton("Abruch", new DialogInterface.OnClickListener() {
+                    alertdialogbuilder.setItems(value, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                        public void onClick(DialogInterface dialog, int which) {
+                            String selectedText = Arrays.asList(value).get(which);
+                            if(selectedText=="Profil anzeigen"){
+                                FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                                fragTransaction.replace(R.id.mainFrame, new PublicPersonProfileFragment(),
+                                        MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
+                                fragTransaction.commit();
+                            }
+                            if(selectedText=="Freund hinzufügen"){
 
+                            }
                         }
                     });
 
-                    alert.show();
+                    AlertDialog dialog = alertdialogbuilder.create();
+                    dialog.show();
                 }
             });
-
         }
         // ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsDashbaord), recordId, recordType, importState, recordName, recordDistance, recordTime, recordItem, recordDate);
         return view;
