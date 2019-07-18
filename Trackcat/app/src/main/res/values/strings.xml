@@ -76,7 +76,7 @@
     <!-- Regex -->
     <string name="rEmail">"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"</string>
     <string name="rPassword">"^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{8,15}$"</string>
-    <string name="rName">"^[A-Z]+(((\\-|\\s)[A-Z])?[a-z]*)*$"</string>
+    <string name="rName">"^[A-Z](((\\-|\\s)[A-ZÄÖÜ]|\\s[a-zäöü])?[a-zäöüß]*)*$"</string>
 
     <!-- Menu Toggle -->
     <string name="navigation_drawer_open">Open</string>

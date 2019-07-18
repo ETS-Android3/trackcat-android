@@ -1215,6 +1215,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Toast.LENGTH_LONG).show();
                     }
 
+                    /*delete records, that was deleted on server */
+                    if (mainObject.getJSONArray("deletedOnServer") != null && mainObject.getJSONArray("deletedOnServer").length() > 0) {
+                        JSONArray deletedIdArray = mainObject.getJSONArray("deletedOnServer");
+                        for (int i = 0; i < deletedIdArray.length(); i++) {
+                            Route deletedRecord = recordDAO.read(((JSONObject) deletedIdArray.get(i)).getInt("id"));
+                            recordDAO.delete(deletedRecord);
+                        }
+                    }
+
                     /*load view*/
                     loadRecordList();
 
