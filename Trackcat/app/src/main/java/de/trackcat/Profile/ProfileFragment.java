@@ -608,10 +608,13 @@ public class ProfileFragment extends Fragment {
 
         /* set total distance */
         double distance = Math.round(user_totalDistance);
+        double levelDistance;
         if (distance >= 1000) {
-            String d = "" + distance / 1000L;
+            String d = "" + Math.round((distance / 1000L)*100)/100.0;
             totalDistance.setText(d.replace('.', ',') + " km");
+            levelDistance=distance / 1000L;
         } else {
+            levelDistance= distance/1000;
             totalDistance.setText((int) distance + " m");
         }
 
@@ -621,6 +624,9 @@ public class ProfileFragment extends Fragment {
         df.setTimeZone(tz);
         String time = df.format(new Date(user_totalTime * 1000));
         totalTime.setText(time);
+
+        /* set state */
+        state.setImageBitmap(GlobalFunctions.findLevel(levelDistance));
 
         /* set profile image */
         byte[] imgRessource = user_image;

@@ -3,6 +3,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -183,5 +185,20 @@ public class GlobalFunctions {
         return valid;
     }
 
-
+    public static Bitmap findLevel(double distance){
+        int result=0;
+        Bitmap bitmap=null;
+        if(distance<5){
+            bitmap= BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl1);
+        }else if(distance>=5 && distance<20) {
+            bitmap= BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl2);
+        }else if(distance>=20 && distance<40) {
+            bitmap= BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl3);
+        }else if(distance>=40 && distance<80) {
+            bitmap= BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl4);
+        }else if(distance>=80) {
+            bitmap= BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl5);
+        }
+        return bitmap;
+    }
 }
