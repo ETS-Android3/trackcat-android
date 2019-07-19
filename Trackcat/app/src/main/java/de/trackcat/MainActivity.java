@@ -1135,14 +1135,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void synchronizeRecords() {
 
         /* get all records routes */
-        RecordTempDAO recordTempDAO = new RecordTempDAO(this);
         RouteDAO recordDAO = new RouteDAO(this);
         List<Route> records = recordDAO.readAll();
-        List<Route> tempRecords = recordTempDAO.readAll();
-
-        for (Route route : tempRecords) {
-            records.add(route);
-        }
 
         /* add maps to result */
         ArrayList<HashMap<String, String>> result = new ArrayList<>();
