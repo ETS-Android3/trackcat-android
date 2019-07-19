@@ -117,8 +117,12 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                         public void onClick(DialogInterface dialog, int id) {
 
                             if (id == 0) {
+                                FriendProfileFragment friendProfileFragment = new FriendProfileFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("friendId", friends.get(position).getId());
+                                friendProfileFragment.setArguments(bundle);
                                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                                fragTransaction.replace(R.id.mainFrame, new FriendProfileFragment(),
+                                fragTransaction.replace(R.id.mainFrame, friendProfileFragment,
                                         MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
                                 fragTransaction.commit();
                             }
@@ -129,7 +133,24 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                 fragTransaction.commit();
                             }
                             if (id == 2) {
+                                /* create AlertBox */
+                                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                                alert.setTitle("Freund wirklich entfernen?");
+                                alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsDelete));
 
+                                alert.setPositiveButton("Freund entfernen", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        //TODO Freund entfernen
+                                    }
+                                });
+
+                                alert.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                    }
+                                });
+
+                                alert.show();
                             }
                         }
                     });
