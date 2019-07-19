@@ -81,8 +81,28 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             email = view.findViewById(R.id.friend_email);
             image = view.findViewById(R.id.profile_image);
             state = view.findViewById(R.id.profile_state);
+
+            /* add name and regist since */
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
-            // email.setText(friends.get(position).getEmail());
+            email.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy"));
+
+            /* find level */
+            double distance = Math.round(friends.get(position).getTotalDistance());
+            double levelDistance;
+            if (distance >= 1000) {
+                levelDistance = distance / 1000L;
+            } else {
+                levelDistance = distance / 1000;
+            }
+            state.setImageBitmap(GlobalFunctions.findLevel(levelDistance));
+
+            /* set profile image */
+            byte[] imgRessource = friends.get(position).getImage();
+            Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.default_profile);
+            if (imgRessource != null && imgRessource.length > 3) {
+                bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
+            }
+            image.setImageBitmap(bitmap);
 
             /* Shows details of routes */
             view.setOnClickListener(new View.OnClickListener() {
