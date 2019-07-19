@@ -14,6 +14,7 @@ import de.trackcat.FriendsSystem.Tabs.SharingFriendsFragment;
 import de.trackcat.R;
 
 public class FriendsViewerFragment extends Fragment {
+    private int activeSite;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -21,6 +22,8 @@ public class FriendsViewerFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_friends_viewer, container, false);
 
+        /* get active site */
+        activeSite = getArguments().getInt("activeSite");
 
         ViewPager viewPager =  view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(3);
@@ -40,6 +43,6 @@ public class FriendsViewerFragment extends Fragment {
         adapter.addFragment(friendsFragment,"FREUNDE");
         adapter.addFragment(sharingFriendsFragment,"LIVE");
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(activeSite);
     }
 }

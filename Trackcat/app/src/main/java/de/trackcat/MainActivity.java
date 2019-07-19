@@ -59,6 +59,7 @@ import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
 import de.trackcat.Recording.Locator;
 import de.trackcat.Recording.RecordFragment;
 import de.trackcat.Settings.SettingsFragment;
+import de.trackcat.SignIn.SignInFragment_1;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -412,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_friends:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) == null) {
                     menuInstance.clear();
-                    loadFriendSystem();
+                    loadFriendSystem(1);
                 }
                 break;
             case R.id.nav_logout:
@@ -503,9 +504,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
             loadProfile(false);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
-            loadFriendSystem();
+            loadFriendSystem(1);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfile)) != null){
-            loadFriendSystem();
+            loadFriendSystem(0);
         }
         else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
@@ -631,10 +632,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /* Laden des Friends-Fragments */
-    public void loadFriendSystem() {
+    public void loadFriendSystem(int activeSite) {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Freunde-Fragment wird geladen.");
+        Bundle bundle= new Bundle();
+        bundle.putInt("activeSite", activeSite);
+        FriendsViewerFragment firendsFragment = new FriendsViewerFragment();
+        firendsFragment.setArguments(bundle);
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new FriendsViewerFragment(),
+        fragTransaction.replace(R.id.mainFrame, firendsFragment,
                 getResources().getString(R.string.fFriendSystem));
         fragTransaction.commit();
     }
@@ -844,7 +849,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
                                                 //TODO
                                             } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
-                                                loadFriendSystem();
+                                                loadFriendSystem(1);
                                             } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
                                                 loadDeleteAccount();
                                             }
