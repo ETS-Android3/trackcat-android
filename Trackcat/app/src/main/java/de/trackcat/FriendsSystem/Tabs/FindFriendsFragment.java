@@ -91,7 +91,6 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
         map.put("search", "" + find);
         map.put("page", "1");
 
-
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
