@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -125,10 +126,20 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             image = view.findViewById(R.id.profile_image);
             state = view.findViewById(R.id.profile_state);
 
-            /* add values */
+            /* add name and regist since */
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
-            registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy HH:MM"));
-            state.setImageBitmap(GlobalFunctions.findLevel(friends.get(position).getTotalDistance()));
+            registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy"));
+
+            /* find level */
+            double distance = Math.round(friends.get(position).getTotalDistance());
+            double levelDistance;
+            if (distance >= 1000) {
+                levelDistance = distance / 1000L;
+            } else {
+                levelDistance = distance / 1000;
+            }
+            state.setImageBitmap(GlobalFunctions.findLevel(levelDistance));
+
             /* set profile image */
             byte[] imgRessource = friends.get(position).getImage();
             Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.default_profile);
@@ -137,17 +148,19 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             }
             image.setImageBitmap(bitmap);
 
-            // ImageView addFriend = view.findViewById(R.id.add_friend);
+            /* add on click listener */
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
                     alertdialogbuilder.setTitle(getContext().getResources().getString(R.string.friendsOptionTitle));
 
+                    /* friend list by no friend request */
                     if (!friendQuestion) {
                         alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.foreignOptions), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
+
                                 /* show public profile */
                                 if (id == 0) {
                                     PublicPersonProfileFragment publicPersonProfileFragment = new PublicPersonProfileFragment();
@@ -159,19 +172,19 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                             MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
                                     fragTransaction.commit();
                                 }
+                                /* addFriend */
                                 if (id == 1) {
-
-                                    /* addFriend */
                                     addFriend(friends.get(position).getId());
                                 }
                             }
                         });
+                        /* friend list by friend request */
                     } else {
                         alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendQuestionOptions), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
+                                /* addFriend */
                                 if (id == 0) {
-                                    /* addFriend */
                                     addFriend(friends.get(position).getId());
                                 }
                             }
@@ -182,25 +195,24 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                 }
             });
         }
-        // ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsDashbaord), recordId, recordType, importState, recordName, recordDistance, recordTime, recordItem, recordDate);
         return view;
     }
 
+    /* function to add a friend */
     private void addFriend(int friendId) {
+
         /* create hashmap */
         HashMap<String, String> map = new HashMap<>();
         map.put("friendId", "" + friendId);
 
+        /* start a call */
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
-
-        /* start a call */
         User currentUser = userDAO.read(MainActivity.getActiveUser());
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
         Call<ResponseBody> call = apiInterface.requestFriend(authString, map);
-
         call.enqueue(new Callback<ResponseBody>() {
 
             @Override
@@ -213,8 +225,15 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                     /* parse json */
                     JSONObject mainObject = new JSONObject(jsonString);
 
-                    /* open activity if login success*/
+                    /* friendship question okay */
                     if (mainObject.getString("success").equals("0")) {
+                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionOkay), Toast.LENGTH_SHORT).show();
+                        /* friendship question error */
+                    } else if (mainObject.getString("success").equals("1")) {
+                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionError), Toast.LENGTH_SHORT).show();
+                        /* friendship question check */
+                    } else if (mainObject.getString("success").equals("2")) {
+                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionCheck), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e1) {
                     e1.printStackTrace();

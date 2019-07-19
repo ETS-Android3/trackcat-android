@@ -145,6 +145,9 @@
     <!-- options for friends -->
     <string name="friendsOptionTitle">Benutzeroptionen</string>
     <string name="friendsDelete">Wenn Sie Ihren Freund entfernen. können Sie keine Liveübertragungen von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
+    <string name="friendQuestionOkay">Freundschaftsanfrage erfolgreich versendet.</string>
+    <string name="friendQuestionError">Beim Senden Ihrer Anfrage ist leider ein Fehler aufgetreten.</string>
+    <string name="friendQuestionCheck">Sie sind nun befreundet.</string>
 
     <!-- edit route name -->
     <string name="teditRecordName">Routenname wurde erfolgreich geändert.</string>
