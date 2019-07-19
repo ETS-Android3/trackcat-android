@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -147,9 +148,14 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                         alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.foreignOptions), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
+                                /* show public profile */
                                 if (id == 0) {
+                                    PublicPersonProfileFragment publicPersonProfileFragment = new PublicPersonProfileFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("friendId", friends.get(position).getId());
+                                    publicPersonProfileFragment.setArguments(bundle);
                                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                                    fragTransaction.replace(R.id.mainFrame, new PublicPersonProfileFragment(),
+                                    fragTransaction.replace(R.id.mainFrame, publicPersonProfileFragment,
                                             MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
                                     fragTransaction.commit();
                                 }

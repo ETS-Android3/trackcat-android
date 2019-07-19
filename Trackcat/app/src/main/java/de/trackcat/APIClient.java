@@ -72,4 +72,8 @@ public interface APIClient {
     @POST("/showFriendRequestAPI")
     Call<ResponseBody> showFriendRequest(@Header("Authorization") String authHeader);
 
+    @Headers({"Accept: application/json"})
+    @POST("/showStrangerProfileAPI")
+    Call<ResponseBody> showStrangerProfile(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
+
 }
