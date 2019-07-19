@@ -80,4 +80,8 @@ public interface APIClient {
     @POST("/searchMyFriendsAPI")
     Call<ResponseBody> searchMyFriends(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/showFriendProfileAPI")
+    Call<ResponseBody> showFriendProfile(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
+
 }

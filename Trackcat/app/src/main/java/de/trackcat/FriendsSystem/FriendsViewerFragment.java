@@ -1,7 +1,6 @@
 package de.trackcat.FriendsSystem;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -28,39 +27,39 @@ public class FriendsViewerFragment extends Fragment {
 
         /* get active site */
         activeSite = getArguments().getInt("activeSite");
-        if(getArguments().getString("searchTerm")!=null){
+        if (getArguments().getString("searchTerm") != null) {
             searchTerm = getArguments().getString("searchTerm");
         }
 
-        ViewPager viewPager =  view.findViewById(R.id.viewpager);
+        /* create tabView Pager */
+        ViewPager viewPager = view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(3);
         setupViewPager(viewPager);
-     tabLayout =  view.findViewById(R.id.tablayout);
+        tabLayout = view.findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
-
 
         return view;
     }
 
-    private void setupViewPager(ViewPager viewPager)
-    {
+    private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        FriendsFragment friendsFragment=new FriendsFragment();
-        FindFriendsFragment findFriendsFragment=new FindFriendsFragment();
-        if(activeSite==0){
+        FriendsFragment friendsFragment = new FriendsFragment();
+        FindFriendsFragment findFriendsFragment = new FindFriendsFragment();
+        if (activeSite == 0) {
             Bundle bundle = new Bundle();
             bundle.putString("searchTerm", searchTerm);
             findFriendsFragment.setArguments(bundle);
         }
-        SharingFriendsFragment sharingFriendsFragment= new SharingFriendsFragment();
-        adapter.addFragment(findFriendsFragment,"SUCHEN");
-        adapter.addFragment(friendsFragment,"FREUNDE");
-        adapter.addFragment(sharingFriendsFragment,"LIVE");
+        SharingFriendsFragment sharingFriendsFragment = new SharingFriendsFragment();
+        adapter.addFragment(findFriendsFragment, "SUCHEN");
+        adapter.addFragment(friendsFragment, "FREUNDE");
+        adapter.addFragment(sharingFriendsFragment, "LIVE");
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(activeSite);
     }
 
-    public void setBadgeText(int index, String text){
-        tabLayout.setBadgeText(index,text);
+    /* function to change BadgeText */
+    public void setBadgeText(int index, String text) {
+        tabLayout.setBadgeText(index, text);
     }
 }
