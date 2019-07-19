@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import android.widget.TextView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,13 +48,15 @@ public class FriendListAdapter extends ArrayAdapter<String> {
     LayoutInflater inflater;
     CircleImageView image, state;
     boolean newFriend;
+    boolean friendQuestion;
     UserDAO userDAO;
 
-    public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type) {
+    public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion) {
         super(context, R.layout.friend_list_item);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.friends = friends;
         this.newFriend = type;
+        this.friendQuestion = friendQuestion;
 
         /* create userDAOs */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -97,13 +100,13 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                         MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
                                 fragTransaction.commit();
                             }
-                            if (id==1) {
+                            if (id == 1) {
                                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                                 fragTransaction.replace(R.id.mainFrame, new FriendLiveFragment(),
                                         MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
                                 fragTransaction.commit();
                             }
-                            if (id==2) {
+                            if (id == 2) {
 
                             }
                         }
@@ -140,62 +143,34 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                     AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
                     alertdialogbuilder.setTitle(getContext().getResources().getString(R.string.friendsOptionTitle));
 
-                    alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.foreignOptions), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            if (id==0) {
-                                FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                                fragTransaction.replace(R.id.mainFrame, new PublicPersonProfileFragment(),
-                                        MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
-                                fragTransaction.commit();
+                    if (!friendQuestion) {
+                        alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.foreignOptions), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (id == 0) {
+                                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                                    fragTransaction.replace(R.id.mainFrame, new PublicPersonProfileFragment(),
+                                            MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
+                                    fragTransaction.commit();
+                                }
+                                if (id == 1) {
+
+                                    /* addFriend */
+                                    addFriend(friends.get(position).getId());
+                                }
                             }
-                            if (id==1) {
-
-                                /* create hashmap */
-                                HashMap<String, String> map = new HashMap<>();
-                                map.put("friendId", "" + friends.get(position).getId());
-
-                                Retrofit retrofit = APIConnector.getRetrofit();
-                                APIClient apiInterface = retrofit.create(APIClient.class);
-
-                                /* start a call */
-                                User currentUser = userDAO.read(MainActivity.getActiveUser());
-                                String base = currentUser.getMail() + ":" + currentUser.getPassword();
-                                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-
-                                Call<ResponseBody> call = apiInterface.requestFriend(authString, map);
-
-                                call.enqueue(new Callback<ResponseBody>() {
-
-                                    @Override
-                                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                                        try {
-                                            /* get jsonString from API */
-                                            String jsonString = response.body().string();
-
-                                            /* parse json */
-                                            JSONObject mainObject = new JSONObject(jsonString);
-
-                                            /* open activity if login success*/
-                                            if (mainObject.getString("success").equals("0")) {
-                                            }
-                                        } catch (JSONException e1) {
-                                            e1.printStackTrace();
-                                        } catch (IOException e1) {
-                                            e1.printStackTrace();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                        call.cancel();
-                                    }
-                                });
+                        });
+                    } else {
+                        alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendQuestionOptions), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (id == 0) {
+                                    /* addFriend */
+                                    addFriend(friends.get(position).getId());
+                                }
                             }
-                        }
-                    });
-
+                        });
+                    }
                     AlertDialog dialog = alertdialogbuilder.create();
                     dialog.show();
                 }
@@ -203,5 +178,49 @@ public class FriendListAdapter extends ArrayAdapter<String> {
         }
         // ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsDashbaord), recordId, recordType, importState, recordName, recordDistance, recordTime, recordItem, recordDate);
         return view;
+    }
+
+    private void addFriend(int friendId) {
+        /* create hashmap */
+        HashMap<String, String> map = new HashMap<>();
+        map.put("friendId", "" + friendId);
+
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+
+        /* start a call */
+        User currentUser = userDAO.read(MainActivity.getActiveUser());
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+        Call<ResponseBody> call = apiInterface.requestFriend(authString, map);
+
+        call.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                try {
+                    /* get jsonString from API */
+                    String jsonString = response.body().string();
+
+                    /* parse json */
+                    JSONObject mainObject = new JSONObject(jsonString);
+
+                    /* open activity if login success*/
+                    if (mainObject.getString("success").equals("0")) {
+                    }
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                call.cancel();
+            }
+        });
     }
 }

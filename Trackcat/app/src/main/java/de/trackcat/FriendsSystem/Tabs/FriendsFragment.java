@@ -11,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+
+import com.rahimlis.badgedtablayout.BadgedTabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +30,7 @@ import de.trackcat.CustomElements.CustomFriend;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
 import de.trackcat.FriendsSystem.FriendListAdapter;
+import de.trackcat.FriendsSystem.FriendsViewerFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -40,15 +44,18 @@ import retrofit2.Retrofit;
 public class FriendsFragment extends Fragment {
 
     private UserDAO userDAO;
+    FriendsViewerFragment parentFrag;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
+        parentFrag = (FriendsViewerFragment) this.getParentFragment();
+
 
         /* create user DAO */
-        userDAO= new UserDAO(MainActivity.getInstance());
+        userDAO = new UserDAO(MainActivity.getInstance());
 
         /* check of friend questions */
         Retrofit retrofit = APIConnector.getRetrofit();
@@ -77,19 +84,30 @@ public class FriendsFragment extends Fragment {
 
                     List<CustomFriend> friendList = new ArrayList<>();
 
-                    for (int i = 0; i < friends.length(); i++) {
-                        CustomFriend friend = new CustomFriend();
-                        friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
-                        friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
-                        friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
-                        friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
-                        friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
-                        friend.setId(((JSONObject) friends.get(i)).getInt("id"));
-                        friendList.add(friend);
+                    /* show friend questions if they exists */
+                    if(friends.length()>0) {
+                        RelativeLayout friendQuestionLayout = view.findViewById(R.id.friendQuestion);
+                        friendQuestionLayout.setVisibility(View.VISIBLE);
+
+                        for (int i = 0; i < friends.length(); i++) {
+                            CustomFriend friend = new CustomFriend();
+                            friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
+                            friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
+                            friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
+                            friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
+                            friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
+                            friend.setId(((JSONObject) friends.get(i)).getInt("id"));
+                            friendList.add(friend);
+                        }
+
+                        /* add entrys to view */
+                        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true);
+                        ListView friendListView = view.findViewById(R.id.friend_question_list);
+                        friendListView.setAdapter(adapter);
+
+                        /* update badget */
+                        parentFrag.setBadgeText(1,""+friends.length());
                     }
-                    FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true);
-                    ListView friendListView = view.findViewById(R.id.friend_list);
-                    friendListView.setAdapter(adapter);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -104,27 +122,27 @@ public class FriendsFragment extends Fragment {
             }
         });
 
-        List<CustomFriend> friendList= new ArrayList<>();
+        List<CustomFriend> friendList = new ArrayList<>();
 
-        CustomFriend friend1= new CustomFriend();
+        CustomFriend friend1 = new CustomFriend();
         friend1.setFirstName("Max");
         friend1.setLastName("Mustermann");
         //friend1.setEmail("max@mustermann.de");
         friendList.add(friend1);
 
-        CustomFriend friend2= new CustomFriend();
+        CustomFriend friend2 = new CustomFriend();
         friend2.setFirstName("Mimi");
         friend2.setLastName("Mensch");
         //friend2.setEmail("mimi@mensch.de");
         friendList.add(friend2);
 
-        CustomFriend friend3= new CustomFriend();
+        CustomFriend friend3 = new CustomFriend();
         friend3.setFirstName("Manfred");
         friend3.setLastName("Walter");
-      //  friend3.setEmail("manfred@walter.de");
+        //  friend3.setEmail("manfred@walter.de");
         friendList.add(friend3);
 
-        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(),friendList, false);
+        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false);
         ListView friendListView = view.findViewById(R.id.friend_list);
         friendListView.setAdapter(adapter);
 

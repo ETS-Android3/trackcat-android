@@ -18,6 +18,7 @@ import de.trackcat.R;
 public class FriendsViewerFragment extends Fragment {
     private int activeSite;
     private String searchTerm;
+    BadgedTabLayout tabLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,9 +35,9 @@ public class FriendsViewerFragment extends Fragment {
         ViewPager viewPager =  view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(3);
         setupViewPager(viewPager);
-        BadgedTabLayout tabLayout =  view.findViewById(R.id.tablayout);
+     tabLayout =  view.findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setBadgeText(1,"1");
+
 
         return view;
     }
@@ -57,7 +58,9 @@ public class FriendsViewerFragment extends Fragment {
         adapter.addFragment(sharingFriendsFragment,"LIVE");
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(activeSite);
+    }
 
-
+    public void setBadgeText(int index, String text){
+        tabLayout.setBadgeText(index,text);
     }
 }

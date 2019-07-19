@@ -18,4 +18,8 @@
         <item>Profil anzeigen</item>
         <item>Freund hinzufügen</item>
     </array>
+
+    <array name="friendQuestionOptions">
+        <item>Anfrage annehmen</item>
+    </array>
 </resources>

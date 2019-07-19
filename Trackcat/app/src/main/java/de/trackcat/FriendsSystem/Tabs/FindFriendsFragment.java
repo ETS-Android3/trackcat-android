@@ -127,7 +127,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                         friend.setId(((JSONObject) friends.get(i)).getInt("id"));
                         friendList.add(friend);
                     }
-                    FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true);
+                    FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false);
                     ListView friendListView = view.findViewById(R.id.friend_list);
                     friendListView.setAdapter(adapter);
 
