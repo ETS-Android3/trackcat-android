@@ -7,6 +7,7 @@ public class CustomFriend {
     private String lastName;
     private byte[] image;
     private long totalDistance;
+    private int id;
 
     public long getDateOfRegistration() {
         return dateOfRegistration;
@@ -46,5 +47,13 @@ public class CustomFriend {
 
     public void setTotalDistance(long totalDistance) {
         this.totalDistance = totalDistance;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id= id;
     }
 }

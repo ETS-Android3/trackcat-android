@@ -7,24 +7,38 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import android.widget.TextView;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
 import de.trackcat.CustomElements.CustomFriend;
+import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.User;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendLiveFragment;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendProfileFragment;
 import de.trackcat.FriendsSystem.FriendShowOptions.PublicPersonProfileFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class FriendListAdapter extends ArrayAdapter<String> {
 
@@ -33,12 +47,16 @@ public class FriendListAdapter extends ArrayAdapter<String> {
     LayoutInflater inflater;
     CircleImageView image, state;
     boolean newFriend;
+    UserDAO userDAO;
 
     public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type) {
         super(context, R.layout.friend_list_item);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.friends = friends;
         this.newFriend = type;
+
+        /* create userDAOs */
+        userDAO = new UserDAO(MainActivity.getInstance());
     }
 
     @Override
@@ -67,30 +85,25 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
-                    alertdialogbuilder.setTitle("Benutzeroptionenen");
-                    String[] value = new String[]{
-                            "Profil anzeigen",
-                            "Live-Übertragung anzeigen",
-                            "Freund entfernen",
-                    };
+                    alertdialogbuilder.setTitle(getContext().getResources().getString(R.string.friendsOptionTitle));
+                    alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendOptions), new DialogInterface.OnClickListener() {
 
-                    alertdialogbuilder.setItems(value, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String selectedText = Arrays.asList(value).get(which);
-                            if(selectedText=="Profil anzeigen"){
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            if (id == 0) {
                                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                                 fragTransaction.replace(R.id.mainFrame, new FriendProfileFragment(),
                                         MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
                                 fragTransaction.commit();
                             }
-                            if(selectedText=="Live-Übertragung anzeigen"){
+                            if (id==1) {
                                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                                 fragTransaction.replace(R.id.mainFrame, new FriendLiveFragment(),
                                         MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
                                 fragTransaction.commit();
                             }
-                            if(selectedText=="Freund entfernen"){
+                            if (id==2) {
 
                             }
                         }
@@ -125,24 +138,60 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
-                    alertdialogbuilder.setTitle("Benutzeroptionenen");
-                    String[] value = new String[]{
-                            "Profil anzeigen",
-                            "Freund hinzufügen",
-                    };
+                    alertdialogbuilder.setTitle(getContext().getResources().getString(R.string.friendsOptionTitle));
 
-                    alertdialogbuilder.setItems(value, new DialogInterface.OnClickListener() {
+                    alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.foreignOptions), new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String selectedText = Arrays.asList(value).get(which);
-                            if(selectedText=="Profil anzeigen"){
+                        public void onClick(DialogInterface dialog, int id) {
+                            if (id==0) {
                                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                                 fragTransaction.replace(R.id.mainFrame, new PublicPersonProfileFragment(),
                                         MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
                                 fragTransaction.commit();
                             }
-                            if(selectedText=="Freund hinzufügen"){
+                            if (id==1) {
 
+                                /* create hashmap */
+                                HashMap<String, String> map = new HashMap<>();
+                                map.put("friendId", "" + friends.get(position).getId());
+
+                                Retrofit retrofit = APIConnector.getRetrofit();
+                                APIClient apiInterface = retrofit.create(APIClient.class);
+
+                                /* start a call */
+                                User currentUser = userDAO.read(MainActivity.getActiveUser());
+                                String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+                                Call<ResponseBody> call = apiInterface.requestFriend(authString, map);
+
+                                call.enqueue(new Callback<ResponseBody>() {
+
+                                    @Override
+                                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                                        try {
+                                            /* get jsonString from API */
+                                            String jsonString = response.body().string();
+
+                                            /* parse json */
+                                            JSONObject mainObject = new JSONObject(jsonString);
+
+                                            /* open activity if login success*/
+                                            if (mainObject.getString("success").equals("0")) {
+                                            }
+                                        } catch (JSONException e1) {
+                                            e1.printStackTrace();
+                                        } catch (IOException e1) {
+                                            e1.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                        call.cancel();
+                                    }
+                                });
                             }
                         }
                     });

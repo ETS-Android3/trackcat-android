@@ -143,7 +143,7 @@
     <string name="deleteAccountUnknownError">Unbekannter Fehler beim Löschen des Accounts!</string>
 
     <!-- options for friends -->
-    <string name="friendsLive">Ihr Freund teilt immoment eine Route live. Möchten Sie sein Profil ansehen oder zu seiner Liveübertragung wechseln?</string>
+    <string name="friendsOptionTitle">Benutzeroptionen</string>
 
     <string name="friendsDelete">Wenn Sie Ihren Freund entfernen. können Sie keine Liveübertragungen von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
 

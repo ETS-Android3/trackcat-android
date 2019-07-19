@@ -64,4 +64,8 @@ public interface APIClient {
     @POST("/searchFriendsAPI")
     Call<ResponseBody> findFriend(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/requestFriendsAPI")
+    Call<ResponseBody> requestFriend(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
+
 }

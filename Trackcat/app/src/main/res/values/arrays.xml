@@ -7,4 +7,15 @@
         <item>Passwort</item>
         <item>Terms</item>
     </array>
+
+    <array name="friendOptions">
+        <item>Profil anzeigen</item>
+        <item>Live-Übertragung anzeigen</item>
+        <item>Freund entfernen</item>
+    </array>
+
+    <array name="foreignOptions">
+        <item>Profil anzeigen</item>
+        <item>Freund hinzufügen</item>
+    </array>
 </resources>

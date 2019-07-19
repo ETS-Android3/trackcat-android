@@ -125,6 +125,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                         friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
                         friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
                         friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
+                        friend.setId(((JSONObject) friends.get(i)).getInt("id"));
                         friendList.add(friend);
                     }
                     FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true);
