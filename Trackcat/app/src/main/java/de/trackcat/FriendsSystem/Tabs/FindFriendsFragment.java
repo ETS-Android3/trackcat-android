@@ -56,6 +56,14 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
         findFriend = view.findViewById(R.id.findFriend);
         findFriend.setOnKeyListener(this);
 
+        /* set last search */
+        if(getArguments()!=null){
+            String searchTerm = getArguments().getString("searchTerm");
+            findFriend.setText(searchTerm);
+            /* search term */
+            search(searchTerm);
+        }
+
 
         return view;
     }
@@ -67,67 +75,74 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
             String find = findFriend.getText().toString();
             Toast.makeText(getContext(), "Suche nach '" + find + "' gestartet.", Toast.LENGTH_SHORT).show();
 
-
-            HashMap<String, String> map = new HashMap<>();
-            map.put("search", "" + find);
-            map.put("page", "1");
-
-
-            Retrofit retrofit = APIConnector.getRetrofit();
-            APIClient apiInterface = retrofit.create(APIClient.class);
-
-            /* start a call */
-            User currentUser = userDAO.read(MainActivity.getActiveUser());
-            String base = currentUser.getMail() + ":" + currentUser.getPassword();
-            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-
-            Call<ResponseBody> call = apiInterface.findFriend(authString, map);
-
-            call.enqueue(new Callback<ResponseBody>() {
-
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                    /* get jsonString from API */
-                    String jsonString = null;
-
-                    try {
-                        jsonString = response.body().string();
-
-                        /* parse json */
-                        JSONArray friends = new JSONArray(jsonString);
-
-                        List<CustomFriend> friendList = new ArrayList<>();
-
-                        for (int i = 0; i < friends.length(); i++) {
-                            CustomFriend friend = new CustomFriend();
-                            friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
-                            friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
-                            friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
-                            friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
-                            friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
-                            friendList.add(friend);
-                        }
-                        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true);
-                        ListView friendListView = view.findViewById(R.id.friend_list);
-                        friendListView.setAdapter(adapter);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    call.cancel();
-                }
-            });
-
+            /* search term */
+            search(find);
 
             return true;
         }
         return false;
+    }
+
+    private void search(String find){
+        /* set gloabl value */
+        MainActivity.setSearchTerm(find);
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("search", "" + find);
+        map.put("page", "1");
+
+
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+
+        /* start a call */
+        User currentUser = userDAO.read(MainActivity.getActiveUser());
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+        Call<ResponseBody> call = apiInterface.findFriend(authString, map);
+
+        call.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                /* get jsonString from API */
+                String jsonString = null;
+
+                try {
+                    jsonString = response.body().string();
+
+                    /* parse json */
+                    JSONArray friends = new JSONArray(jsonString);
+
+                    List<CustomFriend> friendList = new ArrayList<>();
+
+                    for (int i = 0; i < friends.length(); i++) {
+                        CustomFriend friend = new CustomFriend();
+                        friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
+                        friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
+                        friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
+                        friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
+                        friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
+                        friendList.add(friend);
+                    }
+                    FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true);
+                    ListView friendListView = view.findViewById(R.id.friend_list);
+                    friendListView.setAdapter(adapter);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                call.cancel();
+            }
+        });
+
     }
 }

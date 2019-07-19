@@ -15,6 +15,7 @@ import de.trackcat.R;
 
 public class FriendsViewerFragment extends Fragment {
     private int activeSite;
+    private String searchTerm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -24,6 +25,9 @@ public class FriendsViewerFragment extends Fragment {
 
         /* get active site */
         activeSite = getArguments().getInt("activeSite");
+        if(getArguments().getString("searchTerm")!=null){
+            searchTerm = getArguments().getString("searchTerm");
+        }
 
         ViewPager viewPager =  view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(3);
@@ -38,6 +42,11 @@ public class FriendsViewerFragment extends Fragment {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         FriendsFragment friendsFragment=new FriendsFragment();
         FindFriendsFragment findFriendsFragment=new FindFriendsFragment();
+        if(activeSite==0){
+            Bundle bundle = new Bundle();
+            bundle.putString("searchTerm", searchTerm);
+            findFriendsFragment.setArguments(bundle);
+        }
         SharingFriendsFragment sharingFriendsFragment= new SharingFriendsFragment();
         adapter.addFragment(findFriendsFragment,"SUCHEN");
         adapter.addFragment(friendsFragment,"FREUNDE");

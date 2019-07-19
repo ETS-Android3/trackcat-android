@@ -29,7 +29,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -55,11 +54,9 @@ import de.trackcat.Profile.EditPasswordFragment;
 import de.trackcat.Profile.ProfileFragment;
 import de.trackcat.Profile.EditProfileFragment;
 import de.trackcat.RecordList.RecordListFragment;
-import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
 import de.trackcat.Recording.Locator;
 import de.trackcat.Recording.RecordFragment;
 import de.trackcat.Settings.SettingsFragment;
-import de.trackcat.SignIn.SignInFragment_1;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -89,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // public Boolean firstRun = false;
     private static boolean hints;
     private static boolean darkTheme;
+    private static String searchTerm;
     private UserDAO userDAO;
     private static int activeUser;
     public static Boolean isActiv = false;
@@ -131,6 +129,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static void setHints(boolean activeHints) {
         hints = activeHints;
     }
+
+    public static void setSearchTerm(String term) {
+        searchTerm = term;
+    }
+
 
     public static boolean getDarkTheme() {
         return darkTheme;
@@ -636,6 +639,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Freunde-Fragment wird geladen.");
         Bundle bundle= new Bundle();
         bundle.putInt("activeSite", activeSite);
+        /* add searchTerm to bundle if its loaded site */
+        if(activeSite==0){
+            bundle.putString("searchTerm", searchTerm);
+        }
         FriendsViewerFragment firendsFragment = new FriendsViewerFragment();
         firendsFragment.setArguments(bundle);
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
