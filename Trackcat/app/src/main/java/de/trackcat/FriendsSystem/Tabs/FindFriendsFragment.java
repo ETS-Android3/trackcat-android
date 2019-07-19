@@ -1,5 +1,6 @@
 package de.trackcat.FriendsSystem.Tabs;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,8 +10,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -43,6 +46,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
     EditText findFriend;
     private UserDAO userDAO;
     View view;
+    RelativeLayout loadProfile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,6 +58,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
 
         /* find view */
         findFriend = view.findViewById(R.id.findFriend);
+        loadProfile= view.findViewById(R.id.loadScreen);
         findFriend.setOnKeyListener(this);
 
         /* set last search */
@@ -74,6 +79,12 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
         if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
             String find = findFriend.getText().toString();
             Toast.makeText(getContext(), "Suche nach '" + find + "' gestartet.", Toast.LENGTH_SHORT).show();
+
+            InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(findFriend.getWindowToken(), 0);
+
+            /* show loadScreen */
+            loadProfile.setVisibility(View.VISIBLE);
 
             /* search term */
             search(find);
@@ -130,6 +141,9 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                     FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false);
                     ListView friendListView = view.findViewById(R.id.friend_list);
                     friendListView.setAdapter(adapter);
+
+                    /* remove loadscreen */
+                    loadProfile.setVisibility(View.GONE);
 
                 } catch (IOException e) {
                     e.printStackTrace();
