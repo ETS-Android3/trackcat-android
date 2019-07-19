@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.rahimlis.badgedtablayout.BadgedTabLayout;
+
 import de.trackcat.FriendsSystem.Tabs.FindFriendsFragment;
 import de.trackcat.FriendsSystem.Tabs.FriendsFragment;
 import de.trackcat.FriendsSystem.Tabs.SharingFriendsFragment;
@@ -32,8 +34,10 @@ public class FriendsViewerFragment extends Fragment {
         ViewPager viewPager =  view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(3);
         setupViewPager(viewPager);
-        TabLayout  tabLayout =  view.findViewById(R.id.tablayout);
+        BadgedTabLayout tabLayout =  view.findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setBadgeText(1,"1");
+
         return view;
     }
 
@@ -53,5 +57,7 @@ public class FriendsViewerFragment extends Fragment {
         adapter.addFragment(sharingFriendsFragment,"LIVE");
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(activeSite);
+
+
     }
 }
