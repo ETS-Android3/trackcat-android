@@ -393,7 +393,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                  search term
                 search(searchTerm, page);*/
                 FindFriendsFragment.search("ma",true, friends);
-                clear();
+               // clear();
                 break;
 
         }
