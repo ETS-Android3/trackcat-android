@@ -346,10 +346,14 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
                             /* delete friend okay */
                             if (mainObject.getString("success").equals("0")) {
+                                /* delete friend questions */
                                 if(newFriend){
                                     Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendDeleteQuestionOkay), Toast.LENGTH_SHORT).show();
+                                    FriendQuestionsFragment.loadPage();
+                                    /* delete friends */
                                 }else{
                                     Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendDeleteFriendOkay), Toast.LENGTH_SHORT).show();
+                                    FriendsFragment.loadPage();
                                 }
 
                                 /* delete friend error */
