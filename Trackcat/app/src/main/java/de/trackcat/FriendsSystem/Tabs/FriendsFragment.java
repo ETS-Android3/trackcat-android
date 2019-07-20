@@ -226,6 +226,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                 List<CustomFriend> friendList = new ArrayList<>();
                 MainActivity.setSearchFriendTerm("");
                 searchTerm="";
+                findFriend.setText("");
                 showFriends(searchTerm, false, friendList);
                 Toast.makeText(getContext(), "Suche zurückgesetzt.", Toast.LENGTH_SHORT).show();
                 break;
