@@ -64,4 +64,32 @@ public interface APIClient {
     @POST("/searchFriendsAPI")
     Call<ResponseBody> findFriend(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/requestFriendAPI")
+    Call<ResponseBody> requestFriend(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
+
+    @Headers({"Accept: application/json"})
+    @POST("/showFriendRequestsAPI")
+    Call<ResponseBody> showFriendRequest(@Header("Authorization") String authHeader);
+
+    @Headers({"Accept: application/json"})
+    @POST("/showStrangerProfileAPI")
+    Call<ResponseBody> showStrangerProfile(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
+
+    @Headers({"Accept: application/json"})
+    @POST("/searchMyFriendsAPI")
+    Call<ResponseBody> searchMyFriends(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
+
+    @Headers({"Accept: application/json"})
+    @POST("/showFriendProfileAPI")
+    Call<ResponseBody> showFriendProfile(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
+
+    @Headers({"Accept: application/json"})
+    @POST("/deleteFriendAPI")
+    Call<ResponseBody> deleteFriend(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
+
+    @Headers({"Accept: application/json"})
+    @POST("/showMyFriendRequestsAPI")
+    Call<ResponseBody> showMyFriendRequests(@Header("Authorization") String authHeader);
+
 }

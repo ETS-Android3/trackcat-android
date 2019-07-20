@@ -34,6 +34,8 @@
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
     <string name="fFriendProfile">FRIENDPROFILE</string>
     <string name="fPublicPersonProfile">PUBLICPERSONPROFILE</string>
+    <string name="fPublicPersonProfileQuestion">PUBLICPERSONPROFILEQUESTION</string>
+    <string name="fPublicPersonProfileSendQuestion">PUBLICPERSONPROFILESENDQUESTION</string>
     <string name="fFriendLiveView">FRIENDLIVEVIEW</string>
 
     <!-- ErrorMessages Connection to Server -->
@@ -102,7 +104,10 @@
     <string name="help_editProfile">Hier haben Sie die Möglichkeit Ihr Profil zu bearbeiten. Durch Klicken auf das aktuelle Profilbild oder ihr Gewicht/Größe/Geburtstag lässt sich dieses
         ebenfalls ändern.</string>
     <string name="help_editPassword">Hier haben Sie die Möglichkeit Ihr Passwort zu ändern. Hierfür müssen Sie zunächst ihr aktuelles Passwort eingeben.</string>
-    <string name="help_friendSystem">Hier sehen sie alle Ihre Freunde.</string>
+    <string name="help_friendSystem">Hier können Sie Ihre Freunde verwalten.\n
+        Über die Suche können Sie andere Nutzer suchen und diesen durch Klicken gegebenenfalls eine Freundschafsanfrage sendnen.\n Unter dem Tab Freunde können alle Freunde angezeigt werden und auch deren Profil aufgerufen werden.\n
+    Auf dem nächsten Tab werden alle Freunde angezeigt, die immoment eine Route live teilen.\n
+    Unter den letzten beiden Tabs sehen sie zum einen Ihre erhaltenden Freundschaftsanfragen und können diese bestätigen oder entfernen und zum anderen Ihre gesendeten Anfragen.</string>
     <string name="help_deleteAccount">Hier können Sie Ihren Account löschen.</string>
     <string name="help_friends_profile">Hier können Sie das Profil Ihres Freudes sehen. Wenn Sie auf den Button "Freund entfernen" klicken, wird die Person aus Ihrer Freundesliste entfernt und
     Sie können nicht mehr an seinen Liveübertragungen teilnehmen.</string>
@@ -143,9 +148,16 @@
     <string name="deleteAccountUnknownError">Unbekannter Fehler beim Löschen des Accounts!</string>
 
     <!-- options for friends -->
-    <string name="friendsLive">Ihr Freund teilt immoment eine Route live. Möchten Sie sein Profil ansehen oder zu seiner Liveübertragung wechseln?</string>
-
-    <string name="friendsDelete">Wenn Sie Ihren Freund entfernen. können Sie keine Liveübertragungen von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
+    <string name="friendsOptionTitle">Benutzeroptionen</string>
+    <string name="friendsDelete">Wenn Sie Ihren Freund entfernen können Sie keine Liveübertragungen oder persönliche Daten von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
+    <string name="friendsQuestionDelete">Wenn Sie die Freundschaftsanfrage entfernen, müssen Sie diesem Nutzer erneut eine Anfrage schicken, um sich mit Ihm anzufreunden. Wollen Sie die Freundschaftsanfrage wirklich ablehen?</string>
+    <string name="friendsSendQuestionDelete">Wenn Sie die Freundschaftsanfrage zurückziehen, kann die Person diese Anfrage nicht mehr sehen. Wollen Sie sie wirklich zurückziehen?</string>
+    <string name="friendQuestionOkay">Freundschaftsanfrage erfolgreich versendet.</string>
+    <string name="friendQuestionError">Beim Senden Ihrer Anfrage ist leider ein Fehler aufgetreten.</string>
+    <string name="friendDeleteFriendOkay">Freund erfolgreich entfernt.</string>
+    <string name="friendDeleteQuestionOkay">Anfrage erfolgreich entfernt.</string>
+    <string name="friendDeleteError">Beim Entfernen ist leider ein Fehler aufgetreten.</string>
+    <string name="friendQuestionCheck">Sie sind nun befreundet.</string>
 
     <!-- edit route name -->
     <string name="teditRecordName">Routenname wurde erfolgreich geändert.</string>

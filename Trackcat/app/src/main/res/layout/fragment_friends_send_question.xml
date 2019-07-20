@@ -15,7 +15,7 @@
             style="@style/TextAppearance.AppCompat.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Freunde finden" />
+            android:text="Gesendete Freundschaftsanfragen:" />
 
         <View
             android:id="@+id/divider"
@@ -24,37 +24,20 @@
             android:layout_marginBottom="15dp"
             android:background="?android:attr/listDivider" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center|right"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center|right">
-
-                <EditText
-                    android:id="@+id/findFriend"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_search_black_24dp"
-                    android:ems="10"
-                    android:hint="Finde deinen Freund"></EditText>
-            </LinearLayout>
-        </LinearLayout>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ListView
-                android:id="@+id/friend_list"
+            <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/swipeContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent">
+
+                <ListView
+                    android:id="@+id/friend_question_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.v4.widget.SwipeRefreshLayout>
 
         </RelativeLayout>
     </LinearLayout>

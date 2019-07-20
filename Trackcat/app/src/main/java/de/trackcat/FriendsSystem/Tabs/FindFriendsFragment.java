@@ -1,5 +1,6 @@
 package de.trackcat.FriendsSystem.Tabs;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,8 +10,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -32,6 +36,7 @@ import de.trackcat.FriendsSystem.FriendListAdapter;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
+import de.trackcat.SignIn.SignInFragment_1;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,7 +47,11 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
 
     EditText findFriend;
     private UserDAO userDAO;
-    View view;
+    private static View view;
+    String searchTerm;
+    private static User currentUser;
+    private static boolean backPress;
+    private static int page, maxPage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,13 +59,35 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
 
         view = inflater.inflate(R.layout.fragment_friends_find, container, false);
 
-        userDAO = new UserDAO(MainActivity.getInstance());
 
-        /* find view */
+        /* create user DAO */
+        userDAO = new UserDAO(MainActivity.getInstance());
+        currentUser = userDAO.read(MainActivity.getActiveUser());
+
+        /* set page */
+        if (MainActivity.getSearchForeignPage() != 0) {
+            maxPage = MainActivity.getSearchForeignPage();
+            backPress = true;
+        } else {
+            backPress = false;
+        }
+        page = 1;
+
+        /* get searchedTerm */
+        searchTerm = MainActivity.getSearchForeignTerm();
+
+        /* find search field */
         findFriend = view.findViewById(R.id.findFriend);
         findFriend.setOnKeyListener(this);
 
+        /* set last search */
+        if (searchTerm != null) {
+            findFriend.setText(searchTerm);
 
+            /* search term */
+            List<CustomFriend> friendList = new ArrayList<>();
+            search(searchTerm, false, friendList);
+        }
         return view;
     }
 
@@ -64,70 +95,99 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-            String find = findFriend.getText().toString();
-            Toast.makeText(getContext(), "Suche nach '" + find + "' gestartet.", Toast.LENGTH_SHORT).show();
+            searchTerm = findFriend.getText().toString();
+            MainActivity.setSearchForeignTerm(searchTerm);
+            page = 1;
+            Toast.makeText(getContext(), "Suche nach '" + searchTerm + "' gestartet.", Toast.LENGTH_SHORT).show();
 
+            /* close keyboard */
+            InputMethodManager imm = (InputMethodManager) MainActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+            View view = MainActivity.getInstance().getCurrentFocus();
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-            HashMap<String, String> map = new HashMap<>();
-            map.put("search", "" + find);
-            map.put("page", "1");
-
-
-            Retrofit retrofit = APIConnector.getRetrofit();
-            APIClient apiInterface = retrofit.create(APIClient.class);
-
-            /* start a call */
-            User currentUser = userDAO.read(MainActivity.getActiveUser());
-            String base = currentUser.getMail() + ":" + currentUser.getPassword();
-            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-
-            Call<ResponseBody> call = apiInterface.findFriend(authString, map);
-
-            call.enqueue(new Callback<ResponseBody>() {
-
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                    /* get jsonString from API */
-                    String jsonString = null;
-
-                    try {
-                        jsonString = response.body().string();
-
-                        /* parse json */
-                        JSONArray friends = new JSONArray(jsonString);
-
-                        List<CustomFriend> friendList = new ArrayList<>();
-
-                        for (int i = 0; i < friends.length(); i++) {
-                            CustomFriend friend = new CustomFriend();
-                            friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
-                            friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
-                            friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
-                            friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
-                            friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
-                            friendList.add(friend);
-                        }
-                        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true);
-                        ListView friendListView = view.findViewById(R.id.friend_list);
-                        friendListView.setAdapter(adapter);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    call.cancel();
-                }
-            });
-
+            /* search term */
+            List<CustomFriend> friendList = new ArrayList<>();
+            search(searchTerm, false, friendList);
 
             return true;
         }
         return false;
+    }
+
+    public static void search(String find, boolean loadMore, List<CustomFriend> friendList) {
+
+        /* check if load more */
+        if (loadMore) {
+            page++;
+            if (!backPress) {
+                MainActivity.setSearchForeignPage(page);
+            }
+        }
+
+        /* create map */
+        HashMap<String, String> map = new HashMap<>();
+        map.put("search", "" + find);
+        map.put("page", "" + page);
+
+        /* start a call */
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<ResponseBody> call = apiInterface.findFriend(authString, map);
+
+        call.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                /* get jsonString from API */
+                String jsonString = null;
+
+                try {
+                    jsonString = response.body().string();
+
+                    /* parse json */
+                    JSONArray friends = new JSONArray(jsonString);
+
+                    /* show search entrys exists */
+                    for (int i = 0; i < friends.length(); i++) {
+                        CustomFriend friend = new CustomFriend();
+                        friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
+                        friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
+                        friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
+                        friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
+                        friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
+                        friend.setId(((JSONObject) friends.get(i)).getInt("id"));
+                        friendList.add(friend);
+                    }
+
+                    /* add entrys to view */
+                    FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false);
+                    ListView friendListView = view.findViewById(R.id.friend_list);
+                    friendListView.setAdapter(adapter);
+
+                    /* load more if backpress */
+                    if (page != maxPage && backPress) {
+                        search(find, true, friendList);
+                    } else {
+                        if (backPress) {
+                            friendListView.setSelection(MainActivity.getSearchForeignPageIndex());
+                        } else {
+                            friendListView.setSelection((page - 1) * 10);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                call.cancel();
+            }
+        });
     }
 }

@@ -29,7 +29,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -55,7 +54,6 @@ import de.trackcat.Profile.EditPasswordFragment;
 import de.trackcat.Profile.ProfileFragment;
 import de.trackcat.Profile.EditProfileFragment;
 import de.trackcat.RecordList.RecordListFragment;
-import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
 import de.trackcat.Recording.Locator;
 import de.trackcat.Recording.RecordFragment;
 import de.trackcat.Settings.SettingsFragment;
@@ -88,6 +86,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // public Boolean firstRun = false;
     private static boolean hints;
     private static boolean darkTheme;
+    private static String searchFriendTerm;
+    private static int searchFriendPage;
+    private static int searchFriendPageIndex;
+    private static int friendQuestionIndex;
+    private static int sendFriendQuestionIndex;
+    private static String searchForeignTerm;
+    private static int searchForeignPage;
+    private static int searchForeignPageIndex;
     private UserDAO userDAO;
     private static int activeUser;
     public static Boolean isActiv = false;
@@ -129,6 +135,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static void setHints(boolean activeHints) {
         hints = activeHints;
+    }
+
+    public static void setSendFriendQuestionIndex(int index) {
+        sendFriendQuestionIndex = index;
+    }
+
+    public static int getSendFriendQuestionIndex() {
+        return sendFriendQuestionIndex;
+    }
+
+    public static void setFriendQuestionIndex(int index) {
+        friendQuestionIndex = index;
+    }
+
+    public static int getFriendQuestionIndex() {
+        return friendQuestionIndex;
+    }
+
+    public static void setSearchForeignTerm(String term) {
+        searchForeignTerm = term;
+    }
+
+    public static String getSearchForeignTerm() {
+        return searchForeignTerm;
+    }
+
+    public static void setSearchForeignPage(int page) {
+        searchForeignPage = page;
+    }
+
+    public static int getSearchForeignPage() {
+        return searchForeignPage;
+    }
+
+    public static void setSearchForeignPageIndex(int index) {
+        searchForeignPageIndex = index;
+    }
+
+    public static int getSearchForeignPageIndex() {
+        return searchForeignPageIndex;
+    }
+
+    public static void setSearchFriendTerm(String term) {
+        searchFriendTerm = term;
+    }
+
+    public static String getSearchFriendTerm() {
+        return searchFriendTerm;
+    }
+
+    public static void setSearchFriendPage(int page) {
+        searchFriendPage = page;
+    }
+
+    public static int getSearchFriendPage() {
+        return searchFriendPage;
+    }
+
+    public static void setSearchFriendPageIndex(int index) {
+        searchFriendPageIndex = index;
+    }
+
+    public static int getSearchFriendPageIndex() {
+        return searchFriendPageIndex;
     }
 
     public static boolean getDarkTheme() {
@@ -389,30 +459,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
                     toolbar.getMenu().clear();
                     loadDashboard();
+                    clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_recordlist:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
                     menuInstance.clear();
                     synchronizeRecords();
+                    clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_record:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
                     menuInstance.clear();
                     loadRecord();
+                    clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
                     menuInstance.clear();
                     loadSettings();
+                    clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_friends:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) == null) {
                     menuInstance.clear();
-                    loadFriendSystem();
+                    loadFriendSystem(1);
+                    clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_logout:
@@ -424,6 +499,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         menuItem.setChecked(true);
         mainDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void clearValuesAfterChangeMenu() {
+        setSearchForeignPage(0);
+        setSearchForeignTerm(null);
+        setSearchForeignPageIndex(0);
+        setSearchFriendPage(0);
+        setSearchFriendTerm("");
+        setSearchFriendPageIndex(0);
+        setFriendQuestionIndex(0);
+        setSendFriendQuestionIndex(0);
     }
 
     public void logout() {
@@ -503,11 +589,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
             loadProfile(false);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
-            loadFriendSystem();
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfile)) != null){
-            loadFriendSystem();
-        }
-        else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+            loadFriendSystem(1);
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfile)) != null) {
+            loadFriendSystem(0);
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileQuestion)) != null) {
+            loadFriendSystem(3);
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileSendQuestion)) != null) {
+            loadFriendSystem(4);
+        } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
             if (exitApp) {
@@ -631,10 +720,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /* Laden des Friends-Fragments */
-    public void loadFriendSystem() {
+    public void loadFriendSystem(int activeSite) {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Freunde-Fragment wird geladen.");
+        Bundle bundle = new Bundle();
+        bundle.putInt("activeSite", activeSite);
+        /* add searchTerm to bundle if its loaded site */
+        if (activeSite == 0) {
+            //   bundle.putString("searchTerm", searchTerm);
+        }
+        FriendsViewerFragment firendsFragment = new FriendsViewerFragment();
+        firendsFragment.setArguments(bundle);
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-        fragTransaction.replace(R.id.mainFrame, new FriendsViewerFragment(),
+        fragTransaction.replace(R.id.mainFrame, firendsFragment,
                 getResources().getString(R.string.fFriendSystem));
         fragTransaction.commit();
     }
@@ -844,7 +941,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
                                                 //TODO
                                             } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
-                                                loadFriendSystem();
+                                                loadFriendSystem(1);
                                             } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
                                                 loadDeleteAccount();
                                             }
@@ -1135,14 +1232,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void synchronizeRecords() {
 
         /* get all records routes */
-        RecordTempDAO recordTempDAO = new RecordTempDAO(this);
         RouteDAO recordDAO = new RouteDAO(this);
         List<Route> records = recordDAO.readAll();
-        List<Route> tempRecords = recordTempDAO.readAll();
-
-        for (Route route : tempRecords) {
-            records.add(route);
-        }
 
         /* add maps to result */
         ArrayList<HashMap<String, String>> result = new ArrayList<>();
