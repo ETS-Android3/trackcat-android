@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.rahimlis.badgedtablayout.BadgedTabLayout;
 
 import de.trackcat.FriendsSystem.Tabs.FindFriendsFragment;
+import de.trackcat.FriendsSystem.Tabs.FriendQuestionsFragment;
 import de.trackcat.FriendsSystem.Tabs.FriendsFragment;
 import de.trackcat.FriendsSystem.Tabs.SharingFriendsFragment;
 import de.trackcat.R;
@@ -38,6 +39,13 @@ public class FriendsViewerFragment extends Fragment {
         tabLayout = view.findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
 
+
+        tabLayout.setIcon(0,R.drawable.ic_search_black_24dp);
+        tabLayout.setIcon(1,R.drawable.ic_friends);
+        tabLayout.setIcon(2,R.drawable.ic_live_friends);
+        tabLayout.setIcon(3,R.drawable.ic_friend_questions);
+
+
         return view;
     }
 
@@ -51,9 +59,14 @@ public class FriendsViewerFragment extends Fragment {
             findFriendsFragment.setArguments(bundle);
         }
         SharingFriendsFragment sharingFriendsFragment = new SharingFriendsFragment();
-        adapter.addFragment(findFriendsFragment, "SUCHEN");
-        adapter.addFragment(friendsFragment, "FREUNDE");
-        adapter.addFragment(sharingFriendsFragment, "LIVE");
+        FriendQuestionsFragment friendQuestionsFragment = new FriendQuestionsFragment();
+        adapter.addFragment(findFriendsFragment, "");
+        adapter.addFragment(friendsFragment, "");
+        adapter.addFragment(sharingFriendsFragment, "");
+        adapter.addFragment(friendQuestionsFragment, "");
+
+
+
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(activeSite);
     }

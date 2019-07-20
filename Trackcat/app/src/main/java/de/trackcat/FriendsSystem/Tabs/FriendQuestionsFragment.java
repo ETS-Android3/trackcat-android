@@ -2,19 +2,12 @@ package de.trackcat.FriendsSystem.Tabs;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
-import com.rahimlis.badgedtablayout.BadgedTabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,14 +28,13 @@ import de.trackcat.FriendsSystem.FriendsViewerFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
-import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FriendsFragment extends Fragment {
+public class FriendQuestionsFragment extends Fragment {
 
     private UserDAO userDAO;
     private static FriendsViewerFragment parentFrag;
@@ -53,7 +45,7 @@ public class FriendsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_friends, container, false);
+        view = inflater.inflate(R.layout.fragment_friends_question, container, false);
         parentFrag = (FriendsViewerFragment) this.getParentFragment();
 
 
@@ -66,26 +58,20 @@ public class FriendsFragment extends Fragment {
     }
 
     public static void loadPage() {
-        showFriends();
-
+        showFriendQuestions();
     }
 
-    private static void showFriends() {
-
-        /* create map */
-        HashMap<String, String> map = new HashMap<>();
-        map.put("search", "");
-        map.put("page", "1");
-
-        /* check of friends*/
+    private static void showFriendQuestions() {
+        /* check of friend questions */
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
         /* start a call */
+
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
-        Call<ResponseBody> call = apiInterface.searchMyFriends(authString, map);
+        Call<ResponseBody> call = apiInterface.showFriendRequest(authString);
 
         call.enqueue(new Callback<ResponseBody>() {
 
@@ -112,15 +98,16 @@ public class FriendsFragment extends Fragment {
                         friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
                         friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
                         friend.setId(((JSONObject) friends.get(i)).getInt("id"));
-                        friend.setEmail(((JSONObject) friends.get(i)).getString("email"));
                         friendList.add(friend);
                     }
 
-                    /* add entrys to view */
-                    FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false);
-                    ListView friendListView = view.findViewById(R.id.friend_list);
-                    friendListView.setAdapter(adapter);
+                    /* update badget */
+                    parentFrag.setBadgeText(3, "" + friends.length());
 
+                    /* add entrys to view */
+                    FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true);
+                    ListView friendListView = view.findViewById(R.id.friend_question_list);
+                    friendListView.setAdapter(adapter);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -134,6 +121,5 @@ public class FriendsFragment extends Fragment {
                 call.cancel();
             }
         });
-
     }
 }

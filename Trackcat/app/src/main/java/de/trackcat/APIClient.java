@@ -69,7 +69,7 @@ public interface APIClient {
     Call<ResponseBody> requestFriend(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
 
     @Headers({"Accept: application/json"})
-    @POST("/showFriendRequestAPI")
+    @POST("/showFriendRequestsAPI")
     Call<ResponseBody> showFriendRequest(@Header("Authorization") String authHeader);
 
     @Headers({"Accept: application/json"})

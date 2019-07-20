@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,6 +36,8 @@ import de.trackcat.FriendsSystem.FriendShowOptions.FriendLiveFragment;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendProfileFragment;
 import de.trackcat.FriendsSystem.FriendShowOptions.PublicPersonProfileFragment;
 import de.trackcat.FriendsSystem.Tabs.FindFriendsFragment;
+import de.trackcat.FriendsSystem.Tabs.FriendQuestionsFragment;
+import de.trackcat.FriendsSystem.Tabs.FriendsFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -278,6 +280,11 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                         /* friendship question check */
                     } else if (mainObject.getString("success").equals("2")) {
                         Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionCheck), Toast.LENGTH_SHORT).show();
+
+                        /* load page new */
+                        if(newFriend && friendQuestion){
+                            FriendQuestionsFragment.loadPage();
+                        }
                     }
                 } catch (JSONException e1) {
                     e1.printStackTrace();

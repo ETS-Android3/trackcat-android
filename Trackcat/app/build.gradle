@@ -79,5 +79,5 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.3'
 
     // Tab View for friends
-    implementation 'com.github.rahimlis:badgedtablayout:v1.0.1'
+    implementation 'com.github.rahimlis:badgedtablayout:v1.2'
 }
