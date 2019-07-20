@@ -281,9 +281,10 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                     } else if (mainObject.getString("success").equals("2")) {
                         Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionCheck), Toast.LENGTH_SHORT).show();
 
-                        /* load page new */
+                        /* load page new if friendship accepted*/
                         if(newFriend && friendQuestion){
                             FriendQuestionsFragment.loadPage();
+                            FriendsFragment.loadPage();
                         }
                     }
                 } catch (JSONException e1) {

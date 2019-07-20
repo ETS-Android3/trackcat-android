@@ -45,7 +45,6 @@ import retrofit2.Retrofit;
 public class FriendsFragment extends Fragment {
 
     private UserDAO userDAO;
-    private static FriendsViewerFragment parentFrag;
     private static View view;
     private static User currentUser;
 
@@ -54,8 +53,6 @@ public class FriendsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_friends, container, false);
-        parentFrag = (FriendsViewerFragment) this.getParentFragment();
-
 
         /* create user DAO and get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -67,7 +64,6 @@ public class FriendsFragment extends Fragment {
 
     public static void loadPage() {
         showFriends();
-
     }
 
     private static void showFriends() {
@@ -134,6 +130,5 @@ public class FriendsFragment extends Fragment {
                 call.cancel();
             }
         });
-
     }
 }
