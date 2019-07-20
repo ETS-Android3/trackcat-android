@@ -87,7 +87,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static boolean hints;
     private static boolean darkTheme;
     private static String searchTerm;
-    private static int searchPage;
+    private static int searchFriendPage;
+    private static int searchFriendPageIndex;
     private UserDAO userDAO;
     private static int activeUser;
     public static Boolean isActiv = false;
@@ -135,14 +136,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchTerm = term;
     }
 
-    public static void setSearchPage(int page) {
-        searchPage = page;
+    public static void setSearchFriendPage(int page) {
+        searchFriendPage = page;
     }
 
-    public static int getSearchPage() {
-        return searchPage;
+    public static int getSearchFriendPage() {
+        return searchFriendPage;
     }
-    
+
+    public static void setSearchFriendPageIndex(int index) {
+        searchFriendPageIndex = index;
+    }
+
+    public static int getSearchFriendPageIndex() {
+        return searchFriendPageIndex;
+    }
+
     public static boolean getDarkTheme() {
         return darkTheme;
     }
@@ -401,30 +410,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
                     toolbar.getMenu().clear();
                     loadDashboard();
+                    searchFriendPage=0;
                 }
                 break;
             case R.id.nav_recordlist:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
                     menuInstance.clear();
                     synchronizeRecords();
+                    searchFriendPage=0;
                 }
                 break;
             case R.id.nav_record:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
                     menuInstance.clear();
                     loadRecord();
+                    searchFriendPage=0;
                 }
                 break;
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
                     menuInstance.clear();
                     loadSettings();
+                    searchFriendPage=0;
                 }
                 break;
             case R.id.nav_friends:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) == null) {
                     menuInstance.clear();
                     loadFriendSystem(1);
+                    searchFriendPage=0;
                 }
                 break;
             case R.id.nav_logout:

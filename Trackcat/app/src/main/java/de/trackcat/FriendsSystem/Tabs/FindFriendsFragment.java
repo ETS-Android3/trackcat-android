@@ -48,7 +48,6 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
     EditText findFriend;
     private UserDAO userDAO;
     private static View view;
-    Button loadMore;
     String searchTerm;
     private static User currentUser;
 

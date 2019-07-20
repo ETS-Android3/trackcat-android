@@ -79,8 +79,17 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         View view = null;
         if (!newFriend) {
 
+            /* last item */
+            if(friends.size()% 10==0 && position==friends.size()-1){
+                view = inflater.inflate(R.layout.friend_list_last_item, parent, false);
+                Button loadMore= view.findViewById(R.id.loadMore);
+                loadMore.setOnClickListener(this);
+            /* item between */
+            }else{
+                view = inflater.inflate(R.layout.friend_list_item, parent, false);
+            }
+
             /* Variablen erstellen */
-            view = inflater.inflate(R.layout.friend_list_item, parent, false);
             name = view.findViewById(R.id.friend_name);
             email = view.findViewById(R.id.friend_email);
             image = view.findViewById(R.id.profile_image);
@@ -129,6 +138,9 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                 fragTransaction.replace(R.id.mainFrame, friendProfileFragment,
                                         MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
                                 fragTransaction.commit();
+
+                                /* set id for backPress */
+                                MainActivity.setSearchFriendPageIndex(position);
                             }
                             if (id == 1) {
                                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
@@ -389,11 +401,13 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         switch (v.getId()) {
 
             case R.id.loadMore:
-            /*    page++;
-                 search term
-                search(searchTerm, page);*/
-                FindFriendsFragment.search("ma",true, friends);
-               // clear();
+
+                if(newFriend) {
+                    FindFriendsFragment.search("ma", true, friends);
+                }else{
+                    FriendsFragment.showFriends("", true, friends);
+                }
+
                 break;
 
         }

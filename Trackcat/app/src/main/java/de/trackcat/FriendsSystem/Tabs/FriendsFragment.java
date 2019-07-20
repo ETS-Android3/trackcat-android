@@ -50,6 +50,9 @@ public class FriendsFragment extends Fragment {
     private static User currentUser;
     private static FriendListAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
+    private static int page;
+    private static int maxPage;
+    private static boolean backPress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,6 +75,16 @@ public class FriendsFragment extends Fragment {
             }
         });
 
+
+        /* set page */
+        if(MainActivity.getSearchFriendPage()!=0) {
+            maxPage = MainActivity.getSearchFriendPage();
+            backPress=true;
+        }else{
+            backPress=false;
+        }
+        page=1;
+
         /* load page */
         loadPage();
 
@@ -79,15 +92,24 @@ public class FriendsFragment extends Fragment {
     }
 
     public static void loadPage() {
-        showFriends();
+        List<CustomFriend> friendList = new ArrayList<>();
+        showFriends("", false, friendList);
     }
 
-    private static void showFriends() {
+    public static void showFriends(String find, boolean loadMore, List<CustomFriend> friendList) {
+
+        /* check if load more */
+        if (loadMore) {
+            page++;
+            if(!backPress) {
+                MainActivity.setSearchFriendPage(page);
+            }
+        }
 
         /* create map */
         HashMap<String, String> map = new HashMap<>();
-        map.put("search", "");
-        map.put("page", "1");
+        map.put("search", find);
+        map.put("page", ""+page);
 
         /* check of friends*/
         Retrofit retrofit = APIConnector.getRetrofit();
@@ -113,7 +135,6 @@ public class FriendsFragment extends Fragment {
                     /* parse json */
                     JSONArray friends = new JSONArray(jsonString);
 
-                    List<CustomFriend> friendList = new ArrayList<>();
 
                     /* show friend questions if they exists */
                     for (int i = 0; i < friends.length(); i++) {
@@ -132,6 +153,18 @@ public class FriendsFragment extends Fragment {
                     adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false);
                     ListView friendListView = view.findViewById(R.id.friend_list);
                     friendListView.setAdapter(adapter);
+
+
+                    /* load more if backpress */
+                    if(page!=maxPage && backPress){
+                        showFriends(find, true, friendList);
+                    }else{
+                        if(backPress){
+                            friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
+                        }else {
+                            friendListView.setSelection((page - 1) * 10);
+                        }
+                    }
 
 
                 } catch (IOException e) {
