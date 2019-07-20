@@ -40,7 +40,7 @@ import retrofit2.Retrofit;
 public class FriendProfileFragment extends Fragment {
 
     RelativeLayout loadProfile;
-    TextView name, email, dayOfBirth, gender, amountRecords, totalTime, totalDistance, dayOfRegistration, lastLogIn;
+    TextView name, email, dayOfBirth, gender, amountRecords, totalTime, totalDistance, dayOfRegistration, lastLogIn, friendshipSince;
     CircleImageView image, state;
     ImageView birthday, user_gender_image;
     UserDAO userDAO;
@@ -64,6 +64,7 @@ public class FriendProfileFragment extends Fragment {
         amountRecords = view.findViewById(R.id.user_amount_records);
         totalTime = view.findViewById(R.id.user_amount_time_records);
         totalDistance = view.findViewById(R.id.user_amount_distance_records);
+        friendshipSince= view.findViewById(R.id.user_friendship_since);
         lastLogIn = view.findViewById(R.id.user_lastLogIn);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
 
@@ -170,6 +171,9 @@ public class FriendProfileFragment extends Fragment {
 
                     /* set email */
                     email.setText(""+mainObject.getString("email"));
+
+                    /* friendship since */
+                    friendshipSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(mainObject.getLong("dateOfFriendship"), "dd.MM.yyyy HH:mm"));
 
                     /* remove loadscreen */
                     loadProfile.setVisibility(View.GONE);

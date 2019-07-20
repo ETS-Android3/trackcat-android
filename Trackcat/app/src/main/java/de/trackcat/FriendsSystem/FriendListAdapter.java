@@ -85,7 +85,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
             /* add name and regist since */
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
-            email.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy"));
+            email.setText(friends.get(position).getEmail());
 
             /* find level */
             double distance = Math.round(friends.get(position).getTotalDistance());
@@ -146,7 +146,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             });
         } else {
             /* find views */
-            if(position==10){
+            if(position==9){
                 view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
                 Button loadMore= view.findViewById(R.id.loadMore);
                 loadMore.setOnClickListener(this);
@@ -371,9 +371,9 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         switch (v.getId()) {
 
             case R.id.loadMore:
-                page++;
-                /* search term */
-                search(searchTerm, page);
+            /*    page++;
+                 search term
+                search(searchTerm, page);*/
                 break;
 
         }

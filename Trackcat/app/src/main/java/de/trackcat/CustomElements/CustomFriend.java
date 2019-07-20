@@ -5,6 +5,7 @@ public class CustomFriend {
     private long dateOfRegistration;
     private String firstName;
     private String lastName;
+    private String eMail;
     private byte[] image;
     private long totalDistance;
     private int id;
@@ -23,6 +24,14 @@ public class CustomFriend {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getEmail() {
+        return eMail;
+    }
+
+    public void setEmail(String eMail) {
+        this.eMail = eMail;
     }
 
     public String getLastName() {
