@@ -104,7 +104,10 @@
     <string name="help_editProfile">Hier haben Sie die Möglichkeit Ihr Profil zu bearbeiten. Durch Klicken auf das aktuelle Profilbild oder ihr Gewicht/Größe/Geburtstag lässt sich dieses
         ebenfalls ändern.</string>
     <string name="help_editPassword">Hier haben Sie die Möglichkeit Ihr Passwort zu ändern. Hierfür müssen Sie zunächst ihr aktuelles Passwort eingeben.</string>
-    <string name="help_friendSystem">Hier sehen sie alle Ihre Freunde.</string>
+    <string name="help_friendSystem">Hier können Sie Ihre Freunde verwalten.\n
+        Über die Suche können Sie andere Nutzer suchen und diesen durch Klicken gegebenenfalls eine Freundschafsanfrage sendnen.\n Unter dem Tab Freunde können alle Freunde angezeigt werden und auch deren Profil aufgerufen werden.\n
+    Auf dem nächsten Tab werden alle Freunde angezeigt, die immoment eine Route live teilen.\n
+    Unter den letzten beiden Tabs sehen sie zum einen Ihre erhaltenden Freundschaftsanfragen und können diese bestätigen oder entfernen und zum anderen Ihre gesendeten Anfragen.</string>
     <string name="help_deleteAccount">Hier können Sie Ihren Account löschen.</string>
     <string name="help_friends_profile">Hier können Sie das Profil Ihres Freudes sehen. Wenn Sie auf den Button "Freund entfernen" klicken, wird die Person aus Ihrer Freundesliste entfernt und
     Sie können nicht mehr an seinen Liveübertragungen teilnehmen.</string>

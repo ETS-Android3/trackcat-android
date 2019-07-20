@@ -84,7 +84,7 @@ public class FriendSendQuestionsFragment extends Fragment {
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
-        Call<ResponseBody> call = apiInterface.showFriendRequest(authString);
+        Call<ResponseBody> call = apiInterface.showMyFriendRequests(authString);
 
         call.enqueue(new Callback<ResponseBody>() {
 

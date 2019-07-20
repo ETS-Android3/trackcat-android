@@ -503,12 +503,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void clearValuesAfterChangeMenu() {
         setSearchForeignPage(0);
-        setSearchForeignTerm("");
+        setSearchForeignTerm(null);
         setSearchForeignPageIndex(0);
         setSearchFriendPage(0);
         setSearchFriendTerm("");
         setSearchFriendPageIndex(0);
         setFriendQuestionIndex(0);
+        setSendFriendQuestionIndex(0);
     }
 
     public void logout() {

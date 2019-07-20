@@ -88,4 +88,8 @@ public interface APIClient {
     @POST("/deleteFriendAPI")
     Call<ResponseBody> deleteFriend(@Header("Authorization") String authHeader, @Body  HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/showMyFriendRequestsAPI")
+    Call<ResponseBody> showMyFriendRequests(@Header("Authorization") String authHeader);
+
 }

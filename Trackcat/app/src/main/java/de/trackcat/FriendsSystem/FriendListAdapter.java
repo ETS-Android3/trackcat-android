@@ -37,6 +37,7 @@ import de.trackcat.FriendsSystem.FriendShowOptions.FriendProfileFragment;
 import de.trackcat.FriendsSystem.FriendShowOptions.PublicPersonProfileFragment;
 import de.trackcat.FriendsSystem.Tabs.FindFriendsFragment;
 import de.trackcat.FriendsSystem.Tabs.FriendQuestionsFragment;
+import de.trackcat.FriendsSystem.Tabs.FriendSendQuestionsFragment;
 import de.trackcat.FriendsSystem.Tabs.FriendsFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
@@ -335,6 +336,8 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                     /* friendship question okay */
                     if (mainObject.getString("success").equals("0")) {
                         Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionOkay), Toast.LENGTH_SHORT).show();
+                        FriendSendQuestionsFragment.loadPage();
+
                         /* friendship question error */
                     } else if (mainObject.getString("success").equals("1")) {
                         Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionError), Toast.LENGTH_SHORT).show();
