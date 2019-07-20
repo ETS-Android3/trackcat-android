@@ -219,6 +219,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                     fragTransaction.replace(R.id.mainFrame, publicPersonProfileFragment,
                                             MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
                                     fragTransaction.commit();
+                                    MainActivity.setSearchForeignPageIndex(position);
                                 }
                                 /* addFriend */
                                 if (id == 1) {
@@ -402,14 +403,13 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
             case R.id.loadMore:
 
+                /* check if is a newFriend or a friend list */
                 if(newFriend) {
-                    FindFriendsFragment.search("ma", true, friends);
+                    FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), true, friends);
                 }else{
                     FriendsFragment.showFriends(MainActivity.getSearchFriendTerm(), true, friends);
                 }
-
                 break;
-
         }
     }
 }

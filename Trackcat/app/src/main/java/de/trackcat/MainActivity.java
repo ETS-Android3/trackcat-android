@@ -89,6 +89,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static String searchFriendTerm;
     private static int searchFriendPage;
     private static int searchFriendPageIndex;
+    private static String searchForeignTerm;
+    private static int searchForeignPage;
+    private static int searchForeignPageIndex;
     private UserDAO userDAO;
     private static int activeUser;
     public static Boolean isActiv = false;
@@ -132,9 +135,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         hints = activeHints;
     }
 
+    public static void setSearchForeignTerm(String term) {
+        searchForeignTerm = term;
+    }
+
+    public static String getSearchForeignTerm() {
+        return searchForeignTerm;
+    }
+
+    public static void setSearchForeignPage(int page) {
+        searchForeignPage = page;
+    }
+
+    public static int getSearchForeignPage() {
+        return searchForeignPage;
+    }
+
+    public static void setSearchForeignPageIndex(int index) {
+        searchForeignPageIndex = index;
+    }
+
+    public static int getSearchForeignPageIndex() {
+        return searchForeignPageIndex;
+    }
+
     public static void setSearchFriendTerm(String term) {
         searchFriendTerm = term;
     }
+
     public static String getSearchFriendTerm() {
         return searchFriendTerm;
     }
@@ -413,7 +441,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
                     toolbar.getMenu().clear();
                     loadDashboard();
-                    searchFriendPage=0;
+                    searchFriendPage = 0;
                     setSearchFriendTerm("");
                 }
                 break;
@@ -421,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
                     menuInstance.clear();
                     synchronizeRecords();
-                    searchFriendPage=0;
+                    searchFriendPage = 0;
                     setSearchFriendTerm("");
                 }
                 break;
@@ -429,7 +457,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
                     menuInstance.clear();
                     loadRecord();
-                    searchFriendPage=0;
+                    searchFriendPage = 0;
                     setSearchFriendTerm("");
                 }
                 break;
@@ -437,7 +465,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
                     menuInstance.clear();
                     loadSettings();
-                    searchFriendPage=0;
+                    searchFriendPage = 0;
                     setSearchFriendTerm("");
                 }
                 break;
@@ -445,7 +473,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) == null) {
                     menuInstance.clear();
                     loadFriendSystem(1);
-                    searchFriendPage=0;
+                    searchFriendPage = 0;
                     setSearchFriendTerm("");
                 }
                 break;
@@ -538,10 +566,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadProfile(false);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
             loadFriendSystem(1);
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfile)) != null){
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfile)) != null) {
             loadFriendSystem(0);
-        }
-        else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
+        } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
             if (exitApp) {
@@ -667,11 +694,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /* Laden des Friends-Fragments */
     public void loadFriendSystem(int activeSite) {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Freunde-Fragment wird geladen.");
-        Bundle bundle= new Bundle();
+        Bundle bundle = new Bundle();
         bundle.putInt("activeSite", activeSite);
         /* add searchTerm to bundle if its loaded site */
-        if(activeSite==0){
-         //   bundle.putString("searchTerm", searchTerm);
+        if (activeSite == 0) {
+            //   bundle.putString("searchTerm", searchTerm);
         }
         FriendsViewerFragment firendsFragment = new FriendsViewerFragment();
         firendsFragment.setArguments(bundle);

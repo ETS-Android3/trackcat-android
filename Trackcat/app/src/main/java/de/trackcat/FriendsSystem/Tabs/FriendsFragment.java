@@ -120,6 +120,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             page = 1;
             Toast.makeText(getContext(), "Suche nach Freund '" + searchTerm + "' gestartet.", Toast.LENGTH_SHORT).show();
 
+            /* close keyboard */
             InputMethodManager imm = (InputMethodManager) MainActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
             View view = MainActivity.getInstance().getCurrentFocus();
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -148,16 +149,12 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
         map.put("search", find);
         map.put("page", "" + page);
 
-        /* check of friends*/
+        /* start a call */
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
-
-        /* start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-
         Call<ResponseBody> call = apiInterface.searchMyFriends(authString, map);
-
         call.enqueue(new Callback<ResponseBody>() {
 
             @Override
@@ -171,7 +168,6 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
 
                     /* parse json */
                     JSONArray friends = new JSONArray(jsonString);
-
 
                     /* show friend questions if they exists */
                     for (int i = 0; i < friends.length(); i++) {
@@ -191,7 +187,6 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                     ListView friendListView = view.findViewById(R.id.friend_list);
                     friendListView.setAdapter(adapter);
 
-
                     /* load more if backpress */
                     if (page != maxPage && backPress) {
                         showFriends(find, true, friendList);
@@ -202,8 +197,6 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                             friendListView.setSelection((page - 1) * 10);
                         }
                     }
-
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
