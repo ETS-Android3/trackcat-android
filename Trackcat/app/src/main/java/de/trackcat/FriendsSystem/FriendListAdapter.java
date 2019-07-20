@@ -35,6 +35,7 @@ import de.trackcat.Database.Models.User;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendLiveFragment;
 import de.trackcat.FriendsSystem.FriendShowOptions.FriendProfileFragment;
 import de.trackcat.FriendsSystem.FriendShowOptions.PublicPersonProfileFragment;
+import de.trackcat.FriendsSystem.Tabs.FindFriendsFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -146,7 +147,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             });
         } else {
             /* find views */
-            if(position==9){
+            if(friends.size()% 10==0 && position==friends.size()-1){
                 view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
                 Button loadMore= view.findViewById(R.id.loadMore);
                 loadMore.setOnClickListener(this);
@@ -234,6 +235,11 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             });
         }
         return view;
+    }
+
+    public void clear() {
+        friends.clear();
+        notifyDataSetChanged();
     }
 
     /* function to add a friend */
@@ -374,6 +380,8 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             /*    page++;
                  search term
                 search(searchTerm, page);*/
+                FindFriendsFragment.search("ma",true, friends);
+                clear();
                 break;
 
         }

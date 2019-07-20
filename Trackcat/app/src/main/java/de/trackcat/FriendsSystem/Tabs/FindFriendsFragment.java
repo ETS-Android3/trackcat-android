@@ -43,14 +43,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FindFriendsFragment extends Fragment implements View.OnKeyListener{
+public class FindFriendsFragment extends Fragment implements View.OnKeyListener {
 
     EditText findFriend;
     private UserDAO userDAO;
-    View view;
+    private static View view;
     Button loadMore;
     String searchTerm;
-    int page;
+    private static User currentUser;
+
+    private static int page;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,20 +63,22 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener{
 
         /* create user DAO */
         userDAO = new UserDAO(MainActivity.getInstance());
+        currentUser = userDAO.read(MainActivity.getActiveUser());
 
         /* set page */
-        page=1;
+        page = 1;
 
         /* find view */
         findFriend = view.findViewById(R.id.findFriend);
         findFriend.setOnKeyListener(this);
 
         /* set last search */
-        if(getArguments()!=null){
+        if (getArguments() != null) {
             searchTerm = getArguments().getString("searchTerm");
-            findFriend.setText(searchTerm);
+        findFriend.setText(searchTerm);
             /* search term */
-            search(searchTerm, page);
+            List<CustomFriend> friendList = new ArrayList<>();
+            search(searchTerm, false, friendList);
         }
 
 
@@ -86,34 +90,41 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener{
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
             searchTerm = findFriend.getText().toString();
-            page=1;
+            page = 1;
             Toast.makeText(getContext(), "Suche nach '" + searchTerm + "' gestartet.", Toast.LENGTH_SHORT).show();
 
-            InputMethodManager imm = (InputMethodManager)MainActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) MainActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
             View view = MainActivity.getInstance().getCurrentFocus();
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
             /* search term */
-            search(searchTerm, page);
+            List<CustomFriend> friendList = new ArrayList<>();
+            search(searchTerm, false, friendList);
 
             return true;
         }
         return false;
     }
 
-    private void search(String find, int page){
+    public static void search(String find, boolean loadMore, List<CustomFriend> friendList) {
         /* set gloabl value */
         MainActivity.setSearchTerm(find);
 
+        /* check if load more */
+        if (loadMore) {
+            page++;
+        }
+
+
         HashMap<String, String> map = new HashMap<>();
         map.put("search", "" + find);
-        map.put("page", ""+page);
+        map.put("page", "" + page);
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
         /* start a call */
-        User currentUser = userDAO.read(MainActivity.getActiveUser());
+
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
@@ -132,8 +143,6 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener{
 
                     /* parse json */
                     JSONArray friends = new JSONArray(jsonString);
-
-                    List<CustomFriend> friendList = new ArrayList<>();
 
                     for (int i = 0; i < friends.length(); i++) {
                         CustomFriend friend = new CustomFriend();

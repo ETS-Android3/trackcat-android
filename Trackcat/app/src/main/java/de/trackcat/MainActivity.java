@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static boolean hints;
     private static boolean darkTheme;
     private static String searchTerm;
+    private static int searchPage;
     private UserDAO userDAO;
     private static int activeUser;
     public static Boolean isActiv = false;
@@ -134,7 +135,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchTerm = term;
     }
 
+    public static void setSearchPage(int page) {
+        searchPage = page;
+    }
 
+    public static int getSearchPage() {
+        return searchPage;
+    }
+    
     public static boolean getDarkTheme() {
         return darkTheme;
     }
