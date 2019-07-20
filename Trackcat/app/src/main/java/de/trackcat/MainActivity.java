@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -100,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //  private static boolean isRestart = false;
     private static Menu menuInstance;
     private ProgressDialog progressDialog;
+    private static boolean connected;
 
     /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
     public static int randomImg = (int) (Math.random() * ((13 - 0) + 1)) + 0;
@@ -211,6 +214,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static void setDarkTheme(boolean activeDarkTheme) {
         darkTheme = activeDarkTheme;
+    }
+
+    public static boolean getConnection() {
+        return connected;
+    }
+
+
+    public static void setConnection(boolean connection) {
+        connected = connection;
     }
 
     @Override
@@ -387,6 +399,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         notificationManager = NotificationManagerCompat.from(this);
         //  firstRun = true;
+
+        /* check start connectivity */
+        boolean connected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            connected = true;
+            Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
+        }
+        else {
+            connected = false;
+            Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
+        }
+        setConnection(connected);
 
         /* Startseite festlegen - Erster Aufruf */
         loadDashboard();
@@ -804,6 +830,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /* function checkt if device have network connection */
     public void networkChange(boolean connected) {
         Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
+        setConnection(connected);
 
         /* device have connection */
         if (connected) {

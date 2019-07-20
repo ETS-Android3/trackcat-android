@@ -463,7 +463,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                         Log.d("TEEEST", "Starten");
 
                         /* start recording */
-                        if (!recordingRuns) {
+                        if (!recordingRuns && MainActivity.getConnection()) {
                             recordingRuns = true;
 
                             /* check if live sharing or not */
