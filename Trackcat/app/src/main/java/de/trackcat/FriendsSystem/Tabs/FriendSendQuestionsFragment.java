@@ -71,10 +71,10 @@ public class FriendSendQuestionsFragment extends Fragment {
     }
 
     public static void loadPage() {
-        showFriendQuestions();
+        showSendFriendQuestions();
     }
 
-    private static void showFriendQuestions() {
+    private static void showSendFriendQuestions() {
         /* check of friend questions */
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
@@ -118,9 +118,10 @@ public class FriendSendQuestionsFragment extends Fragment {
                     parentFrag.setBadgeText(3, "" + friends.length());
 
                     /* add entrys to view */
-                    adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true);
+                    adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, true);
                     ListView friendListView = view.findViewById(R.id.friend_question_list);
                     friendListView.setAdapter(adapter);
+                    friendListView.setSelection(MainActivity.getSendFriendQuestionIndex());
 
                 } catch (IOException e) {
                     e.printStackTrace();

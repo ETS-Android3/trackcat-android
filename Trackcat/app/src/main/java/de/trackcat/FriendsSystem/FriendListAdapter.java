@@ -53,16 +53,16 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
     public TextView name, email, registSince;
     LayoutInflater inflater;
     CircleImageView image, state;
-    boolean newFriend;
-    boolean friendQuestion;
+    boolean newFriend, friendQuestion,sendFriendQuestion;
     UserDAO userDAO;
 
-    public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion) {
+    public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion, boolean sendFriendQuestion) {
         super(context, R.layout.friend_list_item);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.friends = friends;
         this.newFriend = type;
         this.friendQuestion = friendQuestion;
+        this.sendFriendQuestion= sendFriendQuestion;
 
         /* create userDAOs */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -161,7 +161,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             });
         } else {
             /* find views */
-            if(friends.size()% 10==0 && position==friends.size()-1 && !friendQuestion){
+            if(friends.size()% 10==0 && position==friends.size()-1 && !friendQuestion && !sendFriendQuestion){
                 view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
                 Button loadMore= view.findViewById(R.id.loadMore);
                 loadMore.setOnClickListener(this);
@@ -229,36 +229,68 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                         });
                         /* friend list by friend request */
                     } else {
-                        alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendQuestionOptions), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
 
-                                /* show profile */
-                                if (id == 0) {
-                                    PublicPersonProfileFragment publicPersonProfileFragment = new PublicPersonProfileFragment();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putInt("friendId", friends.get(position).getId());
-                                    publicPersonProfileFragment.setArguments(bundle);
-                                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                                    fragTransaction.replace(R.id.mainFrame, publicPersonProfileFragment,
-                                            MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileQuestion));
-                                    fragTransaction.commit();
+                        /* send friend request */
+                        if(sendFriendQuestion){
+                            alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.sendFriendQuestionOptions), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
 
-                                    /* set index */
-                                    MainActivity.setFriendQuestionIndex(position);
+                                    /* show profile */
+                                    if (id == 0) {
+                                        PublicPersonProfileFragment publicPersonProfileFragment = new PublicPersonProfileFragment();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt("friendId", friends.get(position).getId());
+                                        publicPersonProfileFragment.setArguments(bundle);
+                                        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                                        fragTransaction.replace(R.id.mainFrame, publicPersonProfileFragment,
+                                                MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileSendQuestion));
+                                        fragTransaction.commit();
+
+                                        /* set index */
+                                        MainActivity.setSendFriendQuestionIndex(position);
+                                    }
+
+                                    /* delete friend */
+                                    if (id == 1) {
+                                        deleteFriend(friends.get(position).getId());
+                                    }
                                 }
+                            });
 
-                                /* addFriend */
-                                if (id == 1) {
-                                    addFriend(friends.get(position).getId());
-                                }
+                            /* received friend requests*/
+                        }else {
+                            alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendQuestionOptions), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
 
-                                /* delete friend */
-                                if (id == 2) {
-                                    deleteFriend(friends.get(position).getId());
+                                    /* show profile */
+                                    if (id == 0) {
+                                        PublicPersonProfileFragment publicPersonProfileFragment = new PublicPersonProfileFragment();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt("friendId", friends.get(position).getId());
+                                        publicPersonProfileFragment.setArguments(bundle);
+                                        FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                                        fragTransaction.replace(R.id.mainFrame, publicPersonProfileFragment,
+                                                MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileQuestion));
+                                        fragTransaction.commit();
+
+                                        /* set index */
+                                        MainActivity.setFriendQuestionIndex(position);
+                                    }
+
+                                    /* addFriend */
+                                    if (id == 1) {
+                                        addFriend(friends.get(position).getId());
+                                    }
+
+                                    /* delete friend */
+                                    if (id == 2) {
+                                        deleteFriend(friends.get(position).getId());
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                     AlertDialog dialog = alertdialogbuilder.create();
                     dialog.show();
@@ -336,18 +368,26 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
         /* create AlertBox */
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        String positivText="";
 
         /* show friendQuestion delete text */
         if(newFriend) {
-            alert.setTitle("Anfrage wirklich entfernen?");
-            alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsQuestionDelete));
-
+            if(sendFriendQuestion){
+                alert.setTitle("Anfrage wirklich zurückziehen?");
+                alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsSendQuestionDelete));
+                positivText="zurückziehen";
+            }else{
+                alert.setTitle("Anfrage wirklich ablehen?");
+                alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsQuestionDelete));
+                positivText="ablehen";
+            }
         }else{
             alert.setTitle("Freund wirklich entfernen?");
             alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsDelete));
+            positivText="entfernen";
         }
 
-        alert.setPositiveButton("entfernen", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(positivText, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 /* create hashmap */
                 HashMap<String, String> map = new HashMap<>();

@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static int searchFriendPage;
     private static int searchFriendPageIndex;
     private static int friendQuestionIndex;
+    private static int sendFriendQuestionIndex;
     private static String searchForeignTerm;
     private static int searchForeignPage;
     private static int searchForeignPageIndex;
@@ -134,6 +135,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static void setHints(boolean activeHints) {
         hints = activeHints;
+    }
+
+    public static void setSendFriendQuestionIndex(int index) {
+        sendFriendQuestionIndex = index;
+    }
+
+    public static int getSendFriendQuestionIndex() {
+        return sendFriendQuestionIndex;
     }
 
     public static void setFriendQuestionIndex(int index) {
@@ -584,6 +593,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadFriendSystem(0);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileQuestion)) != null) {
             loadFriendSystem(3);
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileSendQuestion)) != null) {
+            loadFriendSystem(4);
         } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {

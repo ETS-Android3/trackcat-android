@@ -120,7 +120,7 @@ public class FriendQuestionsFragment extends Fragment {
                     parentFrag.setBadgeText(3, "" + friends.length());
 
                     /* add entrys to view */
-                    adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true);
+                    adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, false);
                     ListView friendListView = view.findViewById(R.id.friend_question_list);
                     friendListView.setAdapter(adapter);
                     friendListView.setSelection(MainActivity.getFriendQuestionIndex());

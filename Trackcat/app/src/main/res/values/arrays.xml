@@ -22,6 +22,11 @@
     <array name="friendQuestionOptions">
         <item>Profil anzeigen</item>
         <item>Anfrage annehmen</item>
-        <item>Anfrage löschen</item>
+        <item>Anfrage ablehen</item>
+    </array>
+
+    <array name="sendFriendQuestionOptions">
+        <item>Profil anzeigen</item>
+        <item>Anfrage zurückziehen</item>
     </array>
 </resources>

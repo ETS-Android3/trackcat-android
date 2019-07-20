@@ -35,6 +35,7 @@
     <string name="fFriendProfile">FRIENDPROFILE</string>
     <string name="fPublicPersonProfile">PUBLICPERSONPROFILE</string>
     <string name="fPublicPersonProfileQuestion">PUBLICPERSONPROFILEQUESTION</string>
+    <string name="fPublicPersonProfileSendQuestion">PUBLICPERSONPROFILESENDQUESTION</string>
     <string name="fFriendLiveView">FRIENDLIVEVIEW</string>
 
     <!-- ErrorMessages Connection to Server -->
@@ -145,8 +146,9 @@
 
     <!-- options for friends -->
     <string name="friendsOptionTitle">Benutzeroptionen</string>
-    <string name="friendsDelete">Wenn Sie Ihren Freund entfernen können Sie keine Liveübertragungen von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
-    <string name="friendsQuestionDelete">Wenn Siedie Freundschaftsanfrage entfernen, müssen Sie diesem Nutzer erneut eine Anfrage schicken, um sich mit Ihm anzufreunden.</string>
+    <string name="friendsDelete">Wenn Sie Ihren Freund entfernen können Sie keine Liveübertragungen oder persönliche Daten von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
+    <string name="friendsQuestionDelete">Wenn Sie die Freundschaftsanfrage entfernen, müssen Sie diesem Nutzer erneut eine Anfrage schicken, um sich mit Ihm anzufreunden. Wollen Sie die Freundschaftsanfrage wirklich ablehen?</string>
+    <string name="friendsSendQuestionDelete">Wenn Sie die Freundschaftsanfrage zurückziehen, kann die Person diese Anfrage nicht mehr sehen. Wollen Sie sie wirklich zurückziehen?</string>
     <string name="friendQuestionOkay">Freundschaftsanfrage erfolgreich versendet.</string>
     <string name="friendQuestionError">Beim Senden Ihrer Anfrage ist leider ein Fehler aufgetreten.</string>
     <string name="friendDeleteFriendOkay">Freund erfolgreich entfernt.</string>
