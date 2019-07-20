@@ -169,5 +169,8 @@
     <string name="selectImage">Bitte wählen Sie ein Profilbild aus</string>
     <string name="ucrop_selectImage">Bild ausgewählt!</string>
 
+    <!--recording -->
+    <string name="recordsOptionsTitle">Aufnahmeoptionen</string>
+
 
 </resources>

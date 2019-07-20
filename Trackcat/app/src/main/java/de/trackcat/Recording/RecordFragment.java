@@ -36,6 +36,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,11 @@ import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
+import de.trackcat.FriendsSystem.FriendShowOptions.FriendLiveFragment;
+import de.trackcat.FriendsSystem.FriendShowOptions.FriendProfileFragment;
+import de.trackcat.FriendsSystem.Tabs.FriendQuestionsFragment;
+import de.trackcat.FriendsSystem.Tabs.FriendSendQuestionsFragment;
+import de.trackcat.FriendsSystem.Tabs.FriendsFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.NotificationActionReciever;
@@ -186,7 +192,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     private RecordTempDAO recordTempDAO;
     private LocationTempDAO locationTempDAO;
     private RouteDAO recordDAO;
+    private UserDAO userDAO;
 
+    /* live record values */
+    boolean recordingRuns;
 
     @Override
     public void onPause() {
@@ -249,6 +258,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         /* set DAOS */
         recordTempDAO = new RecordTempDAO(MainActivity.getInstance());
         locationTempDAO = new LocationTempDAO(MainActivity.getInstance());
+        userDAO = new UserDAO(MainActivity.getInstance());
 
         /* ----------------------------------------------------------------------------------handler
          * recieves messages from another thread
@@ -450,6 +460,39 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     if (isTracking) {
                         stopTracking();
                     } else {
+                        Log.d("TEEEST", "Starten");
+
+                        /* start recording */
+                        if (!recordingRuns) {
+                            recordingRuns = true;
+
+                            /* check if live sharing or not */
+                            AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
+                            alertdialogbuilder.setTitle(getContext().getResources().getString(R.string.recordsOptionsTitle));
+
+                            alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.recordsOptions), new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    if (id == 0) {
+                                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Live-Übertragung gestartet.", Toast.LENGTH_LONG).show();
+
+
+                                    }
+                                    if (id == 1) {
+                                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Private Aufzeichnung gestartet.", Toast.LENGTH_LONG).show();
+
+                                    }
+                                }
+                            });
+
+                            AlertDialog dialog = alertdialogbuilder.create();
+                            dialog.show();
+                            dialog.setCanceledOnTouchOutside(false);
+                        } else {
+
+                        }
                         startTracking();
                     }
 
@@ -677,7 +720,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                     recordDAO.create(record);
 
                                     /* delete old record */
-                                    int tempRecordId= mainObject.getInt("oldId");
+                                    int tempRecordId = mainObject.getInt("oldId");
                                     record.setId(tempRecordId);
 
                                     /*remove from temp*/

@@ -29,4 +29,9 @@
         <item>Profil anzeigen</item>
         <item>Anfrage zurückziehen</item>
     </array>
+
+    <array name="recordsOptions">
+        <item>Live-Übertragung</item>
+        <item>Private Aufzeichnung</item>
+    </array>
 </resources>
