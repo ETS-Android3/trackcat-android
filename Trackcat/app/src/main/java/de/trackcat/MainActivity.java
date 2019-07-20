@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // public Boolean firstRun = false;
     private static boolean hints;
     private static boolean darkTheme;
-    private static String searchTerm;
+    private static String searchFriendTerm;
     private static int searchFriendPage;
     private static int searchFriendPageIndex;
     private UserDAO userDAO;
@@ -132,8 +132,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         hints = activeHints;
     }
 
-    public static void setSearchTerm(String term) {
-        searchTerm = term;
+    public static void setSearchFriendTerm(String term) {
+        searchFriendTerm = term;
+    }
+    public static String getSearchFriendTerm() {
+        return searchFriendTerm;
     }
 
     public static void setSearchFriendPage(int page) {
@@ -411,6 +414,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     toolbar.getMenu().clear();
                     loadDashboard();
                     searchFriendPage=0;
+                    setSearchFriendTerm("");
                 }
                 break;
             case R.id.nav_recordlist:
@@ -418,6 +422,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     menuInstance.clear();
                     synchronizeRecords();
                     searchFriendPage=0;
+                    setSearchFriendTerm("");
                 }
                 break;
             case R.id.nav_record:
@@ -425,6 +430,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     menuInstance.clear();
                     loadRecord();
                     searchFriendPage=0;
+                    setSearchFriendTerm("");
                 }
                 break;
             case R.id.nav_settings:
@@ -432,6 +438,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     menuInstance.clear();
                     loadSettings();
                     searchFriendPage=0;
+                    setSearchFriendTerm("");
                 }
                 break;
             case R.id.nav_friends:
@@ -439,6 +446,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     menuInstance.clear();
                     loadFriendSystem(1);
                     searchFriendPage=0;
+                    setSearchFriendTerm("");
                 }
                 break;
             case R.id.nav_logout:
@@ -663,7 +671,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bundle.putInt("activeSite", activeSite);
         /* add searchTerm to bundle if its loaded site */
         if(activeSite==0){
-            bundle.putString("searchTerm", searchTerm);
+         //   bundle.putString("searchTerm", searchTerm);
         }
         FriendsViewerFragment firendsFragment = new FriendsViewerFragment();
         firendsFragment.setArguments(bundle);

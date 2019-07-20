@@ -1,5 +1,6 @@
 package de.trackcat.FriendsSystem.Tabs;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,11 +10,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.rahimlis.badgedtablayout.BadgedTabLayout;
 
@@ -43,16 +48,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FriendsFragment extends Fragment {
+public class FriendsFragment extends Fragment implements View.OnKeyListener {
 
+    EditText findFriend;
     private UserDAO userDAO;
     private static View view;
     private static User currentUser;
     private static FriendListAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
-    private static int page;
-    private static int maxPage;
+    private static int page, maxPage;
     private static boolean backPress;
+    private static String searchTerm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,15 +81,21 @@ public class FriendsFragment extends Fragment {
             }
         });
 
-
         /* set page */
-        if(MainActivity.getSearchFriendPage()!=0) {
+        if (MainActivity.getSearchFriendPage() != 0) {
             maxPage = MainActivity.getSearchFriendPage();
-            backPress=true;
-        }else{
-            backPress=false;
+            backPress = true;
+        } else {
+            backPress = false;
         }
-        page=1;
+        page = 1;
+
+        /* get searchedTerm */
+        searchTerm = MainActivity.getSearchFriendTerm();
+
+        /* find search field */
+        findFriend = view.findViewById(R.id.findFriend);
+        findFriend.setOnKeyListener(this);
 
         /* load page */
         loadPage();
@@ -93,7 +105,28 @@ public class FriendsFragment extends Fragment {
 
     public static void loadPage() {
         List<CustomFriend> friendList = new ArrayList<>();
-        showFriends("", false, friendList);
+        showFriends(searchTerm, false, friendList);
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+            searchTerm = findFriend.getText().toString();
+            MainActivity.setSearchFriendTerm(searchTerm);
+            page = 1;
+            Toast.makeText(getContext(), "Suche nach Freund '" + searchTerm + "' gestartet.", Toast.LENGTH_SHORT).show();
+
+            InputMethodManager imm = (InputMethodManager) MainActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+            View view = MainActivity.getInstance().getCurrentFocus();
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+            /* search term */
+            List<CustomFriend> friendList = new ArrayList<>();
+            showFriends(searchTerm, false, friendList);
+
+            return true;
+        }
+        return false;
     }
 
     public static void showFriends(String find, boolean loadMore, List<CustomFriend> friendList) {
@@ -101,7 +134,7 @@ public class FriendsFragment extends Fragment {
         /* check if load more */
         if (loadMore) {
             page++;
-            if(!backPress) {
+            if (!backPress) {
                 MainActivity.setSearchFriendPage(page);
             }
         }
@@ -109,7 +142,7 @@ public class FriendsFragment extends Fragment {
         /* create map */
         HashMap<String, String> map = new HashMap<>();
         map.put("search", find);
-        map.put("page", ""+page);
+        map.put("page", "" + page);
 
         /* check of friends*/
         Retrofit retrofit = APIConnector.getRetrofit();
@@ -156,12 +189,12 @@ public class FriendsFragment extends Fragment {
 
 
                     /* load more if backpress */
-                    if(page!=maxPage && backPress){
+                    if (page != maxPage && backPress) {
                         showFriends(find, true, friendList);
-                    }else{
-                        if(backPress){
+                    } else {
+                        if (backPress) {
                             friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
-                        }else {
+                        } else {
                             friendListView.setSelection((page - 1) * 10);
                         }
                     }

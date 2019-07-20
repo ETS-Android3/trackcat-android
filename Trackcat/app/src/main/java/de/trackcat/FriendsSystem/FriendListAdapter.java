@@ -405,7 +405,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                 if(newFriend) {
                     FindFriendsFragment.search("ma", true, friends);
                 }else{
-                    FriendsFragment.showFriends("", true, friends);
+                    FriendsFragment.showFriends(MainActivity.getSearchFriendTerm(), true, friends);
                 }
 
                 break;

@@ -67,7 +67,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
         /* set page */
         page = 1;
 
-        /* find view */
+        /* find search field */
         findFriend = view.findViewById(R.id.findFriend);
         findFriend.setOnKeyListener(this);
 
@@ -107,7 +107,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
 
     public static void search(String find, boolean loadMore, List<CustomFriend> friendList) {
         /* set gloabl value */
-        MainActivity.setSearchTerm(find);
+     //   MainActivity.setSearchFriendTerm(find);
 
         /* check if load more */
         if (loadMore) {
