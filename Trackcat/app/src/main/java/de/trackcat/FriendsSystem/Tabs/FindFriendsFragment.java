@@ -43,7 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FindFriendsFragment extends Fragment implements View.OnKeyListener, View.OnClickListener {
+public class FindFriendsFragment extends Fragment implements View.OnKeyListener{
 
     EditText findFriend;
     private UserDAO userDAO;
@@ -57,8 +57,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_friends_find, container, false);
-        loadMore= view.findViewById(R.id.loadMore);
-        loadMore.setOnClickListener(this);
+
 
         /* create user DAO */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -150,13 +149,6 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener,
                     ListView friendListView = view.findViewById(R.id.friend_list);
                     friendListView.setAdapter(adapter);
 
-                    /* set show more button visible/gone */
-                    if(friendList.size()==10){
-                        loadMore.setVisibility(View.VISIBLE);
-                    }else{
-                        loadMore.setVisibility(View.GONE);
-                    }
-
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -173,16 +165,5 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener,
 
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
 
-            case R.id.loadMore:
-                page++;
-                /* search term */
-                search(searchTerm, page);
-                break;
-
-        }
-    }
 }

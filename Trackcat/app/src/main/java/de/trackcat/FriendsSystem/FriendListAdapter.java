@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +44,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FriendListAdapter extends ArrayAdapter<String> {
+public class FriendListAdapter extends ArrayAdapter<String> implements View.OnClickListener{
 
     private List<CustomFriend> friends;
     public TextView name, email, registSince;
@@ -145,7 +146,14 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             });
         } else {
             /* find views */
-            view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
+            if(position==10){
+                view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
+                Button loadMore= view.findViewById(R.id.loadMore);
+                loadMore.setOnClickListener(this);
+            }else{
+                view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
+            }
+
             name = view.findViewById(R.id.friend_name);
             registSince = view.findViewById(R.id.friend_regist_since);
             image = view.findViewById(R.id.profile_image);
@@ -356,5 +364,18 @@ public class FriendListAdapter extends ArrayAdapter<String> {
         });
 
         alert.show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.loadMore:
+                page++;
+                /* search term */
+                search(searchTerm, page);
+                break;
+
+        }
     }
 }
