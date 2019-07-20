@@ -2,6 +2,7 @@ package de.trackcat.FriendsSystem.Tabs;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,8 @@ public class FriendQuestionsFragment extends Fragment {
     private static FriendsViewerFragment parentFrag;
     private static View view;
     private static User currentUser;
+    private static FriendListAdapter adapter;
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +55,18 @@ public class FriendQuestionsFragment extends Fragment {
         /* create user DAO and get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
         currentUser = userDAO.read(MainActivity.getActiveUser());
+
+        /* Update page with SwipeRefresh */
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.clear();
+                loadPage();
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
         loadPage();
 
         return view;
@@ -105,7 +120,7 @@ public class FriendQuestionsFragment extends Fragment {
                     parentFrag.setBadgeText(3, "" + friends.length());
 
                     /* add entrys to view */
-                    FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true);
+                    adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true);
                     ListView friendListView = view.findViewById(R.id.friend_question_list);
                     friendListView.setAdapter(adapter);
 
@@ -122,4 +137,6 @@ public class FriendQuestionsFragment extends Fragment {
             }
         });
     }
+
+
 }
