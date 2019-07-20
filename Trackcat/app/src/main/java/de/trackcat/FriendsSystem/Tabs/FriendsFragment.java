@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -48,7 +49,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FriendsFragment extends Fragment implements View.OnKeyListener {
+public class FriendsFragment extends Fragment implements View.OnKeyListener, View.OnClickListener {
 
     EditText findFriend;
     private UserDAO userDAO;
@@ -59,12 +60,15 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener {
     private static int page, maxPage;
     private static boolean backPress;
     private static String searchTerm;
+    ImageView resetSearch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_friends, container, false);
+        resetSearch= view.findViewById(R.id.resetSearch);
+        resetSearch.setOnClickListener(this);
 
         /* create user DAO and get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -212,5 +216,20 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener {
                 call.cancel();
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.resetSearch:
+                List<CustomFriend> friendList = new ArrayList<>();
+                MainActivity.setSearchFriendTerm("");
+                searchTerm="";
+                showFriends(searchTerm, false, friendList);
+                Toast.makeText(getContext(), "Suche zurückgesetzt.", Toast.LENGTH_SHORT).show();
+                break;
+
+        }
     }
 }

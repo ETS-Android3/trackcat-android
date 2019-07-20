@@ -37,6 +37,13 @@
                 android:layout_weight="1"
                 android:gravity="center|right">
 
+                <ImageView
+                    android:id="@+id/resetSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    app:srcCompat="@drawable/ic_reset_search" />
+
                 <EditText
                     android:id="@+id/findFriend"
                     android:layout_width="match_parent"
