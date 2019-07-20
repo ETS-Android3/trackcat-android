@@ -4,83 +4,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <RelativeLayout
+    <LinearLayout
         style="@style/VerticalThemeLayoutInputs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/friendQuestion"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/friends_title"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:text="Meine Freunde" />
 
-            <TextView
-                android:id="@+id/friends_title1"
-                style="@style/TextAppearance.AppCompat.Headline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Freundschaftsanfragen" />
-
-            <View
-                android:id="@+id/divider1"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@+id/friends_title1"
-                android:layout_marginBottom="15dp"
-                android:background="?android:attr/listDivider" />
-
-            <ListView
-                android:id="@+id/friend_question_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/divider1" />
-
-        </RelativeLayout>
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/friends_title"
+            android:layout_marginBottom="15dp"
+            android:background="?android:attr/listDivider" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/layout_friend_list"
-            android:layout_below="@+id/friendQuestion"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/friends_title"
-                style="@style/TextAppearance.AppCompat.Headline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Meine Freunde" />
-
-            <View
-                android:id="@+id/divider"
+            <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/swipeContainer"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@+id/friends_title"
-                android:layout_marginBottom="15dp"
-                android:background="?android:attr/listDivider" />
+                android:layout_height="match_parent">
 
-            <ListView
-                android:id="@+id/friend_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/divider" />
-
+                <ListView
+                    android:id="@+id/friend_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider" />
+            </android.support.v4.widget.SwipeRefreshLayout>
         </RelativeLayout>
-
-        <!-- load more Button -->
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/loadMore"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layout_friend_list"
-            android:layout_marginTop="24dp"
-            android:background="@color/colorGreenAccent"
-            android:padding="12dp"
-            android:text="Mehr laden"
-            android:textColor="@color/ap_white" />
-    </RelativeLayout>
+    </LinearLayout>
 </FrameLayout>

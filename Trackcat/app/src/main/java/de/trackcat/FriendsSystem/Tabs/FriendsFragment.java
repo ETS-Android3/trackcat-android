@@ -2,6 +2,7 @@ package de.trackcat.FriendsSystem.Tabs;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,6 +48,8 @@ public class FriendsFragment extends Fragment {
     private UserDAO userDAO;
     private static View view;
     private static User currentUser;
+    private static FriendListAdapter adapter;
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +60,19 @@ public class FriendsFragment extends Fragment {
         /* create user DAO and get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
         currentUser = userDAO.read(MainActivity.getActiveUser());
+
+        /* Update page with SwipeRefresh */
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.clear();
+                loadPage();
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
+        /* load page */
         loadPage();
 
         return view;
@@ -113,7 +129,7 @@ public class FriendsFragment extends Fragment {
                     }
 
                     /* add entrys to view */
-                    FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false);
+                    adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false);
                     ListView friendListView = view.findViewById(R.id.friend_list);
                     friendListView.setAdapter(adapter);
 
