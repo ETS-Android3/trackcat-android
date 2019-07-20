@@ -132,25 +132,9 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                         MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
                                 fragTransaction.commit();
                             }
+                            /* delete friend */
                             if (id == 2) {
-                                /* create AlertBox */
-                                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                                alert.setTitle("Freund wirklich entfernen?");
-                                alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsDelete));
-
-                                alert.setPositiveButton("Freund entfernen", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        //TODO Freund entfernen
-                                    }
-                                });
-
-                                alert.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                    }
-                                });
-
-                                alert.show();
+                                deleteFriend(friends.get(position).getId());
                             }
                         }
                     });
@@ -228,6 +212,11 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                 if (id == 0) {
                                     addFriend(friends.get(position).getId());
                                 }
+
+                                /* delete friend */
+                                if (id == 1) {
+                                    deleteFriend(friends.get(position).getId());
+                                }
                             }
                         });
                     }
@@ -288,5 +277,84 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                 call.cancel();
             }
         });
+    }
+
+
+    /* function to add a friend */
+    private void deleteFriend(int friendId) {
+
+        /* create AlertBox */
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+        /* show friendQuestion delete text */
+        if(newFriend) {
+            alert.setTitle("Anfrage wirklich entfernen?");
+            alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsQuestionDelete));
+
+        }else{
+            alert.setTitle("Freund wirklich entfernen?");
+            alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsDelete));
+        }
+
+        alert.setPositiveButton("entfernen", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                /* create hashmap */
+                HashMap<String, String> map = new HashMap<>();
+                map.put("friendId", "" + friendId);
+
+                /* start a call */
+                Retrofit retrofit = APIConnector.getRetrofit();
+                APIClient apiInterface = retrofit.create(APIClient.class);
+                User currentUser = userDAO.read(MainActivity.getActiveUser());
+                String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+                Call<ResponseBody> call = apiInterface.deleteFriend(authString, map);
+                call.enqueue(new Callback<ResponseBody>() {
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        try {
+                            /* get jsonString from API */
+                            String jsonString = response.body().string();
+
+                            /* parse json */
+                            JSONObject mainObject = new JSONObject(jsonString);
+
+                            /* delete friend okay */
+                            if (mainObject.getString("success").equals("0")) {
+                                if(newFriend){
+                                    Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendDeleteQuestionOkay), Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendDeleteFriendOkay), Toast.LENGTH_SHORT).show();
+                                }
+
+                                /* delete friend error */
+                            } else if (mainObject.getString("success").equals("1")) {
+                                Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendDeleteError), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        call.cancel();
+                    }
+                });
+            }
+        });
+
+        alert.setNegativeButton("Abbruch", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+
+        alert.show();
     }
 }

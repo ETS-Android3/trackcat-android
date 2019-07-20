@@ -144,9 +144,13 @@
 
     <!-- options for friends -->
     <string name="friendsOptionTitle">Benutzeroptionen</string>
-    <string name="friendsDelete">Wenn Sie Ihren Freund entfernen. können Sie keine Liveübertragungen von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
+    <string name="friendsDelete">Wenn Sie Ihren Freund entfernen können Sie keine Liveübertragungen von Ihm sehen. Möchten Sie wirklich Ihren Freund entfernen?</string>
+    <string name="friendsQuestionDelete">Wenn Siedie Freundschaftsanfrage entfernen, müssen Sie diesem Nutzer erneut eine Anfrage schicken, um sich mit Ihm anzufreunden.</string>
     <string name="friendQuestionOkay">Freundschaftsanfrage erfolgreich versendet.</string>
     <string name="friendQuestionError">Beim Senden Ihrer Anfrage ist leider ein Fehler aufgetreten.</string>
+    <string name="friendDeleteFriendOkay">Freund erfolgreich entfernt.</string>
+    <string name="friendDeleteQuestionOkay">Anfrage erfolgreich entfernt.</string>
+    <string name="friendDeleteError">Beim Entfernen ist leider ein Fehler aufgetreten.</string>
     <string name="friendQuestionCheck">Sie sind nun befreundet.</string>
 
     <!-- edit route name -->

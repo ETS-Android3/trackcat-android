@@ -21,5 +21,6 @@
 
     <array name="friendQuestionOptions">
         <item>Anfrage annehmen</item>
+        <item>Anfrage löschen</item>
     </array>
 </resources>
