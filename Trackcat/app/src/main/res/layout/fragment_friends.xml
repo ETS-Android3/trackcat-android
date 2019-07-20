@@ -71,7 +71,7 @@
 
         </RelativeLayout>
 
-        <!-- delete Friend Button -->
+        <!-- load more Button -->
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/loadMore"
             android:layout_width="match_parent"
