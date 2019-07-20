@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static String searchFriendTerm;
     private static int searchFriendPage;
     private static int searchFriendPageIndex;
+    private static int friendQuestionIndex;
     private static String searchForeignTerm;
     private static int searchForeignPage;
     private static int searchForeignPageIndex;
@@ -133,6 +134,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static void setHints(boolean activeHints) {
         hints = activeHints;
+    }
+
+    public static void setFriendQuestionIndex(int index) {
+        friendQuestionIndex = index;
+    }
+
+    public static int getFriendQuestionIndex() {
+        return friendQuestionIndex;
     }
 
     public static void setSearchForeignTerm(String term) {
@@ -441,40 +450,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
                     toolbar.getMenu().clear();
                     loadDashboard();
-                    searchFriendPage = 0;
-                    setSearchFriendTerm("");
+                    clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_recordlist:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
                     menuInstance.clear();
                     synchronizeRecords();
-                    searchFriendPage = 0;
-                    setSearchFriendTerm("");
+                    clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_record:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
                     menuInstance.clear();
                     loadRecord();
-                    searchFriendPage = 0;
-                    setSearchFriendTerm("");
+                    clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_settings:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
                     menuInstance.clear();
                     loadSettings();
-                    searchFriendPage = 0;
-                    setSearchFriendTerm("");
+                    clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_friends:
                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) == null) {
                     menuInstance.clear();
                     loadFriendSystem(1);
-                    searchFriendPage = 0;
-                    setSearchFriendTerm("");
+                    clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_logout:
@@ -486,6 +490,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         menuItem.setChecked(true);
         mainDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void clearValuesAfterChangeMenu() {
+        setSearchForeignPage(0);
+        setSearchForeignTerm("");
+        setSearchForeignPageIndex(0);
+        setSearchFriendPage(0);
+        setSearchFriendTerm("");
+        setSearchFriendPageIndex(0);
+        setFriendQuestionIndex(0);
     }
 
     public void logout() {
@@ -568,6 +582,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadFriendSystem(1);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfile)) != null) {
             loadFriendSystem(0);
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileQuestion)) != null) {
+            loadFriendSystem(3);
         } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {

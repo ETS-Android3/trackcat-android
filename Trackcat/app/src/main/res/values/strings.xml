@@ -34,6 +34,7 @@
     <string name="fRecordDetailsChartAltitude">RECORD_DETAILS_CHART_ALTITUDE</string>
     <string name="fFriendProfile">FRIENDPROFILE</string>
     <string name="fPublicPersonProfile">PUBLICPERSONPROFILE</string>
+    <string name="fPublicPersonProfileQuestion">PUBLICPERSONPROFILEQUESTION</string>
     <string name="fFriendLiveView">FRIENDLIVEVIEW</string>
 
     <!-- ErrorMessages Connection to Server -->

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,7 +15,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import de.trackcat.APIClient;
@@ -35,7 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FriendQuestionsFragment extends Fragment {
+public class FriendSendQuestionsFragment extends Fragment {
 
     private UserDAO userDAO;
     private static FriendsViewerFragment parentFrag;
@@ -48,7 +46,7 @@ public class FriendQuestionsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_friends_question, container, false);
+        view = inflater.inflate(R.layout.fragment_friends_send_question, container, false);
         parentFrag = (FriendsViewerFragment) this.getParentFragment();
 
 
@@ -123,7 +121,6 @@ public class FriendQuestionsFragment extends Fragment {
                     adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true);
                     ListView friendListView = view.findViewById(R.id.friend_question_list);
                     friendListView.setAdapter(adapter);
-                    friendListView.setSelection(MainActivity.getFriendQuestionIndex());
 
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -161,7 +161,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             });
         } else {
             /* find views */
-            if(friends.size()% 10==0 && position==friends.size()-1){
+            if(friends.size()% 10==0 && position==friends.size()-1 && !friendQuestion){
                 view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
                 Button loadMore= view.findViewById(R.id.loadMore);
                 loadMore.setOnClickListener(this);
@@ -232,13 +232,29 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                         alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendQuestionOptions), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                /* addFriend */
+
+                                /* show profile */
                                 if (id == 0) {
+                                    PublicPersonProfileFragment publicPersonProfileFragment = new PublicPersonProfileFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("friendId", friends.get(position).getId());
+                                    publicPersonProfileFragment.setArguments(bundle);
+                                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                                    fragTransaction.replace(R.id.mainFrame, publicPersonProfileFragment,
+                                            MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileQuestion));
+                                    fragTransaction.commit();
+
+                                    /* set index */
+                                    MainActivity.setFriendQuestionIndex(position);
+                                }
+
+                                /* addFriend */
+                                if (id == 1) {
                                     addFriend(friends.get(position).getId());
                                 }
 
                                 /* delete friend */
-                                if (id == 1) {
+                                if (id == 2) {
                                     deleteFriend(friends.get(position).getId());
                                 }
                             }

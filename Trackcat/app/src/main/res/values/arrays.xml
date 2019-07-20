@@ -20,6 +20,7 @@
     </array>
 
     <array name="friendQuestionOptions">
+        <item>Profil anzeigen</item>
         <item>Anfrage annehmen</item>
         <item>Anfrage löschen</item>
     </array>
