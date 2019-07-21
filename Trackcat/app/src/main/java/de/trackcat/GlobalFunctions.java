@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,6 +28,8 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.trackcat.Database.DAO.RouteDAO;
+import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 
 import static java.security.AccessController.getContext;
@@ -219,6 +222,7 @@ public class GlobalFunctions {
             user.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
         }
         user.setGender(userObject.getInt("gender"));
+
         if (userObject.getInt("darkTheme") == 0) {
             user.setDarkThemeActive(false);
         } else {
@@ -255,10 +259,45 @@ public class GlobalFunctions {
         } catch (Exception e) {
         }
 
+        try {
+            user.setTotalDistance(userObject.getLong("totalDistance"));
+        } catch (Exception e) {
+        }
+
+        try {
+            user.setTotalTime(userObject.getLong("totalTime"));
+        } catch (Exception e) {
+        }
+
+        try {
+            user.setAmountRecord(userObject.getLong("amountRecords"));
+        } catch (Exception e) {
+        }
+
         user.setPassword(userObject.getString("password"));
         user.setTimeStamp(userObject.getLong("timeStamp"));
+
+
         user.isSynchronised(true);
 
         return user;
+    }
+
+    public static void createRecords(JSONArray recordsArray, Activity activity) throws JSONException {
+        RouteDAO recordDao = new RouteDAO(activity);
+        for (int i = 0; i < recordsArray.length(); i++) {
+            Route record = new Route();
+            record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
+            record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
+            record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
+            record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
+            record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
+            record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
+            record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
+            record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
+            record.setTemp(false);
+            record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
+            recordDao.create(record);
+        }
     }
 }
