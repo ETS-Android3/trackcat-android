@@ -216,7 +216,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                     AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
                     alertdialogbuilder.setTitle(getContext().getResources().getString(R.string.friendsOptionTitle));
 
-                    /* friend list by no friend request */
+                    /* Stranger list (search page) */
                     if (!friendQuestion) {
                         alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.foreignOptions), new DialogInterface.OnClickListener() {
                             @Override
@@ -227,6 +227,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                     PublicPersonProfileFragment publicPersonProfileFragment = new PublicPersonProfileFragment();
                                     Bundle bundle = new Bundle();
                                     bundle.putInt("friendId", friends.get(position).getId());
+                                    bundle.putInt("authorizationType", 8);
                                     publicPersonProfileFragment.setArguments(bundle);
                                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                                     fragTransaction.replace(R.id.mainFrame, publicPersonProfileFragment,
@@ -254,6 +255,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                         PublicPersonProfileFragment publicPersonProfileFragment = new PublicPersonProfileFragment();
                                         Bundle bundle = new Bundle();
                                         bundle.putInt("friendId", friends.get(position).getId());
+                                        bundle.putInt("authorizationType", 7);
                                         publicPersonProfileFragment.setArguments(bundle);
                                         FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                                         fragTransaction.replace(R.id.mainFrame, publicPersonProfileFragment,
@@ -282,6 +284,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                         PublicPersonProfileFragment publicPersonProfileFragment = new PublicPersonProfileFragment();
                                         Bundle bundle = new Bundle();
                                         bundle.putInt("friendId", friends.get(position).getId());
+                                        bundle.putInt("authorizationType", 6);
                                         publicPersonProfileFragment.setArguments(bundle);
                                         FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                                         fragTransaction.replace(R.id.mainFrame, publicPersonProfileFragment,
