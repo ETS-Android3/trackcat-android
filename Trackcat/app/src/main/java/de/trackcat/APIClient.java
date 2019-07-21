@@ -92,4 +92,8 @@ public interface APIClient {
     @POST("/showMyFriendRequestsAPI")
     Call<ResponseBody> showMyFriendRequests(@Header("Authorization") String authHeader);
 
+    @Headers({"Accept: application/json"})
+    @POST("/requestLiveRecordAPI")
+    Call<ResponseBody> requestLiveRecord(@Header("Authorization") String authHeader);
+
 }

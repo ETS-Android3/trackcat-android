@@ -478,6 +478,42 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                     if (id == 0) {
                                         Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Live-Übertragung gestartet.", Toast.LENGTH_LONG).show();
 
+                                        /* start a call */
+                                        Retrofit retrofit = APIConnector.getRetrofit();
+                                        APIClient apiInterface = retrofit.create(APIClient.class);
+                                        User currentUser = userDAO.read(MainActivity.getActiveUser());
+                                        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                                        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+
+                                        Call<ResponseBody> call = apiInterface.requestLiveRecord(authString);
+                                        call.enqueue(new Callback<ResponseBody>() {
+
+                                            @Override
+                                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                                                try {
+                                                    /* get jsonString from API */
+                                                    String jsonString = response.body().string();
+
+                                                    /* parse json */
+                                                    JSONObject mainObject = new JSONObject(jsonString);
+
+                                                    /* friendship question okay */
+                                                    int liveRecordId= mainObject.getInt("liveRecordId");
+
+                                                } catch (JSONException e1) {
+                                                    e1.printStackTrace();
+                                                } catch (IOException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                                call.cancel();
+                                            }
+                                        });
+
 
                                     }
                                     if (id == 1) {
