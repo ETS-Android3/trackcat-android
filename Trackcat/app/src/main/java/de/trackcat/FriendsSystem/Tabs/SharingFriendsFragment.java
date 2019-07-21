@@ -19,5 +19,4 @@ public class SharingFriendsFragment extends Fragment {
         return view;
     }
 
-
 }

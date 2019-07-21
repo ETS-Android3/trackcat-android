@@ -116,7 +116,6 @@
                         android:textSize="19dip" />
 
                     <!-- dayOfBirth Label -->
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -130,14 +129,6 @@
                             android:layout_height="wrap_content"
                             android:text=""
                             android:textSize="19dip" />
-
-                        <ImageView
-                            android:id="@+id/user_birthday"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:layout_marginLeft="10dp"
-                            android:src="@raw/birthday"
-                            android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -174,12 +165,12 @@
 
                         <ImageView
                             android:id="@+id/user_gender_image"
-                            android:layout_marginLeft="5dp"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                           android:layout_marginRight="0dp"
-                            android:visibility="gone"
-                            android:src="@raw/male" />
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="0dp"
+                            android:src="@raw/male"
+                            android:visibility="gone" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -210,7 +201,7 @@
                         android:textSize="19dip" />
                 </RelativeLayout>
 
-                <!-- ammount time Label -->
+                <!-- total time Label -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -220,7 +211,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/label_amount_time_records"
+                        android:id="@+id/label_total_time_records"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -229,7 +220,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/user_amount_time_records"
+                        android:id="@+id/user_total_time_records"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -237,7 +228,7 @@
                         android:textSize="19dip" />
                 </RelativeLayout>
 
-                <!-- amount distance Label -->
+                <!-- total distance Label -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -247,7 +238,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/label_amount_distance_records"
+                        android:id="@+id/label_total_distance_records"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -256,7 +247,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/user_amount_distance_records"
+                        android:id="@+id/user_total_distance_records"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"

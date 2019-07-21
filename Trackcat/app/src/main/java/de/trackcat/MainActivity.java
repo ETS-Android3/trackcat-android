@@ -844,11 +844,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Function to show not autorized modal */
     public void showNotAuthorizedModal(int type) {
-        if (type == 5 | type == 6 | type == 7) {
+        if (type == 5 | type == 6 | type == 7 | type == 8) {
             showAutorizeCounter++;
         }
 
-        if((type == 5 | type == 6 | type == 7)&&showAutorizeCounter==1) {
+        if((type == 5 | type == 6 | type == 7 | type == 8)&&showAutorizeCounter==1) {
             /* create AlertBox */
             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             alert.setTitle("Achtung");
@@ -943,6 +943,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 /* Send friend question page */
                                             } else if (type == 7) {
                                                 loadFriendSystem(4);
+                                                showAutorizeCounter = 0;
+                                            }else if (type == 8) {
+                                                loadFriendSystem(0);
                                                 showAutorizeCounter = 0;
                                             }
                                         }

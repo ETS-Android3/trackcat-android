@@ -115,12 +115,12 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             page = 1;
             Toast.makeText(getContext(), "Suche nach Freund '" + searchTerm + "' gestartet.", Toast.LENGTH_SHORT).show();
 
-            /* close keyboard */
+            /* Close keyboard */
             InputMethodManager imm = (InputMethodManager) MainActivity.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
             View view = MainActivity.getInstance().getCurrentFocus();
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-            /* search term */
+            /* Search term */
             List<CustomFriend> friendList = new ArrayList<>();
             showFriends(searchTerm, false, friendList);
 
@@ -161,13 +161,13 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                         MainActivity.getInstance().showNotAuthorizedModal(5);
                     } else {
 
-                        /* get jsonString from API */
+                        /* Get jsonString from API */
                         String jsonString = response.body().string();
 
-                        /* parse json */
+                        /* Parse json */
                         JSONArray friends = new JSONArray(jsonString);
 
-                        /* show friend questions if they exists */
+                        /* Show friend questions if they exists */
                         for (int i = 0; i < friends.length(); i++) {
                             CustomFriend friend = new CustomFriend();
                             friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
@@ -180,12 +180,12 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                             friendList.add(friend);
                         }
 
-                        /* add entrys to view */
+                        /* Add entrys to view */
                         adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false);
                         ListView friendListView = view.findViewById(R.id.friend_list);
                         friendListView.setAdapter(adapter);
 
-                        /* load more if backpress */
+                        /* Load more if backpress */
                         if (page != maxPage && backPress) {
                             showFriends(find, true, friendList);
                         } else {
@@ -201,7 +201,6 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
@@ -223,7 +222,6 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                 showFriends(searchTerm, false, friendList);
                 Toast.makeText(getContext(), "Suche zurückgesetzt.", Toast.LENGTH_SHORT).show();
                 break;
-
         }
     }
 }

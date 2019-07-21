@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,7 +15,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import de.trackcat.APIClient;
@@ -51,8 +49,7 @@ public class FriendQuestionsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_friends_question, container, false);
         parentFrag = (FriendsViewerFragment) this.getParentFragment();
 
-
-        /* create user DAO and get current user */
+        /* Create user DAO and get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
         currentUser = userDAO.read(MainActivity.getActiveUser());
 
@@ -67,27 +64,26 @@ public class FriendQuestionsFragment extends Fragment {
             }
         });
 
+        /* Load page */
         loadPage();
 
         return view;
     }
 
+    /* Function to load page */
     public static void loadPage() {
         showFriendQuestions();
     }
 
+    /* Function to show friend questions */
     private static void showFriendQuestions() {
-        /* check of friend questions */
+
+        /* Start a call */
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
-
-        /* start a call */
-
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-
         Call<ResponseBody> call = apiInterface.showFriendRequest(authString);
-
         call.enqueue(new Callback<ResponseBody>() {
 
             @Override
@@ -97,15 +93,15 @@ public class FriendQuestionsFragment extends Fragment {
                         MainActivity.getInstance().showNotAuthorizedModal(6);
                     } else {
 
-                        /* get jsonString from API */
+                        /* Get jsonString from API */
                         String jsonString = response.body().string();
 
-                        /* parse json */
+                        /* Parse json */
                         JSONArray friends = new JSONArray(jsonString);
 
                         List<CustomFriend> friendList = new ArrayList<>();
 
-                        /* show friend questions if they exists */
+                        /* Show friend questions if they exists */
                         for (int i = 0; i < friends.length(); i++) {
                             CustomFriend friend = new CustomFriend();
                             friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
@@ -118,10 +114,12 @@ public class FriendQuestionsFragment extends Fragment {
                             friendList.add(friend);
                         }
 
-                        /* update badget */
-                        parentFrag.setBadgeText(3, "" + friends.length());
+                        /* Update badget */
+                        if (friends.length() > 0) {
+                            parentFrag.setBadgeText(3, "" + friends.length());
+                        }
 
-                        /* add entrys to view */
+                        /* Add entrys to view */
                         adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, false);
                         ListView friendListView = view.findViewById(R.id.friend_question_list);
                         friendListView.setAdapter(adapter);
@@ -140,6 +138,4 @@ public class FriendQuestionsFragment extends Fragment {
             }
         });
     }
-
-
 }
