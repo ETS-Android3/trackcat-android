@@ -429,7 +429,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
         }
         profileImage.setImageBitmap(bitmap);
-
     }
 
     /* Anpassen der TextFarbe zum Hintergrundbild */
@@ -896,7 +895,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             JSONObject userObject = mainObject.getJSONObject("userData");
 
                                             /* save logged user in db */
-                                            userDAO.update(getActiveUser(), GlobalFunctions.createUser(userObject));
+                                            userDAO.update(getActiveUser(), GlobalFunctions.createUser(userObject, true));
 
                                             /* restart ProfileFragment */
                                             if (type == 0) {
@@ -944,6 +943,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             } else if (type == 7) {
                                                 loadFriendSystem(4);
                                                 showAutorizeCounter = 0;
+                                                /* Search stranger */
                                             }else if (type == 8) {
                                                 loadFriendSystem(0);
                                                 showAutorizeCounter = 0;
@@ -973,7 +973,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     logout();
                 }
             });
-            alert.show();
+            AlertDialog dialog = alert.create();
+            dialog.show();
+            dialog.setCanceledOnTouchOutside(false);
         }
     }
 
@@ -1013,54 +1015,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             JSONObject userObject = mainObject.getJSONObject("user");
 
                             /* save user in db */
-                            currentUser.setId(userObject.getInt("id"));
-                            currentUser.setMail(userObject.getString("email"));
-                            currentUser.setFirstName(userObject.getString("firstName"));
-                            currentUser.setLastName(userObject.getString("lastName"));
-                            if (userObject.getString("image") != "null") {
-                                currentUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
-                            }
-                            currentUser.setGender(userObject.getInt("gender"));
-                            if (userObject.getInt("darkTheme") == 0) {
-                                currentUser.setDarkThemeActive(false);
-                            } else {
-                                currentUser.setDarkThemeActive(true);
-                            }
-
-                            if (userObject.getInt("hints") == 0) {
-                                currentUser.setHintsActive(false);
-                            } else {
-                                currentUser.setHintsActive(true);
-                            }
-
-                            try {
-                                currentUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
-                            } catch (Exception e) {
-                            }
-
-                            try {
-                                currentUser.setLastLogin(userObject.getLong("lastLogin"));
-                            } catch (Exception e) {
-                            }
-
-                            try {
-                                currentUser.setWeight((float) userObject.getDouble("weight"));
-                            } catch (Exception e) {
-                            }
-
-                            try {
-                                currentUser.setSize((float) userObject.getDouble("size"));
-                            } catch (Exception e) {
-                            }
-                            try {
-                                currentUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
-                            } catch (Exception e) {
-                            }
-
-                            currentUser.setPassword(userObject.getString("password"));
-                            currentUser.setTimeStamp(userObject.getLong("timeStamp"));
-                            currentUser.isSynchronised(true);
-                            userDAO.update(currentUser.getId(), currentUser);
+                            userDAO.update(currentUser.getId(), GlobalFunctions.createUser(userObject, true));
 
                             /* set drawe profile information */
                             setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());

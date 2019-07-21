@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -43,11 +44,12 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
 
     /* Variables */
     EditText findFriend;
+    private static TextView noEntrys;
     private UserDAO userDAO;
     private static View view;
     private static User currentUser;
     private static FriendListAdapter adapter;
-    private SwipeRefreshLayout swipeContainer;
+    private static SwipeRefreshLayout swipeContainer;
     private static int page, maxPage;
     private static boolean backPress;
     private static String searchTerm;
@@ -61,6 +63,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
         view = inflater.inflate(R.layout.fragment_friends, container, false);
         resetSearch = view.findViewById(R.id.resetSearch);
         resetSearch.setOnClickListener(this);
+        noEntrys = view.findViewById(R.id.no_entrys);
 
         /* Create user DAO and get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -195,6 +198,18 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                                 friendListView.setSelection((page - 1) * 10);
                             }
                         }
+
+                        noEntrys.setVisibility(View.GONE);
+                        /* Message no friends */
+                        if(friendList.size()==0 && MainActivity.getSearchFriendTerm()==""){
+                            noEntrys.setVisibility(View.VISIBLE);
+                            noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendNoEntry));
+                        }else
+                            /* Message no friends found*/
+                            if(MainActivity.getSearchFriendTerm()!=""){
+                                noEntrys.setVisibility(View.VISIBLE);
+                                noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSearchNoEntry));
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -206,6 +221,11 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
+                adapter.clear();
+                Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNoConnection), Toast.LENGTH_SHORT).show();
+                noEntrys.setVisibility(View.VISIBLE);
+                noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendNoConnection));
+
             }
         });
     }

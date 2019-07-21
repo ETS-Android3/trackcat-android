@@ -22,7 +22,6 @@ import de.trackcat.APIConnector;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Route;
-import de.trackcat.Database.Models.User;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -36,21 +35,19 @@ import retrofit2.Retrofit;
 
 public class LogInFragment extends Fragment implements View.OnClickListener {
 
+    /* variables */
     private FragmentTransaction fragTransaction;
     private UserDAO userDAO;
-    /* UI references */
     private EditText emailTextView, passwordTextView;
     private Button btnLogin;
     private TextView signInLink, messageBox, messageBoxInfo;
-    private boolean getRecordData;
-    private int loggedUserId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        /* Views */
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-
         emailTextView = view.findViewById(R.id.input_email);
         passwordTextView = view.findViewById(R.id.input_password);
         btnLogin = view.findViewById(R.id.btn_login);
@@ -58,23 +55,21 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         messageBox = view.findViewById(R.id.messageBox);
         messageBoxInfo = view.findViewById(R.id.messageBoxInfo);
 
-        /* set on click-Listener */
+        /* Set on click-Listener */
         btnLogin.setOnClickListener(this);
         signInLink.setOnClickListener(this);
 
-        /* set user dao */
+        /* Set user dao */
         userDAO = new UserDAO(StartActivity.getInstance());
 
-        /* set info after correct regist */
+        /* Set info after correct regist */
         if (getArguments() != null) {
             setErrorMessage("Anmeldung", getResources().getString(R.string.messageAfterCorrectRegist));
         }
-
-        getRecordData=false;
         return view;
     }
 
-    /* onClick Listener */
+    /* OnClick Listener */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -94,18 +89,18 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     /* Function to Login */
     public void login() {
 
-        /* validate the inputs */
+        /* Validate the inputs */
         boolean emailCorrect = GlobalFunctions.validateEMail(emailTextView, StartActivity.getInstance());
         boolean passwordCorrect = GlobalFunctions.validatePassword(passwordTextView, StartActivity.getInstance());
         if (emailCorrect && passwordCorrect) {
 
             setButtonDisable();
 
-            /* read the inputs to send */
+            /* Read the inputs to send */
             String email = emailTextView.getText().toString();
             String password = passwordTextView.getText().toString();
 
-            /* set wait field */
+            /* Wet wait field */
             final ProgressDialog progressDialog = new ProgressDialog(getContext(),
                     R.style.AppTheme_Dark_Dialog);
             StartActivity.getInstance().progressDialog = progressDialog;
@@ -113,139 +108,56 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
             progressDialog.setMessage(getResources().getString(R.string.login));
             progressDialog.show();
 
-            /* send inputs to server */
+            // TODO hashsalt Password
+            /* Start a call */
             Retrofit retrofit = APIConnector.getRetrofit();
             APIClient apiInterface = retrofit.create(APIClient.class);
             String base = email + ":" + password;
-
-            // TODO hashsalt Password
-            /* start a call */
             String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
             Call<ResponseBody> call = apiInterface.getUser(authString);
-
             call.enqueue(new Callback<ResponseBody>() {
 
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     try {
 
-
-                        /* user not authorized */
+                        /* User not authorized */
                         if (response.code() == 401) {
-                            /* show server error message to user */
+
+                            /* Show server error message to user */
                             Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + response.raw().message());
                             setErrorMessage("Daten nicht korrekt", getResources().getString(R.string.eDataNotCorrect));
                         } else {
 
-                            /* get jsonString from API */
+                            /* Get jsonString from API */
                             String jsonString = response.body().string();
 
-                            /* parse json */
+                            /* Parse json */
                             JSONObject mainObject = new JSONObject(jsonString);
 
-                            /* open activity if login success*/
+                            /* Open activity if login success*/
                             if (mainObject.getString("success").equals("0")) {
 
-                                /* get userObject from Json */
+                                /* Get userObject from Json */
                                 JSONObject userObject = mainObject.getJSONObject("userData");
 
-                                /* save logged user in db */
-                                User loggedUser = new User();
-                                loggedUserId=userObject.getInt("id");
-                                loggedUser.setId(userObject.getInt("id"));
-                                loggedUser.setMail(userObject.getString("email"));
-                                loggedUser.setFirstName(userObject.getString("firstName"));
-                                loggedUser.setLastName(userObject.getString("lastName"));
-                                if (userObject.getString("image") != "null") {
-                                    loggedUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
-                                }
-                                loggedUser.setGender(userObject.getInt("gender"));
-                                if (userObject.getInt("darkTheme") == 0) {
-                                    loggedUser.setDarkThemeActive(false);
-                                } else {
-                                    loggedUser.setDarkThemeActive(true);
-                                }
+                                /* Save logged user in db */
+                                userDAO.create(GlobalFunctions.createUser(userObject,false));
 
-                                if (userObject.getInt("hints") == 0) {
-                                    loggedUser.setHintsActive(false);
-                                } else {
-                                    loggedUser.setHintsActive(true);
-                                }
-
-                                try {
-                                    loggedUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
-                                } catch (Exception e) {
-                                }
-
-                                try {
-                                    loggedUser.setLastLogin(userObject.getLong("lastLogin"));
-                                } catch (Exception e) {
-                                }
-
-                                try {
-                                    loggedUser.setTotalDistance(userObject.getLong("totalDistance"));
-                                } catch (Exception e) {
-                                }
-
-                                try {
-                                    loggedUser.setTotalTime(userObject.getLong("totalTime"));
-                                } catch (Exception e) {
-                                }
-
-                                try {
-                                    loggedUser.setAmountRecord(userObject.getLong("amountRecords"));
-                                } catch (Exception e) {
-                                }
-
-
-                                try {
-                                    loggedUser.setWeight((float) userObject.getDouble("weight"));
-                                } catch (Exception e) {
-                                }
-
-                                try {
-                                    loggedUser.setSize((float) userObject.getDouble("size"));
-                                } catch (Exception e) {
-                                }
-                                try {
-                                    loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
-                                } catch (Exception e) {
-                                }
-
-                                loggedUser.setPassword(userObject.getString("password"));
-                                loggedUser.setTimeStamp(userObject.getLong("timeStamp"));
-                                loggedUser.isSynchronised(true);
-                                userDAO.create(loggedUser);
-                                getRecordData=true;
-
-                                /* set routes */
-                                if(mainObject.getJSONArray("records")!=null) {
+                                /* Create routes */
+                                if(mainObject.getJSONArray("records").length()>0&& mainObject.getJSONArray("records")!=null) {
                                     JSONArray recordsArray = mainObject.getJSONArray("records");
-                                    RouteDAO recordDao = new RouteDAO(StartActivity.getInstance());
-                                    for (int i = 0; i < recordsArray.length(); i++) {
-                                        Route record = new Route();
-                                        record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
-                                        record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
-                                        record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
-                                        record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
-                                        record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
-                                        record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
-                                        record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
-                                        record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
-                                        record.setTemp(false);
-                                        record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
-                                        recordDao.create(record);
-                                    }
+                                    GlobalFunctions.createRecords(recordsArray, StartActivity.getInstance());
                                 }
 
-                                /* open MainActivity */
+                                /* Open MainActivity */
                                 Intent intent = new Intent(getContext(), MainActivity.class);
                                 startActivity(intent);
                                 getActivity().finish();
 
                             } else if (mainObject.getString("success").equals("2")) {
 
-                                /* show server error message to user */
+                                /* Show server error message to user */
                                 Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + response.raw().message());
                                 setErrorMessage("Fehlende Verifizierung", getResources().getString(R.string.eEMailNotVerified));
                             }
@@ -254,7 +166,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                     } catch (Exception e) {
                         progressDialog.dismiss();
 
-                        /* show server error message to user */
+                        /* Show server error message to user */
                         Log.d(getResources().getString(R.string.app_name) + "-LoginConnection", "Server Error: " + response.raw().message());
                         setErrorMessage(e.toString(), getResources().getString(R.string.eServer));
                     }
@@ -271,17 +183,10 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                     call.cancel();
                 }
             });
-
-
-            if(getRecordData) {
-                /* start a call */
-                /* read profile values from global db */
-
-            }
         }
     }
 
-    /* function to set Error */
+    /* Function to set Error */
     private void setErrorMessage(String messageBoxText, String messageInfoText) {
 
         messageBoxInfo.setVisibility(View.VISIBLE);
@@ -299,7 +204,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         setButtonEnable();
     }
 
-    /* functions to enable/disable button */
+    /* Functions to enable/disable button */
     private void setButtonEnable() {
         btnLogin.setEnabled(true);
         btnLogin.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));

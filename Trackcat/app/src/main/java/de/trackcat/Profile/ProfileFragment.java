@@ -138,36 +138,12 @@ public class ProfileFragment extends Fragment {
                             image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
                         }
 
-                        setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), userJSON.getLong("amountRecords"),userJSON.getLong("totalDistance"), userJSON.getLong("totalTime"),image);
-
                         /* check if data is newer when localData */
                         if(userJSON.getLong("timeStamp")>currentUser.getTimeStamp()){
-                            User newUser = currentUser;
-                            newUser.setFirstName(userJSON.getString("firstName"));
-                            newUser.setLastName(userJSON.getString("lastName"));
-                           // newUser.setPassword();
-                            newUser.setDateOfBirth(dateOfBirth);
-                            newUser.setSize(size);
-                            newUser.setWeight(weight);
-                            newUser.setImage(image);
-                            newUser.setAmountRecord(userJSON.getLong("amountRecords"));
-                            newUser.setTotalDistance(userJSON.getLong("totalDistance"));
-                            newUser.setTotalTime(userJSON.getLong("totalTime"));
-                            newUser.setGender(userJSON.getInt("gender"));
-                            newUser.setDateOfRegistration(userJSON.getLong("dateOfRegistration"));
-                            newUser.setLastLogin(userJSON.getLong("lastLogin"));
-                            if (userJSON.getInt("darkTheme") == 0) {
-                                newUser.setDarkThemeActive(false);
-                            } else {
-                                newUser.setDarkThemeActive(true);
-                            }
-
-                            if (userJSON.getInt("hints") == 0) {
-                                newUser.setHintsActive(false);
-                            } else {
-                                newUser.setHintsActive(true);
-                            }
+                            userDAO.update(currentUser.getId(),GlobalFunctions.createUser(userJSON, true));
                         }
+
+                        setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), userJSON.getLong("amountRecords"),userJSON.getLong("totalDistance"), userJSON.getLong("totalTime"),image);
 
                     }
                 } catch (IOException e) {

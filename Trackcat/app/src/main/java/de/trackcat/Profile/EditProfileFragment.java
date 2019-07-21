@@ -488,6 +488,9 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                             }
                         });
 
+                        /* update drawer */
+                        MainActivity.getInstance().setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
+
                     } else {
                         /* UI-Meldung */
                         if (MainActivity.getHints()) {
