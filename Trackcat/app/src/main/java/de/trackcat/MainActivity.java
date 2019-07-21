@@ -973,7 +973,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     logout();
                 }
             });
-            alert.show();
+            AlertDialog dialog = alert.create();
+            dialog.show();
+            dialog.setCanceledOnTouchOutside(false);
         }
     }
 
