@@ -168,16 +168,15 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                 Button loadMore= view.findViewById(R.id.loadMore);
                 loadMore.setOnClickListener(this);
             }else{
-                if(friendQuestion){
+                if(friendQuestion && !sendFriendQuestion){
                     view = inflater.inflate(R.layout.friend_list_item, parent, false);
                 }else{
                     view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
                 }
-
             }
 
             name = view.findViewById(R.id.friend_name);
-            if(!friendQuestion) {
+            if(!friendQuestion || sendFriendQuestion) {
                 registSince = view.findViewById(R.id.friend_regist_since);
                 registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy"));
             }else{
