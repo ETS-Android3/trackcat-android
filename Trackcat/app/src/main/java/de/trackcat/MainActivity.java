@@ -944,6 +944,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             } else if (type == 7) {
                                                 loadFriendSystem(4);
                                                 showAutorizeCounter = 0;
+                                                /* Search stranger */
                                             }else if (type == 8) {
                                                 loadFriendSystem(0);
                                                 showAutorizeCounter = 0;

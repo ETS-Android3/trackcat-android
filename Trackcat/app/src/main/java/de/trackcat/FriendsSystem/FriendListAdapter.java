@@ -330,6 +330,14 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
     /* Function to add a friend */
     private void addFriend(int friendId) {
 
+        /* Check type */
+        int type;
+        if(friendQuestion){
+            type=6;
+        }else{
+            type=8;
+        }
+
         /* Create hashmap */
         HashMap<String, String> map = new HashMap<>();
         map.put("friendId", "" + friendId);
@@ -347,37 +355,42 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 try {
-                    /* get jsonString from API */
-                    String jsonString = response.body().string();
+                    if (response.code() == 401) {
+                        MainActivity.getInstance().showNotAuthorizedModal(type);
+                    } else {
 
-                    /* Parse json */
-                    JSONObject mainObject = new JSONObject(jsonString);
+                        /* Get jsonString from API */
+                        String jsonString = response.body().string();
 
-                    /* Friendship question okay */
-                    if (mainObject.getString("success").equals("0")) {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionOkay), Toast.LENGTH_SHORT).show();
+                        /* Parse json */
+                        JSONObject mainObject = new JSONObject(jsonString);
 
-                        /* Reload search page */
-                        FriendSendQuestionsFragment.loadPage();
-                        if (MainActivity.getSearchForeignPage() > 1) {
-                            FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), false, friends);
-                        } else {
-                            List<CustomFriend> f = new ArrayList<>();
-                            FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), false, f);
-                        }
+                        /* Friendship question okay */
+                        if (mainObject.getString("success").equals("0")) {
+                            Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionOkay), Toast.LENGTH_SHORT).show();
 
-                        /* Friendship question error */
-                    } else if (mainObject.getString("success").equals("1")) {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionError), Toast.LENGTH_SHORT).show();
+                            /* Reload search page */
+                            FriendSendQuestionsFragment.loadPage();
+                            if (MainActivity.getSearchForeignPage() > 1) {
+                                FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), false, friends);
+                            } else {
+                                List<CustomFriend> f = new ArrayList<>();
+                                FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), false, f);
+                            }
 
-                        /* Friendship question check */
-                    } else if (mainObject.getString("success").equals("2")) {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionCheck), Toast.LENGTH_SHORT).show();
+                            /* Friendship question error */
+                        } else if (mainObject.getString("success").equals("1")) {
+                            Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionError), Toast.LENGTH_SHORT).show();
 
-                        /* Load page new if friendship accepted */
-                        if (newFriend && friendQuestion) {
-                            FriendQuestionsFragment.loadPage();
-                            FriendsFragment.loadPage();
+                            /* Friendship question check */
+                        } else if (mainObject.getString("success").equals("2")) {
+                            Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionCheck), Toast.LENGTH_SHORT).show();
+
+                            /* Load page new if friendship accepted */
+                            if (newFriend && friendQuestion) {
+                                FriendQuestionsFragment.loadPage();
+                                FriendsFragment.loadPage();
+                            }
                         }
                     }
                 } catch (JSONException e1) {
@@ -409,18 +422,18 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                 alert.setTitle("Anfrage wirklich zurückziehen?");
                 alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsSendQuestionDelete));
                 positivText = "zurückziehen";
-                type=7;
+                type = 7;
             } else {
                 alert.setTitle("Anfrage wirklich ablehen?");
                 alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsQuestionDelete));
                 positivText = "ablehen";
-                type=6;
+                type = 6;
             }
         } else {
             alert.setTitle("Freund wirklich entfernen?");
             alert.setMessage(MainActivity.getInstance().getResources().getString(R.string.friendsDelete));
             positivText = "entfernen";
-            type=5;
+            type = 5;
         }
 
         alert.setPositiveButton(positivText, new DialogInterface.OnClickListener() {
