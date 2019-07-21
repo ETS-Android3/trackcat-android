@@ -52,7 +52,7 @@ public class LocationTempDAO {
     public void create(Location location) {
         DbHelper dbHelper = new DbHelper(context);
         try {
-           location.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null,
+            location.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null,
                     valueGenerator(location)));
         } finally {
             dbHelper.close();
@@ -193,9 +193,74 @@ public class LocationTempDAO {
     }
 
     /**
+     * Reads last locations of a specific record.
+     *
+     * @param recordId id of specific record of whom location has to be selected
+     * @param limit is the number of limit
+     * @param round is the page to show
+     * @return List of all locations belong to specific record in database sorted ascending after id,
+     * if locations with matching recordId was found else an empty List
+     */
+    public List<Location> readAllWithLimit(int recordId, int limit, int round) {
+        return this.readAllWithLimit(recordId, new String[]{"id", "ASC"}, limit, round);
+    }
+
+    /**
+     * Reads all locations of a specific record.
+     *
+     * @param recordId  id of specific record of whom locations has to be selected
+     * @param orderArgs String[] { column to sort, ASC / DESC }
+     *                  use COL_ID, COL_ALTITUDE, COL_TIME or COL_SPEED etc from DbContract
+     *                  as columns and ASC for ascending or DESC for descending order
+     * @return List of all locations belong to specific record in database sorted after
+     * orderArgs, if locations with matching recordId was found else an empty List
+     */
+    private List<Location> readAllWithLimit(int recordId, String[] orderArgs, int limit, int round) {
+        DbHelper dbHelper = new DbHelper(context);
+        List<Location> result = new ArrayList<>();
+        String selection = COL_RECORD_ID + " = ?";
+        try {
+            String[] selectionArgs = {String.valueOf(recordId)};
+            String[] projection = {
+                    COL_ID,
+                    COL_RECORD_ID,
+                    COL_LATITUDE,
+                    COL_LONGITUDE,
+                    COL_ALTITUDE,
+                    COL_TIME,
+                    COL_SPEED};
+            try (Cursor cursor = dbHelper.getReadableDatabase().query(
+                    TABLE_NAME,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    orderArgs[0] + " " + orderArgs[1],
+                    round + "," + limit)) {
+                if (cursor.moveToFirst())
+                    do {
+                        result.add(new Location(
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
+                                cursor.getInt(cursor.getColumnIndexOrThrow(COL_RECORD_ID)),
+                                cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LATITUDE)),
+                                cursor.getDouble(cursor.getColumnIndexOrThrow(COL_LONGITUDE)),
+                                cursor.getDouble(cursor.getColumnIndexOrThrow(COL_ALTITUDE)),
+                                cursor.getLong(cursor.getColumnIndexOrThrow(COL_TIME)),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow(COL_SPEED))));
+
+                    } while (cursor.moveToNext());
+            }
+        } finally {
+            dbHelper.close();
+        }
+        return result;
+    }
+
+    /**
      * Updates a specific location in database with handed over location, which has matching id.
      *
-     * @param id    of type integer of which route has to be updated
+     * @param id       of type integer of which route has to be updated
      * @param location of type location which would override location with defined id in database
      */
     public void update(int id, Location location) {
