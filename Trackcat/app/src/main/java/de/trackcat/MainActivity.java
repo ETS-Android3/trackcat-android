@@ -402,13 +402,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* check start connectivity */
         boolean connected = false;
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             connected = true;
             Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
-        }
-        else {
+        } else {
             connected = false;
             Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
         }
@@ -841,169 +840,138 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void showNotAuthorizedModal(int type) {
-        /* create AlertBox */
-        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-        alert.setTitle("Achtung");
-        LayoutInflater layoutInflater = (LayoutInflater) Objects.requireNonNull(MainActivity.this).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_notauthorized, null, true) : null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            alert.setView(alertView);
+    int showAutorizeCounter = 0;
 
+    /* Function to show not autorized modal */
+    public void showNotAuthorizedModal(int type) {
+        if (type == 5 | type == 6 | type == 7) {
+            showAutorizeCounter++;
         }
 
-        alert.setPositiveButton("Autorisieren", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+        if((type == 5 | type == 6 | type == 7)&&showAutorizeCounter==1) {
+            /* create AlertBox */
+            AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+            alert.setTitle("Achtung");
+            LayoutInflater layoutInflater = (LayoutInflater) Objects.requireNonNull(MainActivity.this).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_notauthorized, null, true) : null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                alert.setView(alertView);
+            }
 
-                User user = userDAO.read(getActiveUser());
-                TextView password = alertView.findViewById(R.id.input_password);
+            alert.setPositiveButton("Autorisieren", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
 
-                if (GlobalFunctions.validatePassword(password, MainActivity.this)) {
+                    User user = userDAO.read(getActiveUser());
+                    TextView password = alertView.findViewById(R.id.input_password);
 
-                    Retrofit retrofit = APIConnector.getRetrofit();
-                    APIClient apiInterface = retrofit.create(APIClient.class);
-                    String base = user.getMail() + ":" + password.getText();
+                    /* If password validate send call */
+                    if (GlobalFunctions.validatePassword(password, MainActivity.this)) {
 
-                    // TODO hashsalt Password
-                    /* start a call */
-                    String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                    Call<ResponseBody> call = apiInterface.getUser(authString);
+                        /* Start a call */
+                        Retrofit retrofit = APIConnector.getRetrofit();
+                        APIClient apiInterface = retrofit.create(APIClient.class);
+                        String base = user.getMail() + ":" + password.getText();
+                        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                        Call<ResponseBody> call = apiInterface.getUser(authString);
+                        call.enqueue(new Callback<ResponseBody>() {
 
-                    call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                try {
 
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            try {
+                                    if (response.code() == 401) {
+                                        showNotAuthorizedModal(type);
+                                        Toast.makeText(instance, "Ihre Eingabe war nicht korrekt!", Toast.LENGTH_LONG).show();
+                                    } else {
 
-                                if (response.code() == 401) {
-                                    showNotAuthorizedModal(type);
-                                    Toast.makeText(instance, "Ihre Eingabe war nicht korrekt!", Toast.LENGTH_LONG).show();
-                                } else {
+                                        /* get jsonString from API */
+                                        String jsonString = response.body().string();
 
-                                    /* get jsonString from API */
-                                    String jsonString = response.body().string();
+                                        /* parse json */
+                                        JSONObject mainObject = new JSONObject(jsonString);
+                                        /* open activity if login success*/
+                                        if (mainObject.getString("success").equals("0")) {
 
-                                    /* parse json */
-                                    JSONObject mainObject = new JSONObject(jsonString);
-                                    /* open activity if login success*/
-                                    if (mainObject.getString("success").equals("0")) {
+                                            /* get userObject from Json */
+                                            JSONObject userObject = mainObject.getJSONObject("userData");
 
-                                        /* get userObject from Json */
-                                        JSONObject userObject = mainObject.getJSONObject("userData");
+                                            /* save logged user in db */
+                                            userDAO.update(getActiveUser(), GlobalFunctions.createUser(userObject));
 
-                                        /* save logged user in db */
-                                        User loggedUser = new User();
-                                        loggedUser.setId(userObject.getInt("id"));
-                                        loggedUser.setMail(userObject.getString("email"));
-                                        loggedUser.setFirstName(userObject.getString("firstName"));
-                                        loggedUser.setLastName(userObject.getString("lastName"));
-                                        if (userObject.getString("image") != "null") {
-                                            loggedUser.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
-                                        }
-                                        loggedUser.setGender(userObject.getInt("gender"));
-                                        if (userObject.getInt("darkTheme") == 0) {
-                                            loggedUser.setDarkThemeActive(false);
-                                        } else {
-                                            loggedUser.setDarkThemeActive(true);
-                                        }
-
-                                        if (userObject.getInt("hints") == 0) {
-                                            loggedUser.setHintsActive(false);
-                                        } else {
-                                            loggedUser.setHintsActive(true);
-                                        }
-
-                                        try {
-                                            loggedUser.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
-                                        } catch (Exception e) {
-                                        }
-
-                                        try {
-                                            loggedUser.setLastLogin(userObject.getLong("lastLogin"));
-                                        } catch (Exception e) {
-                                        }
-
-                                        try {
-                                            loggedUser.setWeight((float) userObject.getDouble("weight"));
-                                        } catch (Exception e) {
-                                        }
-
-                                        try {
-                                            loggedUser.setSize((float) userObject.getDouble("size"));
-                                        } catch (Exception e) {
-                                        }
-                                        try {
-                                            loggedUser.setDateOfBirth(userObject.getLong("dateOfBirth"));
-                                        } catch (Exception e) {
-                                        }
-
-                                        loggedUser.setPassword(userObject.getString("password"));
-                                        loggedUser.setTimeStamp(userObject.getLong("timeStamp"));
-                                        loggedUser.isSynchronised(true);
-                                        userDAO.update(getActiveUser(), loggedUser);
-
-                                        /* restart ProfileFragment */
-                                        if (type == 0) {
-                                            loadProfile(false);
-                                            /* restart EditProfileFragment */
-                                        } else if (type == 1) {
-                                            loadEditProfile();
-                                            /* restart Fragement after synchronize Data failed */
-                                        } else if (type == 2) {
-
-                                            if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
-                                                loadDashboard();
-                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
-                                                loadRecord();
-                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
-                                                loadRecordList();
-                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
-                                                //TODO
-                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
-                                                //TODO
-                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
+                                            /* restart ProfileFragment */
+                                            if (type == 0) {
                                                 loadProfile(false);
-                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null) {
+                                                /* restart EditProfileFragment */
+                                            } else if (type == 1) {
                                                 loadEditProfile();
-                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
-                                                //TODO
-                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
-                                                loadFriendSystem(1);
-                                            } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                                                /* restart Fragement after synchronize Data failed */
+                                            } else if (type == 2) {
+
+                                                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
+                                                    loadDashboard();
+                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
+                                                    loadRecord();
+                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
+                                                    loadRecordList();
+                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
+                                                    //TODO
+                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
+                                                    //TODO
+                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
+                                                    loadProfile(false);
+                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null) {
+                                                    loadEditProfile();
+                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
+                                                    //TODO
+                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
+                                                    loadFriendSystem(1);
+                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                                                    loadDeleteAccount();
+                                                }
+                                            } else if (type == 3) {
                                                 loadDeleteAccount();
+                                            } else if (type == 4) {
+                                                loadRecordList();
+                                                /* friendPage */
+                                            } else if (type == 5) {
+                                                loadFriendSystem(1);
+                                                showAutorizeCounter = 0;
+                                                /* friendQuestionPage */
+                                            } else if (type == 6) {
+                                                loadFriendSystem(3);
+                                                showAutorizeCounter = 0;
+                                                /* Send friend question page */
+                                            } else if (type == 7) {
+                                                loadFriendSystem(4);
+                                                showAutorizeCounter = 0;
                                             }
-                                        } else if (type == 3) {
-                                            loadDeleteAccount();
-                                        } else if (type == 4) {
-                                            loadRecordList();
                                         }
                                     }
+                                } catch (Exception e) {
                                 }
-                            } catch (Exception e) {
-
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            call.cancel();
-                            Toast.makeText(instance, "Bitte überprüfen Sie Ihre Internetverbindung.", Toast.LENGTH_LONG).show();
-                            showNotAuthorizedModal(type);
-                        }
-                    });
-                } else {
-                    showNotAuthorizedModal(type);
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                call.cancel();
+                                Toast.makeText(instance, "Bitte überprüfen Sie Ihre Internetverbindung.", Toast.LENGTH_LONG).show();
+                                showNotAuthorizedModal(type);
+                            }
+                        });
+                    } else {
+                        showNotAuthorizedModal(type);
+                    }
                 }
-            }
-        });
+            });
 
-        alert.setNegativeButton("Abmelden", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                logout();
-            }
-        });
-        alert.show();
+            alert.setNegativeButton("Abmelden", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    logout();
+                }
+            });
+            alert.show();
+        }
     }
 
     private void synchronizeUser(User currentUser) {

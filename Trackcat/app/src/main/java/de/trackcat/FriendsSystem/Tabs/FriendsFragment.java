@@ -4,12 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import com.rahimlis.badgedtablayout.BadgedTabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,11 +30,9 @@ import de.trackcat.CustomElements.CustomFriend;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
 import de.trackcat.FriendsSystem.FriendListAdapter;
-import de.trackcat.FriendsSystem.FriendsViewerFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
-import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,6 +41,7 @@ import retrofit2.Retrofit;
 
 public class FriendsFragment extends Fragment implements View.OnKeyListener, View.OnClickListener {
 
+    /* Variables */
     EditText findFriend;
     private UserDAO userDAO;
     private static View view;
@@ -66,11 +57,12 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        /* Get views */
         view = inflater.inflate(R.layout.fragment_friends, container, false);
-        resetSearch= view.findViewById(R.id.resetSearch);
+        resetSearch = view.findViewById(R.id.resetSearch);
         resetSearch.setOnClickListener(this);
 
-        /* create user DAO and get current user */
+        /* Create user DAO and get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
         currentUser = userDAO.read(MainActivity.getActiveUser());
 
@@ -85,7 +77,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             }
         });
 
-        /* set page */
+        /* Set page */
         if (MainActivity.getSearchFriendPage() != 0) {
             maxPage = MainActivity.getSearchFriendPage();
             backPress = true;
@@ -94,19 +86,20 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
         }
         page = 1;
 
-        /* get searchedTerm */
+        /* Get searchedTerm */
         searchTerm = MainActivity.getSearchFriendTerm();
 
-        /* find search field */
+        /* Find search field */
         findFriend = view.findViewById(R.id.findFriend);
         findFriend.setOnKeyListener(this);
 
-        /* load page */
+        /* Load page */
         loadPage();
 
         return view;
     }
 
+    /* Function to load friend page */
     public static void loadPage() {
         List<CustomFriend> friendList = new ArrayList<>();
         showFriends(searchTerm, false, friendList);
@@ -115,6 +108,8 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+            /* Set variables */
             searchTerm = findFriend.getText().toString();
             MainActivity.setSearchFriendTerm(searchTerm);
             page = 1;
@@ -134,9 +129,10 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
         return false;
     }
 
+    /* Function to show all friends */
     public static void showFriends(String find, boolean loadMore, List<CustomFriend> friendList) {
 
-        /* check if load more */
+        /* Check if load more */
         if (loadMore) {
             page++;
             if (!backPress) {
@@ -144,12 +140,12 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             }
         }
 
-        /* create map */
+        /* Create map */
         HashMap<String, String> map = new HashMap<>();
         map.put("search", find);
         map.put("page", "" + page);
 
-        /* start a call */
+        /* Start a call */
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
@@ -160,41 +156,44 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                /* get jsonString from API */
-                String jsonString = null;
-
                 try {
-                    jsonString = response.body().string();
-
-                    /* parse json */
-                    JSONArray friends = new JSONArray(jsonString);
-
-                    /* show friend questions if they exists */
-                    for (int i = 0; i < friends.length(); i++) {
-                        CustomFriend friend = new CustomFriend();
-                        friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
-                        friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
-                        friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
-                        friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
-                        friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
-                        friend.setId(((JSONObject) friends.get(i)).getInt("id"));
-                        friend.setEmail(((JSONObject) friends.get(i)).getString("email"));
-                        friendList.add(friend);
-                    }
-
-                    /* add entrys to view */
-                    adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false);
-                    ListView friendListView = view.findViewById(R.id.friend_list);
-                    friendListView.setAdapter(adapter);
-
-                    /* load more if backpress */
-                    if (page != maxPage && backPress) {
-                        showFriends(find, true, friendList);
+                    if (response.code() == 401) {
+                        MainActivity.getInstance().showNotAuthorizedModal(5);
                     } else {
-                        if (backPress) {
-                            friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
+
+                        /* get jsonString from API */
+                        String jsonString = response.body().string();
+
+                        /* parse json */
+                        JSONArray friends = new JSONArray(jsonString);
+
+                        /* show friend questions if they exists */
+                        for (int i = 0; i < friends.length(); i++) {
+                            CustomFriend friend = new CustomFriend();
+                            friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
+                            friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
+                            friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
+                            friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
+                            friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
+                            friend.setId(((JSONObject) friends.get(i)).getInt("id"));
+                            friend.setEmail(((JSONObject) friends.get(i)).getString("email"));
+                            friendList.add(friend);
+                        }
+
+                        /* add entrys to view */
+                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false);
+                        ListView friendListView = view.findViewById(R.id.friend_list);
+                        friendListView.setAdapter(adapter);
+
+                        /* load more if backpress */
+                        if (page != maxPage && backPress) {
+                            showFriends(find, true, friendList);
                         } else {
-                            friendListView.setSelection((page - 1) * 10);
+                            if (backPress) {
+                                friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
+                            } else {
+                                friendListView.setSelection((page - 1) * 10);
+                            }
                         }
                     }
                 } catch (IOException e) {
@@ -202,6 +201,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
 
             @Override
@@ -218,7 +218,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             case R.id.resetSearch:
                 List<CustomFriend> friendList = new ArrayList<>();
                 MainActivity.setSearchFriendTerm("");
-                searchTerm="";
+                searchTerm = "";
                 findFriend.setText("");
                 showFriends(searchTerm, false, friendList);
                 Toast.makeText(getContext(), "Suche zurückgesetzt.", Toast.LENGTH_SHORT).show();

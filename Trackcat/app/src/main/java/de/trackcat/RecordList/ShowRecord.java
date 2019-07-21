@@ -37,7 +37,7 @@ public class ShowRecord {
         /* symbolize type */
         recordType.setImageResource(SpeedAverager.getTypeIcon(records.get(position).getType(), true));
 
-        /* import status */
+        /* temp status */
         if (records.get(position).isTemp()) {
             temp.setVisibility(View.VISIBLE);
         } else {

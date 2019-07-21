@@ -1,4 +1,5 @@
 package de.trackcat;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -14,6 +15,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +26,8 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import de.trackcat.Database.Models.User;
 
 import static java.security.AccessController.getContext;
 
@@ -49,7 +55,7 @@ public class GlobalFunctions {
     /* get string date from millis */
     public static String getDateWithTimeFromSeconds(long seconds, String dateFormat) {
 
-        Date date = new java.util.Date(seconds*1000);
+        Date date = new java.util.Date(seconds * 1000);
         SimpleDateFormat sdf = new java.text.SimpleDateFormat(dateFormat);
         String formattedDate = sdf.format(date);
 
@@ -106,9 +112,9 @@ public class GlobalFunctions {
     }
 
 
-    public static boolean validatePassword(TextView passwordTextView, Activity activity){
+    public static boolean validatePassword(TextView passwordTextView, Activity activity) {
 
-        boolean valid= true;
+        boolean valid = true;
         String password = passwordTextView.getText().toString();
 
         /* validate password */
@@ -125,9 +131,9 @@ public class GlobalFunctions {
         return valid;
     }
 
-    public static boolean validateName(TextView nameTextView, Activity activity){
+    public static boolean validateName(TextView nameTextView, Activity activity) {
 
-        boolean valid= true;
+        boolean valid = true;
         String input_name = nameTextView.getText().toString();
 
         /* validate name */
@@ -143,7 +149,7 @@ public class GlobalFunctions {
         return valid;
     }
 
-    public static boolean validateEMail(TextView emailTextView, Activity activity){
+    public static boolean validateEMail(TextView emailTextView, Activity activity) {
         boolean valid = true;
 
         /* read inputs */
@@ -164,7 +170,7 @@ public class GlobalFunctions {
         return valid;
     }
 
-    public static boolean validateTwoPassword(TextView password1TextView, TextView password2TextView,Activity activity) {
+    public static boolean validateTwoPassword(TextView password1TextView, TextView password2TextView, Activity activity) {
         boolean valid = true;
 
         /* read inputs */
@@ -186,20 +192,73 @@ public class GlobalFunctions {
         return valid;
     }
 
-    public static Bitmap findLevel(double distance){
-        int result=0;
-        Bitmap bitmap=null;
-        if(distance<5){
-            bitmap= BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl1);
-        }else if(distance>=5 && distance<20) {
-            bitmap= BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl2);
-        }else if(distance>=20 && distance<40) {
-            bitmap= BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl3);
-        }else if(distance>=40 && distance<80) {
-            bitmap= BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl4);
-        }else if(distance>=80) {
-            bitmap= BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl5);
+    public static Bitmap findLevel(double distance) {
+        int result = 0;
+        Bitmap bitmap = null;
+        if (distance < 5) {
+            bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl1);
+        } else if (distance >= 5 && distance < 20) {
+            bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl2);
+        } else if (distance >= 20 && distance < 40) {
+            bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl3);
+        } else if (distance >= 40 && distance < 80) {
+            bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl4);
+        } else if (distance >= 80) {
+            bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.lvl5);
         }
         return bitmap;
+    }
+
+    public static User createUser(JSONObject userObject) throws JSONException {
+        User user = new User();
+        user.setId(userObject.getInt("id"));
+        user.setMail(userObject.getString("email"));
+        user.setFirstName(userObject.getString("firstName"));
+        user.setLastName(userObject.getString("lastName"));
+        if (userObject.getString("image") != "null") {
+            user.setImage(GlobalFunctions.getBytesFromBase64(userObject.getString("image")));
+        }
+        user.setGender(userObject.getInt("gender"));
+        if (userObject.getInt("darkTheme") == 0) {
+            user.setDarkThemeActive(false);
+        } else {
+            user.setDarkThemeActive(true);
+        }
+
+        if (userObject.getInt("hints") == 0) {
+            user.setHintsActive(false);
+        } else {
+            user.setHintsActive(true);
+        }
+
+        try {
+            user.setDateOfRegistration(userObject.getLong("dateOfRegistration"));
+        } catch (Exception e) {
+        }
+
+        try {
+            user.setLastLogin(userObject.getLong("lastLogin"));
+        } catch (Exception e) {
+        }
+
+        try {
+            user.setWeight((float) userObject.getDouble("weight"));
+        } catch (Exception e) {
+        }
+
+        try {
+            user.setSize((float) userObject.getDouble("size"));
+        } catch (Exception e) {
+        }
+        try {
+            user.setDateOfBirth(userObject.getLong("dateOfBirth"));
+        } catch (Exception e) {
+        }
+
+        user.setPassword(userObject.getString("password"));
+        user.setTimeStamp(userObject.getLong("timeStamp"));
+        user.isSynchronised(true);
+
+        return user;
     }
 }

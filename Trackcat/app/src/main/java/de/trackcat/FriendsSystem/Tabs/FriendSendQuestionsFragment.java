@@ -91,38 +91,41 @@ public class FriendSendQuestionsFragment extends Fragment {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                /* get jsonString from API */
-                String jsonString = null;
-
                 try {
-                    jsonString = response.body().string();
+                    if (response.code() == 401) {
+                        MainActivity.getInstance().showNotAuthorizedModal(7);
+                    } else {
 
-                    /* parse json */
-                    JSONArray friends = new JSONArray(jsonString);
+                        /* get jsonString from API */
+                        String jsonString = response.body().string();
 
-                    List<CustomFriend> friendList = new ArrayList<>();
 
-                    /* show friend questions if they exists */
-                    for (int i = 0; i < friends.length(); i++) {
-                        CustomFriend friend = new CustomFriend();
-                        friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
-                        friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
-                        friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
-                        friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
-                        friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
-                        friend.setId(((JSONObject) friends.get(i)).getInt("id"));
-                        friendList.add(friend);
+                        /* parse json */
+                        JSONArray friends = new JSONArray(jsonString);
+
+                        List<CustomFriend> friendList = new ArrayList<>();
+
+                        /* show friend questions if they exists */
+                        for (int i = 0; i < friends.length(); i++) {
+                            CustomFriend friend = new CustomFriend();
+                            friend.setFirstName(((JSONObject) friends.get(i)).getString("firstName"));
+                            friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
+                            friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
+                            friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
+                            friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
+                            friend.setId(((JSONObject) friends.get(i)).getInt("id"));
+                            friendList.add(friend);
+                        }
+
+                        /* update badget */
+                        parentFrag.setBadgeText(3, "" + friends.length());
+
+                        /* add entrys to view */
+                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, true);
+                        ListView friendListView = view.findViewById(R.id.friend_question_list);
+                        friendListView.setAdapter(adapter);
+                        friendListView.setSelection(MainActivity.getSendFriendQuestionIndex());
                     }
-
-                    /* update badget */
-                    parentFrag.setBadgeText(3, "" + friends.length());
-
-                    /* add entrys to view */
-                    adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, true);
-                    ListView friendListView = view.findViewById(R.id.friend_question_list);
-                    friendListView.setAdapter(adapter);
-                    friendListView.setSelection(MainActivity.getSendFriendQuestionIndex());
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
