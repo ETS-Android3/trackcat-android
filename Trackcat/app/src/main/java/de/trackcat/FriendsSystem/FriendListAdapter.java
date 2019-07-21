@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -349,6 +350,12 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                     if (mainObject.getString("success").equals("0")) {
                         Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendQuestionOkay), Toast.LENGTH_SHORT).show();
                         FriendSendQuestionsFragment.loadPage();
+                        if(MainActivity.getSearchForeignPage()>1){
+                            FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), false, friends);
+                        }else{
+                            List<CustomFriend> f = new ArrayList<>();
+                            FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), false, f);
+                        }
 
                         /* friendship question error */
                     } else if (mainObject.getString("success").equals("1")) {
@@ -432,8 +439,13 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                             if (mainObject.getString("success").equals("0")) {
                                 /* delete friend questions */
                                 if(newFriend){
-                                    Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendDeleteQuestionOkay), Toast.LENGTH_SHORT).show();
-                                    FriendQuestionsFragment.loadPage();
+                                    if(!sendFriendQuestion) {
+                                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendDeleteQuestionOkay), Toast.LENGTH_SHORT).show();
+                                        FriendQuestionsFragment.loadPage();
+                                    }else{
+                                        Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendDeleteSendQuestionOkay), Toast.LENGTH_SHORT).show();
+                                        FriendSendQuestionsFragment.loadPage();
+                                    }
                                     /* delete friends */
                                 }else{
                                     Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendDeleteFriendOkay), Toast.LENGTH_SHORT).show();

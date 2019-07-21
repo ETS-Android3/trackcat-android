@@ -156,6 +156,7 @@
     <string name="friendQuestionError">Beim Senden Ihrer Anfrage ist leider ein Fehler aufgetreten.</string>
     <string name="friendDeleteFriendOkay">Freund erfolgreich entfernt.</string>
     <string name="friendDeleteQuestionOkay">Anfrage erfolgreich entfernt.</string>
+    <string name="friendDeleteSendQuestionOkay">Anfrage erfolgreich zurückgezogen.</string>
     <string name="friendDeleteError">Beim Entfernen ist leider ein Fehler aufgetreten.</string>
     <string name="friendQuestionCheck">Sie sind nun befreundet.</string>
 
