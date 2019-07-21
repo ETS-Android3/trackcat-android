@@ -140,7 +140,7 @@ public class ProfileFragment extends Fragment {
 
                         /* check if data is newer when localData */
                         if(userJSON.getLong("timeStamp")>currentUser.getTimeStamp()){
-                            userDAO.update(currentUser.getId(),GlobalFunctions.createUser(userJSON));
+                            userDAO.update(currentUser.getId(),GlobalFunctions.createUser(userJSON, true));
                         }
 
                         setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), userJSON.getLong("amountRecords"),userJSON.getLong("totalDistance"), userJSON.getLong("totalTime"),image);

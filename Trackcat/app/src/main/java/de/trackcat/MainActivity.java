@@ -895,7 +895,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             JSONObject userObject = mainObject.getJSONObject("userData");
 
                                             /* save logged user in db */
-                                            userDAO.update(getActiveUser(), GlobalFunctions.createUser(userObject));
+                                            userDAO.update(getActiveUser(), GlobalFunctions.createUser(userObject, true));
 
                                             /* restart ProfileFragment */
                                             if (type == 0) {
@@ -1015,7 +1015,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             JSONObject userObject = mainObject.getJSONObject("user");
 
                             /* save user in db */
-                            userDAO.update(currentUser.getId(), GlobalFunctions.createUser(userObject));
+                            userDAO.update(currentUser.getId(), GlobalFunctions.createUser(userObject, true));
 
                             /* set drawe profile information */
                             setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());

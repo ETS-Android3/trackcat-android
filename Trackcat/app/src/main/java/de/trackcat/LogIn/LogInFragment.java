@@ -142,10 +142,10 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 JSONObject userObject = mainObject.getJSONObject("userData");
 
                                 /* Save logged user in db */
-                                userDAO.create(GlobalFunctions.createUser(userObject));
+                                userDAO.create(GlobalFunctions.createUser(userObject,false));
 
                                 /* Create routes */
-                                if(mainObject.getJSONArray("records")!=null) {
+                                if(mainObject.getJSONArray("records").length()>0&& mainObject.getJSONArray("records")!=null) {
                                     JSONArray recordsArray = mainObject.getJSONArray("records");
                                     GlobalFunctions.createRecords(recordsArray, StartActivity.getInstance());
                                 }

@@ -212,7 +212,7 @@ public class GlobalFunctions {
         return bitmap;
     }
 
-    public static User createUser(JSONObject userObject) throws JSONException {
+    public static User createUser(JSONObject userObject, boolean updateDrawer) throws JSONException {
         User user = new User();
         user.setId(userObject.getInt("id"));
         user.setMail(userObject.getString("email"));
@@ -279,7 +279,9 @@ public class GlobalFunctions {
         user.isSynchronised(true);
 
         /* update drawer */
-        MainActivity.getInstance().setDrawerInfromation(user.getImage(), user.getFirstName(), user.getLastName(), user.getMail());
+        if(updateDrawer) {
+            MainActivity.getInstance().setDrawerInfromation(user.getImage(), user.getFirstName(), user.getLastName(), user.getMail());
+        }
 
         return user;
     }

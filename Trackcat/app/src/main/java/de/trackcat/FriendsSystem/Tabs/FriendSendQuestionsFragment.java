@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +38,7 @@ import retrofit2.Retrofit;
 public class FriendSendQuestionsFragment extends Fragment {
 
     private UserDAO userDAO;
+    private static TextView noEntrys;
     private static FriendsViewerFragment parentFrag;
     private static View view;
     private static User currentUser;
@@ -48,6 +51,7 @@ public class FriendSendQuestionsFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_friends_send_question, container, false);
         parentFrag = (FriendsViewerFragment) this.getParentFragment();
+        noEntrys = view.findViewById(R.id.no_entrys);
 
         /* Create user DAO and get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -114,9 +118,13 @@ public class FriendSendQuestionsFragment extends Fragment {
                             friendList.add(friend);
                         }
 
-                        /* Update badget */
+                        /* Update badget and show no entrys if possible*/
                         if (friends.length() > 0) {
                             parentFrag.setBadgeText(4, "" + friends.length());
+                            noEntrys.setVisibility(View.GONE);
+                        }else {
+                            noEntrys.setVisibility(View.VISIBLE);
+                            noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSendQuestionNoEntry));
                         }
 
                         /* Add entrys to view */
@@ -127,14 +135,20 @@ public class FriendSendQuestionsFragment extends Fragment {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
+                adapter.clear();
+                Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSendQuestionConnection), Toast.LENGTH_SHORT).show();
+                noEntrys.setVisibility(View.VISIBLE);
+                noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSendQuestionConnection));
             }
         });
     }

@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -40,6 +42,9 @@ import retrofit2.Retrofit;
 public class FindFriendsFragment extends Fragment implements View.OnKeyListener {
 
     EditText findFriend;
+    private static TextView noEntrys;
+    private static FriendListAdapter adapter;
+    private static ProgressBar progressBar;
     private UserDAO userDAO;
     private static View view;
     String searchTerm;
@@ -52,6 +57,8 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_friends_find, container, false);
+        noEntrys = view.findViewById(R.id.no_entrys);
+        progressBar = view.findViewById(R.id.progressBar);
 
         /* Create user DAO */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -102,6 +109,9 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
             /* Search term */
             List<CustomFriend> friendList = new ArrayList<>();
             search(searchTerm, false, friendList);
+
+            /* show progressbar */
+            progressBar.setVisibility(View.VISIBLE);
 
             return true;
         }
@@ -159,9 +169,10 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                         }
 
                         /* Add entrys to view */
-                        FriendListAdapter adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false);
+                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false);
                         ListView friendListView = view.findViewById(R.id.friend_list);
                         friendListView.setAdapter(adapter);
+
 
                         /* Load more if backpress */
                         if (page != maxPage && backPress) {
@@ -173,17 +184,42 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                                 friendListView.setSelection((page - 1) * 10);
                             }
                         }
+
+                        /* delete progressbar */
+                        progressBar.setVisibility(View.GONE);
+
+                        noEntrys.setVisibility(View.GONE);
+                        /* Message no friends */
+                        if (friendList.size() == 0 && MainActivity.getSearchForeignTerm() != null) {
+                            noEntrys.setVisibility(View.VISIBLE);
+                            noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSearchNoEntry));
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
+
+                    /* delete progressbar */
+                    progressBar.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
+
+                    /* delete progressbar */
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
+                adapter.clear();
+                Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchNoConnection), Toast.LENGTH_SHORT).show();
+                noEntrys.setVisibility(View.VISIBLE);
+                noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSearchNoConnection));
+
+                /* delete progressbar */
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
