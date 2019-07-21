@@ -167,17 +167,29 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                 Button loadMore= view.findViewById(R.id.loadMore);
                 loadMore.setOnClickListener(this);
             }else{
-                view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
+                if(friendQuestion){
+                    view = inflater.inflate(R.layout.friend_list_item, parent, false);
+                }else{
+                    view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
+                }
+
             }
 
             name = view.findViewById(R.id.friend_name);
-            registSince = view.findViewById(R.id.friend_regist_since);
+            if(!friendQuestion) {
+                registSince = view.findViewById(R.id.friend_regist_since);
+                registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy"));
+            }else{
+                email=view.findViewById(R.id.friend_email);
+                email.setText(friends.get(position).getEmail());
+            }
+
             image = view.findViewById(R.id.profile_image);
             state = view.findViewById(R.id.profile_state);
 
             /* add name and regist since */
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
-            registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy"));
+
 
             /* find level */
             double distance = Math.round(friends.get(position).getTotalDistance());
