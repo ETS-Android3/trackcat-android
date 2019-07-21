@@ -276,9 +276,10 @@ public class GlobalFunctions {
 
         user.setPassword(userObject.getString("password"));
         user.setTimeStamp(userObject.getLong("timeStamp"));
-
-
         user.isSynchronised(true);
+
+        /* update drawer */
+        MainActivity.getInstance().setDrawerInfromation(user.getImage(), user.getFirstName(), user.getLastName(), user.getMail());
 
         return user;
     }
