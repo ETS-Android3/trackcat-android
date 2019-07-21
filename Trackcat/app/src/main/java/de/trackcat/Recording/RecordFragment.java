@@ -185,6 +185,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      * */
     private Route model;
     private int newRecordId;
+    private int liveRecordId;
+    private boolean liveRecording;
 
     /*
      * Daos
@@ -499,7 +501,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                                     JSONObject mainObject = new JSONObject(jsonString);
 
                                                     /* friendship question okay */
-                                                    int liveRecordId= mainObject.getInt("liveRecordId");
+                                                    liveRecordId= mainObject.getInt("liveRecordId");
 
                                                 } catch (JSONException e1) {
                                                     e1.printStackTrace();
@@ -1031,8 +1033,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      *----------------------------------------------------------------------------------------------
      */
 
-
+int  locationCounter;
     void updateLocation(Location location) {
+
+        locationCounter++;
 
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
 
@@ -1182,6 +1186,65 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 } catch (NullPointerException e) {
                     Log.v(getResources().getString(R.string.app_name), e.toString());
                 }
+
+                /* send loacation to server */
+
+
+                /* get current user */
+                UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+                User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+                Retrofit retrofit = APIConnector.getRetrofit();
+                APIClient apiInterface = retrofit.create(APIClient.class);
+                String base = currentUser.getMail() + ":" + currentUser.getPassword();
+
+                RecordModelForServer m = new RecordModelForServer();
+                m.setId(liveRecordId);
+                m.setType(SpeedAverager.getRouteType(kmhAverager.getAvgSpeed()));
+                m.setTime(timer.getTime());
+                m.setRideTime(rideTimer.getTime());
+                m.setDistance(kmCounter.getAmount());
+                m.setLocations(locationTempDAO.readAll(newRecordId));
+
+                /* start a call */
+                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                Call<ResponseBody> call = apiInterface.updateLiveRecord(authString, m);
+
+                call.enqueue(new Callback<ResponseBody>() {
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        /* get jsonString from API */
+                        String jsonString = null;
+
+                        try {
+                            jsonString = response.body().string();
+
+                            /* parse json */
+                            JSONObject mainObject = new JSONObject(jsonString);
+
+                            if (mainObject.getString("success").equals("0")) {
+
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        call.cancel();
+                        MainActivity.getInstance().endTracking();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
+                                Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
