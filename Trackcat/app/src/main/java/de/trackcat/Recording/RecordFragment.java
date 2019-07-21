@@ -503,6 +503,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                                     /* friendship question okay */
                                                     liveRecordId = mainObject.getInt("liveRecordId");
 
+                                                    /* Set boolean on true */
+                                                    liveRecording=true;
+
                                                 } catch (JSONException e1) {
                                                     e1.printStackTrace();
                                                 } catch (IOException e1) {
@@ -520,7 +523,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                     }
                                     if (id == 1) {
                                         Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Private Aufzeichnung gestartet.", Toast.LENGTH_LONG).show();
-
+                                        liveRecording=false;
                                     }
                                 }
                             });
@@ -1191,7 +1194,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                 /* send every ... loacation to server */
 
-                if (locationCounter % 10 == 0) {
+                if (locationCounter % 10 == 0 && liveRecording) {
 
                     /* Ger last ___ locations */
                     List<de.trackcat.Database.Models.Location> l = locationTempDAO.readAllWithLimit(newRecordId, 10, locationGetRound);
