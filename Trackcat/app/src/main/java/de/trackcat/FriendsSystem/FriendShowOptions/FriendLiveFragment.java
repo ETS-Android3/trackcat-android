@@ -2,7 +2,9 @@ package de.trackcat.FriendsSystem.FriendShowOptions;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,18 @@ public class FriendLiveFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_friend_live_view, container, false);
+
+        Handler handler = new Handler();
+        int delay = 1000; //milliseconds
+
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                //do something
+                handler.postDelayed(this, delay);
+                Log.d("HALLO", "RUN!");
+            }
+        }, delay);
+
         return view;
     }
 
