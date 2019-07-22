@@ -152,60 +152,61 @@ public class FriendLiveFragment extends Fragment {
                                 }
                                 if (locations.size() > 0) {
                                     drawRoute();
-                                }
-                                /* set values */
-                                userTitle.setText(titleStart + mainObject.getString("firstName") + " " + mainObject.getString("lastName"));
 
-                                String speedStr = (Math.round(lastSpeed * 60 * 60) / 100) / 10.0 + " km/h";
-                                averageSpeed.setText(speedStr);
+                                    /* set values */
+                                    userTitle.setText(titleStart + mainObject.getString("firstName") + " " + mainObject.getString("lastName"));
 
-                                distance.setText(Math.round(mainObject.getLong("distance")) / 1000.0 + " km");
+                                    String speedStr = (Math.round(lastSpeed * 60 * 60) / 100) / 10.0 + " km/h";
+                                    averageSpeed.setText(speedStr);
 
-                                String altimeterStr = Math.round(lastAltimeter) + " m";
-                                altimeter.setText(altimeterStr);
+                                    distance.setText(Math.round(mainObject.getLong("distance")) / 1000.0 + " km");
 
-                                type.setImageResource(SpeedAverager.getTypeIcon(mainObject.getInt("type"), false));
+                                    String altimeterStr = Math.round(lastAltimeter) + " m";
+                                    altimeter.setText(altimeterStr);
 
-                                String timeStr = df.format(new Date(mainObject.getLong("time") * 1000));
-                                time.setText(timeStr);
+                                    type.setImageResource(SpeedAverager.getTypeIcon(mainObject.getInt("type"), false));
 
-                                view.setTag(view.getVisibility());
-                                view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                    @Override
-                                    public void onGlobalLayout() {
+                                    String timeStr = df.format(new Date(mainObject.getLong("time") * 1000));
+                                    time.setText(timeStr);
 
-                                        double minLat = Double.MAX_VALUE;
-                                        double maxLat = Double.MIN_VALUE;
-                                        double minLong = Double.MAX_VALUE;
-                                        double maxLong = Double.MIN_VALUE;
+                                    view.setTag(view.getVisibility());
+                                    view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                        @Override
+                                        public void onGlobalLayout() {
+
+                                            double minLat = Double.MAX_VALUE;
+                                            double maxLat = Double.MIN_VALUE;
+                                            double minLong = Double.MAX_VALUE;
+                                            double maxLong = Double.MIN_VALUE;
 
 
-                                        for (GeoPoint point : GPSData) {
-                                            if (point.getLatitude() < minLat)
-                                                minLat = point.getLatitude();
-                                            if (point.getLatitude() > maxLat)
-                                                maxLat = point.getLatitude();
-                                            if (point.getLongitude() < minLong)
-                                                minLong = point.getLongitude();
-                                            if (point.getLongitude() > maxLong)
-                                                maxLong = point.getLongitude();
+                                            for (GeoPoint point : GPSData) {
+                                                if (point.getLatitude() < minLat)
+                                                    minLat = point.getLatitude();
+                                                if (point.getLatitude() > maxLat)
+                                                    maxLat = point.getLatitude();
+                                                if (point.getLongitude() < minLong)
+                                                    minLong = point.getLongitude();
+                                                if (point.getLongitude() > maxLong)
+                                                    maxLong = point.getLongitude();
+                                            }
+
+                                            maxLat += 0.001;
+                                            maxLong += 0.001;
+                                            minLat -= 0.001;
+                                            minLong -= 0.001;
+
+                                            BoundingBox box = new BoundingBox();
+                                            box.set(maxLat, maxLong, minLat, minLong);
+
+                                            mMapView.zoomToBoundingBox(box, false);
+
+                                            double zoomLvl = mMapView.getZoomLevelDouble();
+
+                                            mMapView.getController().setZoom(zoomLvl - 0.3);
                                         }
-
-                                        maxLat += 0.001;
-                                        maxLong += 0.001;
-                                        minLat -= 0.001;
-                                        minLong -= 0.001;
-
-                                        BoundingBox box = new BoundingBox();
-                                        box.set(maxLat, maxLong, minLat, minLong);
-
-                                        mMapView.zoomToBoundingBox(box, false);
-
-                                        double zoomLvl = mMapView.getZoomLevelDouble();
-
-                                        mMapView.getController().setZoom(zoomLvl - 0.3);
-                                    }
-                                });
+                                    });
+                                }
                             }
                         } catch (JSONException e1) {
                             e1.printStackTrace();
