@@ -149,8 +149,12 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
                             /* Show friend live view */
                             if (id == 1) {
+                                FriendLiveFragment friendLiveFragment= new FriendLiveFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("friendId", friends.get(position).getId());
+                                friendLiveFragment.setArguments(bundle);
                                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                                fragTransaction.replace(R.id.mainFrame, new FriendLiveFragment(),
+                                fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
                                         MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
                                 fragTransaction.commit();
                             }

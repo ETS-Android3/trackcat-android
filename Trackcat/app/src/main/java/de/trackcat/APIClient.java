@@ -100,4 +100,8 @@ public interface APIClient {
     @POST("/updateLiveRecordAPI")
     Call<ResponseBody> updateLiveRecord(@Header("Authorization") String authHeader, @Body  RecordModelForServer track);
 
+    @Headers({"Accept: application/json"})
+    @POST("/getLiveRecordAPI")
+    Call<ResponseBody> getLiveRecord(@Header("Authorization") String authHeader,  @Body  HashMap<String,String> json);
+
 }

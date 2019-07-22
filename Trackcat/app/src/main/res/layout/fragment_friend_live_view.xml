@@ -46,6 +46,7 @@
 
                     <TextView
                         style="@style/TextAppearanceRecord"
+                        android:id="@+id/sharing_user_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Übertragung von Max Mustermann"
@@ -153,7 +154,7 @@
                             android:orientation="horizontal">
 
                             <android.support.v7.widget.AppCompatImageView
-                                android:id="@+id/accuracy_icon"
+                                android:id="@+id/time_icon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
@@ -161,7 +162,7 @@
                                 app:srcCompat="@drawable/ic_signal_cellular_0_bar_black_24dp" />
 
                             <TextView
-                                android:id="@+id/accuracy_TextView"
+                                android:id="@+id/time_TextView"
                                 style="@style/TextAppearanceRecord"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
