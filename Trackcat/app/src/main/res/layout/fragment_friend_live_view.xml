@@ -65,7 +65,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:gravity="right|center_vertical"
+                        android:gravity="left|center_vertical"
                         android:orientation="vertical">
 
 
@@ -121,6 +121,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+
                         android:gravity="center_vertical"
                         android:orientation="vertical">
 
@@ -159,7 +160,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="0"
-                                app:srcCompat="@drawable/ic_signal_cellular_0_bar_black_24dp" />
+                                app:srcCompat="@drawable/ic_time" />
 
                             <TextView
                                 android:id="@+id/time_TextView"
