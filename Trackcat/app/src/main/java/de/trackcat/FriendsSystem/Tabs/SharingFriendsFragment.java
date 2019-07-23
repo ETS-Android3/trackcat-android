@@ -127,7 +127,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
                             friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
                             friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
                             friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
-                            friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
+                            friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("distance"));
                             friend.setId(((JSONObject) friends.get(i)).getInt("id"));
                             friend.setEmail(((JSONObject) friends.get(i)).getString("email"));
                             friendList.add(friend);

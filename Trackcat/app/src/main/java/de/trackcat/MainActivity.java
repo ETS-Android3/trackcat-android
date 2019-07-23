@@ -623,6 +623,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadFriendSystem(3);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileSendQuestion)) != null) {
             loadFriendSystem(4);
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveProfile)) != null) {
+            loadFriendSystem(2);
         } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
@@ -846,11 +848,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Function to show not autorized modal */
     public void showNotAuthorizedModal(int type) {
-        if (type == 5 | type == 6 | type == 7 | type == 8) {
+        if (type == 5 | type == 6 | type == 7 | type == 8 | type==9) {
             showAutorizeCounter++;
         }
 
-        if((type == 5 | type == 6 | type == 7 | type == 8)&&showAutorizeCounter==1) {
+        if((type == 5 | type == 6 | type == 7 | type == 8| type==9) &&showAutorizeCounter==1) {
             /* create AlertBox */
             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             alert.setTitle("Achtung");
@@ -949,6 +951,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 /* Search stranger */
                                             }else if (type == 8) {
                                                 loadFriendSystem(0);
+                                                showAutorizeCounter = 0;
+                                            }else if (type == 9) {
+                                                loadFriendSystem(2);
                                                 showAutorizeCounter = 0;
                                             }
                                         }

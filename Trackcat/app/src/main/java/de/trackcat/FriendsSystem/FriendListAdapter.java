@@ -64,7 +64,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         this.newFriend = type;
         this.friendQuestion = friendQuestion;
         this.sendFriendQuestion = sendFriendQuestion;
-        this.liveFriend= liveFriend;
+        this.liveFriend = liveFriend;
 
         /* Create userDAO */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -128,44 +128,78 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                 public void onClick(View v) {
                     AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
                     alertdialogbuilder.setTitle(getContext().getResources().getString(R.string.friendsOptionTitle));
-                    alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendOptions), new DialogInterface.OnClickListener() {
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
+                    /* liveFriendOptions */
+                    if (liveFriend) {
+                        alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendLiveOptions), new DialogInterface.OnClickListener() {
 
-                            /* Show profile */
-                            if (id == 0) {
-                                FriendProfileFragment friendProfileFragment = new FriendProfileFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putInt("friendId", friends.get(position).getId());
-                                friendProfileFragment.setArguments(bundle);
-                                FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                                fragTransaction.replace(R.id.mainFrame, friendProfileFragment,
-                                        MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
-                                fragTransaction.commit();
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
 
-                                /* Set id for backPress */
-                                MainActivity.setSearchFriendPageIndex(position);
+                                /* Show profile */
+                                if (id == 0) {
+                                    FriendProfileFragment friendProfileFragment = new FriendProfileFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("friendId", friends.get(position).getId());
+                                    bundle.putInt("authorizationType", 9);
+                                    friendProfileFragment.setArguments(bundle);
+                                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                                    fragTransaction.replace(R.id.mainFrame, friendProfileFragment,
+                                            MainActivity.getInstance().getResources().getString(R.string.fFriendLiveProfile));
+                                    fragTransaction.commit();
+
+                                    /* Set id for backPress */
+                                    MainActivity.setSearchFriendPageIndex(position);
+                                }
+
+                                /* Show friend live view */
+                                if (id == 1) {
+                                    FriendLiveFragment friendLiveFragment = new FriendLiveFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("friendId", friends.get(position).getId());
+                                    friendLiveFragment.setArguments(bundle);
+                                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                                    fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
+                                            MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
+                                    fragTransaction.commit();
+                                }
+
+                                /* Delete friend */
+                                if (id == 2) {
+                                    deleteFriend(friends.get(position).getId());
+                                }
                             }
+                        });
+                        /* FriendOptions */
+                    } else {
+                        alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendOptions), new DialogInterface.OnClickListener() {
 
-                            /* Show friend live view */
-                            if (id == 1) {
-                                FriendLiveFragment friendLiveFragment= new FriendLiveFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putInt("friendId", friends.get(position).getId());
-                                friendLiveFragment.setArguments(bundle);
-                                FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                                fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
-                                        MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
-                                fragTransaction.commit();
-                            }
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
 
-                            /* Delete friend */
-                            if (id == 2) {
-                                deleteFriend(friends.get(position).getId());
+                                /* Show profile */
+                                if (id == 0) {
+                                    FriendProfileFragment friendProfileFragment = new FriendProfileFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("friendId", friends.get(position).getId());
+                                    bundle.putInt("authorizationType", 5);
+                                    friendProfileFragment.setArguments(bundle);
+                                    FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
+                                    fragTransaction.replace(R.id.mainFrame, friendProfileFragment,
+                                            MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
+                                    fragTransaction.commit();
+
+                                    /* Set id for backPress */
+                                    MainActivity.setSearchFriendPageIndex(position);
+                                }
+
+                                /* Delete friend */
+                                if (id == 1) {
+                                    deleteFriend(friends.get(position).getId());
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                     AlertDialog dialog = alertdialogbuilder.create();
                     dialog.show();
                 }
@@ -337,10 +371,10 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
         /* Check type */
         int type;
-        if(friendQuestion){
-            type=6;
-        }else{
-            type=8;
+        if (friendQuestion) {
+            type = 6;
+        } else {
+            type = 8;
         }
 
         /* Create hashmap */

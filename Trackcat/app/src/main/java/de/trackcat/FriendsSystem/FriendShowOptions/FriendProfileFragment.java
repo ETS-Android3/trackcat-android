@@ -74,6 +74,7 @@ public class FriendProfileFragment extends Fragment {
 
         /* Get friend id from bundle*/
         int friendId = getArguments().getInt("friendId");
+        int type= getArguments().getInt("authorizationType");
 
         /* Create hashmap */
         HashMap<String, String> map = new HashMap<>();
@@ -93,7 +94,7 @@ public class FriendProfileFragment extends Fragment {
 
                 try {
                     if (response.code() == 401) {
-                        MainActivity.getInstance().showNotAuthorizedModal(5);
+                        MainActivity.getInstance().showNotAuthorizedModal(type);
                     } else {
 
                         /* Get jsonString from API */
