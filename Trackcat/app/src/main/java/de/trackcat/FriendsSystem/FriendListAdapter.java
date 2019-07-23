@@ -54,16 +54,17 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
     public TextView name, email, registSince;
     LayoutInflater inflater;
     CircleImageView image, state;
-    boolean newFriend, friendQuestion, sendFriendQuestion;
+    boolean newFriend, friendQuestion, sendFriendQuestion, liveFriend;
     UserDAO userDAO;
 
-    public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion, boolean sendFriendQuestion) {
+    public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion, boolean sendFriendQuestion, boolean liveFriend) {
         super(context, R.layout.friend_list_item);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.friends = friends;
         this.newFriend = type;
         this.friendQuestion = friendQuestion;
         this.sendFriendQuestion = sendFriendQuestion;
+        this.liveFriend= liveFriend;
 
         /* Create userDAO */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -82,7 +83,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         if (!newFriend) {
 
             /* Last item */
-            if (friends.size() % 10 == 0 && position == friends.size() - 1) {
+            if (friends.size() % 10 == 0 && position == friends.size() - 1 && !liveFriend) {
                 view = inflater.inflate(R.layout.friend_list_last_item, parent, false);
                 Button loadMore = view.findViewById(R.id.loadMore);
                 loadMore.setOnClickListener(this);

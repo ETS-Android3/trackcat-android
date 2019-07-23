@@ -249,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             recordFragment.stopTimer();
             recordFragment = null;
+            Log.d("HALLO", "in onDestroy");
         } catch (NullPointerException e) {
 
         }
@@ -260,6 +261,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // android.os.Process.killProcess(android.os.Process.myPid());
         // }
         // isRestart = false;
+
+
 
         super.onDestroy();
     }

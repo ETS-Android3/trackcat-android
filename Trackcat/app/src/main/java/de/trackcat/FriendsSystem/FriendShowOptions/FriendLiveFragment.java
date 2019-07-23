@@ -349,7 +349,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         if (!userScroll && !showAll) {
 
             mMapController.setCenter(gPt);
-          
+
 
         }
 
@@ -376,12 +376,14 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
             case R.id.goToMarkerBtn:
                 mMapController.setCenter(gPt);
                 userScroll = false;
+                mMapView.invalidate();
                 break;
             case R.id.showCompleteRecordBtn:
                 /* show zoomed view */
                 if (showAll) {
                     mMapController.setCenter(gPt);
                     goToMarker.setVisibility(View.VISIBLE);
+                    mMapView.invalidate();
                     showAll = false;
                     userScroll = false;
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewZoom), Toast.LENGTH_SHORT).show();

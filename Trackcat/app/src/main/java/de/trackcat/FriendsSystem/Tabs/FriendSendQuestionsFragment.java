@@ -128,7 +128,7 @@ public class FriendSendQuestionsFragment extends Fragment {
                         }
 
                         /* Add entrys to view */
-                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, true);
+                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, true, false);
                         ListView friendListView = view.findViewById(R.id.friend_question_list);
                         friendListView.setAdapter(adapter);
                         friendListView.setSelection(MainActivity.getSendFriendQuestionIndex());

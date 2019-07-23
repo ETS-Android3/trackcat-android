@@ -134,7 +134,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
                         }
 
                         /* Add entrys to view */
-                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false);
+                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false, true);
                         ListView friendListView = view.findViewById(R.id.friend_list);
                         friendListView.setAdapter(adapter);
 
