@@ -74,7 +74,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
     TextView userTitle, averageSpeed, distance, altimeter, time;
     FloatingActionButton type, goToMarker, showCompleteRecord;
     String titleStart = "Übertragung von ";
-    int runCounter, index;
+    int runCounter, index, recordId;
     boolean userScroll, showAll;
 
     @SuppressLint("RestrictedApi")
@@ -110,6 +110,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         runCounter = 1;
         userScroll = false;
         showAll = true;
+        recordId = 0;
 
         /* DateFormat setzen */
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
@@ -175,6 +176,15 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                 JSONObject mainObject = new JSONObject(jsonString);
                                 JSONArray locationArray = mainObject.getJSONArray("locations");
 
+                                /* Start new live */
+                                if (recordId != mainObject.getInt("id")) {
+                                    locations.clear();
+                                    GPSData.clear();
+                                    index=0;
+                                    runCounter = 1;
+                                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNewLive), Toast.LENGTH_SHORT).show();
+                                }
+
                                 /* Get location data */
                                 for (int i = 0; i < locationArray.length(); i++) {
                                     Location location = new Location();
@@ -195,6 +205,9 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                     /* Draw route */
                                     if (runCounter == 1) {
                                         createMap();
+
+                                        /* Set recordId */
+                                        recordId = mainObject.getInt("id");
                                     } else {
                                         drawRoute();
                                     }
