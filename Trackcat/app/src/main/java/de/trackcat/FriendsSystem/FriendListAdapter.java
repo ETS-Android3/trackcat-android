@@ -121,6 +121,11 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             }
             image.setImageBitmap(bitmap);
 
+            if(friends.get(position).getIsLive()==1){
+                image.setBorderColor(MainActivity.getInstance().getResources().getColor(R.color.live));
+                image.setBorderWidth(9);
+            }
+
             /* Shows details of routes */
             view.setOnClickListener(new View.OnClickListener() {
 
