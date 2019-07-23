@@ -1,13 +1,16 @@
 package de.trackcat.FriendsSystem.FriendShowOptions;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -19,6 +22,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.config.IConfigurationProvider;
+import org.osmdroid.events.DelayedMapListener;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -56,12 +63,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static android.view.View.*;
 import static org.osmdroid.tileprovider.util.StorageUtils.getStorage;
 
-public class FriendLiveFragment extends Fragment {
+public class FriendLiveFragment extends Fragment implements OnClickListener {
 
+    protected static final int DEFAULT_INACTIVITY_DELAY_IN_MILLISECS = 200;
     private MapView mMapView = null;
     ArrayList<GeoPoint> GPSData = new ArrayList<>();
+    GeoPoint gPt;
     ArrayList<Location> locations = new ArrayList<>();
     View view;
     private UserDAO userDAO;
@@ -70,11 +80,14 @@ public class FriendLiveFragment extends Fragment {
     float lastSpeed;
     double lastAltimeter;
     TextView userTitle, averageSpeed, distance, altimeter, time;
-    FloatingActionButton type;
+    FloatingActionButton type, goToMarker, showCompleteRecord;
     String titleStart = "Übertragung von ";
     Marker stopMarker;
+    MapController mMapController;
     int runCounter;
+    boolean userScroll, showAll;
 
+    @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,6 +101,12 @@ public class FriendLiveFragment extends Fragment {
         altimeter = view.findViewById(R.id.altimeter_TextView);
         time = view.findViewById(R.id.time_TextView);
         type = view.findViewById(R.id.fabButton);
+        goToMarker = view.findViewById(R.id.goToMarkerBtn);
+        showCompleteRecord = view.findViewById(R.id.showCompleteRecordBtn);
+
+        goToMarker.setOnClickListener(this);
+        goToMarker.setVisibility(View.GONE);
+        showCompleteRecord.setOnClickListener(this);
 
         /* Create user DAO and get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -97,12 +116,38 @@ public class FriendLiveFragment extends Fragment {
         int friendId = getArguments().getInt("friendId");
         index = 0;
 
-        runCounter=1;
+        runCounter = 1;
+        userScroll = false;
+        showAll = true;
+
+
 
         /* DateFormat setzen */
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         TimeZone tz = TimeZone.getTimeZone("UTC");
         df.setTimeZone(tz);
+
+        /* check zoom and scroll */
+        mMapView.addMapListener(new DelayedMapListener(new MapListener() {
+            @Override
+            public boolean onScroll(ScrollEvent event) {
+
+                /* app Scroll */
+                if (event.getX() == 0 && event.getY() == 0) {
+                    userScroll = false;
+                    /* user Scroll */
+                } else {
+                    userScroll = true;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onZoom(ZoomEvent event) {
+                Log.d("HALLO", "Zoom");
+                return true;
+            }
+        }, DEFAULT_INACTIVITY_DELAY_IN_MILLISECS));
 
 
         Handler handler = new Handler();
@@ -112,7 +157,7 @@ public class FriendLiveFragment extends Fragment {
             public void run() {
                 //do something
                 handler.postDelayed(this, delay);
-                Log.d("HALLO", "RUN!");
+
 
                 /* Create hashmap */
                 HashMap<String, String> map = new HashMap<>();
@@ -161,9 +206,9 @@ public class FriendLiveFragment extends Fragment {
                                 }
                                 if (locations.size() > 0) {
 
-                                    if(runCounter==1){
+                                    if (runCounter == 1) {
                                         createMap();
-                                    }else {
+                                    } else {
                                         drawRoute();
                                     }
 
@@ -183,45 +228,49 @@ public class FriendLiveFragment extends Fragment {
                                     String timeStr = df.format(new Date(mainObject.getLong("time") * 1000));
                                     time.setText(timeStr);
 
-                                    view.setTag(view.getVisibility());
-                                    view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                        @Override
-                                        public void onGlobalLayout() {
+                                    if (showAll) {
+                                        view.setTag(view.getVisibility());
+                                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                            @Override
+                                            public void onGlobalLayout() {
 
-                                            double minLat = Double.MAX_VALUE;
-                                            double maxLat = Double.MIN_VALUE;
-                                            double minLong = Double.MAX_VALUE;
-                                            double maxLong = Double.MIN_VALUE;
+                                                double minLat = Double.MAX_VALUE;
+                                                double maxLat = Double.MIN_VALUE;
+                                                double minLong = Double.MAX_VALUE;
+                                                double maxLong = Double.MIN_VALUE;
 
 
-                                            for (GeoPoint point : GPSData) {
-                                                if (point.getLatitude() < minLat)
-                                                    minLat = point.getLatitude();
-                                                if (point.getLatitude() > maxLat)
-                                                    maxLat = point.getLatitude();
-                                                if (point.getLongitude() < minLong)
-                                                    minLong = point.getLongitude();
-                                                if (point.getLongitude() > maxLong)
-                                                    maxLong = point.getLongitude();
+                                                for (GeoPoint point : GPSData) {
+                                                    if (point.getLatitude() < minLat)
+                                                        minLat = point.getLatitude();
+                                                    if (point.getLatitude() > maxLat)
+                                                        maxLat = point.getLatitude();
+                                                    if (point.getLongitude() < minLong)
+                                                        minLong = point.getLongitude();
+                                                    if (point.getLongitude() > maxLong)
+                                                        maxLong = point.getLongitude();
+                                                }
+
+                                                maxLat += 0.001;
+                                                maxLong += 0.001;
+                                                minLat -= 0.001;
+                                                minLong -= 0.001;
+
+                                                BoundingBox box = new BoundingBox();
+                                                box.set(maxLat, maxLong, minLat, minLong);
+
+                                                mMapView.zoomToBoundingBox(box, false);
+
+
+
+                                                double zoomLvl = mMapView.getZoomLevelDouble();
+
+                                                mMapView.getController().setZoom(zoomLvl - 0.3);
                                             }
-
-                                            maxLat += 0.001;
-                                            maxLong += 0.001;
-                                            minLat -= 0.001;
-                                            minLong -= 0.001;
-
-                                            BoundingBox box = new BoundingBox();
-                                            box.set(maxLat, maxLong, minLat, minLong);
-
-                                            mMapView.zoomToBoundingBox(box, false);
-
-                                            double zoomLvl = mMapView.getZoomLevelDouble();
-
-                                            mMapView.getController().setZoom(zoomLvl - 0.3);
-                                        }
-                                    });
-
+                                        });
+                                    }
                                     runCounter++;
+
                                 }
                             }
                         } catch (JSONException e1) {
@@ -245,15 +294,16 @@ public class FriendLiveFragment extends Fragment {
         return view;
     }
 
-    private void createMap(){
+    private void createMap() {
+
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
         mMapView.setBuiltInZoomControls(false);
         mMapView.setMultiTouchControls(true);
-        MapController mMapController = (MapController) mMapView.getController();
+        mMapController = (MapController) mMapView.getController();
         mMapController.setZoom(19);
 
         /* Poliline und Marker erstellen */
-        GeoPoint gPt = new GeoPoint(locations.get(0).getLatitude(), locations.get(0).getLongitude());
+        gPt = new GeoPoint(locations.get(0).getLatitude(), locations.get(0).getLongitude());
         Marker startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -266,6 +316,9 @@ public class FriendLiveFragment extends Fragment {
         stopMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_logo_marker));
 
         Polyline mPath = new Polyline(mMapView);
+
+        // mMapController.setCenter(gPt);
+
 
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
@@ -280,21 +333,28 @@ public class FriendLiveFragment extends Fragment {
         provider.setUserAgentValue(BuildConfig.APPLICATION_ID);
         provider.setOsmdroidBasePath(getStorage());
         provider.setOsmdroidTileCache(getStorage());
+
+        Configuration.getInstance().setUserAgentValue(MainActivity.getInstance().getPackageName());
+
+
     }
 
     private void drawRoute() {
 
 
         /* Poliline und Marker erstellen */
-
-
-
-        GeoPoint gPt = new GeoPoint(locations.get(locations.size() - 1).getLatitude(), locations.get(locations.size() - 1).getLongitude());
+        gPt = new GeoPoint(locations.get(locations.size() - 1).getLatitude(), locations.get(locations.size() - 1).getLongitude());
         stopMarker.setPosition(gPt);
 
+        /* check if userScroll true */
+        if (!userScroll && !showAll) {
+
+            mMapController.setCenter(gPt);
+            mMapController.setZoom(19);
+
+        }
 
         Polyline mPath = new Polyline(mMapView);
-
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(stopMarker);
 
@@ -307,6 +367,28 @@ public class FriendLiveFragment extends Fragment {
         provider.setUserAgentValue(BuildConfig.APPLICATION_ID);
         provider.setOsmdroidBasePath(getStorage());
         provider.setOsmdroidTileCache(getStorage());
+        mMapView.invalidate();
+    }
 
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.goToMarkerBtn:
+                mMapController.setCenter(gPt);
+                userScroll = false;
+                break;
+            case R.id.showCompleteRecordBtn:
+                if (showAll) {
+                    showAll = false;
+
+                    goToMarker.setVisibility(VISIBLE);
+                } else {
+                    showAll = true;
+
+                    goToMarker.setVisibility(View.GONE);
+                }
+                break;
+        }
     }
 }

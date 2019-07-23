@@ -791,7 +791,56 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
+                /* end tracking and delete temp record */
                 MainActivity.getInstance().endTracking();
+
+                /*remove from temp*/
+                recordTempDAO.delete(model);
+
+                /* get current user */
+                UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+                User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+                /* Start a call */
+                Retrofit retrofit = APIConnector.getRetrofit();
+                APIClient apiInterface = retrofit.create(APIClient.class);
+                String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
+
+                call.enqueue(new Callback<ResponseBody>() {
+
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        /* get jsonString from API */
+                        String jsonString = null;
+
+                        try {
+                            jsonString = response.body().string();
+
+                            /* parse json */
+                            JSONObject mainObject = new JSONObject(jsonString);
+
+                            if (mainObject.getString("success").equals("0")) {
+                                Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        call.cancel();
+                    }
+                });
+
+
             }
         });
 

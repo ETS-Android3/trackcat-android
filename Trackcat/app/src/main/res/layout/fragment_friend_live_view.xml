@@ -45,8 +45,8 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/TextAppearanceRecord"
                         android:id="@+id/sharing_user_title"
+                        style="@style/TextAppearanceRecord"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Übertragung von Max Mustermann"
@@ -186,14 +186,25 @@
             app:srcCompat="@drawable/activity_running_record" />
     </android.support.design.widget.CoordinatorLayout>
 
-    <Button
-        android:id="@+id/compBtn"
-        android:layout_width="48dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="11dp"
-        android:layout_marginTop="9dp"
-        android:alpha="0"
-        android:text=""
-        tools:ignore="RtlCompat" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp">
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/showCompleteRecordBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/ic_swap_view" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/goToMarkerBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="70dp"
+            app:srcCompat="@drawable/ic_back_to_user" />
+    </RelativeLayout>
 </FrameLayout>

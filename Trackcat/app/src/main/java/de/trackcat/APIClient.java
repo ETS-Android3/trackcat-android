@@ -104,4 +104,13 @@ public interface APIClient {
     @POST("/getLiveRecordAPI")
     Call<ResponseBody> getLiveRecord(@Header("Authorization") String authHeader,  @Body  HashMap<String,String> json);
 
+    @Headers({"Accept: application/json"})
+    @POST("/abortLiveRecordAPI")
+    Call<ResponseBody> abortLiveRecord(@Header("Authorization") String authHeader);
+
+    @Headers({"Accept: application/json"})
+    @POST("/getLiveFriendsAPI")
+    Call<ResponseBody> getLiveFriends(@Header("Authorization") String authHeader);
+
+
 }
