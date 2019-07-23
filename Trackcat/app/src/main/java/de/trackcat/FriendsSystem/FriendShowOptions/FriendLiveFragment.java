@@ -262,7 +262,6 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                                 mMapView.zoomToBoundingBox(box, false);
 
 
-
                                                 double zoomLvl = mMapView.getZoomLevelDouble();
 
                                                 mMapView.getController().setZoom(zoomLvl - 0.3);
@@ -350,7 +349,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         if (!userScroll && !showAll) {
 
             mMapController.setCenter(gPt);
-            mMapController.setZoom(19);
+          
 
         }
 
@@ -379,14 +378,19 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                 userScroll = false;
                 break;
             case R.id.showCompleteRecordBtn:
+                /* show zoomed view */
                 if (showAll) {
+                    mMapController.setCenter(gPt);
+                    goToMarker.setVisibility(View.VISIBLE);
                     showAll = false;
+                    userScroll = false;
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewZoom), Toast.LENGTH_SHORT).show();
 
-                    goToMarker.setVisibility(VISIBLE);
+                    /* show fullTrack view */
                 } else {
                     showAll = true;
-
                     goToMarker.setVisibility(View.GONE);
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewFullTrack), Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
