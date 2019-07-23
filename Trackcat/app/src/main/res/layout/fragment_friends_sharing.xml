@@ -24,6 +24,15 @@
             android:layout_marginBottom="15dp"
             android:background="?android:attr/listDivider" />
 
+        <TextView
+            android:id="@+id/no_entrys"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textStyle="italic" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

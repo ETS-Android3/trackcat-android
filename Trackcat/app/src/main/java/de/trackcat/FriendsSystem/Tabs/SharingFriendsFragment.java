@@ -31,6 +31,7 @@ import de.trackcat.CustomElements.CustomFriend;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
 import de.trackcat.FriendsSystem.FriendListAdapter;
+import de.trackcat.FriendsSystem.FriendsViewerFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -50,7 +51,8 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
     private static User currentUser;
     private static FriendListAdapter adapter;
     private static SwipeRefreshLayout swipeContainer;
-    private static int page, maxPage;
+    private static FriendsViewerFragment parentFrag;
+
     private static boolean backPress;
 
 
@@ -60,6 +62,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
 
         /* Get views */
         view = inflater.inflate(R.layout.fragment_friends_sharing, container, false);
+        parentFrag = (FriendsViewerFragment) this.getParentFragment();
         noEntrys = view.findViewById(R.id.no_entrys);
 
         /* Create user DAO and get current user */
@@ -76,16 +79,6 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
                 swipeContainer.setRefreshing(false);
             }
         });
-
-        /* Set page */
-        if (MainActivity.getSearchFriendPage() != 0) {
-            maxPage = MainActivity.getSearchFriendPage();
-            backPress = true;
-        } else {
-            backPress = false;
-        }
-        page = 1;
-
 
         /* Load page */
         loadPage();
@@ -116,7 +109,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
 
                 try {
                     if (response.code() == 401) {
-                      //  MainActivity.getInstance().showNotAuthorizedModal(5);
+                        //  MainActivity.getInstance().showNotAuthorizedModal(5);
                     } else {
 
                         /* Get jsonString from API */
@@ -125,7 +118,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
                         /* Parse json */
                         JSONArray friends = new JSONArray(jsonString);
 
-                        List<CustomFriend> friendList=new ArrayList<>();
+                        List<CustomFriend> friendList = new ArrayList<>();
 
                         /* Show friend questions if they exists */
                         for (int i = 0; i < friends.length(); i++) {
@@ -145,18 +138,14 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
                         ListView friendListView = view.findViewById(R.id.friend_list);
                         friendListView.setAdapter(adapter);
 
-
-                        noEntrys.setVisibility(View.GONE);
-                        /* Message no friends */
-                        if (friendList.size() == 0 && MainActivity.getSearchFriendTerm() == "") {
+                        /* Update badget  and show no entrys if possible*/
+                        if (friends.length() > 0) {
+                            parentFrag.setBadgeText(2, "" + friends.length());
+                            noEntrys.setVisibility(View.GONE);
+                        } else {
                             noEntrys.setVisibility(View.VISIBLE);
-                            noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendNoEntry));
-                        } else
-                            /* Message no friends found*/
-                            if (MainActivity.getSearchFriendTerm() != "") {
-                                noEntrys.setVisibility(View.VISIBLE);
-                                noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSearchNoEntry));
-                            }
+                            noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendLiveNoEntry));
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
