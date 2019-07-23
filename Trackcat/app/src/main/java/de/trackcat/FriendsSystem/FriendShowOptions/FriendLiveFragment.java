@@ -17,6 +17,8 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.config.IConfigurationProvider;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -35,6 +37,7 @@ import java.util.TimeZone;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
+import de.trackcat.BuildConfig;
 import de.trackcat.CustomElements.CustomFriend;
 import de.trackcat.CustomElements.CustomLocation;
 import de.trackcat.Database.DAO.UserDAO;
@@ -53,6 +56,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static org.osmdroid.tileprovider.util.StorageUtils.getStorage;
+
 public class FriendLiveFragment extends Fragment {
 
     private MapView mMapView = null;
@@ -68,6 +73,7 @@ public class FriendLiveFragment extends Fragment {
     FloatingActionButton type;
     String titleStart = "Übertragung von ";
     Marker stopMarker;
+    int runCounter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,7 +96,8 @@ public class FriendLiveFragment extends Fragment {
         /* Get friend id from bundle*/
         int friendId = getArguments().getInt("friendId");
         index = 0;
-        stopMarker = new Marker(mMapView);
+
+        runCounter=1;
 
         /* DateFormat setzen */
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
@@ -136,6 +143,8 @@ public class FriendLiveFragment extends Fragment {
                                 JSONObject mainObject = new JSONObject(jsonString);
 
                                 JSONArray locationArray = mainObject.getJSONArray("locations");
+
+                                /* clear GPS list */
                                 for (int i = 0; i < locationArray.length(); i++) {
                                     Location location = new Location();
                                     location.setAltitude(((JSONObject) locationArray.get(i)).getDouble("altitude"));
@@ -151,7 +160,12 @@ public class FriendLiveFragment extends Fragment {
                                     GPSData.add(gPt);
                                 }
                                 if (locations.size() > 0) {
-                                    drawRoute();
+
+                                    if(runCounter==1){
+                                        createMap();
+                                    }else {
+                                        drawRoute();
+                                    }
 
                                     /* set values */
                                     userTitle.setText(titleStart + mainObject.getString("firstName") + " " + mainObject.getString("lastName"));
@@ -206,6 +220,8 @@ public class FriendLiveFragment extends Fragment {
                                             mMapView.getController().setZoom(zoomLvl - 0.3);
                                         }
                                     });
+
+                                    runCounter++;
                                 }
                             }
                         } catch (JSONException e1) {
@@ -229,9 +245,7 @@ public class FriendLiveFragment extends Fragment {
         return view;
     }
 
-
-    private void drawRoute() {
-
+    private void createMap(){
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
         mMapView.setBuiltInZoomControls(false);
         mMapView.setMultiTouchControls(true);
@@ -245,6 +259,7 @@ public class FriendLiveFragment extends Fragment {
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
 
+        stopMarker = new Marker(mMapView);
         gPt = new GeoPoint(locations.get(locations.size() - 1).getLatitude(), locations.get(locations.size() - 1).getLongitude());
         stopMarker.setPosition(gPt);
         stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -259,6 +274,39 @@ public class FriendLiveFragment extends Fragment {
         mPath.setPoints(GPSData);
         mPath.setColor(Color.RED);
         mPath.setWidth(4);
+
+        /* load map by big routes */
+        IConfigurationProvider provider = Configuration.getInstance();
+        provider.setUserAgentValue(BuildConfig.APPLICATION_ID);
+        provider.setOsmdroidBasePath(getStorage());
+        provider.setOsmdroidTileCache(getStorage());
+    }
+
+    private void drawRoute() {
+
+
+        /* Poliline und Marker erstellen */
+
+
+
+        GeoPoint gPt = new GeoPoint(locations.get(locations.size() - 1).getLatitude(), locations.get(locations.size() - 1).getLongitude());
+        stopMarker.setPosition(gPt);
+
+
+        Polyline mPath = new Polyline(mMapView);
+
+        mMapView.getOverlays().add(mPath);
+        mMapView.getOverlays().add(stopMarker);
+
+        mPath.setPoints(GPSData);
+        mPath.setColor(Color.RED);
+        mPath.setWidth(4);
+
+        /* load map by big routes */
+        IConfigurationProvider provider = Configuration.getInstance();
+        provider.setUserAgentValue(BuildConfig.APPLICATION_ID);
+        provider.setOsmdroidBasePath(getStorage());
+        provider.setOsmdroidTileCache(getStorage());
 
     }
 }
