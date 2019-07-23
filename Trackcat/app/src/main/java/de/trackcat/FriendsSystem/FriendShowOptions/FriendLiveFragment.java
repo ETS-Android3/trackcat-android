@@ -166,7 +166,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
 
                         try {
                             if (response.code() == 401) {
-                                //   MainActivity.getInstance().showNotAuthorizedModal(type);
+                                MainActivity.getInstance().showNotAuthorizedModal(9);
                             } else {
 
                                 /* Get jsonString from API */
@@ -176,14 +176,23 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                 JSONObject mainObject = new JSONObject(jsonString);
                                 JSONArray locationArray = mainObject.getJSONArray("locations");
 
+
                                 /* Start new live */
-                                if (recordId != mainObject.getInt("id")) {
+                                if (recordId != mainObject.getInt("id") && mainObject.has("id")) {
                                     locations.clear();
                                     GPSData.clear();
-                                    index=0;
+                                    index = 0;
                                     runCounter = 1;
-                                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNewLive), Toast.LENGTH_SHORT).show();
+                                    if (MainActivity.getHints()) {
+                                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNewLive), Toast.LENGTH_SHORT).show();
+                                    }
                                 }
+                                if (!mainObject.has("id")) {
+                                    if (MainActivity.getHints()) {
+                                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNewLive), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
 
                                 /* Get location data */
                                 for (int i = 0; i < locationArray.length(); i++) {
@@ -270,9 +279,12 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                     runCounter++;
                                 }
                             }
-                        } catch (JSONException e1) {
+
+                        } catch (
+                                JSONException e1) {
                             e1.printStackTrace();
-                        } catch (IOException e1) {
+                        } catch (
+                                IOException e1) {
                             e1.printStackTrace();
                         }
                     }
