@@ -130,7 +130,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                     alertdialogbuilder.setTitle(getContext().getResources().getString(R.string.friendsOptionTitle));
 
                     /* liveFriendOptions */
-                    if (liveFriend) {
+                    if (liveFriend|| friends.get(position).getIsLive()==1) {
                         alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendLiveOptions), new DialogInterface.OnClickListener() {
 
                             @Override
@@ -147,9 +147,6 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                     fragTransaction.replace(R.id.mainFrame, friendProfileFragment,
                                             MainActivity.getInstance().getResources().getString(R.string.fFriendLiveProfile));
                                     fragTransaction.commit();
-
-                                    /* Set id for backPress */
-                                    MainActivity.setSearchFriendPageIndex(position);
                                 }
 
                                 /* Show friend live view */
@@ -159,8 +156,19 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                     bundle.putInt("friendId", friends.get(position).getId());
                                     friendLiveFragment.setArguments(bundle);
                                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                                    fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
-                                            MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
+
+                                    /* LiveFriendList */
+                                    if(liveFriend){
+                                        fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
+                                                MainActivity.getInstance().getResources().getString(R.string.fFriendLiveViewList));
+
+
+                                                /* Live friend from profile */
+                                    }else{
+                                        fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
+                                                MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
+                                    }
+
                                     fragTransaction.commit();
                                 }
 

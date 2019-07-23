@@ -38,6 +38,7 @@
     <string name="fPublicPersonProfileQuestion">PUBLICPERSONPROFILEQUESTION</string>
     <string name="fPublicPersonProfileSendQuestion">PUBLICPERSONPROFILESENDQUESTION</string>
     <string name="fFriendLiveView">FRIENDLIVEVIEW</string>
+    <string name="fFriendLiveViewList">FRIENDLIVEVIEWLIST</string>
 
     <!-- ErrorMessages Connection to Server -->
     <string name="eServer">Es tut uns leid, leider ist ein Server Fehler aufgetreten. Versuchen Sie es später nochmal...</string>

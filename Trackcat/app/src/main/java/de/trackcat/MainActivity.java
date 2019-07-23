@@ -623,7 +623,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadFriendSystem(3);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileSendQuestion)) != null) {
             loadFriendSystem(4);
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveProfile)) != null) {
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveProfile)) != null ||getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveViewList)) != null) {
             loadFriendSystem(2);
         } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);

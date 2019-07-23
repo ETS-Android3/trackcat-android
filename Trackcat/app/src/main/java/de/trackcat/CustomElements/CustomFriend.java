@@ -9,6 +9,7 @@ public class CustomFriend {
     private byte[] image;
     private long totalDistance;
     private int id;
+    private int isLive;
 
     public long getDateOfRegistration() {
         return dateOfRegistration;
@@ -64,5 +65,13 @@ public class CustomFriend {
 
     public void setId(int id) {
         this.id= id;
+    }
+
+    public int getIsLive() {
+        return isLive;
+    }
+
+    public void setIsLive(int isLive) {
+        this.isLive= isLive;
     }
 }

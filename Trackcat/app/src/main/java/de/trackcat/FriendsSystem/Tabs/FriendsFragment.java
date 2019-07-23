@@ -180,6 +180,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                             friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
                             friend.setId(((JSONObject) friends.get(i)).getInt("id"));
                             friend.setEmail(((JSONObject) friends.get(i)).getString("email"));
+                            friend.setIsLive(((JSONObject) friends.get(i)).getInt("isLive"));
                             friendList.add(friend);
                         }
 
