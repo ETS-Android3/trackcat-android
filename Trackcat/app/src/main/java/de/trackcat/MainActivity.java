@@ -72,6 +72,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -291,15 +292,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
 
         /* Turn off power saving and battery optimization */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Intent intent = new Intent();
-            String packageName = getPackageName();
-            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                intent.setData(Uri.parse("package:" + packageName));
-                startActivity(intent);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Intent intent = new Intent();
+                String packageName = getPackageName();
+                PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+                if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                    intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                    intent.setData(Uri.parse("package:" + packageName));
+                    startActivity(intent);
+                }
             }
+        } catch (Exception e) {
         }
 
         startService(new Intent(getBaseContext(), ClosingService.class));
@@ -576,7 +580,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Stops/pauses Tracking opens App and switch to RecordFragment */
     public void stopTracking() {
-      //  startActivity(getIntent());
+        //  startActivity(getIntent());
         try {
             loadRecord();
         } catch (RuntimeException e) {
@@ -1320,8 +1324,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    private void deleteAllTempRecord() {
+    public void deleteAllTempRecord() {
+
+        /* delete temp from device */
         RecordTempDAO recordTempDAO = new RecordTempDAO(this);
         recordTempDAO.deleteAllNotFinished();
+
+        /* delete possible live tracking from server */
+        UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+        User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+        /* Start a call */
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
+
+        call.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                /* get jsonString from API */
+                String jsonString = null;
+
+                try {
+                    jsonString = response.body().string();
+
+                    /* parse json */
+                    JSONObject mainObject = new JSONObject(jsonString);
+
+                    if (mainObject.getString("success").equals("0")) {
+
+                    } else {
+
+                    }
+
+                    /* end tracking and delete temp record */
+                    MainActivity.getInstance().endTracking();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                call.cancel();
+            }
+        });
     }
 }

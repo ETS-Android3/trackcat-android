@@ -270,12 +270,15 @@ public class UserDAO {
                 routeDAO.delete(route.getId());
             }
 
-            for (Route route : recordTempDAO.readAll()) {
+            dbHelper.getWritableDatabase().execSQL("delete from " + DbContract.RecordTempEntry.TABLE_NAME);
+            dbHelper.getWritableDatabase().execSQL("delete from " + DbContract.LocationTempEntry.TABLE_NAME);
+
+        /*    for (Route route : recordTempDAO.readAll()) {
                 recordTempDAO.delete(route.getId());
                 for (Location location : locationTempDAO.readAll(route.getId())) {
                     locationTempDAO.delete(location.getId());
                 }
-            }
+            }*/
 
             String selection = COL_ID + " LIKE ?";
             String[] selectionArgs = {String.valueOf(user.getId())};
