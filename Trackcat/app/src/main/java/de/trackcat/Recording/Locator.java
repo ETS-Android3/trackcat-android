@@ -193,7 +193,8 @@ public class Locator extends Service {
      * stops GPS tracking
      * */
     public void stopTracking() {
-        locationManager.removeUpdates(locationListener);
+        try{
+        locationManager.removeUpdates(locationListener);}catch(Exception e){}
     }
 
     @Nullable

@@ -576,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Stops/pauses Tracking opens App and switch to RecordFragment */
     public void stopTracking() {
-        startActivity(getIntent());
+      //  startActivity(getIntent());
         try {
             loadRecord();
         } catch (RuntimeException e) {
@@ -591,7 +591,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void startTracking() {
-        startActivity(getIntent());
+        //startActivity(getIntent());
         recordFragment.startTracking();
         try {
             loadRecord();

@@ -273,53 +273,58 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                if (msg.what == 0) {
-                    /*
-                     * set Time in TextView
-                     * */
-                    String toSetTime = msg.obj + "";
+                try {
+                    if (msg.what == 0) {
+                        /*
+                         * set Time in TextView
+                         * */
+                        String toSetTime = msg.obj + "";
 
-                    String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
+                        String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
 
-                    try {
-                        time_TextView = view.findViewById(R.id.time_TextView);
-                        time_TextView.setText(toSetTime);
+                        try {
+                            time_TextView = view.findViewById(R.id.time_TextView);
+                            time_TextView.setText(toSetTime);
 
-                        TextView distance_TextView = view.findViewById(R.id.distance_TextView);
-                        distance_TextView.setText(toSetDistance);
+                            TextView distance_TextView = view.findViewById(R.id.distance_TextView);
+                            distance_TextView.setText(toSetDistance);
 
 
-                    } catch (NullPointerException e) {
-                        Log.v(getResources().getString(R.string.app_name), e.toString());
+                        } catch (NullPointerException e) {
+                            Log.v(getResources().getString(R.string.app_name), e.toString());
+                        }
+
+                        try {
+                            notificationContent = toSetTime + "   " + toSetDistance;
+
+                            issueNotification(notificationContent);
+                        } catch (Exception e) {
+                            Log.v(getResources().getString(R.string.app_name), e.toString());
+                        }
+
+                        /*
+                         * recalculate average Speed
+                         * */
+                        try {
+                            average_speed_TextView = view.findViewById(R.id.average_speed_TextView);
+                            String toSet = Math.round((kmhAverager.getAvgSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
+                            average_speed_TextView.setText(toSet);
+                        } catch (NullPointerException e) {
+                            Log.v(getResources().getString(R.string.app_name), e.toString());
+
+                        }
+                    } else if (msg.what == 2) {
+
+                        /*
+                         * recieved Lcoation
+                         * */
+                        updateLocation((Location) msg.obj);
                     }
-
-                    try {
-                        notificationContent = toSetTime + "   " + toSetDistance;
-
-                        issueNotification(notificationContent);
-                    } catch (Exception e) {
-                        Log.v(getResources().getString(R.string.app_name), e.toString());
-                    }
-
-                    /*
-                     * recalculate average Speed
-                     * */
-                    try {
-                        average_speed_TextView = view.findViewById(R.id.average_speed_TextView);
-                        String toSet = Math.round((kmhAverager.getAvgSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
-                        average_speed_TextView.setText(toSet);
-                    } catch (NullPointerException e) {
-                        Log.v(getResources().getString(R.string.app_name), e.toString());
-
-                    }
-                } else if (msg.what == 2) {
-
-                    /*
-                     * recieved Lcoation
-                     * */
-                    updateLocation((Location) msg.obj);
+                } catch (Exception e) {
                 }
             }
+
+
         };
 
         if (Build.VERSION.SDK_INT > 21) {
