@@ -47,6 +47,7 @@ public class StartActivity extends AppCompatActivity {
         return instance;
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +82,7 @@ public class StartActivity extends AppCompatActivity {
 
             /* read profile values from global db */
             HashMap<String, String> map = new HashMap<>();
-            map.put("id", ""+currentUser.getId());
+            map.put("id", "" + currentUser.getId());
 
             Retrofit retrofit = APIConnector.getRetrofit();
             APIClient apiInterface = retrofit.create(APIClient.class);
@@ -99,9 +100,9 @@ public class StartActivity extends AppCompatActivity {
                     try {
 
 
-                        if(response.code()==401){
+                        if (response.code() == 401) {
                             fastLogIn = false;
-                        }else {
+                        } else {
                             /* get jsonString from API */
                             String jsonString = response.body().string();
                             /* parse json */
@@ -151,6 +152,7 @@ public class StartActivity extends AppCompatActivity {
                             /* logged user in, if one entry in table */
                         } else {
                             Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         }
                     }
@@ -159,6 +161,7 @@ public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        Log.d("tag", "starrrrrrrrrrrrrrrrrrrrrrrrtttttttttttttttttdeeeeeeeeeeeeeeeeeeeeesssssssssssssssstttttttttttttttttttrrrrrrrrrrrrrroooooooyyyyyyyyyyy");
         try {
             progressDialog.dismiss();
         } catch (Exception e) {

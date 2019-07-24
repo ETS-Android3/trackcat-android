@@ -27,7 +27,7 @@
         <activity
             android:name="de.trackcat.MainActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:hardwareAccelerated="false"></activity>
+            android:hardwareAccelerated="true"></activity>
 
         <!-- Start Activity -->
         <activity
