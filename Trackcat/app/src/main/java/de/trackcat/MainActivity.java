@@ -639,28 +639,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
-        } else {
-            if (exitApp) {
-                finish();
-                System.exit(0);
-            }
-
-            exitApp = true;
-            if (hints) {
-                Toast.makeText(instance, "Noch einmal klicken, um App zu beenden!", Toast.LENGTH_SHORT).show();
-            }
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exitApp = false;
-                    if (hints) {
-                        Toast.makeText(instance, "Zu langsam. Versuche es erneut...", Toast.LENGTH_LONG).show();
-                    }
-                }
-            }, 3000);
         }
+        if (exitApp) {
+
+            deleteAllTempRecord();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                this.finishAffinity();
+            } else {
+                finish();
+            }
+            System.exit(0);
+        }
+
+        exitApp = true;
+        if (hints) {
+            Toast.makeText(instance, "Noch einmal klicken, um App zu beenden!", Toast.LENGTH_SHORT).show();
+        }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                exitApp = false;
+                if (hints) {
+                    Toast.makeText(instance, "Zu langsam. Versuche es erneut...", Toast.LENGTH_LONG).show();
+                }
+            }
+        }, 3000);
     }
+
 
     /* Laden des Dashboard-Fragments */
     public void loadDashboard() {
@@ -1309,5 +1316,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 loadRecordList();
             }
         });
+    }
+
+    private void deleteAllTempRecord() {
+        RecordTempDAO recordTempDAO = new RecordTempDAO(this);
+        recordTempDAO.deleteAllNotFinished();
     }
 }

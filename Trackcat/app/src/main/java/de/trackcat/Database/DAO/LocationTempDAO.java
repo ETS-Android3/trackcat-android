@@ -196,13 +196,13 @@ public class LocationTempDAO {
      * Reads last locations of a specific record.
      *
      * @param recordId id of specific record of whom location has to be selected
-     * @param limit is the number of limit
-     * @param round is the page to show
+     * @param limit    is the number of limit
+     * @param round    is the page to show
      * @return List of all locations belong to specific record in database sorted ascending after id,
      * if locations with matching recordId was found else an empty List
      */
-    public List<Location> readAllWithLimit(int recordId, int limit, int round) {
-        return this.readAllWithLimit(recordId, new String[]{"id", "ASC"}, limit, round);
+    public List<Location> readAllGreaterThan(int recordId, int index) {
+        return this.readAllGreaterThan(recordId, new String[]{"id", "ASC"}, index);
     }
 
     /**
@@ -215,10 +215,10 @@ public class LocationTempDAO {
      * @return List of all locations belong to specific record in database sorted after
      * orderArgs, if locations with matching recordId was found else an empty List
      */
-    private List<Location> readAllWithLimit(int recordId, String[] orderArgs, int limit, int round) {
+    private List<Location> readAllGreaterThan(int recordId, String[] orderArgs, int index) {
         DbHelper dbHelper = new DbHelper(context);
         List<Location> result = new ArrayList<>();
-        String selection = COL_RECORD_ID + " = ?";
+        String selection = COL_RECORD_ID + " = ? AND " + COL_ID + " > " + index;
         try {
             String[] selectionArgs = {String.valueOf(recordId)};
             String[] projection = {
@@ -236,8 +236,8 @@ public class LocationTempDAO {
                     selectionArgs,
                     null,
                     null,
-                    orderArgs[0] + " " + orderArgs[1],
-                    round + "," + limit)) {
+                    orderArgs[0] + " " + orderArgs[1]
+            )) {
                 if (cursor.moveToFirst())
                     do {
                         result.add(new Location(

@@ -632,6 +632,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void endTracking() {
+
+        /* stop sending timer */
+        if (liveRecording) {
+            sendLiveTimer.cancel();
+        }
         stopTracking();
         notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
 
@@ -809,7 +814,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 recordTempDAO.delete(model);
 
                 /* Send request to server if its live recording */
-                if(liveRecording) {
+                if (liveRecording) {
                     /* get current user */
                     UserDAO userDAO = new UserDAO(MainActivity.getInstance());
                     User currentUser = userDAO.read(MainActivity.getActiveUser());
@@ -864,7 +869,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                         }
                     });
 
-                }else{
+                } else {
                     Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecord),
                             Toast.LENGTH_LONG).show();
 
@@ -1002,7 +1007,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         /* instantiate if null */
         if (kmCounter == null) {
 
-            if (liveRecording){
+            if (liveRecording) {
                 sendLiveTimer = new java.util.Timer();
                 /* start Timer on 1 sec */
                 sendLiveTimer.scheduleAtFixedRate(new sendLive(), 10000, 10000);
@@ -1282,63 +1287,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                 if (locationCounter % 10 == 0 && liveRecording) {
 
-                    /* Ger last ___ locations */
-                    List<de.trackcat.Database.Models.Location> l = locationTempDAO.readAllWithLimit(newRecordId, 10, locationGetRound);
-                    locationCounter = 0;
-                    locationGetRound = locationGetRound + 10;
 
-                    /* Get current user */
-                    UserDAO userDAO = new UserDAO(MainActivity.getInstance());
-                    User currentUser = userDAO.read(MainActivity.getActiveUser());
-
-                    /* Create model */
-                    RecordModelForServer m = new RecordModelForServer();
-                    m.setId(liveRecordId);
-                    m.setType(SpeedAverager.getRouteType(kmhAverager.getAvgSpeed()));
-                    m.setTime(timer.getTime());
-                    m.setRideTime(rideTimer.getTime());
-                    m.setDistance(kmCounter.getAmount());
-                    m.setLocations(l);
-
-                    /* Start a call */
-                    Retrofit retrofit = APIConnector.getRetrofit();
-                    APIClient apiInterface = retrofit.create(APIClient.class);
-                    String base = currentUser.getMail() + ":" + currentUser.getPassword();
-                    String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                    Call<ResponseBody> call = apiInterface.updateLiveRecord(authString, m);
-                    call.enqueue(new Callback<ResponseBody>() {
-
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                            /* Get jsonString from API */
-                            String jsonString = null;
-
-                            try {
-                                jsonString = response.body().string();
-
-                                /* parse json */
-                                JSONObject mainObject = new JSONObject(jsonString);
-
-                                if (mainObject.getString("success").equals("0")) {
-
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            call.cancel();
-                            MainActivity.getInstance().endTracking();
-                            Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
-                                    Toast.LENGTH_LONG).show();
-
-                        }
-                    });
                 }
 
 
@@ -1425,13 +1374,71 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mCompassOverlay.setAzimuthOffset(offset);
     }
 
+    int lastIndex = 0;
+
     private class sendLive extends TimerTask {
 
         @Override
         public void run() {
-            // für timer stoppen
-            // sendLiveTimer.cancel();
 
+            /* Ger last ___ locations */
+            List<de.trackcat.Database.Models.Location> l = locationTempDAO.readAllGreaterThan(newRecordId, lastIndex);
+            if (l.size() > 0) {
+                lastIndex = l.get(l.size() - 1).getId();
+            }
+
+            /* Get current user */
+            UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+            User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+            /* Create model */
+            RecordModelForServer m = new RecordModelForServer();
+            m.setId(liveRecordId);
+            m.setType(SpeedAverager.getRouteType(kmhAverager.getAvgSpeed()));
+            m.setTime(timer.getTime());
+            m.setRideTime(rideTimer.getTime());
+            m.setDistance(kmCounter.getAmount());
+            m.setLocations(l);
+
+            /* Start a call */
+            Retrofit retrofit = APIConnector.getRetrofit();
+            APIClient apiInterface = retrofit.create(APIClient.class);
+            String base = currentUser.getMail() + ":" + currentUser.getPassword();
+            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+            Call<ResponseBody> call = apiInterface.updateLiveRecord(authString, m);
+            call.enqueue(new Callback<ResponseBody>() {
+
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                    /* Get jsonString from API */
+                    String jsonString = null;
+
+                    try {
+                        jsonString = response.body().string();
+
+                        /* parse json */
+                        JSONObject mainObject = new JSONObject(jsonString);
+
+                        if (mainObject.getString("success").equals("0")) {
+
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    call.cancel();
+                    MainActivity.getInstance().endTracking();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
+                            Toast.LENGTH_LONG).show();
+
+                }
+            });
         }
     }
 }
