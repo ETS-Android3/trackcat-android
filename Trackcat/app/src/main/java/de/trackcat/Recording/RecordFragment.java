@@ -802,9 +802,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                /* end tracking and delete temp record */
-                MainActivity.getInstance().endTracking();
-
                 /*remove from temp*/
                 recordTempDAO.delete(model);
 
@@ -834,9 +831,15 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             JSONObject mainObject = new JSONObject(jsonString);
 
                             if (mainObject.getString("success").equals("0")) {
-                                Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
+                                Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecord),
+                                        Toast.LENGTH_LONG).show();
+                            }else{
+                                Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
                                         Toast.LENGTH_LONG).show();
                             }
+
+                            /* end tracking and delete temp record */
+                            MainActivity.getInstance().endTracking();
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
@@ -847,6 +850,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         call.cancel();
+
+                        Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
+                                Toast.LENGTH_LONG).show();
+
+                        /* end tracking and delete temp record */
+                        MainActivity.getInstance().endTracking();
                     }
                 });
 
@@ -985,6 +994,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             // instatiate new ModelRoute ann add to DB
             model = new Route();
             newRecordId = recordTempDAO.create(model);
+            model.setId(newRecordId);
 
             // start Locator
             //locatorGPS = new Locator(MainActivity.getInstance(), this);

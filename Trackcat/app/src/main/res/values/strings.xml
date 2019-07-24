@@ -129,11 +129,6 @@
     <string name="tErrorOldPassword">Authentifizierung fehlgeschlagen!</string>
     <string name="tChangePasswortUnknownError">Unbekannter Fehler beim Ändern des Passworts!</string>
 
-    <!-- change password strings -->
-    <string name="saveRouteOnServer">Route erfolgreich auf dem Server gespeichert.</string>
-    <string name="saveRouteOffline">Route nur lokal gespeichert.</string>
-
-
     <!-- delete profile strings -->
     <string name="deleteAccountInfoText1">Wenn Sie Ihren Account löschen, werden sämtliche Benutzerdaten gelöscht. Folgende Informationen sind davon betroffen:</string>
     <string name="bullet_1">Personenbezogene Daten (<i>Name, Profilbild, Status, etc.</i>)</string>
@@ -187,7 +182,11 @@
     <string name="ucrop_selectImage">Bild ausgewählt!</string>
 
     <!--recording -->
+    <string name="saveRouteOnServer">Route erfolgreich auf dem Server gespeichert.</string>
+    <string name="saveRouteOffline">Route nur lokal gespeichert.</string>
     <string name="recordsOptionsTitle">Aufnahmeoptionen</string>
+    <string name="abortLiveRecord">Aufnahme erfolgreich verworfen.</string>
+    <string name="abortLiveRecordError">Aufnahme konnte nicht verworfen werden.</string>
 
 
 </resources>
