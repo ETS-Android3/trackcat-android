@@ -805,61 +805,69 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 /*remove from temp*/
                 recordTempDAO.delete(model);
 
-                /* get current user */
-                UserDAO userDAO = new UserDAO(MainActivity.getInstance());
-                User currentUser = userDAO.read(MainActivity.getActiveUser());
+                /* Send request to server if its live recording */
+                if(liveRecording) {
+                    /* get current user */
+                    UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+                    User currentUser = userDAO.read(MainActivity.getActiveUser());
 
-                /* Start a call */
-                Retrofit retrofit = APIConnector.getRetrofit();
-                APIClient apiInterface = retrofit.create(APIClient.class);
-                String base = currentUser.getMail() + ":" + currentUser.getPassword();
-                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
+                    /* Start a call */
+                    Retrofit retrofit = APIConnector.getRetrofit();
+                    APIClient apiInterface = retrofit.create(APIClient.class);
+                    String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                    String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                    Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
 
-                call.enqueue(new Callback<ResponseBody>() {
+                    call.enqueue(new Callback<ResponseBody>() {
 
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                        /* get jsonString from API */
-                        String jsonString = null;
+                            /* get jsonString from API */
+                            String jsonString = null;
 
-                        try {
-                            jsonString = response.body().string();
+                            try {
+                                jsonString = response.body().string();
 
-                            /* parse json */
-                            JSONObject mainObject = new JSONObject(jsonString);
+                                /* parse json */
+                                JSONObject mainObject = new JSONObject(jsonString);
 
-                            if (mainObject.getString("success").equals("0")) {
-                                Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecord),
-                                        Toast.LENGTH_LONG).show();
-                            }else{
-                                Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
-                                        Toast.LENGTH_LONG).show();
+                                if (mainObject.getString("success").equals("0")) {
+                                    Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecord),
+                                            Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
+                                            Toast.LENGTH_LONG).show();
+                                }
+
+                                /* end tracking and delete temp record */
+                                MainActivity.getInstance().endTracking();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            call.cancel();
+
+                            Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
+                                    Toast.LENGTH_LONG).show();
 
                             /* end tracking and delete temp record */
                             MainActivity.getInstance().endTracking();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
+                    });
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        call.cancel();
+                }else{
+                    Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecord),
+                            Toast.LENGTH_LONG).show();
 
-                        Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
-                                Toast.LENGTH_LONG).show();
-
-                        /* end tracking and delete temp record */
-                        MainActivity.getInstance().endTracking();
-                    }
-                });
-
-
+                    /* end tracking and delete temp record */
+                    MainActivity.getInstance().endTracking();
+                }
             }
         });
 
