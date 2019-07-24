@@ -109,7 +109,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
 
                 try {
                     if (response.code() == 401) {
-                        //  MainActivity.getInstance().showNotAuthorizedModal(5);
+                          MainActivity.getInstance().showNotAuthorizedModal(9);
                     } else {
 
                         /* Get jsonString from API */

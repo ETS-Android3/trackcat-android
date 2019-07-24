@@ -139,13 +139,11 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
             }
         }, DEFAULT_INACTIVITY_DELAY_IN_MILLISECS));
 
-        /* Call for every 4 Second the update function */
+        /* Create handler and runnable */
         Handler handler = new Handler();
         int delay = 4000; //milliseconds
-
-        handler.postDelayed(new Runnable() {
+        Runnable runnable = new Runnable() {
             public void run() {
-                handler.postDelayed(this, delay);
 
                 /* Create hashmap */
                 HashMap<String, String> map = new HashMap<>();
@@ -174,109 +172,115 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
 
                                 /* Parse json */
                                 JSONObject mainObject = new JSONObject(jsonString);
-                                JSONArray locationArray = mainObject.getJSONArray("locations");
 
+                                /* check if liverecord exists */
+                                if (mainObject.has("id")) {
 
-                                /* Start new live */
-                                if (recordId != mainObject.getInt("id") && mainObject.has("id")) {
-                                    locations.clear();
-                                    GPSData.clear();
-                                    index = 0;
-                                    runCounter = 1;
-                                    if (MainActivity.getHints()) {
-                                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNewLive), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                                if (!mainObject.has("id")) {
-                                    if (MainActivity.getHints()) {
-                                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNewLive), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
+                                    /* Start new live record */
+                                    if (recordId != mainObject.getInt("id")) {
+                                        locations.clear();
+                                        GPSData.clear();
+                                        index = 0;
+                                        runCounter = 1;
 
-
-                                /* Get location data */
-                                for (int i = 0; i < locationArray.length(); i++) {
-                                    Location location = new Location();
-                                    location.setAltitude(((JSONObject) locationArray.get(i)).getDouble("altitude"));
-                                    location.setLatitude(((JSONObject) locationArray.get(i)).getDouble("latitude"));
-                                    location.setLongitude(((JSONObject) locationArray.get(i)).getDouble("longitude"));
-                                    location.setSpeed(((JSONObject) locationArray.get(i)).getLong("speed"));
-                                    location.setTime(((JSONObject) locationArray.get(i)).getLong("time"));
-                                    index = ((JSONObject) locationArray.get(i)).getInt("id");
-                                    lastSpeed = location.getSpeed();
-                                    lastAltimeter = location.getAltitude();
-                                    locations.add(location);
-                                    GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
-                                    GPSData.add(gPt);
-                                }
-                                if (locations.size() > 0) {
-
-                                    /* Draw route */
-                                    if (runCounter == 1) {
-                                        createMap();
-
-                                        /* Set recordId */
-                                        recordId = mainObject.getInt("id");
-                                    } else {
-                                        drawRoute();
+                                        if (MainActivity.getHints()) {
+                                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNewLive), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
 
-                                    /* Set values */
-                                    userTitle.setText(titleStart + mainObject.getString("firstName") + " " + mainObject.getString("lastName"));
+                                    /* Get location data */
+                                    JSONArray locationArray = mainObject.getJSONArray("locations");
+                                    for (int i = 0; i < locationArray.length(); i++) {
+                                        Location location = new Location();
+                                        location.setAltitude(((JSONObject) locationArray.get(i)).getDouble("altitude"));
+                                        location.setLatitude(((JSONObject) locationArray.get(i)).getDouble("latitude"));
+                                        location.setLongitude(((JSONObject) locationArray.get(i)).getDouble("longitude"));
+                                        location.setSpeed(((JSONObject) locationArray.get(i)).getLong("speed"));
+                                        location.setTime(((JSONObject) locationArray.get(i)).getLong("time"));
+                                        index = ((JSONObject) locationArray.get(i)).getInt("id");
+                                        lastSpeed = location.getSpeed();
+                                        lastAltimeter = location.getAltitude();
+                                        locations.add(location);
+                                        GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
+                                        GPSData.add(gPt);
+                                    }
+                                    if (locations.size() > 0) {
 
-                                    String speedStr = (Math.round(lastSpeed * 60 * 60) / 100) / 10.0 + " km/h";
-                                    averageSpeed.setText(speedStr);
+                                        /* Draw route */
+                                        if (runCounter == 1) {
+                                            createMap();
 
-                                    distance.setText(Math.round(mainObject.getLong("distance")) / 1000.0 + " km");
+                                            /* Set recordId */
+                                            recordId = mainObject.getInt("id");
+                                        } else {
+                                            drawRoute();
+                                        }
 
-                                    String altimeterStr = Math.round(lastAltimeter) + " m";
-                                    altimeter.setText(altimeterStr);
+                                        /* Set values */
+                                        userTitle.setText(titleStart + mainObject.getString("firstName") + " " + mainObject.getString("lastName"));
 
-                                    type.setImageResource(SpeedAverager.getTypeIcon(mainObject.getInt("type"), false));
+                                        String speedStr = (Math.round(lastSpeed * 60 * 60) / 100) / 10.0 + " km/h";
+                                        averageSpeed.setText(speedStr);
 
-                                    String timeStr = df.format(new Date(mainObject.getLong("time") * 1000));
-                                    time.setText(timeStr);
+                                        distance.setText(Math.round(mainObject.getLong("distance")) / 1000.0 + " km");
 
-                                    /* Show complete record */
-                                    if (showAll) {
-                                        view.setTag(view.getVisibility());
-                                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                            @Override
-                                            public void onGlobalLayout() {
+                                        String altimeterStr = Math.round(lastAltimeter) + " m";
+                                        altimeter.setText(altimeterStr);
 
-                                                if (showAll) {
-                                                    double minLat = Double.MAX_VALUE;
-                                                    double maxLat = Double.MIN_VALUE;
-                                                    double minLong = Double.MAX_VALUE;
-                                                    double maxLong = Double.MIN_VALUE;
+                                        type.setImageResource(SpeedAverager.getTypeIcon(mainObject.getInt("type"), false));
 
-                                                    for (GeoPoint point : GPSData) {
-                                                        if (point.getLatitude() < minLat)
-                                                            minLat = point.getLatitude();
-                                                        if (point.getLatitude() > maxLat)
-                                                            maxLat = point.getLatitude();
-                                                        if (point.getLongitude() < minLong)
-                                                            minLong = point.getLongitude();
-                                                        if (point.getLongitude() > maxLong)
-                                                            maxLong = point.getLongitude();
+                                        String timeStr = df.format(new Date(mainObject.getLong("time") * 1000));
+                                        time.setText(timeStr);
+
+                                        /* Show complete record */
+                                        if (showAll) {
+                                            view.setTag(view.getVisibility());
+                                            view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                                @Override
+                                                public void onGlobalLayout() {
+
+                                                    if (showAll) {
+                                                        double minLat = Double.MAX_VALUE;
+                                                        double maxLat = Double.MIN_VALUE;
+                                                        double minLong = Double.MAX_VALUE;
+                                                        double maxLong = Double.MIN_VALUE;
+
+                                                        for (GeoPoint point : GPSData) {
+                                                            if (point.getLatitude() < minLat)
+                                                                minLat = point.getLatitude();
+                                                            if (point.getLatitude() > maxLat)
+                                                                maxLat = point.getLatitude();
+                                                            if (point.getLongitude() < minLong)
+                                                                minLong = point.getLongitude();
+                                                            if (point.getLongitude() > maxLong)
+                                                                maxLong = point.getLongitude();
+                                                        }
+
+                                                        maxLat += 0.001;
+                                                        maxLong += 0.001;
+                                                        minLat -= 0.001;
+                                                        minLong -= 0.001;
+
+                                                        BoundingBox box = new BoundingBox();
+                                                        box.set(maxLat, maxLong, minLat, minLong);
+
+                                                        mMapView.zoomToBoundingBox(box, false);
+                                                        double zoomLvl = mMapView.getZoomLevelDouble();
+                                                        mMapView.getController().setZoom(zoomLvl - 0.3);
                                                     }
-
-                                                    maxLat += 0.001;
-                                                    maxLong += 0.001;
-                                                    minLat -= 0.001;
-                                                    minLong -= 0.001;
-
-                                                    BoundingBox box = new BoundingBox();
-                                                    box.set(maxLat, maxLong, minLat, minLong);
-
-                                                    mMapView.zoomToBoundingBox(box, false);
-                                                    double zoomLvl = mMapView.getZoomLevelDouble();
-                                                    mMapView.getController().setZoom(zoomLvl - 0.3);
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }
+                                        runCounter++;
                                     }
-                                    runCounter++;
+                                } else {
+
+                                    /* stop runnable */
+                                    handler.removeCallbacksAndMessages(null);
+                                    if (MainActivity.getHints()) {
+                                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNoLive), Toast.LENGTH_SHORT).show();
+                                    }
+                                    MainActivity.getInstance().loadFriendSystem(2);
                                 }
                             }
 
@@ -294,8 +298,14 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                         call.cancel();
                     }
                 });
+
+                /* restart runnable */
+                handler.postDelayed(this, delay);
             }
-        }, delay);
+        };
+
+        /* start runnable */
+        handler.postDelayed(runnable, delay);
         return view;
     }
 
