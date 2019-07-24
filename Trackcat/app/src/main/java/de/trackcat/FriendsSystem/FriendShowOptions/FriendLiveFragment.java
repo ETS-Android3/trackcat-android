@@ -76,6 +76,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
     String titleStart = "Übertragung von ";
     int runCounter, index, recordId;
     boolean userScroll, showAll;
+    private static Handler handler;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -129,6 +130,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                     /* User Scroll */
                 } else {
                     userScroll = true;
+                    goToMarker.show();
                 }
                 return true;
             }
@@ -140,7 +142,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         }, DEFAULT_INACTIVITY_DELAY_IN_MILLISECS));
 
         /* Create handler and runnable */
-        Handler handler = new Handler();
+        handler = new Handler();
         int delay = 4000; //milliseconds
         Runnable runnable = new Runnable() {
             public void run() {
@@ -306,6 +308,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
 
         /* start runnable */
         handler.postDelayed(runnable, delay);
+
         return view;
     }
 
@@ -384,16 +387,20 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
             case R.id.goToMarkerBtn:
                 /* Go to marker */
                 goToMarker();
+                Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewZoomToUser), Toast.LENGTH_SHORT).show();
+                goToMarker.hide();
                 break;
             case R.id.showCompleteRecordBtn:
                 /* Show zoomed view */
                 if (showAll) {
                     goToMarker();
+                    showCompleteRecord.setImageResource(R.drawable.ic_switch_one);
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewZoom), Toast.LENGTH_SHORT).show();
-                    goToMarker.show();
+
                     /* show fullTrack view */
                 } else {
                     showAll = true;
+                    showCompleteRecord.setImageResource(R.drawable.ic_switch_all);
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewFullTrack), Toast.LENGTH_SHORT).show();
                     goToMarker.hide();
                 }
@@ -408,4 +415,9 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         showAll = false;
         mMapView.invalidate();
     }
+
+    public static void resetHandler() {
+        handler.removeCallbacksAndMessages(null);
+    }
 }
+

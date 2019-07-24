@@ -50,6 +50,7 @@ import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
+import de.trackcat.FriendsSystem.FriendShowOptions.FriendLiveFragment;
 import de.trackcat.FriendsSystem.FriendsViewerFragment;
 import de.trackcat.Profile.DeleteAccountFragment;
 import de.trackcat.Profile.EditPasswordFragment;
@@ -261,7 +262,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // android.os.Process.killProcess(android.os.Process.myPid());
         // }
         // isRestart = false;
-
 
 
         super.onDestroy();
@@ -537,6 +537,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSearchFriendPageIndex(0);
         setFriendQuestionIndex(0);
         setSendFriendQuestionIndex(0);
+        try {
+            FriendLiveFragment.resetHandler();
+        } catch (Exception e) {
+        }
     }
 
     public void logout() {
@@ -617,14 +621,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loadProfile(false);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
             loadFriendSystem(1);
+            try {
+                FriendLiveFragment.resetHandler();
+            } catch (Exception e) {
+            }
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfile)) != null) {
             loadFriendSystem(0);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileQuestion)) != null) {
             loadFriendSystem(3);
         } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileSendQuestion)) != null) {
             loadFriendSystem(4);
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveProfile)) != null ||getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveViewList)) != null) {
+        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveViewList)) != null) {
             loadFriendSystem(2);
+            try {
+                FriendLiveFragment.resetHandler();
+            } catch (Exception e) {
+            }
         } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         } else {
@@ -848,11 +860,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Function to show not autorized modal */
     public void showNotAuthorizedModal(int type) {
-        if (type == 5 | type == 6 | type == 7 | type == 8 | type==9) {
+        if (type == 5 | type == 6 | type == 7 | type == 8 | type == 9) {
             showAutorizeCounter++;
         }
 
-        if((type == 5 | type == 6 | type == 7 | type == 8| type==9) &&showAutorizeCounter==1) {
+        if ((type == 5 | type == 6 | type == 7 | type == 8 | type == 9) && showAutorizeCounter == 1) {
             /* create AlertBox */
             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             alert.setTitle("Achtung");
@@ -949,10 +961,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 loadFriendSystem(4);
                                                 showAutorizeCounter = 0;
                                                 /* Search stranger */
-                                            }else if (type == 8) {
+                                            } else if (type == 8) {
                                                 loadFriendSystem(0);
                                                 showAutorizeCounter = 0;
-                                            }else if (type == 9) {
+                                            } else if (type == 9) {
                                                 loadFriendSystem(2);
                                                 showAutorizeCounter = 0;
                                             }

@@ -163,8 +163,9 @@
     <string name="friendLiveNoEntry">Immoment sind keine Ihrer Freunde live.</string>
     <string name="friendNewLive">Neue Liveübertragung gestartet...</string>
     <string name="friendNoLive">Im Moment ist keine Liveübertragung gestartet.</string>
-   <string name="friendLiveViewFullTrack">Gesamtansicht der geteilten Liveaufzeichnung.</string>
+    <string name="friendLiveViewFullTrack">Gesamtansicht der geteilten Liveaufzeichnung.</string>
     <string name="friendLiveViewZoom">Zentrierte Ansicht auf Ihren Freund.</string>
+    <string name="friendLiveViewZoomToUser">Auf den Nutzer gezoomt.</string>
     <string name="friendSearchNoConnection" tools:ignore="ExtraTranslation">Sie können nur Suchen, wenn Sie online sind. Bitte Überprüfen Sie Ihre Internetverbindung.</string>
     <string name="friendNoConnection">Sie können nur auf Ihre Freunde zugreifen, wenn Sie online sind. Bitte Überprüfen Sie Ihre Internetverbindung.</string>
     <string name="friendSendQuestionConnection">Sie können nur auf Ihre gesendeten Freundschaftsanfragen zugreifen, wenn Sie online sind. Bitte Überprüfen Sie Ihre Internetverbindung.</string>
