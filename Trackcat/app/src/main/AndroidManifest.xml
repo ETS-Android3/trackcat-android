@@ -62,5 +62,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.Preview"/>
 
+        <service android:name="de.trackcat.ClosingService"
+            android:stopWithTask="false"/>
+
     </application>
 </manifest>

@@ -302,6 +302,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
+        startService(new Intent(getBaseContext(), ClosingService.class));
+
         /* Fragt nach noch nicht erteilten Permissions */
         permissionManager.checkAndRequestPermissions(this);
 
