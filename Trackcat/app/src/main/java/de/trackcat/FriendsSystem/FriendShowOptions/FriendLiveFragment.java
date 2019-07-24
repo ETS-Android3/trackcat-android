@@ -217,64 +217,64 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                         } else {
                                             drawRoute();
                                         }
-
-                                        /* Set values */
-                                        userTitle.setText(titleStart + mainObject.getString("firstName") + " " + mainObject.getString("lastName"));
-
-                                        String speedStr = (Math.round(lastSpeed * 60 * 60) / 100) / 10.0 + " km/h";
-                                        averageSpeed.setText(speedStr);
-
-                                        distance.setText(Math.round(mainObject.getLong("distance")) / 1000.0 + " km");
-
-                                        String altimeterStr = Math.round(lastAltimeter) + " m";
-                                        altimeter.setText(altimeterStr);
-
-                                        type.setImageResource(SpeedAverager.getTypeIcon(mainObject.getInt("type"), false));
-
-                                        String timeStr = df.format(new Date(mainObject.getLong("time") * 1000));
-                                        time.setText(timeStr);
-
-                                        /* Show complete record */
-                                        if (showAll) {
-                                            view.setTag(view.getVisibility());
-                                            view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                                @Override
-                                                public void onGlobalLayout() {
-
-                                                    if (showAll) {
-                                                        double minLat = Double.MAX_VALUE;
-                                                        double maxLat = Double.MIN_VALUE;
-                                                        double minLong = Double.MAX_VALUE;
-                                                        double maxLong = Double.MIN_VALUE;
-
-                                                        for (GeoPoint point : GPSData) {
-                                                            if (point.getLatitude() < minLat)
-                                                                minLat = point.getLatitude();
-                                                            if (point.getLatitude() > maxLat)
-                                                                maxLat = point.getLatitude();
-                                                            if (point.getLongitude() < minLong)
-                                                                minLong = point.getLongitude();
-                                                            if (point.getLongitude() > maxLong)
-                                                                maxLong = point.getLongitude();
-                                                        }
-
-                                                        maxLat += 0.001;
-                                                        maxLong += 0.001;
-                                                        minLat -= 0.001;
-                                                        minLong -= 0.001;
-
-                                                        BoundingBox box = new BoundingBox();
-                                                        box.set(maxLat, maxLong, minLat, minLong);
-
-                                                        mMapView.zoomToBoundingBox(box, false);
-                                                        double zoomLvl = mMapView.getZoomLevelDouble();
-                                                        mMapView.getController().setZoom(zoomLvl - 0.3);
-                                                    }
-                                                }
-                                            });
-                                        }
-                                        runCounter++;
                                     }
+                                    /* Set values */
+                                    userTitle.setText(titleStart + mainObject.getString("firstName") + " " + mainObject.getString("lastName"));
+
+                                    String speedStr = (Math.round(lastSpeed * 60 * 60) / 100) / 10.0 + " km/h";
+                                    averageSpeed.setText(speedStr);
+
+                                    distance.setText(Math.round(mainObject.getLong("distance")) / 1000.0 + " km");
+
+                                    String altimeterStr = Math.round(lastAltimeter) + " m";
+                                    altimeter.setText(altimeterStr);
+
+                                    type.setImageResource(SpeedAverager.getTypeIcon(mainObject.getInt("type"), false));
+
+                                    String timeStr = df.format(new Date(mainObject.getLong("time") * 1000));
+                                    time.setText(timeStr);
+
+                                    /* Show complete record */
+                                    if (showAll) {
+                                        view.setTag(view.getVisibility());
+                                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                            @Override
+                                            public void onGlobalLayout() {
+
+                                                if (showAll) {
+                                                    double minLat = Double.MAX_VALUE;
+                                                    double maxLat = Double.MIN_VALUE;
+                                                    double minLong = Double.MAX_VALUE;
+                                                    double maxLong = Double.MIN_VALUE;
+
+                                                    for (GeoPoint point : GPSData) {
+                                                        if (point.getLatitude() < minLat)
+                                                            minLat = point.getLatitude();
+                                                        if (point.getLatitude() > maxLat)
+                                                            maxLat = point.getLatitude();
+                                                        if (point.getLongitude() < minLong)
+                                                            minLong = point.getLongitude();
+                                                        if (point.getLongitude() > maxLong)
+                                                            maxLong = point.getLongitude();
+                                                    }
+
+                                                    maxLat += 0.001;
+                                                    maxLong += 0.001;
+                                                    minLat -= 0.001;
+                                                    minLong -= 0.001;
+
+                                                    BoundingBox box = new BoundingBox();
+                                                    box.set(maxLat, maxLong, minLat, minLong);
+
+                                                    mMapView.zoomToBoundingBox(box, false);
+                                                    double zoomLvl = mMapView.getZoomLevelDouble();
+                                                    mMapView.getController().setZoom(zoomLvl - 0.3);
+                                                }
+                                            }
+                                        });
+                                    }
+                                    runCounter++;
+
                                 } else {
 
                                     /* stop runnable */
