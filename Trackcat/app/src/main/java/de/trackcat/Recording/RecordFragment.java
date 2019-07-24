@@ -93,6 +93,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimerTask;
 
 
 /*
@@ -198,6 +199,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
     /* live record values */
     boolean recordingRuns;
+
+    private java.util.Timer sendLiveTimer;
 
     @Override
     public void onPause() {
@@ -999,6 +1002,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         /* instantiate if null */
         if (kmCounter == null) {
 
+            if (liveRecording){
+                sendLiveTimer = new java.util.Timer();
+                /* start Timer on 1 sec */
+                sendLiveTimer.scheduleAtFixedRate(new sendLive(), 10000, 10000);
+            }
+
             // instatiate new ModelRoute ann add to DB
             model = new Route();
             newRecordId = recordTempDAO.create(model);
@@ -1414,5 +1423,15 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         if (offset > 360)
             offset -= 360;
         mCompassOverlay.setAzimuthOffset(offset);
+    }
+
+    private class sendLive extends TimerTask {
+
+        @Override
+        public void run() {
+            // für timer stoppen
+            // sendLiveTimer.cancel();
+
+        }
     }
 }
