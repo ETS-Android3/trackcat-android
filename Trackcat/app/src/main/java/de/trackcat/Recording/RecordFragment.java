@@ -466,7 +466,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                         /* start recording */
                         if (!recordingRuns && MainActivity.getConnection()) {
-                            recordingRuns = true;
+
 
                             /* check if live sharing or not */
                             AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
@@ -504,7 +504,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                                     liveRecordId = mainObject.getInt("liveRecordId");
 
                                                     /* Set boolean on true */
-                                                    liveRecording=true;
+                                                    liveRecording = true;
+                                                    recordingRuns = true;
+
+                                                    startTracking();
+
 
                                                 } catch (JSONException e1) {
                                                     e1.printStackTrace();
@@ -523,7 +527,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                     }
                                     if (id == 1) {
                                         Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Private Aufzeichnung gestartet.", Toast.LENGTH_LONG).show();
-                                        liveRecording=false;
+                                        liveRecording = false;
+                                        recordingRuns = true;
+                                        startTracking();
+
                                     }
                                 }
                             });
@@ -531,27 +538,30 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             AlertDialog dialog = alertdialogbuilder.create();
                             dialog.show();
                             dialog.setCanceledOnTouchOutside(false);
-                        } else {
-
                         }
-                        startTracking();
+                        //    startTracking();
+
                     }
 
                     /* get location data */
-                    List<de.trackcat.Database.Models.Location> locations = locationTempDAO.readAll(newRecordId);
+                    List<de.trackcat.Database.Models.Location> locations = new ArrayList<>();
+                    if (recordingRuns) {
+                        locations = locationTempDAO.readAll(newRecordId);
 
 
-                    /* if there is any data collectet Tracked Route is saveable */
-                    if (timer.getTime() > 0 && locations != null && locations.size() > 2) {
-                        /* store starttime for holdDown */
-                        startTime = event.getEventTime();
-                        /* timer for Progressbar */
-                        startTimer();
 
-                        if (MainActivity.getHints()) {
-                            Toast toast = Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Halten für speichern", Toast.LENGTH_SHORT);
-                            toast.setGravity(Gravity.TOP, 0, 0);
-                            toast.show();
+                        /* if there is any data collectet Tracked Route is saveable */
+                        if (timer.getTime() > 0 && locations != null && locations.size() > 2) {
+                            /* store starttime for holdDown */
+                            startTime = event.getEventTime();
+                            /* timer for Progressbar */
+                            startTimer();
+
+                            if (MainActivity.getHints()) {
+                                Toast toast = Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Halten für speichern", Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.TOP, 0, 0);
+                                toast.show();
+                            }
                         }
                     }
                     /*
@@ -1338,7 +1348,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         if (locatorGPS != null) {
             locatorGPS.stopTracking();
         } else {
-            MainActivity.getInstance().stopService(new Intent(MainActivity.getInstance(), Locator.class));
+            //MainActivity.getInstance().stopService(new Intent(MainActivity.getInstance(), Locator.class));
         }
     }
 

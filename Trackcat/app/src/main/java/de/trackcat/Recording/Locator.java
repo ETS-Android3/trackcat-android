@@ -45,7 +45,7 @@ public class Locator extends Service {
      * called when oreo or higher
      * */
     public Locator() {
-        init();
+        // init();
     }
 
 
@@ -53,43 +53,48 @@ public class Locator extends Service {
         /*
          * initialize locationListener
          * */
-        locationManager = (LocationManager) MainActivity.getInstance().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        try {
+            locationManager = (LocationManager) MainActivity.getInstance().getSystemService(Context.LOCATION_SERVICE);
+            if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            locationManager.addNmeaListener(mNmeaListener);
+
+            locationListener = new LocationListener() {
+                public void onLocationChanged(Location location) {
+                    // called when a new location is found by the network location provider.
+
+                    // send message to View
+                    Message msg = new Message();
+                    msg.what = 2;
+                    msg.obj = location;
+                    RecordFragment.handler.sendMessage(msg);
+                }
+
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
+
+                public void onProviderEnabled(String provider) {
+                }
+
+                public void onProviderDisabled(String provider) {
+
+                }
+            };
+
+
+            /* start locating */
+            startTracking();
+        } catch (Exception e) {
         }
-        locationManager.addNmeaListener(mNmeaListener);
 
-        locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // called when a new location is found by the network location provider.
-
-                // send message to View
-                Message msg = new Message();
-                msg.what = 2;
-                msg.obj = location;
-                RecordFragment.handler.sendMessage(msg);
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-
-        /* start locating */
-        startTracking();
     }
 
     private GpsStatus.NmeaListener mNmeaListener = new GpsStatus.NmeaListener() {
@@ -106,12 +111,12 @@ public class Locator extends Service {
 
             // Parse altitude above sea level, Detailed description of NMEA string here http://aprs.gids.nl/nmea/#gga
             if (type.startsWith("$GPGGA")) {
-                double lat=0;
-                double lon=0;
-                double altitude=0;
-                double h=0;
-                double geoId=0;
-                double H=0;
+                double lat = 0;
+                double lon = 0;
+                double altitude = 0;
+                double h = 0;
+                double geoId = 0;
+                double H = 0;
                 if (!tokens[2].isEmpty()) {
                     lat = Double.parseDouble(tokens[2]);
                 }
@@ -127,10 +132,10 @@ public class Locator extends Service {
                     geoId = Double.parseDouble(tokens[11]);
                 }
 
-              //  altitude=h-geoId;
+                //  altitude=h-geoId;
 
 
-                Log.d("TESTFÜRALTITUDE", "Lat: "+lat+" Lon: "+lon+" Altitude: "+altitude);
+                Log.d("TESTFÜRALTITUDE", "Lat: " + lat + " Lon: " + lon + " Altitude: " + altitude);
             }
         }
     }
