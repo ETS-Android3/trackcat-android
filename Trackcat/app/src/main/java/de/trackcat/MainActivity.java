@@ -642,9 +642,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if (exitApp) {
 
+            deleteAllTempRecord();
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 this.finishAffinity();
-            }else{
+            } else {
                 finish();
             }
             System.exit(0);
@@ -1314,5 +1316,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 loadRecordList();
             }
         });
+    }
+
+    private void deleteAllTempRecord() {
+        RecordTempDAO recordTempDAO = new RecordTempDAO(this);
+        recordTempDAO.deleteAllNotFinished();
     }
 }

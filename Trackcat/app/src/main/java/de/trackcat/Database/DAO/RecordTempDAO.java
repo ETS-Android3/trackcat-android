@@ -66,14 +66,14 @@ public class RecordTempDAO {
      */
     public int create(Route route) {
         DbHelper dbHelper = new DbHelper(context);
-        long id=0;
+        long id = 0;
         try {
-         //  route.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(route)));
-          id=  dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(route));
+            //  route.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(route)));
+            id = dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(route));
         } finally {
             dbHelper.close();
         }
-        return (int)id;
+        return (int) id;
     }
 
     /**
@@ -334,5 +334,52 @@ public class RecordTempDAO {
      */
     public void delete(Route route) {
         this.delete(route.getId());
+    }
+
+    /**
+     * Deletes all not finished records.
+     */
+    public void deleteAllNotFinished() {
+
+        ArrayList<Integer> result = new ArrayList<>();
+        DbHelper dbHelper = new DbHelper(context);
+        try {
+            String selection = COL_DATE + " LIKE 0";
+
+            String[] projection = {
+                    COL_ID};
+            try (Cursor cursor = dbHelper.getReadableDatabase().query(
+                    TABLE_NAME,
+                    projection,
+                    selection,
+                    null,
+                    null,
+                    null,
+                    null)) {
+                if (cursor.moveToFirst())
+                    do {
+                        result.add(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
+                    } while (cursor.moveToNext());
+            }
+        } finally {
+            dbHelper.close();
+        }
+        int id;
+        for (int i = 0; i < result.size(); i++) {
+            id = result.get(i);
+            LocationTempDAO locationDAO = new LocationTempDAO(context);
+            try {
+
+                /*delete locations*/
+                for (Location location : locationDAO.readAll(id)) {
+                    locationDAO.delete(location.getId());
+                }
+                String selection = COL_ID + " LIKE ?";
+                String[] selectionArgs = {String.valueOf(id)};
+                dbHelper.getWritableDatabase().delete(TABLE_NAME, selection, selectionArgs);
+            } finally {
+                dbHelper.close();
+            }
+        }
     }
 }
