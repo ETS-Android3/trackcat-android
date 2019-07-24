@@ -365,9 +365,10 @@ public class RecordTempDAO {
             dbHelper.close();
         }
         int id;
+        LocationTempDAO locationDAO = new LocationTempDAO(context);
         for (int i = 0; i < result.size(); i++) {
             id = result.get(i);
-            LocationTempDAO locationDAO = new LocationTempDAO(context);
+
             try {
 
                 /*delete locations*/
