@@ -1,5 +1,6 @@
 package de.trackcat;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -251,18 +252,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             recordFragment.stopTimer();
             recordFragment = null;
-            Log.d("HALLO", "in onDestroy");
+
         } catch (NullPointerException e) {
 
         }
         this.stopService(new Intent(this, Locator.class));
 
         isActiv = false;
+        Log.d("GESCHLOSSEN", "in onDestroy");
+        /* delete open records */
+        //  deleteAllTempRecord();
 
         //   if (!isRestart) {
         // android.os.Process.killProcess(android.os.Process.myPid());
         // }
         // isRestart = false;
+        stopTracking();
 
 
         super.onDestroy();
@@ -288,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         activeUser = userList.get(0).getId();
     }
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -646,15 +652,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
             mainDrawer.closeDrawer(GravityCompat.START);
         }
+
+        /* close app with klick double back */
         if (exitApp) {
 
-            deleteAllTempRecord();
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                this.finishAffinity();
-            } else {
+            GlobalFunctions.deleteAllTempRecord(ClosingService.getInstance(), MainActivity.getActiveUser());
+            if(android.os.Build.VERSION.SDK_INT >= 21)
+            {
+                finishAndRemoveTask();
+            }
+            else
+            {
                 finish();
             }
+       
             System.exit(0);
         }
 
@@ -1324,56 +1336,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    public void deleteAllTempRecord() {
-
-        /* delete temp from device */
-        RecordTempDAO recordTempDAO = new RecordTempDAO(this);
-        recordTempDAO.deleteAllNotFinished();
-
-        /* delete possible live tracking from server */
-        UserDAO userDAO = new UserDAO(MainActivity.getInstance());
-        User currentUser = userDAO.read(MainActivity.getActiveUser());
-
-        /* Start a call */
-        Retrofit retrofit = APIConnector.getRetrofit();
-        APIClient apiInterface = retrofit.create(APIClient.class);
-        String base = currentUser.getMail() + ":" + currentUser.getPassword();
-        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
-
-        call.enqueue(new Callback<ResponseBody>() {
-
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                /* get jsonString from API */
-                String jsonString = null;
-
-                try {
-                    jsonString = response.body().string();
-
-                    /* parse json */
-                    JSONObject mainObject = new JSONObject(jsonString);
-
-                    if (mainObject.getString("success").equals("0")) {
-
-                    } else {
-
-                    }
-
-                    /* end tracking and delete temp record */
-                    MainActivity.getInstance().endTracking();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                call.cancel();
-            }
-        });
-    }
 }

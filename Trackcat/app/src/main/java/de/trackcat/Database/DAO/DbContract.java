@@ -76,7 +76,8 @@ final class DbContract {
                     LocationTempEntry.COL_ALTITUDE + " DOUBLE, " +
                     LocationTempEntry.COL_TIME + " LONG, " +
                     LocationTempEntry.COL_SPEED + " FLOAT, " +
-                    LocationTempEntry.COL_RECORD_ID + " INTEGER)";
+                    LocationTempEntry.COL_RECORD_ID + " INTEGER, " +
+                    "FOREIGN KEY(" + LocationTempEntry.COL_RECORD_ID + ") REFERENCES " + RecordTempEntry.TABLE_NAME + "(" + RecordTempEntry.COL_ID + "))";
 
     /*
     + string to delete location temorary table
@@ -117,7 +118,9 @@ final class DbContract {
      + class to declare columns for route table
      */
     static final class RouteEntry implements BaseColumns {
-        private RouteEntry() {}
+        private RouteEntry() {
+        }
+
         static final String TABLE_NAME = "record_table";
         static final String COL_ID = "id";
         static final String COL_USER = "fk_user_id";
@@ -137,7 +140,9 @@ final class DbContract {
     + class to declare columns for route table
     */
     static final class RecordTempEntry implements BaseColumns {
-        private RecordTempEntry() {}
+        private RecordTempEntry() {
+        }
+
         static final String TABLE_NAME = "record_temp_table";
         static final String COL_ID = "id";
         static final String COL_USER = "fk_user_id";
@@ -157,7 +162,9 @@ final class DbContract {
     + class to declare columns for route table
     */
     static final class LocationTempEntry implements BaseColumns {
-        private LocationTempEntry() {}
+        private LocationTempEntry() {
+        }
+
         static final String TABLE_NAME = "location_temp_table";
         static final String COL_ID = "id";
         static final String COL_LATITUDE = "latitude";
@@ -172,7 +179,9 @@ final class DbContract {
      + class to declare columns for user table
      */
     static final class UserEntry implements BaseColumns {
-        private UserEntry() {}
+        private UserEntry() {
+        }
+
         static final String TABLE_NAME = "user_table";
         static final String COL_ID = "id";
         static final String COL_LASTNAME = "lastname";
@@ -181,17 +190,17 @@ final class DbContract {
         static final String COL_THEME = "theme";
         static final String COL_MAIL = "mail";
         static final String COL_PASSWORD = "password";
-        static final String COL_WEIGHT ="weight";
-        static final String COL_SIZE ="size";
-        static final String COL_GENDER ="gender";
-        static final String COL_DATEOFBIRTH ="dateOfBirth";
-        static final String COL_DATEOFREGISTRATION ="dateOfRegistration";
-        static final String COL_LASTLOGIN ="lastLogin";
-        static final String COL_AMOUNTRECORD ="amountRecord";
-        static final String COL_TOTALTIME ="totalTime";
-        static final String COL_TOTALDISTANCE ="totalDistance";
-        static final String COL_TIMESTAMP ="timeStamp";
-        static final String COL_ISSYNCHRONIZED ="isSynchronized";
+        static final String COL_WEIGHT = "weight";
+        static final String COL_SIZE = "size";
+        static final String COL_GENDER = "gender";
+        static final String COL_DATEOFBIRTH = "dateOfBirth";
+        static final String COL_DATEOFREGISTRATION = "dateOfRegistration";
+        static final String COL_LASTLOGIN = "lastLogin";
+        static final String COL_AMOUNTRECORD = "amountRecord";
+        static final String COL_TOTALTIME = "totalTime";
+        static final String COL_TOTALDISTANCE = "totalDistance";
+        static final String COL_TIMESTAMP = "timeStamp";
+        static final String COL_ISSYNCHRONIZED = "isSynchronized";
         static final String COL_IMAGE = "image";
     }
 

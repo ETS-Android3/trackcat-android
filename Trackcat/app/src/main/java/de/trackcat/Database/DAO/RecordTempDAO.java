@@ -3,6 +3,7 @@ package de.trackcat.Database.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -341,6 +342,7 @@ public class RecordTempDAO {
      */
     public void deleteAllNotFinished() {
 
+        LocationTempDAO locationDAO = new LocationTempDAO(context);
         ArrayList<Integer> result = new ArrayList<>();
         DbHelper dbHelper = new DbHelper(context);
         try {
@@ -360,27 +362,27 @@ public class RecordTempDAO {
                     do {
                         result.add(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
                     } while (cursor.moveToNext());
-            }
-        } finally {
-            dbHelper.close();
-        }
-        int id;
-        LocationTempDAO locationDAO = new LocationTempDAO(context);
-        for (int i = 0; i < result.size(); i++) {
-            id = result.get(i);
 
-            try {
+            }
+            int id;
+            Log.d("GESCHLOSSEN","Routenanzahl: "+result.size());
+
+            for (int i = 0; i < result.size(); i++) {
+                id = result.get(i);
 
                 /*delete locations*/
                 for (Location location : locationDAO.readAll(id)) {
                     locationDAO.delete(location.getId());
                 }
-                String selection = COL_ID + " LIKE ?";
+                selection = COL_ID + " LIKE ?";
                 String[] selectionArgs = {String.valueOf(id)};
                 dbHelper.getWritableDatabase().delete(TABLE_NAME, selection, selectionArgs);
-            } finally {
-                dbHelper.close();
             }
+        } finally {
+            dbHelper.close();
+
+            Log.d("GESCHLOSSEN"," DB GESCHLOSSEN");
         }
+
     }
 }

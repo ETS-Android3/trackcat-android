@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,9 +31,16 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
+import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static java.security.AccessController.getContext;
 
@@ -302,5 +312,38 @@ public class GlobalFunctions {
             record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
             recordDao.create(record);
         }
+    }
+
+    public static void deleteAllTempRecord(ClosingService activity, int currentUserId) {
+
+        /* delete temp from device */
+        RecordTempDAO recordTempDAO = new RecordTempDAO(activity);
+        recordTempDAO.deleteAllNotFinished();
+
+        /* delete possible live tracking from server */
+        UserDAO userDAO = new UserDAO(activity);
+        User currentUser = userDAO.read(currentUserId);
+        Log.d("GESCHLOSSEN","Alles Gelöscht");
+
+        /* Start a call */
+        Retrofit retrofit = APIConnector.getRetrofit();
+        APIClient apiInterface = retrofit.create(APIClient.class);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
+
+        call.enqueue(new Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("GESCHLOSSEN","Antwort");
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d("GESCHLOSSEN","AntwortFail");
+                call.cancel();
+            }
+        });
     }
 }

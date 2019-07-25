@@ -235,13 +235,13 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                     time.setText(timeStr);
 
                                     /* Show complete record */
-                                    if (showAll) {
+                                    if (showAll && locations.size()>0) {
                                         view.setTag(view.getVisibility());
                                         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                                             @Override
                                             public void onGlobalLayout() {
 
-                                                if (showAll) {
+                                                if (showAll&& locations.size()>0) {
                                                     double minLat = Double.MAX_VALUE;
                                                     double maxLat = Double.MIN_VALUE;
                                                     double minLong = Double.MAX_VALUE;
