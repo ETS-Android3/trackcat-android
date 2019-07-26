@@ -267,7 +267,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // android.os.Process.killProcess(android.os.Process.myPid());
         // }
         // isRestart = false;
-        stopTracking();
+
+        try {
+            stopTracking();
+        } catch (NullPointerException e) {
+
+        }
 
 
         super.onDestroy();
