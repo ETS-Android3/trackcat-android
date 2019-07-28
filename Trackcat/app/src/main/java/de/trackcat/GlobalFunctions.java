@@ -289,7 +289,7 @@ public class GlobalFunctions {
         user.isSynchronised(true);
 
         /* update drawer */
-        if(updateDrawer) {
+        if (updateDrawer) {
             MainActivity.getInstance().setDrawerInfromation(user.getImage(), user.getFirstName(), user.getLastName(), user.getMail());
         }
 
@@ -325,9 +325,9 @@ public class GlobalFunctions {
         /* delete possible live tracking from server */
         UserDAO userDAO = new UserDAO(activity);
         User currentUser = userDAO.read(currentUserId);
-        Log.d("GESCHLOSSEN","Alles Gelöscht");
+        Log.d("GESCHLOSSEN", "Alles Gelöscht");
 
-        Log.d("GLOBALFUNCTIONS", ""+ currentUser.getFirstName());
+        Log.d("GLOBALFUNCTIONS", "" + currentUser.getFirstName());
 
         /* Start a call */
         Retrofit retrofit = APIConnector.getRetrofit();
@@ -338,23 +338,22 @@ public class GlobalFunctions {
 
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
         Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
-        Log.d("GESCHLOSSEN","base: "+base);
-        call.enqueue(new Callback<ResponseBody>() {
+        Log.d("GESCHLOSSEN", "base: " + base);
+
 
         Log.d("GLOBALFUNCTIONS", "BEFORESEND");
-
 
 
         Thread thread = new Thread(new Runnable() {
 
             @Override
             public void run() {
-                try  {
+                try {
                     try {
                         Response<ResponseBody> execute = call.execute();
                         Log.d("GLOBALFUNCTIONS", execute.toString());
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         Log.d("GLOBALFUNCTIONS", e.toString());
 
                     }
@@ -365,8 +364,6 @@ public class GlobalFunctions {
         });
 
         thread.start();
-
-
 
 
 //        call.enqueue(new Callback<ResponseBody>() {
