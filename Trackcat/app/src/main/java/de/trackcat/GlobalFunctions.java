@@ -338,7 +338,8 @@ public class GlobalFunctions {
 
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
         Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
-
+        Log.d("GESCHLOSSEN","base: "+base);
+        call.enqueue(new Callback<ResponseBody>() {
 
         Log.d("GLOBALFUNCTIONS", "BEFORESEND");
 
