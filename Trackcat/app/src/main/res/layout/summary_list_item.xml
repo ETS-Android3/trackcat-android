@@ -48,7 +48,7 @@
                 android:id="@+id/temp"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_sync_problem"
+                app:srcCompat="@drawable/ic_sync_problem"
                 android:visibility="invisible"
                 app:layout_constraintDimensionRatio="w,1:1"
                 app:layout_constraintEnd_toEndOf="@+id/activity_type"
