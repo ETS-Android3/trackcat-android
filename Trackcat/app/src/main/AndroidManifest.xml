@@ -23,6 +23,9 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
 
+        <service android:name=".ClearCallService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <!-- Main Activity  -->
         <activity
             android:name="de.trackcat.MainActivity"

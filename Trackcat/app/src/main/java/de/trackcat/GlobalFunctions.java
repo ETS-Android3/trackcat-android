@@ -316,6 +316,8 @@ public class GlobalFunctions {
 
     public static void deleteAllTempRecord(ClosingService activity, int currentUserId) {
 
+
+
         /* delete temp from device */
         RecordTempDAO recordTempDAO = new RecordTempDAO(activity);
         recordTempDAO.deleteAllNotFinished();
@@ -325,25 +327,59 @@ public class GlobalFunctions {
         User currentUser = userDAO.read(currentUserId);
         Log.d("GESCHLOSSEN","Alles Gelöscht");
 
+        Log.d("GLOBALFUNCTIONS", ""+ currentUser.getFirstName());
+
         /* Start a call */
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
+
+        Log.d("GLOBALFUNCTIONS", base);
+
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
         Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
 
-        call.enqueue(new Callback<ResponseBody>() {
+
+        Log.d("GLOBALFUNCTIONS", "BEFORESEND");
+
+
+
+        Thread thread = new Thread(new Runnable() {
 
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.d("GESCHLOSSEN","Antwort");
-            }
+            public void run() {
+                try  {
+                    try {
+                        Response<ResponseBody> execute = call.execute();
+                        Log.d("GLOBALFUNCTIONS", execute.toString());
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("GESCHLOSSEN","AntwortFail");
-                call.cancel();
+                    }catch (Exception e){
+                        Log.d("GLOBALFUNCTIONS", e.toString());
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
+
+        thread.start();
+
+
+
+
+//        call.enqueue(new Callback<ResponseBody>() {
+//
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                Log.d("GESCHLOSSEN","Antwort");
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                Log.d("GESCHLOSSEN","AntwortFail");
+//                call.cancel();
+//            }
+//        });
     }
 }

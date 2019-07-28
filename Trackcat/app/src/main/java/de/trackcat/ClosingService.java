@@ -2,8 +2,10 @@ package de.trackcat;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import de.trackcat.Database.Models.User;
@@ -11,10 +13,13 @@ import de.trackcat.Database.Models.User;
 public class ClosingService extends Service {
 
     private static ClosingService instance;
-    public static ClosingService getInstance(){
+
+    public static ClosingService getInstance() {
         return instance;
     }
+
     int currentUser = MainActivity.getInstance().getActiveUser();
+
 
     @Nullable
     @Override
@@ -23,10 +28,10 @@ public class ClosingService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent,int flag,int startId){
+    public int onStartCommand(Intent intent, int flag, int startId) {
         super.onStartCommand(intent, flag, startId);
-        Log.d("GESCHLOSSEN","OFFEN:" + currentUser);
-        instance=this;
+        Log.d("GESCHLOSSEN", "OFFEN:" + currentUser);
+        instance = this;
         return START_STICKY;
 
     }
@@ -34,24 +39,29 @@ public class ClosingService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
 
-       GlobalFunctions.deleteAllTempRecord(this, currentUser);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ClearCallService.schedule(getApplicationContext(), currentUser);
+        } else {
+            GlobalFunctions.deleteAllTempRecord(this, currentUser);
+        }
+        Log.d("GESCHLOSSEN BLABLA", currentUser + "");
 
         // Handle application closing
-       // fireClosingNotification();
+        // fireClosingNotification();
 
         // Destroy the service
-      //  stopSelf();
-        Log.d("GESCHLOSSEN","GESCHLOSSEN");
+        //  stopSelf();
+        Log.d("GESCHLOSSEN", "GESCHLOSSEN");
         super.onTaskRemoved(rootIntent);
 
-         stopSelf();
+        // stopSelf();
     }
 
     @Override
     public void onDestroy() {
 
 
-      //  MainActivity.getInstance().deleteAllTempRecord();
+        //  MainActivity.getInstance().deleteAllTempRecord();
         Log.d("GESCHLOSSEN", "Service Destroyed");
         super.onDestroy();
     }
