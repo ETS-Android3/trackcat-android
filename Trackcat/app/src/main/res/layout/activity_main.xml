@@ -32,7 +32,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:adjustViewBounds="true"
-                        android:src="@raw/logo" />
+                        app:srcCompat="@drawable/ic_logo" />
 
                     <ImageView
                         android:id="@+id/showHelp"
