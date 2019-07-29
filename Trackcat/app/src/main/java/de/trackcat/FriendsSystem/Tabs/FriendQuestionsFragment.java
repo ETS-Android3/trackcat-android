@@ -62,8 +62,10 @@ public class FriendQuestionsFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                adapter.clear();
-                loadPage();
+                if(adapter!=null) {
+                    adapter.clear();
+                    loadPage();
+                }
                 swipeContainer.setRefreshing(false);
             }
         });

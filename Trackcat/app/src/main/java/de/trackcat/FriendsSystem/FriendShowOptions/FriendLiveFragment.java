@@ -84,7 +84,12 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                              Bundle savedInstanceState) {
 
         /* Get views */
-        view = inflater.inflate(R.layout.fragment_friend_live_view, container, false);
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            view = inflater.inflate(R.layout.fragment_friend_live_view, container, false);
+        } else {
+            view = inflater.inflate(R.layout.fragment_friend_live_view_api_less_21, container, false);
+        }
+
         mMapView = view.findViewById(R.id.mapview);
         userTitle = view.findViewById(R.id.sharing_user_title);
         averageSpeed = view.findViewById(R.id.average_speed_TextView);
@@ -235,13 +240,13 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                     time.setText(timeStr);
 
                                     /* Show complete record */
-                                    if (showAll && locations.size()>0) {
+                                    if (showAll && locations.size() > 0) {
                                         view.setTag(view.getVisibility());
                                         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                                             @Override
                                             public void onGlobalLayout() {
 
-                                                if (showAll&& locations.size()>0) {
+                                                if (showAll && locations.size() > 0) {
                                                     double minLat = Double.MAX_VALUE;
                                                     double maxLat = Double.MIN_VALUE;
                                                     double minLong = Double.MAX_VALUE;
@@ -390,6 +395,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         switch (v.getId()) {
             case R.id.goToMarkerBtn:
                 /* Go to marker */
+                mMapController.setZoom(19);
                 goToMarker();
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewZoomToUser), Toast.LENGTH_SHORT).show();
                 goToMarker.hide();
