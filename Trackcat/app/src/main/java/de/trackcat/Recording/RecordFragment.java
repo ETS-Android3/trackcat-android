@@ -10,22 +10,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.os.*;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -36,7 +30,6 @@ import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +37,6 @@ import com.karan.churi.PermissionManager.PermissionManager;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
-import de.trackcat.CustomElements.CustomLocation;
 import de.trackcat.CustomElements.RecordModelForServer;
 import de.trackcat.Database.DAO.LocationTempDAO;
 import de.trackcat.Database.DAO.RecordTempDAO;
@@ -52,17 +44,11 @@ import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
-import de.trackcat.FriendsSystem.FriendShowOptions.FriendLiveFragment;
-import de.trackcat.FriendsSystem.FriendShowOptions.FriendProfileFragment;
-import de.trackcat.FriendsSystem.Tabs.FriendQuestionsFragment;
-import de.trackcat.FriendsSystem.Tabs.FriendSendQuestionsFragment;
-import de.trackcat.FriendsSystem.Tabs.FriendsFragment;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.NotificationActionReciever;
 import de.trackcat.R;
 import de.trackcat.Recording.Recording_UI.PageViewer;
-import de.trackcat.StartActivity;
 import de.trackcat.Statistics.SpeedAverager;
 import de.trackcat.Statistics.mCounter;
 import okhttp3.ResponseBody;
@@ -71,7 +57,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -85,12 +70,10 @@ import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimerTask;
@@ -662,13 +645,17 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setTitle("Aufnahme speichern?");
 
+        LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         MapView mapViewZoom = null;
         ImageView typeIcon;
 
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View alertView = inflater.inflate(R.layout.fragment_record_list_one_item, null, true);
+        @SuppressLint("InflateParams")
+        View alertView = inflater != null ? inflater.inflate(R.layout.fragment_record_list_one_item, null, true) : null;
+        alert.setView(alertView);
 
         /* Route auf Karte zeichnen */
+        assert alertView != null;
         drawRoute(alertView);
 
         mapViewZoom = alertView.findViewById(R.id.mapview);
@@ -695,7 +682,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         TextView total_time_TextView = alertView.findViewById(R.id.total_time_TextView);
         Timer timerForCalc = new Timer();
         total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
-
 
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
