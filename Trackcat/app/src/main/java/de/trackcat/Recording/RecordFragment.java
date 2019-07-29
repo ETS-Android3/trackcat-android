@@ -618,6 +618,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         } else {
             if (locatorGPS == null) {
                 locatorGPS = new Locator();
+                locatorGPS.init();
             }
         }
 
@@ -635,7 +636,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      * end Tracking and switch to statistics for dismiss or save
      * */
     @SuppressLint("SetTextI18n")
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void endTracking() {
 
         /* stop sending timer */
@@ -662,45 +662,39 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setTitle("Aufnahme speichern?");
 
-        LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         MapView mapViewZoom = null;
         ImageView typeIcon;
 
-        @SuppressLint("InflateParams")
-        View alertView = inflater != null ? inflater.inflate(R.layout.fragment_record_list_one_item, null, true) : null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            alert.setView(alertView);
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View alertView = inflater.inflate(R.layout.fragment_record_list_one_item, null, true);
 
-            /* Route auf Karte zeichnen */
-            assert alertView != null;
-            drawRoute(alertView);
+        /* Route auf Karte zeichnen */
+        drawRoute(alertView);
 
-            mapViewZoom = alertView.findViewById(R.id.mapview);
+        mapViewZoom = alertView.findViewById(R.id.mapview);
 
-            /* Typ festlegen */
-            typeIcon = alertView.findViewById(R.id.fabButton);
-            typeIcon.setImageResource(SpeedAverager.getTypeIcon(type, false));
+        /* Typ festlegen */
+        typeIcon = alertView.findViewById(R.id.fabButton);
+        typeIcon.setImageResource(SpeedAverager.getTypeIcon(type, false));
 
-            /* Placeholder festlegen */
-            TextView recordName = alertView.findViewById(R.id.record_name);
-            recordName.setHint(defaultName);
+        /* Placeholder festlegen */
+        TextView recordName = alertView.findViewById(R.id.record_name);
+        recordName.setHint(defaultName);
 
-            /* Setzt die aufgezeichneten Kilometer */
-            TextView distance_TextView = alertView.findViewById(R.id.distance_TextView);
-            double distance = Math.round(kmCounter.getAmount());
-            if (distance >= 1000) {
-                String d = "" + distance / 1000L;
-                distance_TextView.setText(d.replace('.', ',') + " km");
-            } else {
-                distance_TextView.setText((int) distance + " m");
-            }
-
-            /* Setzt die Zeit */
-            TextView total_time_TextView = alertView.findViewById(R.id.total_time_TextView);
-            Timer timerForCalc = new Timer();
-            total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
+        /* Setzt die aufgezeichneten Kilometer */
+        TextView distance_TextView = alertView.findViewById(R.id.distance_TextView);
+        double distance = Math.round(kmCounter.getAmount());
+        if (distance >= 1000) {
+            String d = "" + distance / 1000L;
+            distance_TextView.setText(d.replace('.', ',') + " km");
+        } else {
+            distance_TextView.setText((int) distance + " m");
         }
+
+        /* Setzt die Zeit */
+        TextView total_time_TextView = alertView.findViewById(R.id.total_time_TextView);
+        Timer timerForCalc = new Timer();
+        total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
 
 
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
@@ -952,7 +946,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         Marker stopMarker = new Marker(mMapView);
         stopMarker.setPosition(gPt);
         stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        stopMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_end));
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            stopMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_end));
+        }
 
         Polyline mPath = new Polyline(mMapView);
 
@@ -1139,7 +1135,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
 
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
-
         /*
          + assign current location values to  necessary variables for map orientation
          */
