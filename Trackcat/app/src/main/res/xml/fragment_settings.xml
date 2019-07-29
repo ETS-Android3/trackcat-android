@@ -10,8 +10,6 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:icon="@drawable/settings_help"
-            app:itemIconTint="@color/colorGreyAccent"
-            app:itemTextAppearance="@style/TextAppearance.AppCompat.Body1"
             android:key="help_messages"
             android:summary="Zeige allgemeine Hinweise an"
             android:title="Hilfestellungen"></CheckBoxPreference>
