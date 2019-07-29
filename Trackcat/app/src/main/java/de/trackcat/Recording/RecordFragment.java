@@ -1057,10 +1057,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      * */
     private void issueNotification(String content) {
         /* returns to Record Page when Notification is clicked */
-        Intent notificationIntent = MainActivity.getInstance().getIntent();// new Intent(MainActivity.getInstance().getApplicationContext(), MainActivity.class);
+        Intent notificationIntent = new Intent(MainActivity.getInstance(), MainActivity.class);
         notificationIntent.putExtra("action", MainActivity.getInstance().getResources().getString(R.string.fRecord));
-        PendingIntent intent = PendingIntent.getActivity(MainActivity.getInstance().getApplicationContext(), 0,
-                notificationIntent, 0);
+        PendingIntent intent = PendingIntent.getActivity(MainActivity.getInstance(), 1,
+                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         /* calls Broadcastreciever when Button "pause" is clicked and pauses Tracking + opens Record page */
         Intent pauseTrackingIntent = new Intent(MainActivity.getInstance(), NotificationActionReciever.class);
