@@ -155,7 +155,7 @@ public class RouteDAO {
      * if routes with matching userId was found else an empty List
      */
     public List<Route> readAll() {
-        return this.readAll(new String[]{"id", "ASC"});
+        return this.readAll(new String[]{"id", "DESC"});
     }
 
     /**
