@@ -41,7 +41,7 @@ public class FriendsViewerFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
 
 
-        tabLayout.setIcon(0,R.drawable.ic_search_black_24dp);
+        tabLayout.setIcon(0,R.drawable.ic_search);
         tabLayout.setIcon(1,R.drawable.ic_friends);
         tabLayout.setIcon(2,R.drawable.ic_live_friends);
         tabLayout.setIcon(3,R.drawable.ic_friend_questions);
