@@ -249,7 +249,9 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         Marker stopMarker = new Marker(mMapView);
         stopMarker.setPosition(gPt);
         stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        stopMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_end));
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            stopMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_end));
+        }
 
         Polyline mPath = new Polyline(mMapView);
 
