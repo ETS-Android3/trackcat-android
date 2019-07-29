@@ -19,6 +19,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import de.trackcat.MainActivity;
@@ -49,13 +50,13 @@ public class Locator extends Service {
     }
 
 
-    private void init() {
+    public void init() {
         /*
          * initialize locationListener
          * */
         try {
             locationManager = (LocationManager) MainActivity.getInstance().getSystemService(Context.LOCATION_SERVICE);
-            if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+          /*  if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
@@ -64,8 +65,9 @@ public class Locator extends Service {
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
                 return;
-            }
-            locationManager.addNmeaListener(mNmeaListener);
+            }*/
+        //    locationManager.addNmeaListener(mNmeaListener);
+
 
             locationListener = new LocationListener() {
                 public void onLocationChanged(Location location) {
@@ -168,6 +170,9 @@ public class Locator extends Service {
      * starts GPS tracking
      * */
     protected void startTracking() {
+
+        Toast.makeText(MainActivity.getInstance(), "start Tracking",
+                Toast.LENGTH_LONG).show();
         /*
          + checks if permissions granted for GPS service and storage access
          */
@@ -184,8 +189,12 @@ public class Locator extends Service {
         } else {
             int minDistance = 1;
             int minTime = 10;
+
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime,
                     minDistance, locationListener); // via GPS
+
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
         }
     }
 

@@ -249,7 +249,9 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         Marker stopMarker = new Marker(mMapView);
         stopMarker.setPosition(gPt);
         stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        stopMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_end));
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            stopMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_end));
+        }
 
         Polyline mPath = new Polyline(mMapView);
 
@@ -280,13 +282,9 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View alertView = inflater.inflate(R.layout.fragment_record_list_edit_route, null, true);
                 TextView edit_record_name = alertView.findViewById(R.id.edit_record_name);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    alert.setView(alertView);
-                    edit_record_name.setText(record.getName());
 
-                } else {
-                    // TODO Implementation für Nutzer mit API <= 16
-                }
+                alert.setView(alertView);
+                edit_record_name.setText(record.getName());
 
                 alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -330,7 +328,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                                     try {
 
                                         if (response.code() == 401) {
-                                             MainActivity.getInstance().showNotAuthorizedModal(4);
+                                            MainActivity.getInstance().showNotAuthorizedModal(4);
                                         } else {
                                             /* get jsonString from API */
                                             String jsonString = response.body().string();
