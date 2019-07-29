@@ -50,9 +50,9 @@
                     android:layout_height="40dp"
                     android:layout_margin="5dp"
                     android:ems="10"
-                    android:drawableStart="@drawable/ic_search"
                     android:hint="Freunde durchsuchen"
-                    android:drawableLeft="@drawable/ic_search"></EditText>
+                    android:drawableTint="?attr/iconColor"
+                    ></EditText>
             </LinearLayout>
         </LinearLayout>
 

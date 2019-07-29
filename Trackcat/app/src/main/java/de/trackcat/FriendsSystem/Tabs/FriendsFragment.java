@@ -96,6 +96,9 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
 
         /* Find search field */
         findFriend = view.findViewById(R.id.findFriend);
+        VectorDrawableCompat drawableCompat= VectorDrawableCompat.create(getActivity().getResources(), R.drawable.ic_search, findFriend.getContext().getTheme());
+        findFriend.setCompoundDrawablesWithIntrinsicBounds(drawableCompat, null, null, null);
+
         //Drawable myDrawable = getResources().getDrawable(R.drawable.ic_search);
        // Drawable  d= new Drawable()
        // Drawable      drawableCompat= VectorDrawableCompat.create(getActivity().getResources(), R.drawable.ic_search, null);
