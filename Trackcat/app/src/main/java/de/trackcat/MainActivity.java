@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Restart activity for Theme Switching */
     public static void restart() {
-        Bundle temp_bundle = new Bundle();
+       /* Bundle temp_bundle = new Bundle();
         getInstance().onSaveInstanceState(temp_bundle);
         Intent intent = new Intent(getInstance(), MainActivity.class);
         intent.putExtra("bundle", temp_bundle);
@@ -121,7 +121,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //    isRestart = true;
 
         getInstance().startActivity(intent);
+        getInstance().finish();*/
+
+        Intent intent = getInstance().getIntent();
         getInstance().finish();
+        getInstance().startActivity(intent);
     }
 
     public PermissionManager getPermissionManager() {
