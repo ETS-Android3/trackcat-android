@@ -25,6 +25,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
@@ -318,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         startService(new Intent(getBaseContext(), ClosingService.class));
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         /* Fragt nach noch nicht erteilten Permissions */
         permissionManager.checkAndRequestPermissions(this);

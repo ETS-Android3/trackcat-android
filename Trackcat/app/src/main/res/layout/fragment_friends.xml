@@ -42,7 +42,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
-                    app:tint="?android:textColorPrimary"
                     app:srcCompat="@drawable/ic_reset_search" />
 
                 <EditText
@@ -51,7 +50,9 @@
                     android:layout_height="40dp"
                     android:layout_margin="5dp"
                     android:ems="10"
-                    android:hint="Freunde durchsuchen"></EditText>
+                    android:drawableStart="@drawable/ic_search"
+                    android:hint="Freunde durchsuchen"
+                    android:drawableLeft="@drawable/ic_search"></EditText>
             </LinearLayout>
         </LinearLayout>
 

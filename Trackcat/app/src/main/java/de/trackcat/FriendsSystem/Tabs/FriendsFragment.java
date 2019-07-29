@@ -1,6 +1,7 @@
 package de.trackcat.FriendsSystem.Tabs;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
@@ -95,9 +96,16 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
 
         /* Find search field */
         findFriend = view.findViewById(R.id.findFriend);
-        VectorDrawableCompat drawableCompat= VectorDrawableCompat.create(getActivity().getResources(), R.drawable.ic_search_black_24dp, findFriend.getContext().getTheme());
-        findFriend.setCompoundDrawablesWithIntrinsicBounds(drawableCompat, null, null, null);
-        findFriend.setOnKeyListener(this);
+        //Drawable myDrawable = getResources().getDrawable(R.drawable.ic_search);
+       // Drawable  d= new Drawable()
+       // Drawable      drawableCompat= VectorDrawableCompat.create(getActivity().getResources(), R.drawable.ic_search, null);
+      //  findFriend.setCompoundDrawablesWithIntrinsicBounds(myDrawable, null, null, null);
+    /*    Drawable image = getResources().getDrawable( R.drawable.ic_search );
+        int h = image.getIntrinsicHeight();
+        int w = image.getIntrinsicWidth();
+        image.setBounds( 0, 0, w, h );
+        findFriend.setCompoundDrawables( image, null, null, null );
+        findFriend.setOnKeyListener(this);*/
 
         /* Load page */
         loadPage();

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.*;
 import android.util.Base64;
 import android.util.Log;
@@ -43,6 +44,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         /* Einstellungen aus XML Datei laden */
         addPreferencesFromResource(R.xml.fragment_settings);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
