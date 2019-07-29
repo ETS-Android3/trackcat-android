@@ -29,4 +29,6 @@
     <!-- COLOR CROPVIEW-->
     <color name="ucrop_color_widget_background">#DD0D0D</color>
     <color name="ucrop_color_widget_rotate_mid_line">#DD0D0D</color>
+
+
 </resources>

@@ -12,6 +12,7 @@
         <item name="colorBackgroundFloating">@color/colorWhite</item>
 
         <item name="android:textColor">@color/colorBlack</item>
+        <item name="iconColor">@color/colorBlack</item>
         <item name="android:statusBarColor" tools:ignore="NewApi">@color/colorGreenDark</item>
         <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorGreenDark</item>
     </style>
@@ -28,6 +29,7 @@
         <item name="colorBackgroundFloating">@color/colorGreySuperLight</item>
 
         <item name="android:textColor">@color/colorWhite</item>
+        <item name="iconColor">@color/colorWhite</item>
         <item name="android:statusBarColor" tools:ignore="NewApi">@color/colorGreyDark</item>
         <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorGreyDark</item>
     </style>
