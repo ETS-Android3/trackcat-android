@@ -10,7 +10,7 @@
         <item
             android:id="@+id/nav_friends"
             android:title="Freunde"
-            android:icon="@drawable/ic_account_circle_black_24dp" />
+            android:icon="@drawable/menu_account" />
         <item
             android:id="@+id/nav_record"
             android:title="Aufnahme"

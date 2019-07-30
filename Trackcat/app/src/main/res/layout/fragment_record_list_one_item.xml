@@ -68,7 +68,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="0"
-                                app:srcCompat="@drawable/ic_clock_theme_color" />
+                                app:srcCompat="@drawable/ic_clock" />
 
                             <TextView
                                 android:id="@+id/total_time_TextView"
