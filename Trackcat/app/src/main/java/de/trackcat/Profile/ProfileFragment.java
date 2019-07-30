@@ -2,24 +2,28 @@ package de.trackcat.Profile;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import de.trackcat.APIClient;
@@ -38,9 +42,10 @@ import retrofit2.Retrofit;
 public class ProfileFragment extends Fragment {
 
     /* variables */
-    TextView name, email, dayOfBirth, gender, weight, size, bmi, lastLogIn, dayOfRegistration;
+    TextView name, email, dayOfBirth, gender, weight, size, bmi, lastLogIn, dayOfRegistration, amountRecords, totalTime, totalDistance;
     CircleImageView image, state;
-    ImageView birthday;
+    ImageView birthday, user_gender_image;
+    RelativeLayout loadProfile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,61 +74,78 @@ public class ProfileFragment extends Fragment {
         size = view.findViewById(R.id.user_size);
         bmi = view.findViewById(R.id.user_bmi);
         state = view.findViewById(R.id.profile_state);
+        amountRecords = view.findViewById(R.id.user_amount_records);
+        totalTime = view.findViewById(R.id.user_amount_time_records);
+        totalDistance = view.findViewById(R.id.user_amount_distance_records);
         lastLogIn = view.findViewById(R.id.user_lastLogIn);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
         image = view.findViewById(R.id.profile_image);
+        user_gender_image = view.findViewById(R.id.user_gender_image);
+        loadProfile = view.findViewById(R.id.loadScreen);
 
         /* read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
-        map.put("eMail", currentUser.getMail());
+        map.put("id", ""+currentUser.getId());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
         /* start a call */
-        Call<ResponseBody> call = apiInterface.getUserByEmail(map);
+        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<ResponseBody> call = apiInterface.getUserById(authString,map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    /* get jsonString from API */
-                    String jsonString = response.body().string();
 
-                    /* parse json */
-                    JSONObject userJSON = new JSONObject(jsonString);
-                    Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
+                    if(response.code()==401){
+                        MainActivity.getInstance().showNotAuthorizedModal(0);
+                    }else {
+                        /* get jsonString from API */
+                        String jsonString = response.body().string();
 
-                    /* check values an show  */
-                    float size, weight;
-                    long dateOfBirth;
-                    byte[] image = null;
+                        /* parse json */
+                        JSONObject userJSON = new JSONObject(jsonString);
+                        Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
 
-                    try {
-                        size = (float) userJSON.getDouble("size");
-                    } catch (Exception e) {
-                        size = 0;
+                        /* check values an show  */
+                        float size, weight;
+                        long dateOfBirth;
+                        byte[] image = null;
+
+                        try {
+                            size = (float) userJSON.getDouble("size");
+                        } catch (Exception e) {
+                            size = 0;
+                        }
+
+                        try {
+                            weight = (float) userJSON.getDouble("weight");
+                        } catch (Exception e) {
+                            weight = 0;
+                        }
+
+                        try {
+                            dateOfBirth = userJSON.getLong("dateOfBirth");
+                        } catch (Exception e) {
+                            dateOfBirth = 0;
+                        }
+
+                        if (userJSON.getString("image") != "null") {
+                            image = GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
+                        }
+
+                        /* check if data is newer when localData */
+                        if(userJSON.getLong("timeStamp")>currentUser.getTimeStamp()){
+                            userDAO.update(currentUser.getId(),GlobalFunctions.createUser(userJSON, true));
+                        }
+
+                        setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), userJSON.getLong("amountRecords"),userJSON.getLong("totalDistance"), userJSON.getLong("totalTime"),image);
+
                     }
-
-                    try {
-                        weight = (float) userJSON.getDouble("weight");
-                    } catch (Exception e) {
-                        weight = 0;
-                    }
-
-                    try {
-                        dateOfBirth = userJSON.getLong("dateOfBirth");
-                    } catch (Exception e) {
-                        dateOfBirth = 0;
-                    }
-
-                    if (userJSON.getString("image") != "null") {
-                       image =GlobalFunctions.getBytesFromBase64(userJSON.getString("image"));
-                    }
-
-                    setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("eMail"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), image);
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -136,7 +158,7 @@ public class ProfileFragment extends Fragment {
                 call.cancel();
 
                 /* read values from local DB */
-                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin(), currentUser.getImage());
+                setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin(), currentUser.getAmountRecord(), currentUser.getTotalDistance(), currentUser.getTotalTime(), currentUser.getImage());
                 Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "ERROR: " + t.getMessage());
             }
         });
@@ -145,7 +167,7 @@ public class ProfileFragment extends Fragment {
     }
 
     /* Function to set profile information in fields */
-    private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight, int user_gender, long user_dateOfRegistration, long user_lastLogin, byte[] user_image) {
+    private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight, int user_gender, long user_dateOfRegistration, long user_lastLogin, long user_amountRecords, long user_totalDistance, long user_totalTime, byte[] user_image) {
         int age = 0;
 
         /*set name and email*/
@@ -154,7 +176,7 @@ public class ProfileFragment extends Fragment {
 
         /* set dayOfBirth and calculate age*/
         if (user_dayOfBirth != 0) {
-            String curDateString = GlobalFunctions.getDateFromMillis(user_dayOfBirth, "dd.MM.yyyy");
+            String curDateString = GlobalFunctions.getDateFromSeconds(user_dayOfBirth, "dd.MM.yyyy");
             age = calculateAge(curDateString);
             dayOfBirth.setText(curDateString + " (" + age + " Jahre)");
 
@@ -182,14 +204,22 @@ public class ProfileFragment extends Fragment {
 
         /* set gender */
         if (user_gender != 2) {
+            InputStream imageStream;
             if (user_gender == 0) {
                 gender.setText("weiblich");
+                gender.setTextColor(getResources().getColor(R.color.colorFemale));
+                imageStream = this.getResources().openRawResource(R.raw.female);
             } else {
                 gender.setText("männlich");
+                imageStream = this.getResources().openRawResource(R.raw.male);
+                gender.setTextColor(getResources().getColor(R.color.colorMale));
             }
-
+            Bitmap bitmap= BitmapFactory.decodeStream(imageStream);
+            user_gender_image.setImageBitmap(bitmap);
+            user_gender_image.setVisibility(View.VISIBLE);
         } else {
             GlobalFunctions.setNoInformationStyle(gender);
+            user_gender_image.setVisibility(View.GONE);
         }
 
         /* calculate bmi */
@@ -303,7 +333,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 19 && userBmi <= 24) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 25 && userBmi <= 28) {
+                        } else if (userBmi > 24 && userBmi <= 28) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 28) {
                             bmiClass = "starkes Übergewicht";
@@ -313,7 +343,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 20 && userBmi <= 25) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 26 && userBmi <= 29) {
+                        } else if (userBmi > 25 && userBmi <= 29) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 29) {
                             bmiClass = "starkes Übergewicht";
@@ -324,7 +354,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 21 && userBmi <= 26) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 27 && userBmi <= 30) {
+                        } else if (userBmi > 26 && userBmi <= 30) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 30) {
                             bmiClass = "starkes Übergewicht";
@@ -335,7 +365,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 22 && userBmi <= 27) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 28 && userBmi <= 31) {
+                        } else if (userBmi > 27 && userBmi <= 31) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 31) {
                             bmiClass = "starkes Übergewicht";
@@ -346,7 +376,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 23 && userBmi <= 28) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 29 && userBmi <= 32) {
+                        } else if (userBmi > 28 && userBmi <= 32) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 32) {
                             bmiClass = "starkes Übergewicht";
@@ -357,7 +387,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 24 && userBmi <= 29) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 30 && userBmi <= 33) {
+                        } else if (userBmi > 29 && userBmi <= 33) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 33) {
                             bmiClass = "starkes Übergewicht";
@@ -368,7 +398,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 25 && userBmi <= 30) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 31 && userBmi <= 34) {
+                        } else if (userBmi > 30 && userBmi <= 34) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 34) {
                             bmiClass = "starkes Übergewicht";
@@ -474,7 +504,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 19 && userBmi <= 24) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 25 && userBmi <= 28) {
+                        } else if (userBmi > 24 && userBmi <= 28) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 28) {
                             bmiClass = "starkes Übergewicht";
@@ -484,7 +514,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 20 && userBmi <= 25) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 26 && userBmi <= 29) {
+                        } else if (userBmi > 25 && userBmi <= 29) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 29) {
                             bmiClass = "starkes Übergewicht";
@@ -495,7 +525,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 21 && userBmi <= 26) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 27 && userBmi <= 30) {
+                        } else if (userBmi > 26 && userBmi <= 30) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 30) {
                             bmiClass = "starkes Übergewicht";
@@ -506,7 +536,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 22 && userBmi <= 27) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 28 && userBmi <= 31) {
+                        } else if (userBmi > 27 && userBmi <= 31) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 31) {
                             bmiClass = "starkes Übergewicht";
@@ -517,7 +547,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 23 && userBmi <= 28) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 29 && userBmi <= 32) {
+                        } else if (userBmi > 28 && userBmi <= 32) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 32) {
                             bmiClass = "starkes Übergewicht";
@@ -528,7 +558,7 @@ public class ProfileFragment extends Fragment {
                             bmiClass = "Untergewicht";
                         } else if (userBmi >= 24 && userBmi <= 29) {
                             bmiClass = "Normalgewicht";
-                        } else if (userBmi >= 30 && userBmi <= 33) {
+                        } else if (userBmi > 29 && userBmi <= 33) {
                             bmiClass = "leichtes Übergewicht";
                         } else if (userBmi > 33) {
                             bmiClass = "starkes Übergewicht";
@@ -542,12 +572,37 @@ public class ProfileFragment extends Fragment {
         }
 
         /* set dateOfRegistration*/
-        String curdayIfRegistrationString = GlobalFunctions.getDateWithTimeFromSeconds(user_dateOfRegistration, "dd.MM.yyyy HH:MM");
+        String curdayIfRegistrationString = GlobalFunctions.getDateWithTimeFromSeconds(user_dateOfRegistration, "dd.MM.yyyy HH:mm");
         dayOfRegistration.setText(curdayIfRegistrationString);
 
         /* set lastLogin*/
-        String curLastLoginString = GlobalFunctions.getDateWithTimeFromSeconds(user_lastLogin, "dd.MM.yyyy HH:MM");
+        String curLastLoginString = GlobalFunctions.getDateWithTimeFromSeconds(user_lastLogin, "dd.MM.yyyy HH:mm");
         lastLogIn.setText(curLastLoginString);
+
+        /*set amount records*/
+        amountRecords.setText(""+user_amountRecords);
+
+        /* set total distance */
+        double distance = Math.round(user_totalDistance);
+        double levelDistance;
+        if (distance >= 1000) {
+            String d = "" + Math.round((distance / 1000L)*100)/100.0;
+            totalDistance.setText(d.replace('.', ',') + " km");
+            levelDistance=distance / 1000L;
+        } else {
+            levelDistance= distance/1000;
+            totalDistance.setText((int) distance + " m");
+        }
+
+        /* set total time */
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        df.setTimeZone(tz);
+        String time = df.format(new Date(user_totalTime * 1000));
+        totalTime.setText(time);
+
+        /* set state */
+        state.setImageBitmap(GlobalFunctions.findLevel(levelDistance));
 
         /* set profile image */
         byte[] imgRessource = user_image;
@@ -557,6 +612,8 @@ public class ProfileFragment extends Fragment {
         }
         image.setImageBitmap(bitmap);
 
+        /* remove loadscreen */
+        loadProfile.setVisibility(View.GONE);
     }
 
     boolean todayDayOfBirth = false;
@@ -572,16 +629,20 @@ public class ProfileFragment extends Fragment {
         /* calculate age */
         int age = currentTime.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
 
+        int day1 = currentTime.get(Calendar.DAY_OF_MONTH);
+        int day2 = dob.get(Calendar.DAY_OF_MONTH);
+
         if ((currentTime.get(Calendar.MONTH) + 1) < dob.get(Calendar.MONTH)) {
             age--;
         } else if ((currentTime.get(Calendar.MONTH) + 1) == dob.get(Calendar.MONTH)) {
-            int day1 = currentTime.get(Calendar.DAY_OF_MONTH);
-            int day2 = dob.get(Calendar.DAY_OF_MONTH);
+
             if (day2 > day1) {
                 age--;
-            } else if (day2 == day1) {
-                todayDayOfBirth = true;
             }
+        }
+
+        if(day2 == day1 &&(currentTime.get(Calendar.MONTH) + 1) == dob.get(Calendar.MONTH)){
+            todayDayOfBirth = true;
         }
 
         return new Integer(age);

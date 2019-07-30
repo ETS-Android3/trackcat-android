@@ -24,7 +24,28 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"
-                android:src="@raw/logo" />
+                app:srcCompat="@drawable/ic_logo"  />
+
+            <TextView
+                android:id="@+id/messageBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="FEHLER"
+                android:textColor="@color/colorGreyAccent"
+                android:textSize="20dip"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/messageBoxInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="FEHLERInfo"
+                android:textColor="@color/colorGreyAccent"
+                android:textSize="16dip"
+                android:visibility="gone" />
 
             <!-- inputs -->
             <RelativeLayout
@@ -43,12 +64,26 @@
                     android:layout_marginBottom="8dp"
                     android:theme="@style/EditTextTheme">
 
-                    <CheckBox
-                        android:id="@+id/checkBox_generalTerm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="AGBs gelesen und akzeptiert" />
+                    <LinearLayout
+                        android:id="@+id/generalTerm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <CheckBox
+                            android:id="@+id/checkBox_generalTerm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="" />
+
+                        <TextView
+                            android:id="@+id/link_termsOfService"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:text="AGBs"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/signInLogInLinkTextSize" />
+                    </LinearLayout>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -62,12 +97,26 @@
                     android:layout_marginBottom="8dp"
                     android:theme="@style/EditTextTheme">
 
-                    <CheckBox
-                        android:id="@+id/checkBox_dataProtection"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Datenschutzerklärung gelesen und akzeptiert" />
+                    <LinearLayout
+                        android:id="@+id/dataProtection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <CheckBox
+                            android:id="@+id/checkBox_dataProtection"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="" />
+
+                        <TextView
+                            android:id="@+id/link_dataProtection"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:text="Datenschutzerklärung"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/signInLogInLinkTextSize" />
+                    </LinearLayout>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -78,14 +127,12 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/layout_dsgvo"
                     android:layout_marginTop="24dp"
-                    android:background="@color/colorGreyAccent"
+                    android:background="@color/colorAccentDisable"
+                    android:enabled="false"
                     android:padding="12dp"
                     android:text="Account erstellen"
                     android:textColor="@color/ap_white" />
-
-
             </RelativeLayout>
-
 
             <!-- navigation line -->
             <LinearLayout
@@ -114,13 +161,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:padding="5dp"
-                        app:sv_steps="@array/steps"
                         app:sv_animationType="Line"
-                        app:sv_doneTextColor="@color/colorSuccess"
                         app:sv_doneCircleColor="@color/colorSuccess"
                         app:sv_doneCircleRadius="12dp"
                         app:sv_doneStepLineColor="@color/colorSuccess"
                         app:sv_doneStepMarkColor="@color/colorBlack"
+                        app:sv_doneTextColor="@color/colorSuccess"
                         app:sv_nextStepLineColor="@color/colorGreenAccent"
                         app:sv_nextTextColor="@color/colorGreenAccent"
                         app:sv_selectedCircleColor="@color/colorGreenAccent"
@@ -130,32 +176,32 @@
                         app:sv_stepLineWidth="1dp"
                         app:sv_stepNumberTextSize="12sp"
                         app:sv_stepPadding="4dp"
-                        app:sv_stepViewStyle="@style/StepView" />
+                        app:sv_stepViewStyle="@style/StepView"
+                        app:sv_steps="@array/steps" />
                 </LinearLayout>
 
                 <!-- next Button -->
                 <ImageView
                     android:id="@+id/btn_next"
                     android:layout_width="wrap_content"
-                    android:visibility="invisible"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="@dimen/signInPagerMargin"
+                    android:visibility="invisible"
                     app:srcCompat="@drawable/ic_next" />
-
             </LinearLayout>
 
             <TextView
                 android:id="@+id/link_login"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:layout_marginTop="24dp"
-                android:textStyle="italic"
+                android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:textColor="@color/colorBlack"
                 android:text="Schon Mitglied? Login"
-                android:textSize="@dimen/signInLogInLinkTextSize" />
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/signInLogInLinkTextSize"
+                android:textStyle="italic" />
 
         </LinearLayout>
     </ScrollView>

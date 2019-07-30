@@ -7,6 +7,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,7 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import de.trackcat.CustomElements.CustomLocation;
+import de.trackcat.Database.DAO.LocationTempDAO;
+import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -22,13 +29,20 @@ import de.trackcat.Statistics.SpeedAverager;
 
 public class ShowRecord {
 
-    public static void show(List<Route> records, int position, String TAG, TextView recordId, ImageView recordType, ImageView importState, TextView recordName, TextView recordDostance, TextView recordTime, View recordItem, TextView recordDate) {
+    public static void show(List<Route> records, int position, String TAG, TextView recordId, ImageView recordType, ImageView importState, ImageView temp,TextView recordName, TextView recordDostance, TextView recordTime, View recordItem, TextView recordDate) {
 
         /* show ID */
         recordId.setText("" + (position + 1));
 
         /* symbolize type */
         recordType.setImageResource(SpeedAverager.getTypeIcon(records.get(position).getType(), true));
+
+        /* temp status */
+        if (records.get(position).isTemp()) {
+            temp.setVisibility(View.VISIBLE);
+        } else {
+            temp.setVisibility(View.INVISIBLE);
+        }
 
         /* import status */
         if (records.get(position).isImported()) {
@@ -44,7 +58,7 @@ public class ShowRecord {
         TextView recordDistance = recordItem.findViewById(R.id.record_distance);
         double distance = Math.round(records.get(position).getDistance());
         if (distance >= 1000) {
-            String d = "" + distance / 1000L;
+            String d = "" + Math.round((distance / 1000L)*100)/100.0;
             recordDistance.setText(d.replace('.', ',') + " km |");
         } else {
             recordDistance.setText((int) distance + " m |");
@@ -67,7 +81,30 @@ public class ShowRecord {
             @Override
             public void onClick(View v) {
                 /* get Location Data */
-                ArrayList<CustomLocation> locations = records.get(position).getLocations();
+                List<Location> locations = new ArrayList<>();
+                if (records.get(position).isTemp()){
+                    LocationTempDAO locationTempDAO = new LocationTempDAO(MainActivity.getInstance());
+                    locations = locationTempDAO.readAll(records.get(position).getId());
+
+                }else{
+                    JSONArray locationArray = null;
+                    try {
+                        locationArray = new JSONArray(records.get(position).getLocations());
+
+                        for ( int i=0;i< locationArray.length();i++) {
+                            Location location= new Location();
+                            location.setLatitude(((JSONObject) locationArray.get(i)).getDouble("latitude"));
+                            location.setLongitude(((JSONObject) locationArray.get(i)).getDouble("longitude"));
+                            location.setAltitude(((JSONObject) locationArray.get(i)).getDouble("altitude"));
+                            location.setTime(((JSONObject) locationArray.get(i)).getLong("time"));
+                            location.setSpeed((float)((JSONObject) locationArray.get(i)).getDouble("speed"));
+                            locations.add(location);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 int size;
                 int run;
                 int step;
@@ -88,17 +125,24 @@ public class ShowRecord {
                 double[] speedValues = new double[size + 1];
                 double[] altitudeValues = new double[size + 1];
                 for (int i = 0; i < run; i += step) {
-                    CustomLocation location = locations.get(i);
+                    Location location = locations.get(i);
                     speedValues[n] = location.getSpeed() * 3.931;
                     altitudeValues[n] = location.getAltitude();
                     n++;
                 }
 
+                ArrayList<Location> locationsArrayList = new ArrayList<>(locations.size());
+                locationsArrayList.addAll(locations);
+
+                String locationsAsString = new Gson().toJson(locations);
+
                 /* Create new Fragment and put bundle */
                 Bundle bundle = new Bundle();
                 bundle.putDoubleArray("altitudeArray", altitudeValues);
                 bundle.putDoubleArray("speedArray", speedValues);
+                bundle.putString("locations", locationsAsString);
                 bundle.putInt("id", records.get(position).getId());
+                bundle.putBoolean("temp", records.get(position).isTemp());
 
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);

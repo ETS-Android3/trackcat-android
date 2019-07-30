@@ -4,6 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/loadScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorLoadFragmentInformation">
+
+        <ProgressBar
+            android:id="@+id/progressBar4"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -38,7 +53,7 @@
                         android:id="@+id/profile_image"
                         android:layout_width="130dp"
                         android:layout_height="130dp"
-                        android:src="@raw/no_image"
+                        android:src="@raw/default_profile"
                         app:border_color="#FFFFFF"
                         app:border_width="4dp" />
 
@@ -62,6 +77,7 @@
                             app:border_width="4dp" />
                     </LinearLayout>
                 </LinearLayout>
+
             </RelativeLayout>
 
             <LinearLayout
@@ -83,7 +99,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="Max Mustermann"
+                        android:text=""
                         android:textSize="21dip"
                         android:textStyle="bold" />
 
@@ -93,21 +109,21 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="10dip"
-                        android:text="mustermann@web.de"
+                        android:text=""
                         android:textSize="19dip" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
                         android:layout_marginBottom="10dip"
+                        android:gravity="center_horizontal"
                         android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/user_dayOfBirth"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/noInformation"
+                            android:text=""
                             android:textSize="19dip" />
 
                         <ImageView
@@ -115,8 +131,8 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_marginLeft="10dp"
-                            android:src="@raw/party_cake"
-                            android:visibility="gone"/>
+                            android:src="@raw/birthday"
+                            android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
                 <!-- gender Label -->
@@ -137,13 +153,28 @@
                         android:textSize="19dip"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/user_gender"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="@string/noInformation"
-                        android:textSize="19dip" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/user_gender"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textSize="19dip" />
+
+                        <ImageView
+                            android:id="@+id/user_gender_image"
+                            android:layout_marginLeft="5dp"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                           android:layout_marginRight="0dp"
+                            android:visibility="gone"
+                            android:src="@raw/male" />
+                    </LinearLayout>
                 </RelativeLayout>
 
                 <!-- weight Label -->
@@ -169,7 +200,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="@string/noInformation"
+                        android:text=""
                         android:textSize="19dip" />
                 </RelativeLayout>
 
@@ -196,7 +227,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="@string/noInformation"
+                        android:text=""
                         android:textSize="19dip" />
                 </RelativeLayout>
 
@@ -223,7 +254,88 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="@string/noInformation"
+                        android:text=""
+                        android:textSize="19dip" />
+                </RelativeLayout>
+
+                <!-- amount routes Label -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/label_amount_records"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Anzahl der Trainings:"
+                        android:textSize="19dip"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/user_amount_records"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text=""
+                        android:textSize="19dip" />
+                </RelativeLayout>
+
+                <!-- ammount time Label -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/label_amount_time_records"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Gesamtzeit:"
+                        android:textSize="19dip"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/user_amount_time_records"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text=""
+                        android:textSize="19dip" />
+                </RelativeLayout>
+
+                <!-- amount distance Label -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/label_amount_distance_records"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Gesamtstrecke:"
+                        android:textSize="19dip"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/user_amount_distance_records"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text=""
                         android:textSize="19dip" />
                 </RelativeLayout>
 
@@ -250,7 +362,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="20.12.2017"
+                        android:text=""
                         android:textSize="19dip" />
                 </RelativeLayout>
 
@@ -277,7 +389,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:text="11.07.2009"
+                        android:text=""
                         android:textSize="19dip" />
                 </RelativeLayout>
             </LinearLayout>

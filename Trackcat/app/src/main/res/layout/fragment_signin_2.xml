@@ -24,7 +24,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"
-                android:src="@raw/logo" />
+                app:srcCompat="@drawable/ic_logo"  />
 
             <!-- inputs -->
             <RelativeLayout
@@ -33,12 +33,35 @@
                 android:layout_height="200dp"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <!-- Email Label -->
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
+                    android:id="@+id/layout_dayOfBirth"
+                    android:theme="@style/EditTextTheme">
+
+                    <EditText
+                      android:id="@+id/input_dayOfBirth"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                        android:inputType="none"
+                      android:hint="Geburtstag"
+                      android:text="null"
+                      android:textSize="19dip" />
+
+     >
+              </android.support.design.widget.TextInputLayout>
+
+                <!-- Email Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_below="@id/layout_dayOfBirth"
                     android:theme="@style/EditTextTheme">
 
                     <EditText

@@ -8,4 +8,35 @@
         <item>Terms</item>
     </array>
 
+    <array name="friendOptions">
+        <item>Profil anzeigen</item>
+        <item>Freund entfernen</item>
+    </array>
+
+    <array name="friendLiveOptions">
+        <item>Profil anzeigen</item>
+        <item>Live-Übertragung anzeigen</item>
+        <item>Freund entfernen</item>
+    </array>
+
+    <array name="foreignOptions">
+        <item>Profil anzeigen</item>
+        <item>Anfrage senden</item>
+    </array>
+
+    <array name="friendQuestionOptions">
+        <item>Profil anzeigen</item>
+        <item>Anfrage annehmen</item>
+        <item>Anfrage ablehen</item>
+    </array>
+
+    <array name="sendFriendQuestionOptions">
+        <item>Profil anzeigen</item>
+        <item>Anfrage zurückziehen</item>
+    </array>
+
+    <array name="recordsOptions">
+        <item>Live-Übertragung</item>
+        <item>Private Aufzeichnung</item>
+    </array>
 </resources>

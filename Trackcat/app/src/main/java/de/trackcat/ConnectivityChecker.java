@@ -18,7 +18,9 @@ public class ConnectivityChecker extends BroadcastReceiver {
 
         connected = networkInfo != null && networkInfo.isConnected();
 
-
-        MainActivity.getInstance().networkChange(connected);
+        try {
+            MainActivity.getInstance().networkChange(connected);
+        } catch (Exception e) {
+        }
     }
 }

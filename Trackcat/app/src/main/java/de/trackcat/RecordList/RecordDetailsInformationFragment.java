@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.config.IConfigurationProvider;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -24,17 +31,35 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.TimeZone;
 
-import de.trackcat.CustomElements.CustomLocation;
+import de.trackcat.APIClient;
+import de.trackcat.APIConnector;
+import de.trackcat.BuildConfig;
+import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
+import de.trackcat.Database.DAO.UserDAO;
+import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
+import de.trackcat.Database.Models.User;
+import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
+import static org.osmdroid.tileprovider.util.StorageUtils.getStorage;
 
 public class RecordDetailsInformationFragment extends Fragment implements View.OnClickListener {
     public RecordDetailsInformationFragment() {
@@ -51,33 +76,42 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     private double altitudeDown = 0;
     private double maxSpeed = 0;
     private MapView mMapView = null;
-    ArrayList<CustomLocation> locations;
+    List<Location> locations;
     Route record;
     RouteDAO dao;
+    RecordTempDAO tempDAO;
     TextView recordName;
+    boolean temp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         int id = getArguments().getInt("id");
+        temp = getArguments().getBoolean("temp");
+        String locationsAsString = getArguments().getString("locations");
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
         /* Auslesen der Werte aus der Datenbank */
+        locations = Arrays.asList(new Gson().fromJson(locationsAsString, Location[].class));
         dao = new RouteDAO(MainActivity.getInstance());
-        record = dao.read(id);
-        locations = record.getLocations();
+        tempDAO = new RecordTempDAO(MainActivity.getInstance());
+        if (temp) {
+            record = tempDAO.read(id);
+        } else {
+            record = dao.read(id);
+        }
 
         /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
             Log.v("iiiiiii------------", i + "");
-            CustomLocation location = locations.get(i);
+            Location location = locations.get(i);
 
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
             GPSData.add(gPt);
 
             if (i > 0) {
-                double difference = location.getAltitude() - record.getLocations().get(i - 1).getAltitude();
+                double difference = location.getAltitude() - locations.get(i - 1).getAltitude();
 
                 /* Berechnung der Höhenmeter */
                 if (difference > 0) {
@@ -207,13 +241,17 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         Marker startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
+        }
 
         gPt = new GeoPoint(locations.get(locations.size() - 1).getLatitude(), locations.get(locations.size() - 1).getLongitude());
         Marker stopMarker = new Marker(mMapView);
         stopMarker.setPosition(gPt);
         stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        stopMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_end));
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            stopMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_end));
+        }
 
         Polyline mPath = new Polyline(mMapView);
 
@@ -224,6 +262,12 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         mPath.setPoints(GPSData);
         mPath.setColor(Color.RED);
         mPath.setWidth(4);
+
+        /* load map by big routes */
+        IConfigurationProvider provider = Configuration.getInstance();
+        provider.setUserAgentValue(BuildConfig.APPLICATION_ID);
+        provider.setOsmdroidBasePath(getStorage());
+        provider.setOsmdroidTileCache(getStorage());
 
     }
 
@@ -238,13 +282,9 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View alertView = inflater.inflate(R.layout.fragment_record_list_edit_route, null, true);
                 TextView edit_record_name = alertView.findViewById(R.id.edit_record_name);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    alert.setView(alertView);
-                    edit_record_name.setText(record.getName());
 
-                } else {
-                    // TODO Implementation für Nutzer mit API <= 16
-                }
+                alert.setView(alertView);
+                edit_record_name.setText(record.getName());
 
                 alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -253,13 +293,74 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                         /* Aktualisieren der Route */
                         Route newRecord = record;
                         newRecord.setName(newName);
-                        dao.update(record.getId(), newRecord);
+                        newRecord.setTimeStamp(GlobalFunctions.getTimeStamp());
+                        if (temp) {
+                            tempDAO.update(record.getId(), newRecord);
+                            if (MainActivity.getHints()) {
+                                Toast.makeText(getContext(), getResources().getString(R.string.teditRecordName), Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            dao.update(record.getId(), newRecord);
 
-                        recordName.setText(newName);
-                        if (MainActivity.getHints()) {
-                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Name erfolgreich bearbeitet!", Toast.LENGTH_LONG).show();
+
+                            /* get current user */
+                            UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+                            User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+                            /* read profile values from global db */
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("recordId", "" + record.getId());
+                            map.put("recordName", "" + newName);
+                            map.put("timestamp", "" + newRecord.getTimeStamp());
+
+                            Retrofit retrofit = APIConnector.getRetrofit();
+                            APIClient apiInterface = retrofit.create(APIClient.class);
+
+                            /* start a call */
+                            String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                            Call<ResponseBody> call = apiInterface.updateRecordName(authString, map);
+
+                            call.enqueue(new Callback<ResponseBody>() {
+
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    try {
+
+                                        if (response.code() == 401) {
+                                            MainActivity.getInstance().showNotAuthorizedModal(4);
+                                        } else {
+                                            /* get jsonString from API */
+                                            String jsonString = response.body().string();
+
+                                            /* parse json */
+                                            JSONObject mainObject = new JSONObject(jsonString);
+                                            if (mainObject.getString("success").equals("0")) {
+
+                                                if (MainActivity.getHints()) {
+                                                    Toast.makeText(getContext(), getResources().getString(R.string.teditRecordName), Toast.LENGTH_LONG).show();
+                                                }
+                                            } else if (mainObject.getString("success").equals("1")) {
+
+                                                if (MainActivity.getHints()) {
+                                                    Toast.makeText(getContext(), getResources().getString(R.string.teditRecordNameUnknownError), Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    call.cancel();
+                                }
+                            });
                         }
-
+                        recordName.setText(newName);
                     }
                 });
 

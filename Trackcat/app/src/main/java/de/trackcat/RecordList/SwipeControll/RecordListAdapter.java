@@ -7,7 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
+
+import de.trackcat.Database.DAO.RecordTempDAO;
+import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -19,7 +24,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView id, name, distance, time, date;
-        public ImageView type, importedState;
+        public ImageView type, importedState, temp;
 
         public MyViewHolder(View view) {
             super(view);
@@ -27,6 +32,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
             name = view.findViewById(R.id.record_name);
             type = view.findViewById(R.id.activity_type);
             importedState = view.findViewById(R.id.imported_state);
+            temp = view.findViewById(R.id.temp);
             distance = view.findViewById(R.id.record_distance);
             time = view.findViewById(R.id.record_time);
             date = view.findViewById(R.id.record_date);
@@ -47,7 +53,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsList), holder.id, holder.type, holder. importedState, holder.name, holder.distance, holder.time, holder.itemView, holder.date);
+        ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsList), holder.id, holder.type, holder.importedState, holder.temp,holder.name, holder.distance, holder.time, holder.itemView, holder.date);
     }
 
     @Override
