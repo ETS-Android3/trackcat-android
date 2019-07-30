@@ -390,25 +390,22 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                 break;
             case R.id.zoomRecord:
 
-                if(informationParent.getVisibility()==View.GONE){
+                /* zoom in detail map */
+                if (informationParent.getVisibility() == View.GONE) {
 
                     float px = TypedValue.applyDimension(
                             TypedValue.COMPLEX_UNIT_DIP,
                             200,
                             getResources().getDisplayMetrics()
                     );
-                    mapParent.getLayoutParams().height = (int)px;
+                    mapParent.getLayoutParams().height = (int) px;
                     mapParent.requestLayout();
                     informationParent.setVisibility(View.VISIBLE);
 
-                    Toast.makeText(getContext(), "zoom out", Toast.LENGTH_LONG).show();
-
-                }else {
+                } else {
                     mapParent.getLayoutParams().height = WindowManager.LayoutParams.MATCH_PARENT;
                     mapParent.requestLayout();
                     informationParent.setVisibility(View.GONE);
-
-                    Toast.makeText(getContext(), "zoom in", Toast.LENGTH_LONG).show();
                 }
 
                 break;

@@ -191,8 +191,9 @@ public class Locator extends Service {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime,
                     minDistance, locationListener); // via GPS
 
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            }
         }
     }
 
