@@ -365,7 +365,7 @@ public class RecordTempDAO {
 
             }
             int id;
-            Log.d("GESCHLOSSEN","Routenanzahl: "+result.size());
+            Log.d("GESCHLOSSEN"," zu löschende Routen: "+result.size());
 
             for (int i = 0; i < result.size(); i++) {
                 id = result.get(i);

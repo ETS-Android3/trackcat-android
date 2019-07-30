@@ -198,6 +198,7 @@
             app:fabSize="normal"
             app:layout_anchor="@id/mapview"
             app:layout_anchorGravity="bottom|center"
+    android:tint="@color/ap_white"
             app:srcCompat="@drawable/activity_running_record" />
     </android.support.design.widget.CoordinatorLayout>
 

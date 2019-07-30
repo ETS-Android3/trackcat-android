@@ -325,24 +325,16 @@ public class GlobalFunctions {
         /* delete possible live tracking from server */
         UserDAO userDAO = new UserDAO(activity);
         User currentUser = userDAO.read(currentUserId);
-        Log.d("GESCHLOSSEN", "Alles Gelöscht");
+        Log.d("GESCHLOSSEN", "Alles  aus SQLite gelöscht");
 
-        Log.d("GLOBALFUNCTIONS", "" + currentUser.getFirstName());
 
         /* Start a call */
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
-
-        Log.d("GLOBALFUNCTIONS", base);
-
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
         Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
         Log.d("GESCHLOSSEN", "base: " + base);
-
-
-        Log.d("GLOBALFUNCTIONS", "BEFORESEND");
-
 
         Thread thread = new Thread(new Runnable() {
 
@@ -351,10 +343,10 @@ public class GlobalFunctions {
                 try {
                     try {
                         Response<ResponseBody> execute = call.execute();
-                        Log.d("GLOBALFUNCTIONS", execute.toString());
+                        Log.d("GESCHLOSSEN", "RESPONSE SERVER:"+ execute.toString());
 
                     } catch (Exception e) {
-                        Log.d("GLOBALFUNCTIONS", e.toString());
+                        Log.d("GESCHLOSSEN","RESPONSE SERVER ERROR:"+ e.toString());
 
                     }
                 } catch (Exception e) {

@@ -666,19 +666,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /* close app with klick double back */
         if (exitApp) {
+            Log.d("GESCHLOSSEN", "EXIT APP:");
 
-
-            GlobalFunctions.deleteAllTempRecord(ClosingService.getInstance(), MainActivity.getActiveUser());
-            if(android.os.Build.VERSION.SDK_INT >= 21)
-            {
+          //  ClosingService.getInstance().onTaskRemoved(MainActivity.getInstance().getIntent());
+            if (android.os.Build.VERSION.SDK_INT >= 21) {
                 finishAndRemoveTask();
-            }
-            else
-            {
+            } else {
+                RecordTempDAO recordTempDAO = new RecordTempDAO(MainActivity.getInstance());
+                recordTempDAO.deleteAllNotFinished();
                 finish();
             }
-       
-            System.exit(0);
+
+          //  System.exit(0);
         }
 
         exitApp = true;

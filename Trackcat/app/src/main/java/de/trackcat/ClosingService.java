@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.Models.User;
 
 public class ClosingService extends Service {
@@ -18,7 +19,7 @@ public class ClosingService extends Service {
         return instance;
     }
 
-    int currentUser = MainActivity.getInstance().getActiveUser();
+    int currentUser;
 
 
     @Nullable
@@ -30,7 +31,8 @@ public class ClosingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flag, int startId) {
         super.onStartCommand(intent, flag, startId);
-        Log.d("GESCHLOSSEN", "OFFEN:" + currentUser);
+        currentUser = MainActivity.getInstance().getActiveUser();
+        Log.d("GESCHLOSSEN", "START currentUser:" + currentUser);
         instance = this;
         return START_STICKY;
 
@@ -41,10 +43,13 @@ public class ClosingService extends Service {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ClearCallService.schedule(getApplicationContext(), currentUser);
+            Log.d("GESCHLOSSEN", "TASK REMOVED größer Lollipop: " + currentUser + "");
         } else {
-            GlobalFunctions.deleteAllTempRecord(this, currentUser);
+            Log.d("GESCHLOSSEN", "kleiner Lollipop: " + currentUser + "");
+            RecordTempDAO recordTempDAO = new RecordTempDAO(ClosingService.getInstance());
+            recordTempDAO.deleteAllNotFinished();
         }
-        Log.d("GESCHLOSSEN BLABLA", currentUser + "");
+
 
         // Handle application closing
         // fireClosingNotification();
@@ -62,7 +67,7 @@ public class ClosingService extends Service {
 
 
         //  MainActivity.getInstance().deleteAllTempRecord();
-        Log.d("GESCHLOSSEN", "Service Destroyed");
+        Log.d("GESCHLOSSEN", "ON DESTROY");
         super.onDestroy();
     }
 

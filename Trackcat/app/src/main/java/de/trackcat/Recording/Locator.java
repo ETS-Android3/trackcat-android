@@ -56,7 +56,7 @@ public class Locator extends Service {
          * */
         try {
             locationManager = (LocationManager) MainActivity.getInstance().getSystemService(Context.LOCATION_SERVICE);
-          /*  if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+         /*   if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
@@ -65,8 +65,8 @@ public class Locator extends Service {
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
                 return;
-            }*/
-        //    locationManager.addNmeaListener(mNmeaListener);
+            }
+            locationManager.addNmeaListener(mNmeaListener);*/
 
 
             locationListener = new LocationListener() {
@@ -171,8 +171,6 @@ public class Locator extends Service {
      * */
     protected void startTracking() {
 
-        Toast.makeText(MainActivity.getInstance(), "start Tracking",
-                Toast.LENGTH_LONG).show();
         /*
          + checks if permissions granted for GPS service and storage access
          */
