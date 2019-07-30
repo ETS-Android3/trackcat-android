@@ -9,11 +9,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,6 +85,9 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     RouteDAO dao;
     RecordTempDAO tempDAO;
     TextView recordName;
+    ImageView zoomMap;
+    RelativeLayout mapParent;
+    LinearLayout informationParent;
     boolean temp;
 
     @Override
@@ -185,6 +192,14 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         /* Button zur Bearbeitung von Routen */
         ImageView editRouteName = view.findViewById(R.id.editRoute);
         editRouteName.setOnClickListener(this);
+
+        /* fullScreen map */
+        zoomMap = view.findViewById(R.id.zoomRecord);
+        zoomMap.setOnClickListener(this);
+
+        /* map Parent */
+        mapParent = view.findViewById(R.id.mapParent);
+        informationParent = view.findViewById(R.id.informationParent);
 
 
         view.setTag(view.getVisibility());
@@ -371,6 +386,30 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                     }
                 });
                 alert.show();
+
+                break;
+            case R.id.zoomRecord:
+
+                if(informationParent.getVisibility()==View.GONE){
+
+                    float px = TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            200,
+                            getResources().getDisplayMetrics()
+                    );
+                    mapParent.getLayoutParams().height = (int)px;
+                    mapParent.requestLayout();
+                    informationParent.setVisibility(View.VISIBLE);
+
+                    Toast.makeText(getContext(), "zoom out", Toast.LENGTH_LONG).show();
+
+                }else {
+                    mapParent.getLayoutParams().height = WindowManager.LayoutParams.MATCH_PARENT;
+                    mapParent.requestLayout();
+                    informationParent.setVisibility(View.GONE);
+
+                    Toast.makeText(getContext(), "zoom in", Toast.LENGTH_LONG).show();
+                }
 
                 break;
         }

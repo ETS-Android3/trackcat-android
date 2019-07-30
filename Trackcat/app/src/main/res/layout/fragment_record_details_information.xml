@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <LinearLayout
@@ -32,11 +32,12 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <View
@@ -47,290 +48,311 @@
                     android:background="?android:attr/listDivider" />
 
                 <!-- KARTE -->
+                <RelativeLayout
+                    android:id="@+id/mapParent"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp">
 
-                <de.trackcat.CustomElements.CustomMap
-                    android:id="@+id/mapview"
-                    android:layout_width="fill_parent"
-                    android:layout_height="200dp"
-                    android:clickable="true" />
+                    <de.trackcat.CustomElements.CustomMap
+                        android:id="@+id/mapview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true" />
 
+                    <ImageView
+                        android:id="@+id/zoomRecord"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="10dp"
+                        app:srcCompat="@drawable/ic_zoom" />
+                </RelativeLayout>
                 <!-- HAUPTEIGENSCHAFTEN -->
 
                 <LinearLayout
+                    android:id="@+id/informationParent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/distance_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/distance_value"
+                        <LinearLayout
+                            android:id="@+id/distance_layout"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="1,24"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/distance_title"
+                            <TextView
+                                android:id="@+id/distance_value"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="1,24"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/distance_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Distanz (km)"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/total_time_layout"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="Distanz (km)"
-                            android:textSize="12sp" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/total_time_value"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="00:06:56"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/total_time_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Dauer"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/average_speed_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/average_speed_value"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="14,76"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/average_speed_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="Ø Geschw."
+                                android:textSize="12sp" />
+                        </LinearLayout>
 
                     </LinearLayout>
 
+                    <!-- WEITERE DETAILS -->
+
                     <LinearLayout
-                        android:id="@+id/total_time_layout"
+                        android:id="@+id/date_layout"
+                        style="@style/SummaryRow"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/date_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="0"
+                            app:srcCompat="@drawable/summary_date" />
 
                         <TextView
-                            android:id="@+id/total_time_value"
-                            android:layout_width="match_parent"
+                            android:id="@+id/date_title"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="0"
                             android:gravity="center"
-                            android:text="00:06:56"
-                            android:textSize="16sp"
+                            android:text="Datum" />
+
+                        <TextView
+                            android:id="@+id/date_value"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0"
+                            android:gravity="right|center"
+                            android:text="01.01.2019"
                             android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider" />
+
+                    <LinearLayout
+                        android:id="@+id/maxspeed_layout"
+                        style="@style/SummaryRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/max_speed_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="0"
+                            app:srcCompat="@drawable/summary_maxspeed" />
 
                         <TextView
-                            android:id="@+id/total_time_title"
-                            android:layout_width="match_parent"
+                            android:id="@+id/max_speed_title"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="0"
                             android:gravity="center"
-                            android:text="Dauer"
-                            android:textSize="12sp" />
+                            android:text="Max. Geschw." />
+
+                        <TextView
+                            android:id="@+id/max_speed_value"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0"
+                            android:gravity="right|center"
+                            android:text="19,67 km/h"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider" />
+
+                    <LinearLayout
+                        android:id="@+id/altimeter_pos_layout"
+                        style="@style/FirstPairedSummaryRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/altimeter_pos_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="0"
+                            app:srcCompat="@drawable/summary_altimeter_pos" />
+
+                        <TextView
+                            android:id="@+id/altimeter_pos_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0"
+                            android:gravity="center"
+                            android:text="Höhenmeter aufwärts" />
+
+                        <TextView
+                            android:id="@+id/altimeter_pos_value"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0"
+                            android:gravity="right|center"
+                            android:text="32 m"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/average_speed_layout"
+                        android:id="@+id/altimeter_neg_layout"
+                        style="@style/LastPairedSummaryRow"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/altimeter_neg_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="0"
+                            app:srcCompat="@drawable/summary_altimeter_neg" />
 
                         <TextView
-                            android:id="@+id/average_speed_value"
-                            android:layout_width="match_parent"
+                            android:id="@+id/altimeter_neg_title"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="0"
                             android:gravity="center"
-                            android:text="14,76"
-                            android:textSize="16sp"
+                            android:text="Höhenmeter abwärts" />
+
+                        <TextView
+                            android:id="@+id/altimeter_neg_value"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0"
+                            android:gravity="right|center"
+                            android:text="19 m"
                             android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/average_speed_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="Ø Geschw."
-                            android:textSize="12sp" />
                     </LinearLayout>
 
-                </LinearLayout>
+                    <View
+                        android:id="@+id/divider3"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider" />
 
-                <!-- WEITERE DETAILS -->
-
-                <LinearLayout
-                    android:id="@+id/date_layout"
-                    style="@style/SummaryRow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/date_icon"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/pausetime_layout"
+                        style="@style/SummaryRow"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="0"
-                        app:srcCompat="@drawable/summary_date" />
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/date_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="center"
-                        android:text="Datum" />
+                        <ImageView
+                            android:id="@+id/pause_time_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="0"
+                            app:srcCompat="@drawable/summary_pausetime" />
 
-                    <TextView
-                        android:id="@+id/date_value"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="right|center"
-                        android:text="01.01.2019"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/pause_time_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0"
+                            android:gravity="center"
+                            android:text="Pausezeit" />
+
+                        <TextView
+                            android:id="@+id/pause_time_value"
+                            android:layout_width="fill_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0"
+                            android:gravity="right|center"
+                            android:text="00:02:36"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </LinearLayout>
 
-                <View
-                    android:id="@+id/divider1"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider" />
-
-                <LinearLayout
-                    android:id="@+id/maxspeed_layout"
-                    style="@style/SummaryRow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/max_speed_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="0"
-                        app:srcCompat="@drawable/summary_maxspeed" />
-
-                    <TextView
-                        android:id="@+id/max_speed_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="center"
-                        android:text="Max. Geschw." />
-
-                    <TextView
-                        android:id="@+id/max_speed_value"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="right|center"
-                        android:text="19,67 km/h"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/divider2"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider" />
-
-                <LinearLayout
-                    android:id="@+id/altimeter_pos_layout"
-                    style="@style/FirstPairedSummaryRow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/altimeter_pos_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="0"
-                        app:srcCompat="@drawable/summary_altimeter_pos" />
-
-                    <TextView
-                        android:id="@+id/altimeter_pos_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="center"
-                        android:text="Höhenmeter aufwärts" />
-
-                    <TextView
-                        android:id="@+id/altimeter_pos_value"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="right|center"
-                        android:text="32 m"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/altimeter_neg_layout"
-                    style="@style/LastPairedSummaryRow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/altimeter_neg_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="0"
-                        app:srcCompat="@drawable/summary_altimeter_neg" />
-
-                    <TextView
-                        android:id="@+id/altimeter_neg_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="center"
-                        android:text="Höhenmeter abwärts" />
-
-                    <TextView
-                        android:id="@+id/altimeter_neg_value"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="right|center"
-                        android:text="19 m"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/divider3"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider" />
-
-                <LinearLayout
-                    android:id="@+id/pausetime_layout"
-                    style="@style/SummaryRow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/pause_time_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="0"
-                        app:srcCompat="@drawable/summary_pausetime" />
-
-                    <TextView
-                        android:id="@+id/pause_time_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="center"
-                        android:text="Pausezeit" />
-
-                    <TextView
-                        android:id="@+id/pause_time_value"
-                        android:layout_width="fill_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="right|center"
-                        android:text="00:02:36"
-                        android:textStyle="bold" />
-                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
