@@ -3,8 +3,8 @@
 
     <array name="steps">
         <item>Name</item>
-        <item>Email</item>
-        <item>Passwort</item>
+        <item>Daten</item>
+        <item>PW</item>
         <item>Terms</item>
     </array>
 
