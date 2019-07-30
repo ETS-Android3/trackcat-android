@@ -109,8 +109,8 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
         int h = image.getIntrinsicHeight();
         int w = image.getIntrinsicWidth();
         image.setBounds( 0, 0, w, h );
-        findFriend.setCompoundDrawables( image, null, null, null );
-        findFriend.setOnKeyListener(this);*/
+        findFriend.setCompoundDrawables( image, null, null, null );*/
+        findFriend.setOnKeyListener(this);
 
         /* Load page */
         loadPage();
