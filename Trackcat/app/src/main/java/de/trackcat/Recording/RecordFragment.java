@@ -28,7 +28,9 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.view.*;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -682,6 +684,58 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         TextView total_time_TextView = alertView.findViewById(R.id.total_time_TextView);
         Timer timerForCalc = new Timer();
         total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
+
+        FloatingActionButton typeBtn = alertView.findViewById(R.id.fabButton);
+        typeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Item[] items = {
+                        new Item("Laufen", R.drawable.activity_running_record),
+                        new Item("Fahrrad", R.drawable.activity_biking_record),
+                        new Item("Auto", R.drawable.activity_caring_record),
+                };
+
+                ListAdapter adapter = new ArrayAdapter<Item>(
+                        MainActivity.getInstance(),
+                        android.R.layout.select_dialog_item,
+                        android.R.id.text1,
+                        items) {
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        //Use super class to create the View
+                        View v = super.getView(position, convertView, parent);
+                        TextView tv = (TextView) v.findViewById(android.R.id.text1);
+
+                        //Put the image on the TextView
+                        tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0);
+
+                        //Add margin between image and text (support various screen densities)
+                        int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
+                        tv.setCompoundDrawablePadding(dp5);
+
+                        return v;
+                    }
+                };
+
+
+                new AlertDialog.Builder(MainActivity.getInstance())
+                        .setTitle("Typ auswählen")
+                        .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                if (item == 0) {
+                                    typeBtn.setImageResource(R.drawable.activity_running_record);
+                                    model.setType(0);
+                                } else if (item == 1) {
+                                    typeBtn.setImageResource(R.drawable.activity_biking_record);
+                                    model.setType(1);
+                                } else if (item == 2) {
+                                    typeBtn.setImageResource(R.drawable.activity_caring_record);
+                                    model.setType(2);
+                                }
+                            }
+                        }).show();
+
+            }
+        });
 
         alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
