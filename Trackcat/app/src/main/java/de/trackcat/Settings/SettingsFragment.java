@@ -219,7 +219,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 e.printStackTrace();
             }
             alert.setTitle(getResources().getString(R.string.app_name)+" v" + version);
-            alert.setMessage("Entwickler:\nTimo Kramer, Marie Fock, Finn Lenz, Yannik Petersen, Kristoff Klan, Jenö Petsch");
+
+
+            alert.setMessage("vom 01.09.2019\n\nEntwickler:\nTimo Kramer, Marie Fock, Finn Lenz, Yannik Petersen, Kristoff Klan, Jenö Petsch");
             alert.setNegativeButton("Schließen", null);
             alert.show();
         } else if (preference.getKey().equals("send_feedback")) {

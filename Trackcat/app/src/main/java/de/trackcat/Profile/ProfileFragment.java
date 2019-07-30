@@ -85,7 +85,7 @@ public class ProfileFragment extends Fragment {
 
         /* read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
-        map.put("id", ""+currentUser.getId());
+        map.put("id", "" + currentUser.getId());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
@@ -93,7 +93,7 @@ public class ProfileFragment extends Fragment {
         /* start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        Call<ResponseBody> call = apiInterface.getUserById(authString,map);
+        Call<ResponseBody> call = apiInterface.getUserById(authString, map);
 
         call.enqueue(new Callback<ResponseBody>() {
 
@@ -101,16 +101,18 @@ public class ProfileFragment extends Fragment {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
 
-                    if(response.code()==401){
+                    if (response.code() == 401) {
                         MainActivity.getInstance().showNotAuthorizedModal(0);
-                    }else {
+                    } else {
                         /* get jsonString from API */
                         String jsonString = response.body().string();
 
                         /* parse json */
                         JSONObject userJSON = new JSONObject(jsonString);
-                        Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
-
+                        try {
+                            Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
+                        } catch (Exception e) {
+                        }
                         /* check values an show  */
                         float size, weight;
                         long dateOfBirth;
@@ -139,11 +141,11 @@ public class ProfileFragment extends Fragment {
                         }
 
                         /* check if data is newer when localData */
-                        if(userJSON.getLong("timeStamp")>currentUser.getTimeStamp()){
-                            userDAO.update(currentUser.getId(),GlobalFunctions.createUser(userJSON, true));
+                        if (userJSON.getLong("timeStamp") > currentUser.getTimeStamp()) {
+                            userDAO.update(currentUser.getId(), GlobalFunctions.createUser(userJSON, true));
                         }
 
-                        setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), userJSON.getLong("amountRecords"),userJSON.getLong("totalDistance"), userJSON.getLong("totalTime"),image);
+                        setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), userJSON.getLong("amountRecords"), userJSON.getLong("totalDistance"), userJSON.getLong("totalTime"), image);
 
                     }
                 } catch (IOException e) {
@@ -214,7 +216,7 @@ public class ProfileFragment extends Fragment {
                 imageStream = this.getResources().openRawResource(R.raw.male);
                 gender.setTextColor(getResources().getColor(R.color.colorMale));
             }
-            Bitmap bitmap= BitmapFactory.decodeStream(imageStream);
+            Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
             user_gender_image.setImageBitmap(bitmap);
             user_gender_image.setVisibility(View.VISIBLE);
         } else {
@@ -580,17 +582,17 @@ public class ProfileFragment extends Fragment {
         lastLogIn.setText(curLastLoginString);
 
         /*set amount records*/
-        amountRecords.setText(""+user_amountRecords);
+        amountRecords.setText("" + user_amountRecords);
 
         /* set total distance */
         double distance = Math.round(user_totalDistance);
         double levelDistance;
         if (distance >= 1000) {
-            String d = "" + Math.round((distance / 1000L)*100)/100.0;
+            String d = "" + Math.round((distance / 1000L) * 100) / 100.0;
             totalDistance.setText(d.replace('.', ',') + " km");
-            levelDistance=distance / 1000L;
+            levelDistance = distance / 1000L;
         } else {
-            levelDistance= distance/1000;
+            levelDistance = distance / 1000;
             totalDistance.setText((int) distance + " m");
         }
 
@@ -641,7 +643,7 @@ public class ProfileFragment extends Fragment {
             }
         }
 
-        if(day2 == day1 &&(currentTime.get(Calendar.MONTH) + 1) == dob.get(Calendar.MONTH)){
+        if (day2 == day1 && (currentTime.get(Calendar.MONTH) + 1) == dob.get(Calendar.MONTH)) {
             todayDayOfBirth = true;
         }
 

@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //  private static boolean isRestart = false;
     private static Menu menuInstance;
     private ProgressDialog progressDialog;
-    private static boolean connected;
+    private static boolean connected, restarted;
 
     /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
     public static int randomImg = (int) (Math.random() * ((13 - 0) + 1)) + 0;
@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = getInstance().getIntent();
         getInstance().finish();
         getInstance().startActivity(intent);
+        restarted=true;
     }
 
     public PermissionManager getPermissionManager() {
@@ -439,7 +440,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setConnection(connected);
 
         /* Startseite festlegen - Erster Aufruf */
-        loadDashboard();
+        Log.d("HALLO", "restart: "+restarted);
+
+        /* load settings if them changed */
+        if(restarted){
+            loadSettings();
+        }else {
+            loadDashboard();
+        }
     }
 
     /* set profile information */
