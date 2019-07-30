@@ -296,11 +296,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /* function to get active user information */
     public void getCurrentUserInformation() {
         userDAO = new UserDAO(this);
-
-        List<User> userList = userDAO.readAll();
-        hints = userList.get(0).isHintsActive();
-        darkTheme = userList.get(0).isDarkThemeActive();
-        activeUser = userList.get(0).getId();
+        User currentUser = userDAO.readCurrentUser();
+        hints = currentUser.isHintsActive();
+        darkTheme = currentUser.isDarkThemeActive();
+        activeUser = currentUser.getId();
     }
 
     @SuppressLint("ResourceType")
@@ -668,7 +667,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (exitApp) {
             Log.d("GESCHLOSSEN", "EXIT APP:");
 
-          //  ClosingService.getInstance().onTaskRemoved(MainActivity.getInstance().getIntent());
+            //  ClosingService.getInstance().onTaskRemoved(MainActivity.getInstance().getIntent());
             if (android.os.Build.VERSION.SDK_INT >= 21) {
                 finishAndRemoveTask();
             } else {
@@ -677,7 +676,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 finish();
             }
 
-          //  System.exit(0);
+            //  System.exit(0);
         }
 
         exitApp = true;

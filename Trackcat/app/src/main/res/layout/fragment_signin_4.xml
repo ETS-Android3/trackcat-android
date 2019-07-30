@@ -24,7 +24,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"
-                android:src="@raw/logo" />
+                app:srcCompat="@drawable/ic_logo"  />
 
             <TextView
                 android:id="@+id/messageBox"

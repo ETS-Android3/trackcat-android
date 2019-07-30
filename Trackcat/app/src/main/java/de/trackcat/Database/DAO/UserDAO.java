@@ -3,14 +3,17 @@ package de.trackcat.Database.DAO;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+
 import com.google.gson.Gson;
 
 import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
 import static de.trackcat.Database.DAO.DbContract.UserEntry.*;
 
 /**
@@ -43,9 +46,9 @@ public class UserDAO {
      *
      * @param user of type user to be stored in the database
      *
-     * <p>
-     *      Sets the database id to the model.
-     * </p>
+     *             <p>
+     *             Sets the database id to the model.
+     *             </p>
      */
     public void create(User user) {
         DbHelper dbHelper = new DbHelper(context);
@@ -63,9 +66,9 @@ public class UserDAO {
      * @return content values to be inserted into database
      *
      * <p>
-     *     Maps the attributes of the user model to content values based on columns
-     *     where they have to be inserted. This type of prepared statement should prevent SQL
-     *     injections.
+     * Maps the attributes of the user model to content values based on columns
+     * where they have to be inserted. This type of prepared statement should prevent SQL
+     * injections.
      * </p>
      */
     private ContentValues valueGenerator(User user) {
@@ -131,7 +134,7 @@ public class UserDAO {
                     selectionArgs,
                     null,
                     null,
-                    null )) {
+                    null)) {
                 if (cursor.moveToFirst()) {
                     result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
                     result.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow(COL_FIRSTNAME)));
@@ -199,7 +202,7 @@ public class UserDAO {
                     COL_TIMESTAMP,
                     COL_HINT,
                     COL_THEME,
-                    COL_ISSYNCHRONIZED };
+                    COL_ISSYNCHRONIZED};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
@@ -207,7 +210,7 @@ public class UserDAO {
                     null,
                     null,
                     null,
-                    orderArgs[0] + " " + orderArgs[1] )) {
+                    orderArgs[0] + " " + orderArgs[1])) {
                 if (cursor.moveToFirst())
                     do {
                         result.add(new User(
@@ -241,7 +244,7 @@ public class UserDAO {
     /**
      * Updates a specific user in database with handed over user, which has matching id.
      *
-     * @param id of type integer of which route has to be updated
+     * @param id   of type integer of which route has to be updated
      * @param user of type user which would override user with defined id in database
      */
     public void update(int id, User user) {
@@ -287,7 +290,7 @@ public class UserDAO {
             dbHelper.close();
         }
     }
-    
+
     /**
      * Count the entrys of the userTable
      *
@@ -300,10 +303,46 @@ public class UserDAO {
 
         try {
 
-            Cursor cursor = dbHelper.getWritableDatabase().rawQuery(SQL_COUNT_USER_ENTRYS,null);
+            Cursor cursor = dbHelper.getWritableDatabase().rawQuery(SQL_COUNT_USER_ENTRYS, null);
             cursor.moveToFirst();
-            result =cursor.getInt(0);
+            result = cursor.getInt(0);
 
+        } finally {
+            dbHelper.close();
+        }
+        return result;
+    }
+
+    /**
+     * Reads current users from database.
+     *
+     * @return List of all users in database
+     */
+    public User readCurrentUser() {
+        String[] orderArgs = new String[]{COL_ID, "ASC"};
+        DbHelper dbHelper = new DbHelper(context);
+        User result = new User();
+        try {
+            String[] projection = {
+                    COL_ID,
+                    COL_HINT,
+                    COL_THEME
+            };
+            try (Cursor cursor = dbHelper.getReadableDatabase().query(
+                    TABLE_NAME,
+                    projection,
+                    null,
+                    null,
+                    null,
+                    null,
+                    orderArgs[0] + " " + orderArgs[1],
+                    "1")) {
+                if (cursor.moveToFirst()) {
+                    result.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)));
+                    result.setHintsActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_HINT)));
+                    result.setDarkThemeActiveDB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_THEME)));
+                }
+            }
         } finally {
             dbHelper.close();
         }
