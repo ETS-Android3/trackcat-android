@@ -2,9 +2,12 @@ package de.trackcat.RecordList;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,14 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 
 import de.trackcat.APIClient;
@@ -36,13 +36,11 @@ import de.trackcat.Database.DAO.LocationTempDAO;
 import de.trackcat.Database.DAO.RecordTempDAO;
 import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
-import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
-import de.trackcat.RecordList.SwipeControll.SwipeControllerActions;
 import de.trackcat.RecordList.SwipeControll.SwipeController;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -100,9 +98,49 @@ public class RecordListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(mAdapter);
 
-        swipeController = new SwipeController(new SwipeControllerActions() {
+        /* set swipe view */
+        setUpItemTouchHelper();
+
+        /* Aktualisieren der Seite durch SwipeRefresh */
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRemoveClick(int position) {
+            public void onRefresh() {
+                mAdapter.clear();
+                MainActivity.getInstance().synchronizeRecords();
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
+        /* Farbschema SwipeRefresh festlegen */
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        
+        return view;
+    }
+
+    /* function to restore item */
+    private void restoreItem(Route deletedItem, int deletedIndex) {
+        mAdapter.restoreItem(deletedItem, deletedIndex);
+        recordDAO.create(deletedItem);
+    }
+
+    /* function  to swipe*/
+    private void setUpItemTouchHelper() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
+                int position = viewHolder.getAdapterPosition();
+
                 /* Entfernten Item-Namen zwischenspeichern */
                 String name = records.get(position).getName();
 
@@ -203,58 +241,50 @@ public class RecordListFragment extends Fragment {
                                     restoreItem(deletedItem, deletedIndex);
                                 }
                             });
-                        }else if(deletedItem.isTemp()){
+                        } else if (deletedItem.isTemp()) {
                             recordTempDAO.delete(deletedItem);
                         }
                     }
                 });
             }
 
-            /* Versenden einer Route
             @Override
-            public void onShareClick(int position) {
-                String fileName = Export.getExport().exportRoute(getContext(),
-                        records.get(position).getId(), true);
-                Log.i("GoTrack-Export", "Die Datei: " + fileName +
-                        " wurde erstellt.");
-            } */
-        });
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
+                View itemView = viewHolder.itemView;
 
-        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
-        itemTouchhelper.attachToRecyclerView(recyclerView);
+                /* set icon and color */
+                final GradientDrawable background = new GradientDrawable();
+                background.setCornerRadius(15);
+                background.setColor(Color.RED);
+                Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_delete);
+                int backgroundCornerOffset = 20;
 
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                swipeController.onDraw(c);
+                int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
+                int iconBottom = iconTop + icon.getIntrinsicHeight();
+
+                /* swipe left */
+                if (dX > 0) {
+                    /* swipe right */
+                } else if (dX < 0) {
+
+                    /* set icon  and background position */
+                    int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
+                    int iconRight = itemView.getRight() - iconMargin;
+                    icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+                    background.setBounds(itemView.getRight() + ((int) dX) - backgroundCornerOffset,
+                            itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                }
+
+                /* draw elements */
+                background.draw(c);
+                icon.draw(c);
             }
-        });
-
-
-        /* Aktualisieren der Seite durch SwipeRefresh */
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mAdapter.clear();
-                MainActivity.getInstance().synchronizeRecords();
-                swipeContainer.setRefreshing(false);
-            }
-        });
-
-        /* Farbschema SwipeRefresh festlegen */
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
-        return view;
-    }
-
-    /* function to restore item */
-    private void restoreItem(Route deletedItem, int deletedIndex) {
-        mAdapter.restoreItem(deletedItem, deletedIndex);
-        recordDAO.create(deletedItem);
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 }
