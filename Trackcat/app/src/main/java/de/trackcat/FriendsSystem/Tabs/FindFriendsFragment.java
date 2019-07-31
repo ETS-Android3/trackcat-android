@@ -66,6 +66,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
         currentUser = userDAO.read(MainActivity.getActiveUser());
 
         /* Set page */
+        int t = MainActivity.getSearchForeignPageIndex();
         if (MainActivity.getSearchForeignPage() != 0) {
             maxPage = MainActivity.getSearchForeignPage();
             backPress = true;
@@ -181,11 +182,13 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                         if (page != maxPage && backPress) {
                             search(find, true, friendList);
                         } else {
-                            if (backPress) {
-                                friendListView.setSelection(MainActivity.getSearchForeignPageIndex());
-                            } else {
+
+                            friendListView.setSelection(MainActivity.getSearchForeignPageIndex());
+
+                         /*   if (backPress) {
+                               } else {
                                 friendListView.setSelection((page - 1) * 10);
-                            }
+                            }*/
                         }
 
                         /* delete progressbar */
@@ -216,7 +219,10 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
-                adapter.clear();
+                try {
+                    adapter.clear();
+                } catch (Exception e) {
+                }
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchNoConnection), Toast.LENGTH_SHORT).show();
                 noEntrys.setVisibility(View.VISIBLE);
                 noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSearchNoConnection));

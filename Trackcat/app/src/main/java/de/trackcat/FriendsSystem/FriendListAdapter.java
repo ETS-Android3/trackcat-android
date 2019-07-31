@@ -152,6 +152,9 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                     fragTransaction.replace(R.id.mainFrame, friendProfileFragment,
                                             MainActivity.getInstance().getResources().getString(R.string.fFriendLiveProfile));
                                     fragTransaction.commit();
+
+                                    /* add to Stack */
+                                    fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fFriendLiveProfile));
                                 }
 
                                 /* Show friend live view */
@@ -167,11 +170,18 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                         fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
                                                 MainActivity.getInstance().getResources().getString(R.string.fFriendLiveViewList));
 
+                                        /* add to Stack */
+                                        fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fFriendLiveViewList));
 
-                                                /* Live friend from profile */
+
+
+                                        /* Live friend from profile */
                                     }else{
                                         fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
                                                 MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
+
+                                        /* add to Stack */
+                                        fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
                                     }
 
                                     fragTransaction.commit();
@@ -204,6 +214,9 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
                                     /* Set id for backPress */
                                     MainActivity.setSearchFriendPageIndex(position);
+
+                                    /* add to Stack */
+                                    fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
                                 }
 
                                 /* Delete friend */
@@ -290,6 +303,10 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                             MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
                                     fragTransaction.commit();
                                     MainActivity.setSearchForeignPageIndex(position);
+
+                                    /* add to Stack */
+                                    fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
+
                                 }
 
                                 /* AddFriend */
@@ -321,6 +338,10 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
                                         /* Set index */
                                         MainActivity.setSendFriendQuestionIndex(position);
+
+                                        /* add to Stack */
+                                        fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileSendQuestion));
+
                                     }
 
                                     /* Delete friend */
@@ -350,6 +371,10 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
                                         /* Set index */
                                         MainActivity.setFriendQuestionIndex(position);
+
+                                        /* add to Stack */
+                                        fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileQuestion));
+
                                     }
 
                                     /* AddFriend */

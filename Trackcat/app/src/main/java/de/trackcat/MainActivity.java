@@ -19,6 +19,8 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.GravityCompat;
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = getInstance().getIntent();
         getInstance().finish();
         getInstance().startActivity(intent);
-        restarted=true;
+        restarted = true;
     }
 
     public PermissionManager getPermissionManager() {
@@ -440,12 +442,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setConnection(connected);
 
         /* Startseite festlegen - Erster Aufruf */
-        Log.d("HALLO", "restart: "+restarted);
+        Log.d("HALLO", "restart: " + restarted);
 
         /* load settings if them changed */
-        if(restarted){
+        if (restarted) {
             loadSettings();
-        }else {
+        } else {
             loadDashboard();
         }
     }
@@ -643,64 +645,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null) {
-            loadDashboard();
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
-            loadRecordList();
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
-            loadProfile(false);
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
-            loadFriendSystem(1);
-            try {
-                FriendLiveFragment.resetHandler();
-            } catch (Exception e) {
-            }
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfile)) != null) {
-            loadFriendSystem(0);
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileQuestion)) != null) {
-            loadFriendSystem(3);
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fPublicPersonProfileSendQuestion)) != null) {
-            loadFriendSystem(4);
-        } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveProfile)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveViewList)) != null) {
-            loadFriendSystem(2);
-            try {
-                FriendLiveFragment.resetHandler();
-            } catch (Exception e) {
-            }
-        } else if (mainDrawer.isDrawerOpen(GravityCompat.START)) {
-            mainDrawer.closeDrawer(GravityCompat.START);
-        }
 
-        /* close app with klick double back */
-        if (exitApp) {
-            Log.d("GESCHLOSSEN", "EXIT APP:");
+        /* go page back */
+        if(this.getSupportFragmentManager().getBackStackEntryCount()>1) {
+            int index = this.getSupportFragmentManager().getBackStackEntryCount() - 2;
+            FragmentManager.BackStackEntry backEntry = getSupportFragmentManager().getBackStackEntryAt(index);
+            String tag = backEntry.getName();
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
 
-            //  ClosingService.getInstance().onTaskRemoved(MainActivity.getInstance().getIntent());
-            if (android.os.Build.VERSION.SDK_INT >= 21) {
-                finishAndRemoveTask();
-            } else {
-                RecordTempDAO recordTempDAO = new RecordTempDAO(MainActivity.getInstance());
-                recordTempDAO.deleteAllNotFinished();
-                finish();
+             for (int i = 0; i < this.getSupportFragmentManager().getBackStackEntryCount(); i++) {
+
+                FragmentManager.BackStackEntry b = getSupportFragmentManager().getBackStackEntryAt(i);
+                String t = b.getName();
+                Log.i(getResources().getString(R.string.app_name) + "-Fragment", "tag: " + t + " an der Stelle: " + i);
             }
 
-            //  System.exit(0);
-        }
 
-        exitApp = true;
-        if (hints) {
-            Toast.makeText(instance, "Noch einmal klicken, um App zu beenden!", Toast.LENGTH_SHORT).show();
-        }
+            FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
+            fragTransaction.remove(fragment);
+            this.getSupportFragmentManager().popBackStack();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                exitApp = false;
-                if (hints) {
-                    Toast.makeText(instance, "Zu langsam. Versuche es erneut...", Toast.LENGTH_LONG).show();
+            fragTransaction.replace(R.id.mainFrame, fragment, tag);
+            fragTransaction.commit();
+        }else{
+
+            /* close app with klick double back */
+            if (exitApp) {
+                Log.d("GESCHLOSSEN", "EXIT APP:");
+
+                //  ClosingService.getInstance().onTaskRemoved(MainActivity.getInstance().getIntent());
+                if (android.os.Build.VERSION.SDK_INT >= 21) {
+                    finishAndRemoveTask();
+                } else {
+                    RecordTempDAO recordTempDAO = new RecordTempDAO(MainActivity.getInstance());
+                    recordTempDAO.deleteAllNotFinished();
+                    finish();
                 }
+
+                //  System.exit(0);
             }
-        }, 3000);
+            exitApp = true;
+            if (hints) {
+                Toast.makeText(instance, "Noch einmal klicken, um App zu beenden!", Toast.LENGTH_SHORT).show();
+            }
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exitApp = false;
+                    if (hints) {
+                        Toast.makeText(instance, "Zu langsam. Versuche es erneut...", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }, 3000);
+        }
     }
 
 
@@ -711,6 +709,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.replace(R.id.mainFrame, new DashboardFragment(),
                 getResources().getString(R.string.fDashboard));
         fragTransaction.commit();
+
+        /* add to Stack */
+        fragTransaction.addToBackStack(getResources().getString(R.string.fDashboard));
+
     }
 
     /* Laden des Aufnahme-Fragments */
@@ -737,6 +739,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragTransaction.replace(R.id.mainFrame, recordFragment,
                     getResources().getString(R.string.fRecord));
             fragTransaction.commit();
+
+            /* add to Stack */
+            fragTransaction.addToBackStack( getResources().getString(R.string.fRecord));
         }
     }
 
@@ -747,6 +752,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.replace(R.id.mainFrame, new RecordListFragment(),
                 getResources().getString(R.string.fRecordlist));
         fragTransaction.commit();
+
+        /* add to Stack */
+        fragTransaction.addToBackStack(getResources().getString(R.string.fRecordlist));
     }
 
     /* Laden des Profil-Fragments */
@@ -772,6 +780,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         menu.findItem(R.id.nav_recordlist).setChecked(false);
         menu.findItem(R.id.nav_settings).setChecked(false);
         menu.findItem(R.id.nav_friends).setChecked(false);
+
+        /* add to Stack */
+        fragTransaction.addToBackStack(getResources().getString(R.string.fProfile));
     }
 
     /* Laden des Einstellung-Fragments */
@@ -781,6 +792,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.replace(R.id.mainFrame, new SettingsFragment(),
                 getResources().getString(R.string.fSettings));
         fragTransaction.commit();
+
+        /* add to Stack */
+        fragTransaction.addToBackStack(getResources().getString(R.string.fSettings));
     }
 
     /* Laden des Einstellung-Fragments */
@@ -791,6 +805,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.replace(R.id.mainFrame, new EditProfileFragment(),
                 getResources().getString(R.string.fEditProfile));
         fragTransaction.commit();
+
+        /* add to Stack */
+        fragTransaction.addToBackStack(getResources().getString(R.string.fEditProfile));
     }
 
     /* Laden des Einstellung-Fragments */
@@ -800,6 +817,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.replace(R.id.mainFrame, new EditPasswordFragment(),
                 getResources().getString(R.string.fEditPassword));
         fragTransaction.commit();
+
+        /* add to Stack */
+        fragTransaction.addToBackStack(getResources().getString(R.string.fEditPassword));
     }
 
     /* Laden des Friends-Fragments */
@@ -817,6 +837,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.replace(R.id.mainFrame, firendsFragment,
                 getResources().getString(R.string.fFriendSystem));
         fragTransaction.commit();
+
+        /* add to Stack */
+        fragTransaction.addToBackStack(getResources().getString(R.string.fFriendSystem));
     }
 
     /* Laden des Friends-Fragments */
@@ -826,6 +849,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.replace(R.id.mainFrame, new DeleteAccountFragment(),
                 getResources().getString(R.string.fDeleteAccount));
         fragTransaction.commit();
+
+        /* add to Stack */
+        fragTransaction.addToBackStack(getResources().getString(R.string.fDeleteAccount));
     }
 
     // set the RecordFragment wich is in use

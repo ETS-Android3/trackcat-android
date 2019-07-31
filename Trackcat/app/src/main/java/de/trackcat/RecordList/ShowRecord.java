@@ -149,6 +149,10 @@ public class ShowRecord {
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
                 fragTransaction.commit();
+
+                /* add to Stack */
+                fragTransaction.addToBackStack(TAG);
+
                 if (MainActivity.getHints()) {
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName() + "\"", Toast.LENGTH_LONG).show();
                 }

@@ -147,7 +147,10 @@ public class FriendSendQuestionsFragment extends Fragment {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
-                adapter.clear();
+                try {
+                    adapter.clear();
+                } catch (Exception e) {
+                }
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSendQuestionConnection), Toast.LENGTH_SHORT).show();
                 noEntrys.setVisibility(View.VISIBLE);
                 noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSendQuestionConnection));

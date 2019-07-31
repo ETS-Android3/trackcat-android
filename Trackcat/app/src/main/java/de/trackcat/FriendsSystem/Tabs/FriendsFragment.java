@@ -76,7 +76,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(adapter!=null) {
+                if (adapter != null) {
                     adapter.clear();
                     loadPage();
                 }
@@ -98,13 +98,13 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
 
         /* Find search field */
         findFriend = view.findViewById(R.id.findFriend);
-        VectorDrawableCompat drawableCompat= VectorDrawableCompat.create(getActivity().getResources(), R.drawable.ic_search, findFriend.getContext().getTheme());
+        VectorDrawableCompat drawableCompat = VectorDrawableCompat.create(getActivity().getResources(), R.drawable.ic_search, findFriend.getContext().getTheme());
         findFriend.setCompoundDrawablesWithIntrinsicBounds(drawableCompat, null, null, null);
 
         //Drawable myDrawable = getResources().getDrawable(R.drawable.ic_search);
-       // Drawable  d= new Drawable()
-       // Drawable      drawableCompat= VectorDrawableCompat.create(getActivity().getResources(), R.drawable.ic_search, null);
-      //  findFriend.setCompoundDrawablesWithIntrinsicBounds(myDrawable, null, null, null);
+        // Drawable  d= new Drawable()
+        // Drawable      drawableCompat= VectorDrawableCompat.create(getActivity().getResources(), R.drawable.ic_search, null);
+        //  findFriend.setCompoundDrawablesWithIntrinsicBounds(myDrawable, null, null, null);
     /*    Drawable image = getResources().getDrawable( R.drawable.ic_search );
         int h = image.getIntrinsicHeight();
         int w = image.getIntrinsicWidth();
@@ -209,24 +209,27 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                         if (page != maxPage && backPress) {
                             showFriends(find, true, friendList);
                         } else {
-                            if (backPress) {
+
+                            friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
+
+                           /* if (backPress) {
                                 friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
                             } else {
                                 friendListView.setSelection((page - 1) * 10);
-                            }
+                            }*/
                         }
 
                         noEntrys.setVisibility(View.GONE);
                         /* Message no friends */
-                        if(friendList.size()==0 && MainActivity.getSearchFriendTerm()==""){
+                        if (friendList.size() == 0 && MainActivity.getSearchFriendTerm() == "") {
                             noEntrys.setVisibility(View.VISIBLE);
                             noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendNoEntry));
-                        }else
+                        } else
                             /* Message no friends found*/
-                            if(MainActivity.getSearchFriendTerm()!=""){
+                            if (friendList.size() == 0 && MainActivity.getSearchFriendTerm() != "") {
                                 noEntrys.setVisibility(View.VISIBLE);
                                 noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSearchNoEntry));
-                        }
+                            }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -238,7 +241,10 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
-                adapter.clear();
+                try {
+                    adapter.clear();
+                } catch (Exception e) {
+                }
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNoConnection), Toast.LENGTH_SHORT).show();
                 noEntrys.setVisibility(View.VISIBLE);
                 noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendNoConnection));
