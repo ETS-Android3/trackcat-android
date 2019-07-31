@@ -592,9 +592,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
          * recreate status of Play/Pause Button
          * */
         if (isTracking) {
-            playPause.setImageResource(R.drawable.record_pausebtn_white);
+            playPause.setImageResource(R.drawable.record_pausebtn);
         } else {
-            playPause.setImageResource(R.drawable.record_playbtn_white);
+            playPause.setImageResource(R.drawable.record_playbtn);
             if (locatorGPS != null) {
                 locatorGPS.startTracking();
             }
@@ -1101,7 +1101,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             isTracking = true;
         }
 
-        playPause.setImageResource(R.drawable.record_pausebtn_white);
+        playPause.setImageResource(R.drawable.record_pausebtn);
         issueNotification(notificationContent);
     }
 
@@ -1372,7 +1372,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             Log.v(getResources().getString(R.string.app_name), e.toString());
         }
 
-        playPause.setImageResource(R.drawable.record_playbtn_white);
+        playPause.setImageResource(R.drawable.record_playbtn);
         issueNotification(notificationContent);
 
     }

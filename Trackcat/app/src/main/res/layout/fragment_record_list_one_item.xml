@@ -92,7 +92,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="5dp"
-                                app:srcCompat="@drawable/record_distance_theme_color" />
+                                app:srcCompat="@drawable/record_distance" />
 
                             <TextView
                                 android:id="@+id/distance_TextView"

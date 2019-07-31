@@ -75,7 +75,7 @@ public class SpeedAverager {
     /* Liefert die entsprechende Icon ID zu einem Typen */
     public static int getTypeIcon(int type) {
         int drawableInt = 0;
-        
+
             switch (type) {
                 case 0:
                     drawableInt = R.drawable.activity_running_record;

@@ -81,7 +81,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="0"
-                                app:srcCompat="@drawable/record_average_speed_white" />
+                                app:srcCompat="@drawable/record_average_speed" />
 
                             <TextView
                                 android:id="@+id/average_speed_TextView"
@@ -104,7 +104,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
-                                app:srcCompat="@drawable/record_distance_white" />
+                                app:srcCompat="@drawable/record_distance" />
 
                             <TextView
                                 android:id="@+id/distance_TextView"
@@ -137,7 +137,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="0"
-                                app:srcCompat="@drawable/record_altimeter_white" />
+                                app:srcCompat="@drawable/record_altimeter" />
 
                             <TextView
                                 android:id="@+id/altimeter_TextView"
