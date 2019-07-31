@@ -1429,9 +1429,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
             /* Ger last ___ locations */
             List<de.trackcat.Database.Models.Location> l = locationTempDAO.readAllGreaterThan(newRecordId, lastIndex);
-            if (l.size() > 0) {
-                lastIndex = l.get(l.size() - 1).getId();
-            }
+
 
             /* Get current user */
             UserDAO userDAO = new UserDAO(MainActivity.getInstance());
@@ -1466,8 +1464,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                         /* parse json */
                         JSONObject mainObject = new JSONObject(jsonString);
 
+                        /* set index up */
                         if (mainObject.getString("success").equals("0")) {
-
+                            if (l.size() > 0) {
+                                lastIndex = l.get(l.size() - 1).getId();
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -1479,10 +1480,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     call.cancel();
-                    MainActivity.getInstance().endTracking();
-                    Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
-                            Toast.LENGTH_LONG).show();
-
                 }
             });
         }
