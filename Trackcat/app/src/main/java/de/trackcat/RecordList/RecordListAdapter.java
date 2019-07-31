@@ -1,4 +1,4 @@
-package de.trackcat.RecordList.SwipeControll;
+package de.trackcat.RecordList;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,16 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
-import de.trackcat.Database.DAO.RecordTempDAO;
-import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
-import de.trackcat.RecordList.ShowRecord;
 
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.MyViewHolder> {
     private Context context;

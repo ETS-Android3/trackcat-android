@@ -15,7 +15,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,8 +39,6 @@ import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
-import de.trackcat.RecordList.SwipeControll.RecordListAdapter;
-import de.trackcat.RecordList.SwipeControll.SwipeController;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,7 +52,6 @@ public class RecordListFragment extends Fragment {
     private RecordListAdapter mAdapter;
     private LinearLayout mainLayout;
 
-    SwipeController swipeController = null;
     private SwipeRefreshLayout swipeContainer;
 
     private boolean restore = false;
@@ -117,7 +113,7 @@ public class RecordListFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        
+
         return view;
     }
 
