@@ -189,10 +189,6 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                         GPSData.clear();
                                         index = 0;
                                         runCounter = 1;
-
-                                        if (MainActivity.getHints()) {
-                                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNewLive), Toast.LENGTH_SHORT).show();
-                                        }
                                     }
 
                                     /* Get location data */
@@ -219,9 +215,15 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
 
                                             /* Set recordId */
                                             recordId = mainObject.getInt("id");
+
+                                            if (MainActivity.getHints()) {
+                                                Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNewLive), Toast.LENGTH_SHORT).show();
+                                            }
                                         } else {
                                             drawRoute();
                                         }
+
+                                        runCounter++;
                                     }
                                     /* Set values */
                                     userTitle.setText(titleStart + mainObject.getString("firstName") + " " + mainObject.getString("lastName"));
@@ -278,7 +280,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                             }
                                         });
                                     }
-                                    runCounter++;
+
 
                                 } else {
 
@@ -316,7 +318,9 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
 
         return view;
     }
+
     Marker startMarker;
+
     private void createMap() {
 
         /* Set map */
