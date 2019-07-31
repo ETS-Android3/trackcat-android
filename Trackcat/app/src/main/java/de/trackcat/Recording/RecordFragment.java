@@ -531,13 +531,15 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             AlertDialog dialog = alertdialogbuilder.create();
                             dialog.show();
                             dialog.setCanceledOnTouchOutside(false);
-                        }else{
+                        } else {
 
                         }
                         //    startTracking();
-                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Aufzeichnung fortgesetzt.", Toast.LENGTH_LONG).show();
-                        recordingRuns = true;
-                        startTracking();
+                        if (kmCounter != null) {
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Aufzeichnung fortgesetzt.", Toast.LENGTH_LONG).show();
+                            recordingRuns = true;
+                            startTracking();
+                        }
                     }
 
                     /* get location data */
