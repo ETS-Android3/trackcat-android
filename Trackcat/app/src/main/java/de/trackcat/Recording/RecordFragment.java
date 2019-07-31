@@ -39,6 +39,7 @@ import com.karan.churi.PermissionManager.PermissionManager;
 
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
+import de.trackcat.BuildConfig;
 import de.trackcat.CustomElements.RecordModelForServer;
 import de.trackcat.Database.DAO.LocationTempDAO;
 import de.trackcat.Database.DAO.RecordTempDAO;
@@ -61,6 +62,8 @@ import retrofit2.Retrofit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.config.IConfigurationProvider;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
@@ -79,6 +82,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimerTask;
+
+import static org.osmdroid.tileprovider.util.StorageUtils.getStorage;
 
 
 /*
@@ -670,7 +675,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
         /* Typ festlegen */
         typeIcon = alertView.findViewById(R.id.fabButton);
-        typeIcon.setImageResource(SpeedAverager.getTypeIcon(type, false));
+        typeIcon.setImageResource(SpeedAverager.getTypeIcon(type));
 
         /* Placeholder festlegen */
         TextView recordName = alertView.findViewById(R.id.record_name);
@@ -1006,6 +1011,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mPath.setColor(Color.RED);
         mPath.setWidth(4);
 
+        /* load map by big routes */
+        IConfigurationProvider provider = Configuration.getInstance();
+        provider.setUserAgentValue(BuildConfig.APPLICATION_ID);
+        provider.setOsmdroidBasePath(getStorage());
+        provider.setOsmdroidTileCache(getStorage());
+
     }
 
     /*
@@ -1205,7 +1216,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
         try {
             FloatingActionButton fab = view.findViewById(R.id.fabButton);
-            fab.setImageResource(SpeedAverager.getTypeIcon(SpeedAverager.getRouteType(kmhAverager.getAvgSpeed()), false));
+            fab.setImageResource(SpeedAverager.getTypeIcon(SpeedAverager.getRouteType(kmhAverager.getAvgSpeed())));
         } catch (Exception e) {
             Log.v(getResources().getString(R.string.app_name), e.toString());
         }

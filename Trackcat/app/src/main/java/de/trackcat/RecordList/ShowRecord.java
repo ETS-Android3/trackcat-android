@@ -35,7 +35,7 @@ public class ShowRecord {
         recordId.setText("" + (position + 1));
 
         /* symbolize type */
-        recordType.setImageResource(SpeedAverager.getTypeIcon(records.get(position).getType(), true));
+        recordType.setImageResource(SpeedAverager.getTypeIcon(records.get(position).getType()));
 
         /* temp status */
         if (records.get(position).isTemp()) {

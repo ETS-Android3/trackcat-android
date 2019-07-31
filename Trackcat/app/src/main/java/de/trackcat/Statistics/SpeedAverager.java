@@ -73,25 +73,9 @@ public class SpeedAverager {
     }
 
     /* Liefert die entsprechende Icon ID zu einem Typen */
-    public static int getTypeIcon(int type, boolean list) {
+    public static int getTypeIcon(int type) {
         int drawableInt = 0;
-
-        /* Icons in Listenansicht an Theme angepasst */
-        if (list) {
-            switch (type) {
-                case 0:
-                    drawableInt = R.drawable.activity_running_record_list;
-                    break;
-                case 1:
-                    drawableInt = R.drawable.activity_biking_record_list;
-                    break;
-                case 2:
-                    drawableInt = R.drawable.activity_caring_record_list;
-                    break;
-            }
-        }
-        /* Icons an jeder anderen genutzen Stelle */
-        else {
+        
             switch (type) {
                 case 0:
                     drawableInt = R.drawable.activity_running_record;
@@ -103,7 +87,7 @@ public class SpeedAverager {
                     drawableInt = R.drawable.activity_caring_record;
                     break;
             }
-        }
+
         return drawableInt;
     }
 }

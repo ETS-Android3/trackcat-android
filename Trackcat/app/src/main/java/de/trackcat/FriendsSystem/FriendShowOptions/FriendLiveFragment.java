@@ -234,7 +234,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                     String altimeterStr = Math.round(lastAltimeter) + " m";
                                     altimeter.setText(altimeterStr);
 
-                                    type.setImageResource(SpeedAverager.getTypeIcon(mainObject.getInt("type"), false));
+                                    type.setImageResource(SpeedAverager.getTypeIcon(mainObject.getInt("type")));
 
                                     String timeStr = df.format(new Date(mainObject.getLong("time") * 1000));
                                     time.setText(timeStr);
