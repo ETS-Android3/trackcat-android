@@ -1136,7 +1136,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 .setSound(null)
                 .setOngoing(false)
                 .setContentIntent(intent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_LOW);
 
         /* Nur in neueren Versionen */
         if (Build.VERSION.SDK_INT >= 21) {
