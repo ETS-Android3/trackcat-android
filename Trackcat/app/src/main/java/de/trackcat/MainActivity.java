@@ -515,35 +515,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Aktion je nach Auswahl des Items */
         switch (menuItem.getItemId()) {
             case R.id.nav_dashboard:
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) == null) {
+
+                Fragment fragmentDashboard = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard));
+                if (fragmentDashboard == null || (fragmentDashboard != null && !fragmentDashboard.isVisible())) {
                     toolbar.getMenu().clear();
                     loadDashboard();
                     clearValuesAfterChangeMenu();
                 }
+
                 break;
             case R.id.nav_recordlist:
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) == null) {
+
+                Fragment fragmentRecordList = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist));
+                if (fragmentRecordList == null || (fragmentRecordList != null && !fragmentRecordList.isVisible())) {
+
                     menuInstance.clear();
                     synchronizeRecords();
                     clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_record:
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
+                Fragment fragmentRecord = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord));
+                if (fragmentRecord == null || (fragmentRecord != null && !fragmentRecord.isVisible())) {
+
                     menuInstance.clear();
                     loadRecord();
                     clearValuesAfterChangeMenu();
+
                 }
                 break;
             case R.id.nav_settings:
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) == null) {
+
+                Fragment fragmentSettings = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings));
+                if (fragmentSettings == null || (fragmentSettings != null && !fragmentSettings.isVisible())) {
+
                     menuInstance.clear();
                     loadSettings();
                     clearValuesAfterChangeMenu();
                 }
                 break;
             case R.id.nav_friends:
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) == null) {
+                Fragment fragmentFriends = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem));
+                if (fragmentFriends == null || (fragmentFriends != null && !fragmentFriends.isVisible())) {
+
                     menuInstance.clear();
                     loadFriendSystem(1);
                     clearValuesAfterChangeMenu();
@@ -647,13 +661,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
 
         /* go page back */
-        if(this.getSupportFragmentManager().getBackStackEntryCount()>1) {
+        if (this.getSupportFragmentManager().getBackStackEntryCount() > 1) {
             int index = this.getSupportFragmentManager().getBackStackEntryCount() - 2;
             FragmentManager.BackStackEntry backEntry = getSupportFragmentManager().getBackStackEntryAt(index);
             String tag = backEntry.getName();
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
 
-             for (int i = 0; i < this.getSupportFragmentManager().getBackStackEntryCount(); i++) {
+            for (int i = 0; i < this.getSupportFragmentManager().getBackStackEntryCount(); i++) {
 
                 FragmentManager.BackStackEntry b = getSupportFragmentManager().getBackStackEntryAt(i);
                 String t = b.getName();
@@ -667,7 +681,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             fragTransaction.replace(R.id.mainFrame, fragment, tag);
             fragTransaction.commit();
-        }else{
+        } else {
 
             /* close app with klick double back */
             if (exitApp) {
@@ -741,7 +755,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragTransaction.commit();
 
             /* add to Stack */
-            fragTransaction.addToBackStack( getResources().getString(R.string.fRecord));
+            fragTransaction.addToBackStack(getResources().getString(R.string.fRecord));
         }
     }
 
