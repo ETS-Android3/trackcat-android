@@ -316,7 +316,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
 
         return view;
     }
-
+    Marker startMarker;
     private void createMap() {
 
         /* Set map */
@@ -328,7 +328,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
 
         /* create Polyline and marker */
         gPt = new GeoPoint(locations.get(0).getLatitude(), locations.get(0).getLongitude());
-        Marker startMarker = new Marker(mMapView);
+        startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         if (android.os.Build.VERSION.SDK_INT >= 21) {
@@ -377,6 +377,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         Polyline mPath = new Polyline(mMapView);
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(stopMarker);
+        mMapView.getOverlays().add(startMarker);
 
         mPath.setPoints(GPSData);
         mPath.setColor(Color.RED);
