@@ -135,7 +135,9 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                     /* User Scroll */
                 } else {
                     userScroll = true;
-                    goToMarker.show();
+                    if (!showAll) {
+                        goToMarker.show();
+                    }
                 }
                 return true;
             }
@@ -408,6 +410,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
             case R.id.showCompleteRecordBtn:
                 /* Show zoomed view */
                 if (showAll) {
+                    mMapController.setZoom(19);
                     goToMarker();
                     showCompleteRecord.setImageResource(R.drawable.ic_switch_one);
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewZoom), Toast.LENGTH_SHORT).show();
