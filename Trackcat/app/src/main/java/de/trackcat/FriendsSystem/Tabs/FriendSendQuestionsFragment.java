@@ -43,7 +43,7 @@ public class FriendSendQuestionsFragment extends Fragment {
     private static View view;
     private static User currentUser;
     private static FriendListAdapter adapter;
-    private SwipeRefreshLayout swipeContainer;
+    private static SwipeRefreshLayout swipeContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +66,6 @@ public class FriendSendQuestionsFragment extends Fragment {
                     adapter.clear();
                     loadPage();
                 }
-                swipeContainer.setRefreshing(false);
             }
         });
 
@@ -143,6 +142,8 @@ public class FriendSendQuestionsFragment extends Fragment {
                     e.printStackTrace();
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
                 }
+
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -155,6 +156,8 @@ public class FriendSendQuestionsFragment extends Fragment {
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSendQuestionConnection), Toast.LENGTH_SHORT).show();
                 noEntrys.setVisibility(View.VISIBLE);
                 noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSendQuestionConnection));
+
+                swipeContainer.setRefreshing(false);
             }
         });
     }

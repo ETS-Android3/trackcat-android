@@ -78,7 +78,6 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
                     adapter.clear();
                     loadPage();
                 }
-                swipeContainer.setRefreshing(false);
             }
         });
 
@@ -155,6 +154,8 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -167,6 +168,8 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNoConnection), Toast.LENGTH_SHORT).show();
                 noEntrys.setVisibility(View.VISIBLE);
                 noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendNoConnection));
+
+                swipeContainer.setRefreshing(false);
 
             }
         });

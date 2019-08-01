@@ -80,7 +80,6 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                     adapter.clear();
                     loadPage();
                 }
-                swipeContainer.setRefreshing(false);
             }
         });
 
@@ -236,6 +235,8 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -248,7 +249,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                 Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNoConnection), Toast.LENGTH_SHORT).show();
                 noEntrys.setVisibility(View.VISIBLE);
                 noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendNoConnection));
-
+                swipeContainer.setRefreshing(false);
             }
         });
     }
