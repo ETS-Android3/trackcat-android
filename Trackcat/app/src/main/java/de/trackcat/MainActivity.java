@@ -519,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Fragment fragmentDashboard = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard));
                 if (fragmentDashboard == null || (fragmentDashboard != null && !fragmentDashboard.isVisible())) {
                     toolbar.getMenu().clear();
-                    loadDashboard();
+                    synchronizeRecords(false);
                     clearValuesAfterChangeMenu();
                 }
 
@@ -530,7 +530,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (fragmentRecordList == null || (fragmentRecordList != null && !fragmentRecordList.isVisible())) {
 
                     menuInstance.clear();
-                    synchronizeRecords();
+                    synchronizeRecords(true);
                     clearValuesAfterChangeMenu();
                 }
                 break;
@@ -1284,7 +1284,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /* function to synchronize all records */
-    public void synchronizeRecords() {
+    public void synchronizeRecords(boolean recordList) {
+
+        /*load view*/
+        if(recordList) {
+            loadRecordList();
+        }else{
+            loadDashboard();
+        }
 
         /* get all records routes */
         RouteDAO recordDAO = new RouteDAO(this);
@@ -1374,12 +1381,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                     /*load view*/
-                    loadRecordList();
+                    if(recordList) {
+                        loadRecordList();
+                    }else{
+                        loadDashboard();
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
+
+                    /*load view*/
+                    if(recordList) {
+                        loadRecordList();
+                    }else{
+                        loadDashboard();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
+
+                    /*load view*/
+                    if(recordList) {
+                        loadRecordList();
+                    }else{
+                        loadDashboard();
+                    }
                 }
             }
 
@@ -1388,9 +1413,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 call.cancel();
 
                 /*load view*/
-                loadRecordList();
+                if(recordList) {
+                    loadRecordList();
+                }else{
+                    loadDashboard();
+                }
             }
         });
     }
-
 }
