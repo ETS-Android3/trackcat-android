@@ -21,6 +21,8 @@
     <string name="fEditProfile">EDITPROFILE</string>
     <string name="fEditPassword">EDITPASSWORD</string>
     <string name="fFriendSystem">FREUNDE</string>
+    <string name="fFriends">FRIENDSTAB</string>
+    <string name="fFindFriends">FINDFRIENDSTAB</string>
     <string name="fDeleteAccount">DELETEACCOUNT</string>
     <string name="fSettings">SETTINGS</string>
     <string name="fPageViewer">PAGE_VIEWER</string>

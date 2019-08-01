@@ -877,35 +877,97 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.showHelp:
+
+                Log.d("HEEEY", "" + getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriends)));
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.getInstance());
                 alert.setTitle("Hilfe");
 
+                Fragment fragment;
                 if (MainActivity.getHints()) {
                     if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_dashboard));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_record));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_record_list));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_settings));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_record_details));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_profile));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_editProfile));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_editPassword));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_friendSystem));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_deleteAccount));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_friends_profile));
-                    } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
-                        alert.setMessage(getResources().getString(R.string.help_friends_live_view));
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_dashboard));
+                        }
                     }
+
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_record));
+                        }
+                    }
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_record_list));
+                        }
+                    }
+
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_settings));
+                        }
+                    }
+
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
+
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord));
+                        Fragment fragment2 = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList));
+                        if (fragment.isVisible() || fragment2.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_record_details));
+                        }
+                    }
+
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_profile));
+                        }
+                    }
+
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_editProfile));
+                        }
+                    }
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_editPassword));
+                        }
+                    }
+
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_friendSystem));
+                        }
+                    }
+
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_deleteAccount));
+                        }
+                    }
+
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendProfile));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_friends_profile));
+                        }
+                    }
+
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendLiveView));
+                        if (fragment.isVisible()) {
+                            alert.setMessage(getResources().getString(R.string.help_friends_live_view));
+                        }
+                    }
+                    
                     alert.setNegativeButton("Schließen", null);
                     alert.show();
                 } else {
@@ -1287,9 +1349,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void synchronizeRecords(boolean recordList) {
 
         /*load view*/
-        if(recordList) {
+        if (recordList) {
             loadRecordList();
-        }else{
+        } else {
             loadDashboard();
         }
 
@@ -1381,9 +1443,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                     /*load view*/
-                    if(recordList) {
+                    if (recordList) {
                         loadRecordList();
-                    }else{
+                    } else {
                         loadDashboard();
                     }
 
@@ -1391,18 +1453,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     e.printStackTrace();
 
                     /*load view*/
-                    if(recordList) {
+                    if (recordList) {
                         loadRecordList();
-                    }else{
+                    } else {
                         loadDashboard();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
 
                     /*load view*/
-                    if(recordList) {
+                    if (recordList) {
                         loadRecordList();
-                    }else{
+                    } else {
                         loadDashboard();
                     }
                 }
@@ -1413,9 +1475,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 call.cancel();
 
                 /*load view*/
-                if(recordList) {
+                if (recordList) {
                     loadRecordList();
-                }else{
+                } else {
                     loadDashboard();
                 }
             }
