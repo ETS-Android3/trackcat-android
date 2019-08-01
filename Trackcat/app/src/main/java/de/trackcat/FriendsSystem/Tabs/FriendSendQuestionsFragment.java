@@ -127,6 +127,7 @@ public class FriendSendQuestionsFragment extends Fragment {
                         }else {
                             noEntrys.setVisibility(View.VISIBLE);
                             noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSendQuestionNoEntry));
+                            parentFrag.setBadgeText(4, null);
                         }
 
                         /* Add entrys to view */

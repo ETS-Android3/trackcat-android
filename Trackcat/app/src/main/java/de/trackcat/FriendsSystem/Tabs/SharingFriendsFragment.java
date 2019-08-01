@@ -147,6 +147,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
                         } else {
                             noEntrys.setVisibility(View.VISIBLE);
                             noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendLiveNoEntry));
+                            parentFrag.setBadgeText(2, null);
                         }
                     }
                 } catch (IOException e) {
