@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/user_delete_account_title"
+            android:id="@+id/find_friend_title"
             style="@style/TextAppearance.AppCompat.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,13 +36,14 @@
                 android:layout_weight="1"
                 android:gravity="center|right">
 
-                <android.support.v7.widget.AppCompatEditText
+                <EditText
                     android:id="@+id/findFriend"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_margin="5dp"
-                   android:ems="10"
-                    android:hint="Freunde finden"></android.support.v7.widget.AppCompatEditText>
+                    android:drawableTint="?attr/iconColor"
+                    android:ems="10"
+                    android:hint="Freunde finden"></EditText>
             </LinearLayout>
         </LinearLayout>
 
