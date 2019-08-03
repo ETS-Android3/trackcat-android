@@ -676,8 +676,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            fragTransaction.remove(fragment);
+          //  fragTransaction.remove(fragment);
             this.getSupportFragmentManager().popBackStack();
+            Log.i(getResources().getString(R.string.app_name) + "-Fragment", "load : " + tag);
 
             fragTransaction.replace(R.id.mainFrame, fragment, tag);
             fragTransaction.commit();
@@ -982,9 +983,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.profile_email:
             case R.id.profile_image:
             case R.id.profile_name:
-                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) == null) {
+                Fragment fragmentProfile = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile));
+                if (fragmentProfile == null || (fragmentProfile != null && !fragmentProfile.isVisible())) {
                     menuInstance.clear();
                     loadProfile(true);
+
                 }
                 mainDrawer.closeDrawer(GravityCompat.START);
                 break;
