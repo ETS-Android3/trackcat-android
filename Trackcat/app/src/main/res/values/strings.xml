@@ -189,7 +189,8 @@
     <string name="saveRouteOffline">Route nur lokal gespeichert.</string>
     <string name="recordsOptionsTitle">Aufnahmeoptionen</string>
     <string name="abortLiveRecord">Aufnahme erfolgreich verworfen.</string>
-    <string name="abortLiveRecordError">Aufnahme konnte nicht verworfen werden.</string>
-
+    <string name="abortLiveRecordError" tools:ignore="ExtraTranslation">Aufnahme konnte nicht verworfen werden.</string>
+    <string name="continueRecord">Aufnahme läuft weiter.</string>
+    <string name="dismissRecord">Aufnahme abgebrochen.</string>
 
 </resources>

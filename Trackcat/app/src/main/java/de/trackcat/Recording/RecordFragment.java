@@ -40,6 +40,7 @@ import com.karan.churi.PermissionManager.PermissionManager;
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
 import de.trackcat.BuildConfig;
+import de.trackcat.ClosingService;
 import de.trackcat.CustomElements.RecordModelForServer;
 import de.trackcat.Database.DAO.LocationTempDAO;
 import de.trackcat.Database.DAO.RecordTempDAO;
@@ -557,7 +558,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
 
                         /* if there is any data collectet Tracked Route is saveable */
-                        if (timer.getTime() > 0 && locations != null && locations.size() > 2) {
+                        if (timer.getTime() > 0) {
                             /* store starttime for holdDown */
                             startTime = event.getEventTime();
                             /* timer for Progressbar */
@@ -643,240 +644,157 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         stopTracking();
         notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
 
-        model.setTime(timer.getTime());
-        model.setRideTime(rideTimer.getTime());
-        model.setDistance(kmCounter.getAmount());
-        int type = SpeedAverager.getRouteType(kmhAverager.getAvgSpeed());
-        model.setType(type);
-        model.setUserID(MainActivity.getActiveUser());
-        model.setDate(System.currentTimeMillis());
-        model.setTemp(true);
-        Date currentTime = Calendar.getInstance().getTime();
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm:ss");
-        String dateStr = simpleDateFormat.format(currentTime);
-        String defaultName = "Rec_" + dateStr;
+        /* get location */
+        List<de.trackcat.Database.Models.Location> locations = locationTempDAO.readAll(newRecordId);
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-        alert.setTitle("Aufnahme speichern?");
+        if (locations.size() > 2) {
+            model.setTime(timer.getTime());
+            model.setRideTime(rideTimer.getTime());
+            model.setDistance(kmCounter.getAmount());
+            int type = SpeedAverager.getRouteType(kmhAverager.getAvgSpeed());
+            model.setType(type);
+            model.setUserID(MainActivity.getActiveUser());
+            model.setDate(System.currentTimeMillis());
+            model.setTemp(true);
+            Date currentTime = Calendar.getInstance().getTime();
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy_HH:mm:ss");
+            String dateStr = simpleDateFormat.format(currentTime);
+            String defaultName = "Rec_" + dateStr;
 
-        LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Aufnahme speichern?");
 
-        MapView mapViewZoom = null;
-        ImageView typeIcon;
+            LayoutInflater inflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        @SuppressLint("InflateParams")
-        View alertView = inflater != null ? inflater.inflate(R.layout.fragment_record_list_one_item, null, true) : null;
-        alert.setView(alertView);
+            MapView mapViewZoom = null;
+            ImageView typeIcon;
 
-        /* Route auf Karte zeichnen */
-        assert alertView != null;
-        drawRoute(alertView);
+            @SuppressLint("InflateParams")
+            View alertView = inflater != null ? inflater.inflate(R.layout.fragment_record_list_one_item, null, true) : null;
+            alert.setView(alertView);
 
-        mapViewZoom = alertView.findViewById(R.id.mapview);
+            /* Route auf Karte zeichnen */
+            assert alertView != null;
+            drawRoute(alertView);
 
-        /* Typ festlegen */
-        typeIcon = alertView.findViewById(R.id.fabButton);
-        typeIcon.setImageResource(SpeedAverager.getTypeIcon(type));
+            mapViewZoom = alertView.findViewById(R.id.mapview);
 
-        /* Placeholder festlegen */
-        TextView recordName = alertView.findViewById(R.id.record_name);
-        recordName.setHint(defaultName);
+            /* Typ festlegen */
+            typeIcon = alertView.findViewById(R.id.fabButton);
+            typeIcon.setImageResource(SpeedAverager.getTypeIcon(type));
 
-        /* Setzt die aufgezeichneten Kilometer */
-        TextView distance_TextView = alertView.findViewById(R.id.distance_TextView);
-        double distance = Math.round(kmCounter.getAmount());
-        if (distance >= 1000) {
-            String d = "" + distance / 1000L;
-            distance_TextView.setText(d.replace('.', ',') + " km");
-        } else {
-            distance_TextView.setText((int) distance + " m");
-        }
+            /* Placeholder festlegen */
+            TextView recordName = alertView.findViewById(R.id.record_name);
+            recordName.setHint(defaultName);
 
-        /* Setzt die Zeit */
-        TextView total_time_TextView = alertView.findViewById(R.id.total_time_TextView);
-        Timer timerForCalc = new Timer();
-        total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
-
-        FloatingActionButton typeBtn = alertView.findViewById(R.id.fabButton);
-        typeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Item[] items = {
-                        new Item("Laufen", R.drawable.activity_running_record),
-                        new Item("Fahrrad", R.drawable.activity_biking_record),
-                        new Item("Auto", R.drawable.activity_caring_record),
-                };
-
-                ListAdapter adapter = new ArrayAdapter<Item>(
-                        MainActivity.getInstance(),
-                        android.R.layout.select_dialog_item,
-                        android.R.id.text1,
-                        items) {
-                    public View getView(int position, View convertView, ViewGroup parent) {
-                        //Use super class to create the View
-                        View v = super.getView(position, convertView, parent);
-                        TextView tv = (TextView) v.findViewById(android.R.id.text1);
-
-                        //Put the image on the TextView
-                        tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0);
-
-                        //Add margin between image and text (support various screen densities)
-                        int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
-                        tv.setCompoundDrawablePadding(dp5);
-
-                        return v;
-                    }
-                };
-
-
-                new AlertDialog.Builder(MainActivity.getInstance())
-                        .setTitle("Typ auswählen")
-                        .setAdapter(adapter, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int item) {
-                                if (item == 0) {
-                                    typeBtn.setImageResource(R.drawable.activity_running_record);
-                                    model.setType(0);
-                                } else if (item == 1) {
-                                    typeBtn.setImageResource(R.drawable.activity_biking_record);
-                                    model.setType(1);
-                                } else if (item == 2) {
-                                    typeBtn.setImageResource(R.drawable.activity_caring_record);
-                                    model.setType(2);
-                                }
-                            }
-                        }).show();
-
+            /* Setzt die aufgezeichneten Kilometer */
+            TextView distance_TextView = alertView.findViewById(R.id.distance_TextView);
+            double distance = Math.round(kmCounter.getAmount());
+            if (distance >= 1000) {
+                String d = "" + distance / 1000L;
+                distance_TextView.setText(d.replace('.', ',') + " km");
+            } else {
+                distance_TextView.setText((int) distance + " m");
             }
-        });
 
-        alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                TextView recordName = alertView != null ? alertView.findViewById(R.id.record_name) : null;
-                if (recordName != null && recordName.getText().toString().equals("")) {
-                    model.setName(defaultName);
-                } else {
-                    model.setName(recordName != null ? recordName.getText().toString() : null);
+            /* Setzt die Zeit */
+            TextView total_time_TextView = alertView.findViewById(R.id.total_time_TextView);
+            Timer timerForCalc = new Timer();
+            total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
+
+            FloatingActionButton typeBtn = alertView.findViewById(R.id.fabButton);
+            typeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Item[] items = {
+                            new Item("Laufen", R.drawable.activity_running_record),
+                            new Item("Fahrrad", R.drawable.activity_biking_record),
+                            new Item("Auto", R.drawable.activity_caring_record),
+                    };
+
+                    ListAdapter adapter = new ArrayAdapter<Item>(
+                            MainActivity.getInstance(),
+                            android.R.layout.select_dialog_item,
+                            android.R.id.text1,
+                            items) {
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            //Use super class to create the View
+                            View v = super.getView(position, convertView, parent);
+                            TextView tv = (TextView) v.findViewById(android.R.id.text1);
+
+                            //Put the image on the TextView
+                            tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0);
+
+                            //Add margin between image and text (support various screen densities)
+                            int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
+                            tv.setCompoundDrawablePadding(dp5);
+
+                            return v;
+                        }
+                    };
+
+
+                    new AlertDialog.Builder(MainActivity.getInstance())
+                            .setTitle("Typ auswählen")
+                            .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int item) {
+                                    if (item == 0) {
+                                        typeBtn.setImageResource(R.drawable.activity_running_record);
+                                        model.setType(0);
+                                    } else if (item == 1) {
+                                        typeBtn.setImageResource(R.drawable.activity_biking_record);
+                                        model.setType(1);
+                                    } else if (item == 2) {
+                                        typeBtn.setImageResource(R.drawable.activity_caring_record);
+                                        model.setType(2);
+                                    }
+                                }
+                            }).show();
+
                 }
+            });
 
-                model.setTimeStamp(GlobalFunctions.getTimeStamp());
+            alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    TextView recordName = alertView != null ? alertView.findViewById(R.id.record_name) : null;
+                    if (recordName != null && recordName.getText().toString().equals("")) {
+                        model.setName(defaultName);
+                    } else {
+                        model.setName(recordName != null ? recordName.getText().toString() : null);
+                    }
+
+                    model.setTimeStamp(GlobalFunctions.getTimeStamp());
              /*   RouteDAO dao = new RouteDAO(MainActivity.getInstance());
                 dao.create(model);*/
 
-                recordTempDAO.update(newRecordId, model);
+                    recordTempDAO.update(newRecordId, model);
 
-                /* send route full to server */
+                    /* send route full to server */
 
-                /* get current user */
-                UserDAO userDAO = new UserDAO(MainActivity.getInstance());
-                User currentUser = userDAO.read(MainActivity.getActiveUser());
-
-                Retrofit retrofit = APIConnector.getRetrofit();
-                APIClient apiInterface = retrofit.create(APIClient.class);
-                String base = currentUser.getMail() + ":" + currentUser.getPassword();
-
-                RecordModelForServer m = new RecordModelForServer();
-                m.setId(newRecordId);
-                m.setUserID(MainActivity.getActiveUser());
-                m.setName(model.getName());
-                m.setType(model.getType());
-                m.setTime(model.getTime());
-                m.setDate(model.getDate());
-                m.setRideTime(model.getRideTime());
-                m.setDistance(model.getDistance());
-                m.setTimeStamp(model.getTimeStamp());
-                m.setLocations(locationTempDAO.readAll(newRecordId));
-
-                /* start a call */
-                String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, m);
-
-                call.enqueue(new Callback<ResponseBody>() {
-
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                        /* get jsonString from API */
-                        String jsonString = null;
-
-                        try {
-                            jsonString = response.body().string();
-
-                            /* parse json */
-                            JSONObject mainObject = new JSONObject(jsonString);
-
-                            if (mainObject.getString("success").equals("0")) {
-
-                                MainActivity.getInstance().endTracking();
-                                Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOnServer),
-                                        Toast.LENGTH_LONG).show();
-
-                                /* save in DB*/
-                                recordDAO = new RouteDAO(MainActivity.getInstance());
-
-                                if (mainObject.getJSONObject("record") != null) {
-                                    JSONObject recordJSON = mainObject.getJSONObject("record");
-
-                                    Route record = new Route();
-                                    record.setId(recordJSON.getInt("id"));
-                                    record.setName(recordJSON.getString("name"));
-                                    record.setTime(recordJSON.getLong("time"));
-                                    record.setDate(recordJSON.getLong("date"));
-                                    record.setType(recordJSON.getInt("type"));
-                                    record.setRideTime(recordJSON.getInt("ridetime"));
-                                    record.setDistance(recordJSON.getDouble("distance"));
-                                    record.setTimeStamp(recordJSON.getLong("timestamp"));
-                                    record.setTemp(false);
-                                    record.setLocations(recordJSON.getString("locations"));
-                                    recordDAO.create(record);
-
-                                    /* delete old record */
-                                    int tempRecordId = mainObject.getInt("oldId");
-                                    record.setId(tempRecordId);
-
-                                    /*remove from temp*/
-                                    recordTempDAO.delete(record);
-                                }
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        call.cancel();
-                        MainActivity.getInstance().endTracking();
-                        Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
-                                Toast.LENGTH_LONG).show();
-
-                    }
-                });
-
-            }
-        });
-
-        alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-                /*remove from temp*/
-                recordTempDAO.delete(model);
-
-                /* Send request to server if its live recording */
-                if (liveRecording) {
                     /* get current user */
                     UserDAO userDAO = new UserDAO(MainActivity.getInstance());
                     User currentUser = userDAO.read(MainActivity.getActiveUser());
 
-                    /* Start a call */
                     Retrofit retrofit = APIConnector.getRetrofit();
                     APIClient apiInterface = retrofit.create(APIClient.class);
                     String base = currentUser.getMail() + ":" + currentUser.getPassword();
+
+                    RecordModelForServer m = new RecordModelForServer();
+                    m.setId(newRecordId);
+                    m.setUserID(MainActivity.getActiveUser());
+                    m.setName(model.getName());
+                    m.setType(model.getType());
+                    m.setTime(model.getTime());
+                    m.setDate(model.getDate());
+                    m.setRideTime(model.getRideTime());
+                    m.setDistance(model.getDistance());
+                    m.setTimeStamp(model.getTimeStamp());
+                    m.setLocations(locationTempDAO.readAll(newRecordId));
+
+                    /* start a call */
                     String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                    Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
+                    Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, m);
 
                     call.enqueue(new Callback<ResponseBody>() {
 
@@ -893,15 +811,38 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                 JSONObject mainObject = new JSONObject(jsonString);
 
                                 if (mainObject.getString("success").equals("0")) {
-                                    Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecord),
-                                            Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
-                                            Toast.LENGTH_LONG).show();
-                                }
 
-                                /* end tracking and delete temp record */
-                                MainActivity.getInstance().endTracking();
+                                    MainActivity.getInstance().endTracking();
+                                    Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOnServer),
+                                            Toast.LENGTH_LONG).show();
+
+                                    /* save in DB*/
+                                    recordDAO = new RouteDAO(MainActivity.getInstance());
+
+                                    if (mainObject.getJSONObject("record") != null) {
+                                        JSONObject recordJSON = mainObject.getJSONObject("record");
+
+                                        Route record = new Route();
+                                        record.setId(recordJSON.getInt("id"));
+                                        record.setName(recordJSON.getString("name"));
+                                        record.setTime(recordJSON.getLong("time"));
+                                        record.setDate(recordJSON.getLong("date"));
+                                        record.setType(recordJSON.getInt("type"));
+                                        record.setRideTime(recordJSON.getInt("ridetime"));
+                                        record.setDistance(recordJSON.getDouble("distance"));
+                                        record.setTimeStamp(recordJSON.getLong("timestamp"));
+                                        record.setTemp(false);
+                                        record.setLocations(recordJSON.getString("locations"));
+                                        recordDAO.create(record);
+
+                                        /* delete old record */
+                                        int tempRecordId = mainObject.getInt("oldId");
+                                        record.setId(tempRecordId);
+
+                                        /*remove from temp*/
+                                        recordTempDAO.delete(record);
+                                    }
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             } catch (JSONException e) {
@@ -912,67 +853,158 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
                             call.cancel();
-
-                            Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
+                            MainActivity.getInstance().endTracking();
+                            Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOffline),
                                     Toast.LENGTH_LONG).show();
 
-                            /* end tracking and delete temp record */
-                            MainActivity.getInstance().endTracking();
                         }
                     });
 
-                } else {
-                    Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecord),
+                }
+            });
+
+            alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    /*remove from temp*/
+                    recordTempDAO.delete(model);
+
+                    /* Send request to server if its live recording */
+                    if (liveRecording) {
+                        /* get current user */
+                        UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+                        User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+                        /* Start a call */
+                        Retrofit retrofit = APIConnector.getRetrofit();
+                        APIClient apiInterface = retrofit.create(APIClient.class);
+                        String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                        String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                        Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
+
+                        call.enqueue(new Callback<ResponseBody>() {
+
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                                /* get jsonString from API */
+                                String jsonString = null;
+
+                                try {
+                                    jsonString = response.body().string();
+
+                                    /* parse json */
+                                    JSONObject mainObject = new JSONObject(jsonString);
+
+                                    if (mainObject.getString("success").equals("0")) {
+                                        Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecord),
+                                                Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
+                                                Toast.LENGTH_LONG).show();
+                                    }
+
+                                    /* end tracking and delete temp record */
+                                    MainActivity.getInstance().endTracking();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                call.cancel();
+
+                                Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
+                                        Toast.LENGTH_LONG).show();
+
+                                /* end tracking and delete temp record */
+                                MainActivity.getInstance().endTracking();
+                            }
+                        });
+
+                    } else {
+                        Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecord),
+                                Toast.LENGTH_LONG).show();
+
+                        /* end tracking and delete temp record */
+                        MainActivity.getInstance().endTracking();
+                    }
+                }
+            });
+
+            final MapView zomable = mapViewZoom;
+
+            final AlertDialog alertDialog = alert.create();
+
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+                    double minLat = Double.MAX_VALUE;
+                    double maxLat = Double.MIN_VALUE;
+                    double minLong = Double.MAX_VALUE;
+                    double maxLong = Double.MIN_VALUE;
+
+
+                    for (GeoPoint point : GPSData) {
+                        if (point.getLatitude() < minLat)
+                            minLat = point.getLatitude();
+                        if (point.getLatitude() > maxLat)
+                            maxLat = point.getLatitude();
+                        if (point.getLongitude() < minLong)
+                            minLong = point.getLongitude();
+                        if (point.getLongitude() > maxLong)
+                            maxLong = point.getLongitude();
+                    }
+
+                    maxLat += 0.001;
+                    maxLong += 0.001;
+                    minLat -= 0.001;
+                    minLong -= 0.001;
+
+                    BoundingBox box = new BoundingBox();
+                    box.set(maxLat, maxLong, minLat, minLong);
+
+                    assert zomable != null;
+                    zomable.zoomToBoundingBox(box, false);
+
+                    double zoomLvl = zomable.getZoomLevelDouble();
+
+                    zomable.getController().setZoom(zoomLvl - 0.3);
+                }
+            });
+
+            alertDialog.show();
+
+            /* not enouth Locations */
+        } else {
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setTitle("Aufnahme verwerfen?");
+            alert.setMessage("Sie haben zu wenig Locationdaten, um die Aufnahme zu speichern. Möchten Sie sie die Aufnahme abbrechen, oder weiter laufen lassen?");
+            alert.setPositiveButton("Verwerfen", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.dismissRecord),
                             Toast.LENGTH_LONG).show();
 
-                    /* end tracking and delete temp record */
-                    MainActivity.getInstance().endTracking();
+                    GlobalFunctions.deleteAllTempRecord(ClosingService.getInstance(), MainActivity.getActiveUser());
                 }
-            }
-        });
+            });
 
-        final MapView zomable = mapViewZoom;
-
-        final AlertDialog alertDialog = alert.create();
-
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                double minLat = Double.MAX_VALUE;
-                double maxLat = Double.MIN_VALUE;
-                double minLong = Double.MAX_VALUE;
-                double maxLong = Double.MIN_VALUE;
-
-
-                for (GeoPoint point : GPSData) {
-                    if (point.getLatitude() < minLat)
-                        minLat = point.getLatitude();
-                    if (point.getLatitude() > maxLat)
-                        maxLat = point.getLatitude();
-                    if (point.getLongitude() < minLong)
-                        minLong = point.getLongitude();
-                    if (point.getLongitude() > maxLong)
-                        maxLong = point.getLongitude();
+            alert.setNegativeButton("Weiter aufnehmen", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    startTracking();
+                    Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.continueRecord),
+                            Toast.LENGTH_LONG).show();
                 }
+            });
 
-                maxLat += 0.001;
-                maxLong += 0.001;
-                minLat -= 0.001;
-                minLong -= 0.001;
-
-                BoundingBox box = new BoundingBox();
-                box.set(maxLat, maxLong, minLat, minLong);
-
-                assert zomable != null;
-                zomable.zoomToBoundingBox(box, false);
-
-                double zoomLvl = zomable.getZoomLevelDouble();
-
-                zomable.getController().setZoom(zoomLvl - 0.3);
-            }
-        });
-
-        alertDialog.show();
+            final AlertDialog alertDialog = alert.create();
+            alertDialog.show();
+            alertDialog.setCanceledOnTouchOutside(false);
+        }
     }
 
     private void drawRoute(View alertView) {
