@@ -66,12 +66,13 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
         currentUser = userDAO.read(MainActivity.getActiveUser());
 
         /* Set page */
-        int t = MainActivity.getSearchForeignPageIndex();
+        /* Set page */
         if (MainActivity.getSearchForeignPage() != 0) {
-            maxPage = MainActivity.getSearchForeignPage();
             backPress = true;
+            maxPage = MainActivity.getSearchForeignPage();
         } else {
             backPress = false;
+            maxPage =1;
         }
         page = 1;
 
@@ -127,9 +128,10 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
         /* Check if load more */
         if (loadMore) {
             page++;
-            if (!backPress) {
+            maxPage=page;
+            //if (!backPress) {
                 MainActivity.setSearchForeignPage(page);
-            }
+        //    }
         }
 
         /* Create map */
@@ -179,16 +181,15 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
 
 
                         /* Load more if backpress */
-                        if (page != maxPage && backPress) {
+                        if (page != maxPage) {
                             search(find, true, friendList);
                         } else {
 
-                            friendListView.setSelection(MainActivity.getSearchForeignPageIndex());
-
-                         /*   if (backPress) {
-                               } else {
+                            if (!backPress && loadMore) {
                                 friendListView.setSelection((page - 1) * 10);
-                            }*/
+                            } else {
+                                friendListView.setSelection(MainActivity.getSearchForeignPageIndex());
+                            }
                         }
 
                         /* delete progressbar */

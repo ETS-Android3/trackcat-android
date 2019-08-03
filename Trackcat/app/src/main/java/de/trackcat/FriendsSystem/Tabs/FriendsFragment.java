@@ -229,11 +229,6 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                             } else {
                                 friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
                             }
-                           /* if (backPress) {
-                                friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
-                            } else {
-
-                            }*/
                         }
 
                         noEntrys.setVisibility(View.GONE);
