@@ -1,6 +1,7 @@
 package de.trackcat.FriendsSystem.Tabs;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -75,11 +76,17 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
             @Override
             public void onRefresh() {
                 if(adapter!=null) {
+                    noEntrys.setVisibility(View.GONE);
                     adapter.clear();
                     loadPage();
                 }
             }
         });
+
+        /* start refreshing by loading */
+        swipeContainer.setColorSchemeColors(Color.RED, Color.BLUE, Color.YELLOW);
+        swipeContainer.setRefreshing(true);
+        swipeContainer.bringToFront();
 
         /* Load page */
         loadPage();
