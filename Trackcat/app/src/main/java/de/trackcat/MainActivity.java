@@ -967,7 +967,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             alert.setMessage(getResources().getString(R.string.help_friends_live_view));
                         }
                     }
-                    
+
                     alert.setNegativeButton("Schließen", null);
                     alert.show();
                 } else {
@@ -1328,6 +1328,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                 /*remove from temp*/
                                 recordTempDAO.delete(record);
+
+                                /* refresh page */
+                                Fragment fragmentDashboard = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard));
+                                Fragment fragmentRecordList = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist));
+
+                                if (fragmentDashboard != null && fragmentDashboard.isVisible()) {
+                                    loadDashboard();
+
+                                } else if (fragmentRecordList != null && fragmentRecordList.isVisible()) {
+
+                                    loadRecordList();
+                                }
                             }
                         }
                     } catch (IOException e) {
