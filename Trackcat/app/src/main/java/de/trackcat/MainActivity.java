@@ -448,7 +448,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (restarted) {
             loadSettings();
         } else {
-            loadDashboard();
+            loadDashboard(true);
         }
     }
 
@@ -717,7 +717,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     /* Laden des Dashboard-Fragments */
-    public void loadDashboard() {
+    public void loadDashboard(boolean addToStack) {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Dashboard-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new DashboardFragment(),
@@ -725,7 +725,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.commit();
 
         /* add to Stack */
-        fragTransaction.addToBackStack(getResources().getString(R.string.fDashboard));
+        if (addToStack) {
+            fragTransaction.addToBackStack(getResources().getString(R.string.fDashboard));
+        }
 
     }
 
@@ -756,11 +758,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             /* add to Stack */
             fragTransaction.addToBackStack(getResources().getString(R.string.fRecord));
+
         }
     }
 
     /* Laden des Listen-Fragments */
-    public void loadRecordList() {
+    public void loadRecordList(boolean addToStack) {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Listen-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new RecordListFragment(),
@@ -768,7 +771,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.commit();
 
         /* add to Stack */
-        fragTransaction.addToBackStack(getResources().getString(R.string.fRecordlist));
+        if (addToStack) {
+            fragTransaction.addToBackStack(getResources().getString(R.string.fRecordlist));
+        }
     }
 
     /* Laden des Profil-Fragments */
@@ -1068,11 +1073,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             } else if (type == 2) {
 
                                                 if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
-                                                    loadDashboard();
+                                                    loadDashboard(false);
                                                 } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
                                                     loadRecord();
                                                 } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
-                                                    loadRecordList();
+                                                    loadRecordList(false);
                                                 } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
                                                     //TODO
                                                 } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
@@ -1091,7 +1096,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             } else if (type == 3) {
                                                 loadDeleteAccount();
                                             } else if (type == 4) {
-                                                loadRecordList();
+                                                loadRecordList(false);
                                                 /* friendPage */
                                             } else if (type == 5) {
                                                 loadFriendSystem(1);
@@ -1334,11 +1339,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Fragment fragmentRecordList = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist));
 
                                 if (fragmentDashboard != null && fragmentDashboard.isVisible()) {
-                                    loadDashboard();
+                                    loadDashboard(false);
 
                                 } else if (fragmentRecordList != null && fragmentRecordList.isVisible()) {
 
-                                    loadRecordList();
+                                    loadRecordList(false);
                                 }
                             }
                         }
@@ -1362,9 +1367,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         /*load view*/
         if (recordList) {
-            loadRecordList();
+            loadRecordList(true);
         } else {
-            loadDashboard();
+            loadDashboard(true);
         }
 
         /* get all records routes */
@@ -1456,9 +1461,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     /*load view*/
                     if (recordList) {
-                        loadRecordList();
+                        loadRecordList(false);
                     } else {
-                        loadDashboard();
+                        loadDashboard(false);
                     }
 
                 } catch (IOException e) {
@@ -1466,18 +1471,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     /*load view*/
                     if (recordList) {
-                        loadRecordList();
+                        loadRecordList(false);
                     } else {
-                        loadDashboard();
+                        loadDashboard(false);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
 
                     /*load view*/
                     if (recordList) {
-                        loadRecordList();
+                        loadRecordList(false);
                     } else {
-                        loadDashboard();
+                        loadDashboard(false);
                     }
                 }
             }
@@ -1488,9 +1493,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 /*load view*/
                 if (recordList) {
-                    loadRecordList();
+                    loadRecordList(false);
                 } else {
-                    loadDashboard();
+                    loadDashboard(false);
                 }
             }
         });
