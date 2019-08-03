@@ -175,7 +175,13 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                         }
 
                         /* Add entrys to view */
-                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false, false);
+                        if(loadMore&& friends.length()==0){
+                            adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false, false, true);
+
+
+                        }else {
+                            adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false, false, false);
+                        }
                         ListView friendListView = view.findViewById(R.id.friend_list);
                         friendListView.setAdapter(adapter);
 

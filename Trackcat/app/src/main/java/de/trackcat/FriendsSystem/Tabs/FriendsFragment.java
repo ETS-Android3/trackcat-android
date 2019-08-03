@@ -215,7 +215,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                         }
 
                         /* Add entrys to view */
-                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false, false);
+                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false, false, false);
                         ListView friendListView = view.findViewById(R.id.friend_list);
                         friendListView.setAdapter(adapter);
 
