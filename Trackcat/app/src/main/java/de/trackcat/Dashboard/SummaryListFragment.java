@@ -48,9 +48,13 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
         mList.clear();
 
         /* add Elements to List */
-        if (!records.isEmpty()) {
+        if (!records.isEmpty() && records.size() >= 2) {
 
-            for (int i = 0;i<getResources().getInteger(R.integer.summaryRecordListAmount);i++) {
+            for (int i = 0; i < getResources().getInteger(R.integer.summaryRecordListAmount); i++) {
+                mList.add(records.get(i));
+            }
+        } else if (!records.isEmpty()) {
+            for (int i = 0; i < records.size(); i++) {
                 mList.add(records.get(i));
             }
         }
