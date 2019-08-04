@@ -54,10 +54,10 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
     public TextView name, email, registSince;
     LayoutInflater inflater;
     CircleImageView image, state;
-    boolean newFriend, friendQuestion, sendFriendQuestion, liveFriend;
+    boolean newFriend, friendQuestion, sendFriendQuestion, liveFriend, noMoreEntrys;
     UserDAO userDAO;
 
-    public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion, boolean sendFriendQuestion, boolean liveFriend) {
+    public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion, boolean sendFriendQuestion, boolean liveFriend, boolean noMoreEntrys) {
         super(context, R.layout.friend_list_item);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.friends = friends;
@@ -65,6 +65,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         this.friendQuestion = friendQuestion;
         this.sendFriendQuestion = sendFriendQuestion;
         this.liveFriend = liveFriend;
+        this.noMoreEntrys=noMoreEntrys;
 
         /* Create userDAO */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -121,7 +122,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             }
             image.setImageBitmap(bitmap);
 
-            if(friends.get(position).getIsLive()==1){
+            if (friends.get(position).getIsLive() == 1) {
                 image.setBorderColor(MainActivity.getInstance().getResources().getColor(R.color.live));
                 image.setBorderWidth(9);
             }
@@ -135,7 +136,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                     alertdialogbuilder.setTitle(getContext().getResources().getString(R.string.friendsOptionTitle));
 
                     /* liveFriendOptions */
-                    if (liveFriend|| friends.get(position).getIsLive()==1) {
+                    if (liveFriend || friends.get(position).getIsLive() == 1) {
                         alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.friendLiveOptions), new DialogInterface.OnClickListener() {
 
                             @Override
@@ -154,7 +155,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                     fragTransaction.commit();
 
                                     /* add to Stack */
-                                    fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fFriendLiveProfile));
+                                    fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fFriendLiveProfile));
                                 }
 
                                 /* Show friend live view */
@@ -166,22 +167,22 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                     FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
 
                                     /* LiveFriendList */
-                                    if(liveFriend){
+                                    if (liveFriend) {
                                         fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
                                                 MainActivity.getInstance().getResources().getString(R.string.fFriendLiveViewList));
 
                                         /* add to Stack */
-                                        fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fFriendLiveViewList));
+                                        fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fFriendLiveViewList));
 
 
 
                                         /* Live friend from profile */
-                                    }else{
+                                    } else {
                                         fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
                                                 MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
 
                                         /* add to Stack */
-                                        fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
+                                        fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
                                     }
 
                                     fragTransaction.commit();
@@ -216,7 +217,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                     MainActivity.setSearchFriendPageIndex(position);
 
                                     /* add to Stack */
-                                    fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
+                                    fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
                                 }
 
                                 /* Delete friend */
@@ -234,7 +235,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         } else {
 
             /* Last item */
-            if (friends.size() % 10 == 0 && position == friends.size() - 1 && !friendQuestion && !sendFriendQuestion) {
+            if (friends.size() % 10 == 0 && position == friends.size() - 1 && !friendQuestion && !sendFriendQuestion&& !noMoreEntrys) {
                 view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
                 Button loadMore = view.findViewById(R.id.loadMore);
                 loadMore.setOnClickListener(this);
@@ -305,7 +306,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                     MainActivity.setSearchForeignPageIndex(position);
 
                                     /* add to Stack */
-                                    fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
+                                    fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
 
                                 }
 
@@ -340,7 +341,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                         MainActivity.setSendFriendQuestionIndex(position);
 
                                         /* add to Stack */
-                                        fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileSendQuestion));
+                                        fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileSendQuestion));
 
                                     }
 
@@ -373,7 +374,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                         MainActivity.setFriendQuestionIndex(position);
 
                                         /* add to Stack */
-                                        fragTransaction.addToBackStack( MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileQuestion));
+                                        fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileQuestion));
 
                                     }
 
@@ -604,6 +605,8 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                 } else {
                     FriendsFragment.showFriends(MainActivity.getSearchFriendTerm(), true, friends);
                 }
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendLoadMore), Toast.LENGTH_SHORT).show();
+
                 break;
         }
     }

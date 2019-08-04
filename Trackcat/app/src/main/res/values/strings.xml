@@ -172,7 +172,8 @@
     <string name="friendNoConnection">Sie können nur auf Ihre Freunde zugreifen, wenn Sie online sind. Bitte Überprüfen Sie Ihre Internetverbindung.</string>
     <string name="friendSendQuestionConnection">Sie können nur auf Ihre gesendeten Freundschaftsanfragen zugreifen, wenn Sie online sind. Bitte Überprüfen Sie Ihre Internetverbindung.</string>
     <string name="friendQuestionConnection">Sie können nur auf Ihre Freundschaftsanfragen zugreifen, wenn Sie online sind. Bitte Überprüfen Sie Ihre Internetverbindung.</string>
-    <string name="friendSearchError">Es ist ein Fehler aufgetreten.</string>
+      <string name="friendSearchError">Es ist ein Fehler aufgetreten.</string>
+    <string name="friendLoadMore">Mehr Einträge werden geladen...</string>
 
     <!-- edit route name -->
     <string name="teditRecordName">Routenname wurde erfolgreich geändert.</string>

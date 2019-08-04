@@ -1,5 +1,6 @@
 package de.trackcat.FriendsSystem.Tabs;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -63,11 +64,17 @@ public class FriendSendQuestionsFragment extends Fragment {
             @Override
             public void onRefresh() {
                 if(adapter!=null) {
+                    noEntrys.setVisibility(View.GONE);
                     adapter.clear();
                     loadPage();
                 }
             }
         });
+
+        /* start refreshing by loading */
+        swipeContainer.setColorSchemeColors(Color.RED, Color.BLUE, Color.YELLOW);
+        swipeContainer.setRefreshing(true);
+        swipeContainer.bringToFront();
 
         /* Load page */
         loadPage();
@@ -130,7 +137,7 @@ public class FriendSendQuestionsFragment extends Fragment {
                         }
 
                         /* Add entrys to view */
-                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, true, false);
+                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, true, false, false);
                         ListView friendListView = view.findViewById(R.id.friend_question_list);
                         friendListView.setAdapter(adapter);
                         friendListView.setSelection(MainActivity.getSendFriendQuestionIndex());

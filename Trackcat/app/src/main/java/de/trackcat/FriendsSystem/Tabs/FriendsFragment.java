@@ -1,12 +1,14 @@
 package de.trackcat.FriendsSystem.Tabs;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,20 +79,32 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             @Override
             public void onRefresh() {
                 if (adapter != null) {
+                   // maxPage = MainActivity.getSearchFriendPage();
+                    noEntrys.setVisibility(View.GONE);
+                    page = 1;
                     adapter.clear();
                     loadPage();
                 }
             }
         });
 
+        /* start refreshing by loading */
+        swipeContainer.setColorSchemeColors(Color.RED, Color.BLUE, Color.YELLOW);
+        swipeContainer.setRefreshing(true);
+        swipeContainer.bringToFront();
+
+        Log.d("TEEEST", "" + MainActivity.getSearchFriendPage());
+
         /* Set page */
         if (MainActivity.getSearchFriendPage() != 0) {
-            maxPage = MainActivity.getSearchFriendPage();
             backPress = true;
+            maxPage = MainActivity.getSearchFriendPage();
         } else {
             backPress = false;
+            maxPage =1;
         }
         page = 1;
+
 
         /* Get searchedTerm */
         searchTerm = MainActivity.getSearchFriendTerm();
@@ -153,9 +167,10 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
         /* Check if load more */
         if (loadMore) {
             page++;
-            if (!backPress) {
-                MainActivity.setSearchFriendPage(page);
-            }
+            maxPage=page;
+            //if (!backPress) {
+            MainActivity.setSearchFriendPage(page);
+            //  }
         }
 
         /* Create map */
@@ -200,22 +215,20 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                         }
 
                         /* Add entrys to view */
-                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false, false);
+                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false, false, false);
                         ListView friendListView = view.findViewById(R.id.friend_list);
                         friendListView.setAdapter(adapter);
 
                         /* Load more if backpress */
-                        if (page != maxPage && backPress) {
+                        if (page != maxPage) {
                             showFriends(find, true, friendList);
                         } else {
 
-                            friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
-
-                           /* if (backPress) {
-                                friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
-                            } else {
+                            if (!backPress &&loadMore) {
                                 friendListView.setSelection((page - 1) * 10);
-                            }*/
+                            } else {
+                                friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
+                            }
                         }
 
                         noEntrys.setVisibility(View.GONE);
