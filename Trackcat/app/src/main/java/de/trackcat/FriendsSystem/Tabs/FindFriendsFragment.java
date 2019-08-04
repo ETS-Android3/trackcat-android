@@ -103,7 +103,9 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
             /* Set variables */
             searchTerm = findFriend.getText().toString();
             MainActivity.setSearchForeignTerm(searchTerm);
+            MainActivity.setSearchForeignPage(0);
             page = 1;
+            maxPage =1;
             Toast.makeText(getContext(), "Suche nach '" + searchTerm + "' gestartet.", Toast.LENGTH_SHORT).show();
 
             /* Close keyboard */
