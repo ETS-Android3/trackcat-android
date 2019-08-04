@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -308,6 +309,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+            ConnectivityChecker cc = new ConnectivityChecker();
+
+            IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+           // filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+            this.registerReceiver(cc, filter);
+        }
+
+
+
 
         /* Turn off power saving and battery optimization */
         try {
