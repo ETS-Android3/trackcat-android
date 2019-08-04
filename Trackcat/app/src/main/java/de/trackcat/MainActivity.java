@@ -1358,6 +1358,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 record.setLocations(recordJSON.getString("locations"));
                                 recordDAO.create(record);
 
+                                /* delete old record */
+                                int tempRecordId = mainObject.getInt("oldId");
+                                record.setId(tempRecordId);
+
                                 /*remove from temp*/
                                 recordTempDAO.delete(record);
 
