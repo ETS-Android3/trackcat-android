@@ -145,6 +145,8 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             searchTerm = findFriend.getText().toString();
             MainActivity.setSearchFriendTerm(searchTerm);
             page = 1;
+            maxPage=1;
+            MainActivity.setSearchFriendPage(0);
             Toast.makeText(getContext(), "Suche nach Freund '" + searchTerm + "' gestartet.", Toast.LENGTH_SHORT).show();
 
             /* Close keyboard */
@@ -274,6 +276,9 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             case R.id.resetSearch:
                 List<CustomFriend> friendList = new ArrayList<>();
                 MainActivity.setSearchFriendTerm("");
+                page=1;
+                maxPage=1;
+                MainActivity.setSearchFriendPage(0);
                 searchTerm = "";
                 findFriend.setText("");
                 showFriends(searchTerm, false, friendList);
