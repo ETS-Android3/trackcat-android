@@ -77,7 +77,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
@@ -461,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (restarted) {
             loadSettings();
         } else {
-            loadDashboard(true);
+            synchronizeRecords(false, false);
         }
     }
 
