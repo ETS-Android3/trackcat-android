@@ -103,7 +103,7 @@ public class RecordListFragment extends Fragment {
             @Override
             public void onRefresh() {
                 mAdapter.clear();
-                MainActivity.getInstance().synchronizeRecords(true);
+                MainActivity.getInstance().synchronizeRecords(true, false);
                 swipeContainer.setRefreshing(false);
             }
         });

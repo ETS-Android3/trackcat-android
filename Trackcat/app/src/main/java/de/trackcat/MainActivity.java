@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ConnectivityChecker cc = new ConnectivityChecker();
 
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-           // filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+            // filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
             this.registerReceiver(cc, filter);
         }
 
@@ -532,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Fragment fragmentDashboard = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard));
                 if (fragmentDashboard == null || (fragmentDashboard != null && !fragmentDashboard.isVisible())) {
                     toolbar.getMenu().clear();
-                    synchronizeRecords(false);
+                    synchronizeRecords(false, false);
                     clearValuesAfterChangeMenu();
                 }
 
@@ -543,7 +543,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (fragmentRecordList == null || (fragmentRecordList != null && !fragmentRecordList.isVisible())) {
 
                     menuInstance.clear();
-                    synchronizeRecords(true);
+                    synchronizeRecords(true, false);
                     clearValuesAfterChangeMenu();
                 }
                 break;
@@ -689,7 +689,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-          //  fragTransaction.remove(fragment);
+            //  fragTransaction.remove(fragment);
             this.getSupportFragmentManager().popBackStack();
             Log.i(getResources().getString(R.string.app_name) + "-Fragment", "load : " + tag);
 
@@ -1012,15 +1012,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
         setConnection(connected);
 
-        Toast.makeText(instance, "Netzwerkstatus"+  String.valueOf(connected), Toast.LENGTH_LONG).show();
-
-
         /* device have connection */
         if (connected) {
 
             User currentUser = userDAO.read(activeUser);
             synchronizeUser(currentUser);
             synchronizeOfflineRoutes(currentUser);
+
+            /*  synchronize records */
+            Fragment fragmentDashboard = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard));
+            Fragment fragmentRecordList = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist));
+
+            if (fragmentDashboard.isVisible()) {
+                synchronizeRecords(false, false);
+            }
+            if (fragmentRecordList.isVisible()) {
+                synchronizeRecords(true, false);
+            }
+            if (!fragmentRecordList.isVisible() && !fragmentDashboard.isVisible()) {
+                synchronizeRecords(false, true);
+            }
         }
     }
 
@@ -1169,8 +1180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void synchronizeUser(User currentUser) {
 
-        Toast.makeText(instance, "Synchronise User", Toast.LENGTH_LONG).show();
-
         /* send user timestamp to bb */
         HashMap<String, String> map = new HashMap<>();
         map.put("timeStamp", "" + currentUser.getTimeStamp());
@@ -1214,8 +1223,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             /* user on device is new */
                         } else if (mainObject.getString("state").equals("1")) {
 
-                            Toast.makeText(instance, "HandyUser neuer", Toast.LENGTH_LONG).show();
-
                             /* change values in global DB*/
                             HashMap<String, String> map = new HashMap<>();
                             map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
@@ -1251,8 +1258,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         JSONObject successJSON = new JSONObject(jsonString);
 
                                         if (successJSON.getString("success").equals("0")) {
-
-                                            Toast.makeText(instance, "Erfolgreich geändert", Toast.LENGTH_LONG).show();
 
                                             /* save is Synchronized value as true */
                                             currentUser.isSynchronised(true);
@@ -1388,13 +1393,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /* function to synchronize all records */
-    public void synchronizeRecords(boolean recordList) {
+    public void synchronizeRecords(boolean recordList, boolean loadNothing) {
 
         /*load view*/
-        if (recordList) {
-            loadRecordList(true);
-        } else {
-            loadDashboard(true);
+        if (!loadNothing) {
+            if (recordList) {
+                loadRecordList(true);
+            } else {
+                loadDashboard(true);
+            }
         }
 
         /* get all records routes */
@@ -1485,29 +1492,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                     /*load view*/
-                    if (recordList) {
-                        loadRecordList(false);
-                    } else {
-                        loadDashboard(false);
+                    if (!loadNothing) {
+                        if (recordList) {
+                            loadRecordList(false);
+                        } else {
+                            loadDashboard(false);
+                        }
                     }
 
                 } catch (IOException e) {
                     e.printStackTrace();
 
                     /*load view*/
-                    if (recordList) {
-                        loadRecordList(false);
-                    } else {
-                        loadDashboard(false);
+                    if (!loadNothing) {
+                        if (recordList) {
+                            loadRecordList(false);
+                        } else {
+                            loadDashboard(false);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
 
                     /*load view*/
-                    if (recordList) {
-                        loadRecordList(false);
-                    } else {
-                        loadDashboard(false);
+                    if (!loadNothing) {
+                        if (recordList) {
+                            loadRecordList(false);
+                        } else {
+                            loadDashboard(false);
+                        }
                     }
                 }
             }
@@ -1517,10 +1530,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 call.cancel();
 
                 /*load view*/
-                if (recordList) {
-                    loadRecordList(false);
-                } else {
-                    loadDashboard(false);
+                if (!loadNothing) {
+                    if (recordList) {
+                        loadRecordList(false);
+                    } else {
+                        loadDashboard(false);
+                    }
                 }
             }
         });
