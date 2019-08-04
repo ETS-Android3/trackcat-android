@@ -461,11 +461,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     if (isTracking) {
                         stopTracking();
                     } else {
-                        Log.d("TEEEST", "Starten");
 
                         /* start recording */
                         if (!recordingRuns && MainActivity.getConnection()) {
-
 
                             /* check if live sharing or not */
                             AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());

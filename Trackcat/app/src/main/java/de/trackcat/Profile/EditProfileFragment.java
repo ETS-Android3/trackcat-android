@@ -511,7 +511,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             case R.id.profile_image_upload:
 
                 /* create intents */
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent pickPhoto = new Intent();//Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickPhoto.setAction(Intent.ACTION_GET_CONTENT);
                 pickPhoto.setType("image/*");
                 Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
