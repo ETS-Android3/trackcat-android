@@ -29,7 +29,7 @@ import de.trackcat.Statistics.SpeedAverager;
 
 public class ShowRecord {
 
-    public static void show(List<Route> records, int position, String TAG, TextView recordId, ImageView recordType, ImageView importState, ImageView temp,TextView recordName, TextView recordDostance, TextView recordTime, View recordItem, TextView recordDate) {
+    public static void show(List<Route> records, int position, TextView recordId, ImageView recordType, ImageView importState, ImageView temp,TextView recordName, TextView recordDostance, TextView recordTime, View recordItem, TextView recordDate) {
 
         /* show ID */
         recordId.setText("" + (position + 1));
@@ -147,11 +147,11 @@ public class ShowRecord {
                 RecordDetailsFragment recordDetailsFragment = new RecordDetailsFragment();
                 recordDetailsFragment.setArguments(bundle);
                 FragmentTransaction fragTransaction = MainActivity.getInstance().getSupportFragmentManager().beginTransaction();
-                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, TAG);
+                fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, MainActivity.getInstance().getResources().getString(R.string.fRecordDetails));
                 fragTransaction.commit();
 
                 /* add to Stack */
-                fragTransaction.addToBackStack(TAG);
+                fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fRecordDetails));
 
                 if (MainActivity.getHints()) {
                     Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Anzeigen der Aufnahme  \"" + records.get(position).getName() + "\"", Toast.LENGTH_LONG).show();

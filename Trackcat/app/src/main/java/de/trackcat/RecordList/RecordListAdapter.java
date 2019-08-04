@@ -49,7 +49,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        ShowRecord.show(records, position, MainActivity.getInstance().getResources().getString(R.string.fRecordDetailsList), holder.id, holder.type, holder.importedState, holder.temp,holder.name, holder.distance, holder.time, holder.itemView, holder.date);
+        ShowRecord.show(records, position, holder.id, holder.type, holder.importedState, holder.temp,holder.name, holder.distance, holder.time, holder.itemView, holder.date);
     }
 
     @Override

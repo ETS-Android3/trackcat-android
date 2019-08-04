@@ -15,8 +15,7 @@
     <string name="fRecordlist">RECORD_LIST</string>
     <string name="fRecord">RECORD</string>
     <string name="fRecordOneItem">RECORD_ONE_ITEM</string>
-    <string name="fRecordDetailsDashbaord">RECORD_DETAILS_DASHBOARD</string>
-    <string name="fRecordDetailsList">RECORD_DETAILS_LIST</string>
+    <string name="fRecordDetails">RECORD_DETAILS</string>
     <string name="fProfile">PROFILE</string>
     <string name="fEditProfile">EDITPROFILE</string>
     <string name="fEditPassword">EDITPASSWORD</string>

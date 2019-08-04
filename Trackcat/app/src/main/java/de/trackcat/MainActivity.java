@@ -929,11 +929,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     }
 
-                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
-
-                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord));
-                        Fragment fragment2 = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList));
-                        if (fragment.isVisible() || fragment2.isVisible()) {
+                    if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetails)) != null) {
+                        fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetails));
+                        if (fragment.isVisible()) {
                             alert.setMessage(getResources().getString(R.string.help_record_details));
                         }
                     }
@@ -1109,7 +1107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                     loadRecordList(false);
                                                 } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
                                                     //TODO
-                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsDashbaord)) != null || getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetailsList)) != null) {
+                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetails)) != null) {
                                                     //TODO
                                                 } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
                                                     loadProfile(false);
