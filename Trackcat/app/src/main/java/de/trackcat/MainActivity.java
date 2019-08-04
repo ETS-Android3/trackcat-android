@@ -999,6 +999,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
         setConnection(connected);
 
+        Toast.makeText(instance, "Netzwerkstatus"+  String.valueOf(connected), Toast.LENGTH_LONG).show();
+
+
         /* device have connection */
         if (connected) {
 
@@ -1152,9 +1155,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void synchronizeUser(User currentUser) {
+
+        Toast.makeText(instance, "Synchronise User", Toast.LENGTH_LONG).show();
+
         /* send user timestamp to bb */
         HashMap<String, String> map = new HashMap<>();
-        map.put("email", currentUser.getMail());
         map.put("timeStamp", "" + currentUser.getTimeStamp());
 
         Retrofit retrofit = APIConnector.getRetrofit();
@@ -1196,6 +1201,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             /* user on device is new */
                         } else if (mainObject.getString("state").equals("1")) {
 
+                            Toast.makeText(instance, "HandyUser neuer", Toast.LENGTH_LONG).show();
+
                             /* change values in global DB*/
                             HashMap<String, String> map = new HashMap<>();
                             map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
@@ -1231,6 +1238,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         JSONObject successJSON = new JSONObject(jsonString);
 
                                         if (successJSON.getString("success").equals("0")) {
+
+                                            Toast.makeText(instance, "Erfolgreich geändert", Toast.LENGTH_LONG).show();
 
                                             /* save is Synchronized value as true */
                                             currentUser.isSynchronised(true);
