@@ -3,14 +3,30 @@ package de.trackcat.RecordList;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.IconMarginSpan;
+import android.text.style.ImageSpan;
 import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -111,7 +127,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
         /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
         for (int i = 0; i < locations.size(); i++) {
-            Log.v("iiiiiii------------", i + "");
             Location location = locations.get(i);
 
             GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
@@ -143,7 +158,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         /* Name setzen */
         recordName = view.findViewById(R.id.record_name);
         String toSet = record.getName();
-        recordName.setText(toSet);
+        setCklickableSpan(toSet);
 
         /* Average Speed setzen */
         TextView averageSpeed = view.findViewById(R.id.average_speed_value);
@@ -188,10 +203,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
         /* Route anzeigen */
         drawRoute();
-
-        /* Button zur Bearbeitung von Routen */
-        ImageView editRouteName = view.findViewById(R.id.editRoute);
-        editRouteName.setOnClickListener(this);
 
         /* fullScreen map */
         zoomMap = view.findViewById(R.id.zoomRecord);
@@ -286,108 +297,148 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
 
     }
 
+    public void setCklickableSpan(String text) {
+        String toSet = text + "  ";
+
+        /* Create clickable span */
+        SpannableStringBuilder sb = new SpannableStringBuilder(toSet);
+        ImageSpan imageSpan = new ImageSpan(MainActivity.getInstance().getBaseContext(), R.drawable.ic_edit) {
+            public void draw(Canvas canvas, CharSequence text, int start,
+                             int end, float x, int top, int y, int bottom,
+                             Paint paint) {
+                //  Drawable b = ContextCompat.getDrawable(getContext(), R.drawable.ic_edit);
+                Drawable b = getDrawable();
+                canvas.save();
+
+                int transY = bottom - b.getBounds().bottom;
+                // this is the key
+                transY -= paint.getFontMetricsInt().descent / 2;
+
+                canvas.translate(x, transY);
+                b.draw(canvas);
+                canvas.restore();
+            }
+        };
+
+        sb.setSpan(imageSpan, toSet.length() - 1, toSet.length(), DynamicDrawableSpan.ALIGN_BOTTOM);
+
+        /* Set on click listener */
+        sb.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                editRecord();
+            }
+        }, toSet.length() - 1, toSet.length(), DynamicDrawableSpan.ALIGN_BOTTOM);
+
+        recordName.setText(sb);
+        recordName.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    public void editRecord() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Routenname bearbeiten?");
+
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View alertView = inflater.inflate(R.layout.fragment_record_list_edit_route, null, true);
+        TextView edit_record_name = alertView.findViewById(R.id.edit_record_name);
+
+        alert.setView(alertView);
+        edit_record_name.setText(record.getName());
+
+        alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String newName = edit_record_name.getText().toString();
+
+                /* Aktualisieren der Route */
+                Route newRecord = record;
+                newRecord.setName(newName);
+                newRecord.setTimeStamp(GlobalFunctions.getTimeStamp());
+                if (temp) {
+                    tempDAO.update(record.getId(), newRecord);
+                    if (MainActivity.getHints()) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.teditRecordName), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    dao.update(record.getId(), newRecord);
+
+
+                    /* get current user */
+                    UserDAO userDAO = new UserDAO(MainActivity.getInstance());
+                    User currentUser = userDAO.read(MainActivity.getActiveUser());
+
+                    /* read profile values from global db */
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("recordId", "" + record.getId());
+                    map.put("recordName", "" + newName);
+                    map.put("timestamp", "" + newRecord.getTimeStamp());
+
+                    Retrofit retrofit = APIConnector.getRetrofit();
+                    APIClient apiInterface = retrofit.create(APIClient.class);
+
+                    /* start a call */
+                    String base = currentUser.getMail() + ":" + currentUser.getPassword();
+                    String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+                    Call<ResponseBody> call = apiInterface.updateRecordName(authString, map);
+
+                    call.enqueue(new Callback<ResponseBody>() {
+
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            try {
+
+                                if (response.code() == 401) {
+                                    MainActivity.getInstance().showNotAuthorizedModal(4);
+                                } else {
+                                    /* get jsonString from API */
+                                    String jsonString = response.body().string();
+
+                                    /* parse json */
+                                    JSONObject mainObject = new JSONObject(jsonString);
+                                    if (mainObject.getString("success").equals("0")) {
+
+                                        if (MainActivity.getHints()) {
+                                            Toast.makeText(getContext(), getResources().getString(R.string.teditRecordName), Toast.LENGTH_LONG).show();
+                                        }
+                                    } else if (mainObject.getString("success").equals("1")) {
+
+                                        if (MainActivity.getHints()) {
+                                            Toast.makeText(getContext(), getResources().getString(R.string.teditRecordNameUnknownError), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            call.cancel();
+                        }
+                    });
+                }
+                setCklickableSpan(newName);
+            }
+        });
+
+        alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        alert.show();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.editRoute:
-
-                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                alert.setTitle("Routenname bearbeiten?");
-
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View alertView = inflater.inflate(R.layout.fragment_record_list_edit_route, null, true);
-                TextView edit_record_name = alertView.findViewById(R.id.edit_record_name);
-
-                alert.setView(alertView);
-                edit_record_name.setText(record.getName());
-
-                alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String newName = edit_record_name.getText().toString();
-
-                        /* Aktualisieren der Route */
-                        Route newRecord = record;
-                        newRecord.setName(newName);
-                        newRecord.setTimeStamp(GlobalFunctions.getTimeStamp());
-                        if (temp) {
-                            tempDAO.update(record.getId(), newRecord);
-                            if (MainActivity.getHints()) {
-                                Toast.makeText(getContext(), getResources().getString(R.string.teditRecordName), Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            dao.update(record.getId(), newRecord);
+            //  case R.id.editRoute:
 
 
-                            /* get current user */
-                            UserDAO userDAO = new UserDAO(MainActivity.getInstance());
-                            User currentUser = userDAO.read(MainActivity.getActiveUser());
-
-                            /* read profile values from global db */
-                            HashMap<String, String> map = new HashMap<>();
-                            map.put("recordId", "" + record.getId());
-                            map.put("recordName", "" + newName);
-                            map.put("timestamp", "" + newRecord.getTimeStamp());
-
-                            Retrofit retrofit = APIConnector.getRetrofit();
-                            APIClient apiInterface = retrofit.create(APIClient.class);
-
-                            /* start a call */
-                            String base = currentUser.getMail() + ":" + currentUser.getPassword();
-                            String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-                            Call<ResponseBody> call = apiInterface.updateRecordName(authString, map);
-
-                            call.enqueue(new Callback<ResponseBody>() {
-
-                                @Override
-                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                    try {
-
-                                        if (response.code() == 401) {
-                                            MainActivity.getInstance().showNotAuthorizedModal(4);
-                                        } else {
-                                            /* get jsonString from API */
-                                            String jsonString = response.body().string();
-
-                                            /* parse json */
-                                            JSONObject mainObject = new JSONObject(jsonString);
-                                            if (mainObject.getString("success").equals("0")) {
-
-                                                if (MainActivity.getHints()) {
-                                                    Toast.makeText(getContext(), getResources().getString(R.string.teditRecordName), Toast.LENGTH_LONG).show();
-                                                }
-                                            } else if (mainObject.getString("success").equals("1")) {
-
-                                                if (MainActivity.getHints()) {
-                                                    Toast.makeText(getContext(), getResources().getString(R.string.teditRecordNameUnknownError), Toast.LENGTH_LONG).show();
-                                                }
-                                            }
-                                        }
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                    call.cancel();
-                                }
-                            });
-                        }
-                        recordName.setText(newName);
-                    }
-                });
-
-                alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-                alert.show();
-
-                break;
+            //     break;
             case R.id.zoomRecord:
 
                 /* zoom in detail map */
