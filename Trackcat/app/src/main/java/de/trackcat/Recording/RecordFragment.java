@@ -684,7 +684,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
             /* Placeholder festlegen */
             TextView recordName = alertView.findViewById(R.id.record_name);
-            recordName.setHint(defaultName);
+            recordName.setText(defaultName);
 
             /* Setzt die aufgezeichneten Kilometer */
             TextView distance_TextView = alertView.findViewById(R.id.distance_TextView);

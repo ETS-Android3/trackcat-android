@@ -3,11 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/edit_record_name"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_recordName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:inputType="textPersonName" />
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:theme="@style/EditTextTheme">
+
+        <EditText
+            android:id="@+id/edit_record_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:hint="Name der Aufzeichnung"
+            android:inputType="textPersonName"
+            android:maxLength="@integer/iRecords" />
+    </android.support.design.widget.TextInputLayout>
 
 </LinearLayout>

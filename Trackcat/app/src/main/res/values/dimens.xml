@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -22,7 +22,8 @@
     <!-- Input lenght -->
     <integer name="iPassword">15</integer>
     <integer name="iName">16</integer>
-    <integer name="iEmail">30</integer>
+    <integer name="iEmail" tools:ignore="MissingDefaultResource">30</integer>
+    <integer name="iRecords">40</integer>
 
 
     <dimen name="activity_padding_horizontal">16dp</dimen>
