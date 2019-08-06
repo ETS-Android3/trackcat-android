@@ -988,6 +988,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             Toast.LENGTH_LONG).show();
 
                     GlobalFunctions.deleteAllTempRecord(ClosingService.getInstance(), MainActivity.getActiveUser());
+
+                    /* end tracking and delete temp record */
+                    MainActivity.getInstance().endTracking();
                 }
             });
 
