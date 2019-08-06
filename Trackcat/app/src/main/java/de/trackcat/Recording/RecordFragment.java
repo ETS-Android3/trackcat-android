@@ -535,10 +535,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             AlertDialog dialog = alertdialogbuilder.create();
                             dialog.show();
                             dialog.setCanceledOnTouchOutside(false);
-                        } else {
-                            // TODO remove if play pause olay
-//                            startTracking();
-//                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Private offline Aufzeichnung gestartet.", Toast.LENGTH_LONG).show();
+                        } else if (!recordingRuns && !MainActivity.getConnection()){
+
+                              startTracking();
+                              Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Private offline Aufzeichnung gestartet.", Toast.LENGTH_LONG).show();
 
                         }
                         //    startTracking();
