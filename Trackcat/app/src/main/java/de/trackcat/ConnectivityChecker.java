@@ -14,7 +14,7 @@ public class ConnectivityChecker extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         ConnectivityManager mgr = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo networkInfo = mgr.getActiveNetworkInfo();
 
         connected = networkInfo != null && networkInfo.isConnected();
 

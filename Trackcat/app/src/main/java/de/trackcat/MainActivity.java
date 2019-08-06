@@ -1009,6 +1009,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
         setConnection(connected);
 
+        Toast.makeText(this.getBaseContext(),"NETZ: " + connected,
+                Toast.LENGTH_SHORT).show();
+
         /* device have connection */
         if (connected) {
 
