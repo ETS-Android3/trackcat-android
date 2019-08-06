@@ -535,18 +535,18 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             AlertDialog dialog = alertdialogbuilder.create();
                             dialog.show();
                             dialog.setCanceledOnTouchOutside(false);
-                        } else if (!recordingRuns && !MainActivity.getConnection()){
-
-                              startTracking();
-                              Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Private offline Aufzeichnung gestartet.", Toast.LENGTH_LONG).show();
-
-                        }
-                        //    startTracking();
-                        if (kmCounter != null) {
+                        } else if (kmCounter != null) {
+                            //    startTracking();
                             Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Aufzeichnung fortgesetzt.", Toast.LENGTH_LONG).show();
                             recordingRuns = true;
                             startTracking();
+                        } else if (!recordingRuns && !MainActivity.getConnection()) {
+
+                            startTracking();
+                            Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Private offline Aufzeichnung gestartet.", Toast.LENGTH_LONG).show();
+
                         }
+
                     }
 
                     /* get location data */
