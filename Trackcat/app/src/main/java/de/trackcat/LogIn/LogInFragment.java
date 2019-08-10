@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +42,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
     private UserDAO userDAO;
     private EditText emailTextView, passwordTextView;
     private Button btnLogin;
-    private TextView signInLink, messageBox, messageBoxInfo;
+    private TextView signInLink, messageBox, messageBoxInfo, resetPassword;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,10 +56,19 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         signInLink = view.findViewById(R.id.link_signup);
         messageBox = view.findViewById(R.id.messageBox);
         messageBoxInfo = view.findViewById(R.id.messageBoxInfo);
+        resetPassword = view.findViewById(R.id.link_resetPassword);
 
         /* Set on click-Listener */
         btnLogin.setOnClickListener(this);
         signInLink.setOnClickListener(this);
+
+        /* set link */
+        resetPassword.setClickable(true);
+        resetPassword.setMovementMethod(LinkMovementMethod.getInstance());
+        String text1 = "Passwort vergessen? Setzen Sie es <a href='" + getString(R.string.link_resetPassword) + "'>hier</a>  zurück.";
+        resetPassword.setText(Html.fromHtml(text1));
+
+
 
         /* Set user dao */
         userDAO = new UserDAO(StartActivity.getInstance());

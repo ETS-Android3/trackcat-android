@@ -8,6 +8,7 @@
     <!-- Links -->
     <string name="link_termsOfService">http://safe-harbour.de:4242/agb</string>
     <string name="link_dataProtection">http://safe-harbour.de:4242/datenschutz</string>
+    <string name="link_resetPassword">http://safe-harbour.de:4242/resetPassword</string>
 
     <!-- Fragment Namen -->
     <string name="fDashboard">DASHBOARD</string>
