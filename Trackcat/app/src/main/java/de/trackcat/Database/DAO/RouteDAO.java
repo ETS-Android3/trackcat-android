@@ -5,9 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import de.trackcat.CustomElements.CustomLocation;
 import de.trackcat.Database.Models.Route;
 
 import java.lang.reflect.Type;
@@ -29,8 +27,6 @@ public class RouteDAO {
     private final Context context;
 
     private Gson gson = new Gson();
-    private Type listType = new TypeToken<ArrayList<CustomLocation>>() {
-    }.getType();
     private Type exImportType = Route.class;
 
     /**
@@ -78,7 +74,6 @@ public class RouteDAO {
         if (route.getId() != 0 && this.read(route.getId()).getId() == 0) {
             values.put(COL_ID, route.getId());
         }
-      //  values.put(COL_ID, route.getId());
         values.put(COL_USER, route.getUserId());
         values.put(COL_NAME, route.getName());
         values.put(COL_TIME, route.getTime());
@@ -184,7 +179,7 @@ public class RouteDAO {
                     COL_TIMESTAMP,
                     COL_ISIMPORTED,
                     COL_ISTEMP,
-            COL_LOCATIONS};
+                    COL_LOCATIONS};
             try (Cursor cursor = dbHelper.getReadableDatabase().query(
                     TABLE_NAME,
                     projection,
@@ -318,70 +313,4 @@ public class RouteDAO {
     public void delete(Route route) {
         this.delete(route.getId());
     }
-
-    /**
-     * Imports a single route from handed over JSON.
-     *
-     * @param jsonString of type string which defines the route to be imported
-     * @param userId     of type integer to define the user to whom the route would be associated
-     * @param isImported of type boolean to define if the route is a restore from a backup
-     *                   (case false) or if it is an imported route received by an other user
-     *                   (case true)
-     *
-     *                   <p>
-     *                   Creates a route with the attributes which were defined in JSON
-     *                   </p>
-     */
-    public void importRouteFromJson(String jsonString, int userId, boolean isImported) {
-        Route route = gson.fromJson(jsonString, exImportType);
-        if (!route.isImported()) {
-            route.setImported(isImported);
-        }
-        route.setUserID(userId);
-        this.create(route);
-    }
-
-    /**
-     * Imports all routes from handed over JSON List.
-     *
-     * @param jsonStrings of type List<String> which inherits the routes to be imported
-     * @param userId      of type integer to define the user to whom the route would be associated
-     * @param isImported  of type boolean to define if the route is a restore from a backup
-     *                    (case false) or if it is an imported route received by an other user
-     *                    (case true)
-     *
-     *                    <p>
-     *                    Creates a route for each entry with the attributes which were defined in JSON
-     *                    </p>
-     */
-    public void importRoutesFromJson(List<String> jsonStrings, int userId, boolean isImported) {
-        for (String jsonString : jsonStrings) {
-            this.importRouteFromJson(jsonString, userId, isImported);
-        }
-    }
-
-    /**
-     * Creates a JSON string which defines a route object and its attributes.
-     *
-     * @param id of type integer of which route has to be exported
-     * @return a JSON string
-     */
-    public String exportRouteToJson(int id) {
-        return gson.toJson(this.read(id), exImportType);
-    }
-
-    /**
-     * Creates a List of JSON strings which defines all route objects and its attributes
-     * of a specific user.
-     *
-     * @param userId of type integer of which user routes has to be exported
-     * @return a List of JSON strings
-     */
-   /* public List<String> exportRoutesToJson(int userId) {
-        List<String> result = new ArrayList<>();
-        for (Route route : readAll(userId)) {
-            result.add(exportRouteToJson(route.getId()));
-        }
-        return result;
-    }*/
 }

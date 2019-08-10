@@ -27,10 +27,6 @@ public class UserDAO {
      + the context is needed by the DbHelper and will be handed over by creating an instance
      */
     private final Context context;
-    // global GSON object to convert user object into JSON
-    private Gson gson = new Gson();
-    // type to define in or from which object would be converted by GSON
-    private Type imExportType = User.class;
 
     /**
      * Constructor to create instance of data access object.
@@ -266,8 +262,7 @@ public class UserDAO {
     public void delete(User user) {
         DbHelper dbHelper = new DbHelper(context);
         RouteDAO routeDAO = new RouteDAO(context);
-        RecordTempDAO recordTempDAO = new RecordTempDAO(context);
-        LocationTempDAO locationTempDAO = new LocationTempDAO(context);
+
         try {
             for (Route route : routeDAO.readAll()) {
                 routeDAO.delete(route.getId());
@@ -275,14 +270,6 @@ public class UserDAO {
 
             dbHelper.getWritableDatabase().execSQL("delete from " + DbContract.RecordTempEntry.TABLE_NAME);
             dbHelper.getWritableDatabase().execSQL("delete from " + DbContract.LocationTempEntry.TABLE_NAME);
-
-        /*    for (Route route : recordTempDAO.readAll()) {
-                recordTempDAO.delete(route.getId());
-                for (Location location : locationTempDAO.readAll(route.getId())) {
-                    locationTempDAO.delete(location.getId());
-                }
-            }*/
-
             String selection = COL_ID + " LIKE ?";
             String[] selectionArgs = {String.valueOf(user.getId())};
             dbHelper.getWritableDatabase().delete(TABLE_NAME, selection, selectionArgs);

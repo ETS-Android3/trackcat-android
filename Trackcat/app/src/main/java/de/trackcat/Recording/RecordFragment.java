@@ -1284,16 +1284,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             if (isTracking) {
                 locationCounter++;
 
-            /*    CustomLocation toSave = new CustomLocation();
-                toSave.setAltitude(location.getAltitude());
-                toSave.setLatitude(location.getLatitude());
-                toSave.setLongitude(location.getLongitude());
-                toSave.setSpeed(location.getSpeed());
-                toSave.setTime(location.getTime());
-                model.addLocation(toSave);
-                */
-
-
                 // add Location to Model
                 de.trackcat.Database.Models.Location newLocation = new de.trackcat.Database.Models.Location();
                 newLocation.setAltitude(location.getAltitude());

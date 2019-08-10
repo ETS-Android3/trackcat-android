@@ -29,7 +29,6 @@ public class PageViewerCharts extends Fragment {
 
 
     public PageViewerCharts() {
-        /* Required empty public constructor */
     }
 
 

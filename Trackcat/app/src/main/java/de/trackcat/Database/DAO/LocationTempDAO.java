@@ -196,8 +196,6 @@ public class LocationTempDAO {
      * Reads last locations of a specific record.
      *
      * @param recordId id of specific record of whom location has to be selected
-     * @param limit    is the number of limit
-     * @param round    is the page to show
      * @return List of all locations belong to specific record in database sorted ascending after id,
      * if locations with matching recordId was found else an empty List
      */

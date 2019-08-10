@@ -64,7 +64,7 @@ public class CustomFriend {
     }
 
     public void setId(int id) {
-        this.id= id;
+        this.id = id;
     }
 
     public int getIsLive() {
@@ -72,6 +72,6 @@ public class CustomFriend {
     }
 
     public void setIsLive(int isLive) {
-        this.isLive= isLive;
+        this.isLive = isLive;
     }
 }

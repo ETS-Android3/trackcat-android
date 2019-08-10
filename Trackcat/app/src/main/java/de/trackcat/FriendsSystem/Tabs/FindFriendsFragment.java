@@ -66,13 +66,12 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
         currentUser = userDAO.read(MainActivity.getActiveUser());
 
         /* Set page */
-        /* Set page */
         if (MainActivity.getSearchForeignPage() != 0) {
             backPress = true;
             maxPage = MainActivity.getSearchForeignPage();
         } else {
             backPress = false;
-            maxPage =1;
+            maxPage = 1;
         }
         page = 1;
 
@@ -105,7 +104,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
             MainActivity.setSearchForeignTerm(searchTerm);
             MainActivity.setSearchForeignPage(0);
             page = 1;
-            maxPage =1;
+            maxPage = 1;
             Toast.makeText(getContext(), "Suche nach '" + searchTerm + "' gestartet.", Toast.LENGTH_SHORT).show();
 
             /* Close keyboard */
@@ -117,7 +116,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
             List<CustomFriend> friendList = new ArrayList<>();
             search(searchTerm, false, friendList);
 
-            /* show progressbar */
+            /* Show progressbar */
             progressBar.setVisibility(View.VISIBLE);
 
             return true;
@@ -130,10 +129,8 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
         /* Check if load more */
         if (loadMore) {
             page++;
-            maxPage=page;
-            //if (!backPress) {
-                MainActivity.setSearchForeignPage(page);
-        //    }
+            maxPage = page;
+            MainActivity.setSearchForeignPage(page);
         }
 
         /* Create map */
@@ -177,11 +174,9 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                         }
 
                         /* Add entrys to view */
-                        if(loadMore&& friends.length()==0){
+                        if (loadMore && friends.length() == 0) {
                             adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false, false, true);
-
-
-                        }else {
+                        } else {
                             adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false, false, false);
                         }
                         ListView friendListView = view.findViewById(R.id.friend_list);
@@ -200,7 +195,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                             }
                         }
 
-                        /* delete progressbar */
+                        /* Delete progressbar */
                         progressBar.setVisibility(View.GONE);
 
                         noEntrys.setVisibility(View.GONE);
@@ -212,15 +207,18 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
-
-                    /* delete progressbar */
+                    if (MainActivity.getHints()) {
+                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
+                    }
+                    /* Delete progressbar */
                     progressBar.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
+                    if (MainActivity.getHints()) {
+                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
+                    }
 
-                    /* delete progressbar */
+                    /* Delete progressbar */
                     progressBar.setVisibility(View.GONE);
                 }
             }
@@ -232,11 +230,13 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                     adapter.clear();
                 } catch (Exception e) {
                 }
-                Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchNoConnection), Toast.LENGTH_SHORT).show();
+                if (MainActivity.getHints()) {
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchNoConnection), Toast.LENGTH_SHORT).show();
+                }
                 noEntrys.setVisibility(View.VISIBLE);
                 noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSearchNoConnection));
 
-                /* delete progressbar */
+                /* Delete progressbar */
                 progressBar.setVisibility(View.GONE);
             }
         });

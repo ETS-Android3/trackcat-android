@@ -21,7 +21,6 @@ import de.trackcat.Database.Models.Route;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.RecordList.CustomRecordListAdapter;
-import de.trackcat.RecordList.RecordListFragment;
 
 public class SummaryListFragment extends Fragment implements View.OnClickListener {
 
@@ -34,6 +33,7 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
         LinearLayout noEntries = view.findViewById(R.id.no_entries_alert);
         Button firstRecordBtn = view.findViewById(R.id.create_first_record);
 
+        /* Get all records */
         RouteDAO dao = new RouteDAO(MainActivity.getInstance());
         List<Route> records = dao.readAll();
 
@@ -47,7 +47,7 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
         List<Route> mList = new ArrayList<>();
         mList.clear();
 
-        /* add Elements to List */
+        /* Add Elements to List */
         if (!records.isEmpty() && records.size() >= 2) {
 
             for (int i = 0; i < getResources().getInteger(R.integer.summaryRecordListAmount); i++) {
@@ -58,6 +58,8 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
                 mList.add(records.get(i));
             }
         }
+
+        /* Set list adapter */
         CustomRecordListAdapter adapter = new CustomRecordListAdapter(MainActivity.getInstance(), mList);
         ListView recordList = view.findViewById(R.id.record_list);
         recordList.setAdapter(adapter);
@@ -76,10 +78,8 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        /* FragmentManager initialisieren */
-        FragmentTransaction fragTransaction = getActivity().getSupportFragmentManager().beginTransaction();
 
-        /* Menu instanziieren */
+        /* Inztanziate menu */
         NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
 
@@ -88,13 +88,13 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
             case R.id.show_more_records:
                 MainActivity.getInstance().synchronizeRecords(true, false);
 
-                /* Aktuell ausgewählten Menüpunkt markieren */
+                /* Mark current menu point */
                 menu.findItem(R.id.nav_recordlist).setChecked(true);
                 break;
             case R.id.create_first_record:
                 MainActivity.getInstance().loadRecord();
 
-                /* Aktuell ausgewählten Menüpunkt markieren */
+                /* Mark current menu point */
                 menu.findItem(R.id.nav_record).setChecked(true);
                 break;
         }

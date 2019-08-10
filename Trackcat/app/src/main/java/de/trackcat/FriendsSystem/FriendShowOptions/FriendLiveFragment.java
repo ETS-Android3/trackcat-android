@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -282,8 +281,6 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                             }
                                         });
                                     }
-
-
                                 } else {
 
                                     /* stop runnable */
@@ -310,12 +307,12 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                     }
                 });
 
-                /* restart runnable */
+                /* Restart runnable */
                 handler.postDelayed(this, delay);
             }
         };
 
-        /* start runnable */
+        /* Start runnable */
         handler.postDelayed(runnable, delay);
 
         return view;
@@ -332,7 +329,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         mMapController = (MapController) mMapView.getController();
         mMapController.setZoom(19);
 
-        /* create Polyline and marker */
+        /* Create Polyline and marker */
         gPt = new GeoPoint(locations.get(0).getLatitude(), locations.get(0).getLongitude());
         startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
@@ -374,7 +371,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         gPt = new GeoPoint(locations.get(locations.size() - 1).getLatitude(), locations.get(locations.size() - 1).getLongitude());
         stopMarker.setPosition(gPt);
 
-        /* check if userScroll true  and scroll to marker*/
+        /* Check if userScroll true  and scroll to marker*/
         if (!userScroll && !showAll) {
             mMapController.setCenter(gPt);
         }
@@ -404,7 +401,9 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                 /* Go to marker */
                 mMapController.setZoom(19);
                 goToMarker();
-                Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewZoomToUser), Toast.LENGTH_SHORT).show();
+                if (MainActivity.getHints()) {
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewZoomToUser), Toast.LENGTH_SHORT).show();
+                }
                 goToMarker.hide();
                 break;
             case R.id.showCompleteRecordBtn:
@@ -413,13 +412,16 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                     mMapController.setZoom(19);
                     goToMarker();
                     showCompleteRecord.setImageResource(R.drawable.ic_switch_one);
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewZoom), Toast.LENGTH_SHORT).show();
-
-                    /* show fullTrack view */
+                    if (MainActivity.getHints()) {
+                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewZoom), Toast.LENGTH_SHORT).show();
+                    }
+                    /* Show fullTrack view */
                 } else {
                     showAll = true;
                     showCompleteRecord.setImageResource(R.drawable.ic_switch_all);
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewFullTrack), Toast.LENGTH_SHORT).show();
+                    if (MainActivity.getHints()) {
+                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendLiveViewFullTrack), Toast.LENGTH_SHORT).show();
+                    }
                     goToMarker.hide();
                 }
                 break;

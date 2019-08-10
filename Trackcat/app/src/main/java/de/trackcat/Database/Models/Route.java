@@ -1,11 +1,5 @@
 package de.trackcat.Database.Models;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-
-import de.trackcat.CustomElements.CustomLocation;
-
 /**
  * Model to define an route object
  */

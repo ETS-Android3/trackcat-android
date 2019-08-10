@@ -37,24 +37,23 @@ public class User {
     /**
      * Constructor to save user information from database read.
      *
-     * @param id        of type integer
-     * @param firstName of type string
-     * @param lastName  of type string
-     * @param eMail     of type string
-     * @param password     of type string
-     * @param weight    of type float
-     * @param size    of type float
-     * @param gender    of type integer
-     * @param dateOfBirth    of type long
-     * @param dateOfRegistration    of type long
-     * @param lastLogin    of type long
-     * @param timeStamp    of type long
-     * @param idUsers    of type int
+     * @param id                 of type integer
+     * @param firstName          of type string
+     * @param lastName           of type string
+     * @param eMail              of type string
+     * @param password           of type string
+     * @param weight             of type float
+     * @param size               of type float
+     * @param gender             of type integer
+     * @param dateOfBirth        of type long
+     * @param dateOfRegistration of type long
+     * @param lastLogin          of type long
+     * @param timeStamp          of type long
      * @param isSynchronized     of type integer
      */
     public User(int id, String firstName, String lastName, int hintsActive,
-                int themeActive, String eMail, String password ,float weight, float size, int gender, long dateOfBirth,
-                long dateOfRegistration, long lastLogin,  long amountRecord,  long totalTime,  long totalDistance,long timeStamp, byte[] image, int isSynchronized) {
+                int themeActive, String eMail, String password, float weight, float size, int gender, long dateOfBirth,
+                long dateOfRegistration, long lastLogin, long amountRecord, long totalTime, long totalDistance, long timeStamp, byte[] image, int isSynchronized) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -62,7 +61,7 @@ public class User {
         this.password = password;
         this.weight = weight;
         this.size = size;
-        this.gender=gender;
+        this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.dateOfRegistration = dateOfRegistration;
         this.lastLogin = lastLogin;
@@ -280,14 +279,14 @@ public class User {
      *
      * @param isSynchronized of type integer
      *
-     *               <p>
-     *               Integer value is necessary due to SQLite Database constraint. SQLite does not implement
-     *               boolean values natively as true or false but only as integer.
-     *               </p>
-     *               <p>
-     *               Hand over "1" to define that the user is currently the active one or "0"
-     *               to define that it isn't.
-     *               </p>
+     *                       <p>
+     *                       Integer value is necessary due to SQLite Database constraint. SQLite does not implement
+     *                       boolean values natively as true or false but only as integer.
+     *                       </p>
+     *                       <p>
+     *                       Hand over "1" to define that the user is currently the active one or "0"
+     *                       to define that it isn't.
+     *                       </p>
      */
     public void setIsSynchronizedDB(int isSynchronized) {
         this.isSynchronized = isSynchronized == 1;

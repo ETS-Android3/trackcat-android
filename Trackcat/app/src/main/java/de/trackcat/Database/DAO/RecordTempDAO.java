@@ -5,14 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.trackcat.CustomElements.CustomLocation;
 import de.trackcat.Database.Models.Location;
 import de.trackcat.Database.Models.Route;
 
@@ -42,11 +37,6 @@ public class RecordTempDAO {
      */
     private final Context context;
 
-    private Gson gson = new Gson();
-    private Type listType = new TypeToken<ArrayList<CustomLocation>>() {
-    }.getType();
-    private Type exImportType = Route.class;
-
     /**
      * Constructor to create instance of data access object.
      *
@@ -69,7 +59,6 @@ public class RecordTempDAO {
         DbHelper dbHelper = new DbHelper(context);
         long id = 0;
         try {
-            //  route.setId((int) dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(route)));
             id = dbHelper.getWritableDatabase().insert(TABLE_NAME, null, valueGenerator(route));
         } finally {
             dbHelper.close();
@@ -316,7 +305,7 @@ public class RecordTempDAO {
         DbHelper dbHelper = new DbHelper(context);
         LocationTempDAO locationDAO = new LocationTempDAO(context);
         try {
-            /*delete locations*/
+            /* Delete locations */
             for (Location location : locationDAO.readAll(id)) {
                 locationDAO.delete(location.getId());
             }
@@ -365,12 +354,10 @@ public class RecordTempDAO {
 
             }
             int id;
-            Log.d("GESCHLOSSEN"," zu löschende Routen: "+result.size());
-
             for (int i = 0; i < result.size(); i++) {
                 id = result.get(i);
 
-                /*delete locations*/
+                /* Delete locations */
                 for (Location location : locationDAO.readAll(id)) {
                     locationDAO.delete(location.getId());
                 }
@@ -380,9 +367,6 @@ public class RecordTempDAO {
             }
         } finally {
             dbHelper.close();
-
-            Log.d("GESCHLOSSEN"," DB GESCHLOSSEN");
         }
-
     }
 }

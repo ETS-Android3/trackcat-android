@@ -2,7 +2,6 @@ package de.trackcat.FriendsSystem.Tabs;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
@@ -79,7 +78,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             @Override
             public void onRefresh() {
                 if (adapter != null) {
-                   // maxPage = MainActivity.getSearchFriendPage();
+                    // maxPage = MainActivity.getSearchFriendPage();
                     noEntrys.setVisibility(View.GONE);
                     page = 1;
                     adapter.clear();
@@ -88,12 +87,10 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             }
         });
 
-        /* start refreshing by loading */
+        /* Start refreshing by loading */
         swipeContainer.setColorSchemeColors(Color.RED, Color.BLUE, Color.YELLOW);
         swipeContainer.setRefreshing(true);
         swipeContainer.bringToFront();
-
-        Log.d("TEEEST", "" + MainActivity.getSearchFriendPage());
 
         /* Set page */
         if (MainActivity.getSearchFriendPage() != 0) {
@@ -101,7 +98,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             maxPage = MainActivity.getSearchFriendPage();
         } else {
             backPress = false;
-            maxPage =1;
+            maxPage = 1;
         }
         page = 1;
 
@@ -113,16 +110,6 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
         findFriend = view.findViewById(R.id.findFriend);
         VectorDrawableCompat drawableCompat = VectorDrawableCompat.create(getActivity().getResources(), R.drawable.ic_search, findFriend.getContext().getTheme());
         findFriend.setCompoundDrawablesWithIntrinsicBounds(drawableCompat, null, null, null);
-
-        //Drawable myDrawable = getResources().getDrawable(R.drawable.ic_search);
-        // Drawable  d= new Drawable()
-        // Drawable      drawableCompat= VectorDrawableCompat.create(getActivity().getResources(), R.drawable.ic_search, null);
-        //  findFriend.setCompoundDrawablesWithIntrinsicBounds(myDrawable, null, null, null);
-    /*    Drawable image = getResources().getDrawable( R.drawable.ic_search );
-        int h = image.getIntrinsicHeight();
-        int w = image.getIntrinsicWidth();
-        image.setBounds( 0, 0, w, h );
-        findFriend.setCompoundDrawables( image, null, null, null );*/
         findFriend.setOnKeyListener(this);
 
         /* Load page */
@@ -145,7 +132,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             searchTerm = findFriend.getText().toString();
             MainActivity.setSearchFriendTerm(searchTerm);
             page = 1;
-            maxPage=1;
+            maxPage = 1;
             MainActivity.setSearchFriendPage(0);
             Toast.makeText(getContext(), "Suche nach Freund '" + searchTerm + "' gestartet.", Toast.LENGTH_SHORT).show();
 
@@ -169,10 +156,8 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
         /* Check if load more */
         if (loadMore) {
             page++;
-            maxPage=page;
-            //if (!backPress) {
+            maxPage = page;
             MainActivity.setSearchFriendPage(page);
-            //  }
         }
 
         /* Create map */
@@ -226,7 +211,7 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                             showFriends(find, true, friendList);
                         } else {
 
-                            if (!backPress &&loadMore) {
+                            if (!backPress && loadMore) {
                                 friendListView.setSelection((page - 1) * 10);
                             } else {
                                 friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
@@ -261,7 +246,9 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                     adapter.clear();
                 } catch (Exception e) {
                 }
-                Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNoConnection), Toast.LENGTH_SHORT).show();
+                if (MainActivity.getHints()) {
+                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNoConnection), Toast.LENGTH_SHORT).show();
+                }
                 noEntrys.setVisibility(View.VISIBLE);
                 noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendNoConnection));
                 swipeContainer.setRefreshing(false);
@@ -276,8 +263,8 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             case R.id.resetSearch:
                 List<CustomFriend> friendList = new ArrayList<>();
                 MainActivity.setSearchFriendTerm("");
-                page=1;
-                maxPage=1;
+                page = 1;
+                maxPage = 1;
                 MainActivity.setSearchFriendPage(0);
                 searchTerm = "";
                 findFriend.setText("");

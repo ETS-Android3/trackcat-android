@@ -1,6 +1,5 @@
 package de.trackcat.CustomElements;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.trackcat.Database.Models.Location;
@@ -19,12 +18,12 @@ public class RecordModelForServer {
     private List<Location> locations;
 
     public RecordModelForServer() {
-
     }
 
     public int getId() {
         return this.id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -32,6 +31,7 @@ public class RecordModelForServer {
     public int getUserId() {
         return this.userId;
     }
+
     public void setUserID(int userId) {
         this.userId = userId;
     }
@@ -39,6 +39,7 @@ public class RecordModelForServer {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -46,6 +47,7 @@ public class RecordModelForServer {
     public long getTime() {
         return time;
     }
+
     public void setTime(long time) {
         this.time = time;
     }
@@ -53,6 +55,7 @@ public class RecordModelForServer {
     public double getDistance() {
         return distance;
     }
+
     public void setDistance(double distance) {
         this.distance = distance;
     }
@@ -60,21 +63,17 @@ public class RecordModelForServer {
     public List<Location> getLocations() {
         return this.locations;
     }
-     public void setLocations(List<Location> locations) {
+
+    public void setLocations(List<Location> locations) {
         this.locations = locations;
         if (!locations.isEmpty())
             this.date = locations.get(0).getTime();
     }
-  /*  public void addLocation(Location location) {
-        if (this.locations == null) {
-            this.locations = new List<Location>();
-        }
-        this.locations.add(location);
-    }*/
 
     public long getRideTime() {
         return rideTime;
     }
+
     public void setRideTime(long rideTime) {
         this.rideTime = rideTime;
     }
@@ -82,6 +81,7 @@ public class RecordModelForServer {
     public long getDate() {
         return date;
     }
+
     public void setDate(long date) {
         this.date = date;
     }
@@ -89,6 +89,7 @@ public class RecordModelForServer {
     public int getType() {
         return type;
     }
+
     public void setType(int type) {
         this.type = type;
     }
@@ -97,6 +98,7 @@ public class RecordModelForServer {
     public long getTimeStamp() {
         return timeStamp;
     }
+
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }

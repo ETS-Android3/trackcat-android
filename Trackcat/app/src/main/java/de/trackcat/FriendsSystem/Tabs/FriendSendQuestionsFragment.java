@@ -63,7 +63,7 @@ public class FriendSendQuestionsFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(adapter!=null) {
+                if (adapter != null) {
                     noEntrys.setVisibility(View.GONE);
                     adapter.clear();
                     loadPage();
@@ -71,7 +71,7 @@ public class FriendSendQuestionsFragment extends Fragment {
             }
         });
 
-        /* start refreshing by loading */
+        /* Start refreshing by loading */
         swipeContainer.setColorSchemeColors(Color.RED, Color.BLUE, Color.YELLOW);
         swipeContainer.setRefreshing(true);
         swipeContainer.bringToFront();
@@ -130,7 +130,7 @@ public class FriendSendQuestionsFragment extends Fragment {
                         if (friends.length() > 0) {
                             parentFrag.setBadgeText(4, "" + friends.length());
                             noEntrys.setVisibility(View.GONE);
-                        }else {
+                        } else {
                             noEntrys.setVisibility(View.VISIBLE);
                             noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendSendQuestionNoEntry));
                             parentFrag.setBadgeText(4, null);
@@ -144,10 +144,14 @@ public class FriendSendQuestionsFragment extends Fragment {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
+                    if (MainActivity.getHints()) {
+                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
+                    if (MainActivity.getHints()) {
+                        Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendSearchError), Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 swipeContainer.setRefreshing(false);

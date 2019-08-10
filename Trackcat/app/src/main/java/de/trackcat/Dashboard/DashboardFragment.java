@@ -28,7 +28,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         fragTransaction.replace(R.id.chartContainer, new PageViewerCharts(), getResources().getString(R.string.fPageViewer));
         fragTransaction.commit();
 
-        /* Aktuell ausgewählten Menüpunkt markieren */
+        /* Mark current menu point */
         NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
         menu.findItem(R.id.nav_dashboard).setChecked(true);
@@ -37,7 +37,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         FloatingActionButton fabButton = view.findViewById(R.id.fabButton);
         fabButton.setOnClickListener(this);
 
-        /* Funktionen hinter dem Schnellwechsel-Button */
+        /* Function behind the shortcut button */
         if (Build.VERSION.SDK_INT <= 21) {
             fabButton.setVisibility(View.INVISIBLE);
         }
@@ -48,12 +48,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fabButton:
-                if (MainActivity.getHints()) {
-                    Toast.makeText(getContext(), "Wechseln auf Aufnahme", Toast.LENGTH_LONG).show();
-                }
 
+                /* Load record */
+                if (MainActivity.getHints()) {
+                    Toast.makeText(getContext(), MainActivity.getInstance().getResources().getString(R.string.changeToRecording), Toast.LENGTH_LONG).show();
+                }
                 MainActivity.getInstance().loadRecord();
 
+                /* Set menu checked */
                 NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                 Menu menu = navigationView.getMenu();
                 menu.findItem(R.id.nav_record).setChecked(true);

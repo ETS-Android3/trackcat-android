@@ -2,26 +2,18 @@ package de.trackcat.Database.DAO;
 
 import android.provider.BaseColumns;
 
-/*
- + class to provide database configuration
- */
+/* Class to provide database configuration */
 final class DbContract {
 
-    /*
-     + private constructor to prevent instantiating this class
-     */
     private DbContract() {
     }
 
-    /*
-     + defining standard database constants for creation
-     */
+    /* Defining standard database constants for creation */
     static final int DATABASE_VERSION = 1;
     static final String DATABASE_NAME = "Trackcat.db";
 
-    /*
-     + string to create table where routes where stored in
-     */
+
+    /* Strings to define record tables */
     static final String SQL_CREATE_ROUTE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + RouteEntry.TABLE_NAME + " ( " +
                     RouteEntry.COL_ID + " INTEGER PRIMARY KEY, " +
@@ -37,14 +29,9 @@ final class DbContract {
                     RouteEntry.COL_ISIMPORTED + " BOOLEAN, " +
                     RouteEntry.COL_LOCATIONS + " TEXT) ";
 
-    /*
-     + string to delete route table
-     */
     static final String SQL_DELETE_ROUTE_TABLE = "DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME;
 
-    /*
-     + string to create table where records where temporary stored in
-     */
+    /* Strings to define temp record tables */
     static final String SQL_CREATE_RECORD_TEMP_TABLE =
             "CREATE TABLE IF NOT EXISTS " + RecordTempEntry.TABLE_NAME + " ( " +
                     RecordTempEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -60,14 +47,9 @@ final class DbContract {
                     RecordTempEntry.COL_ISTEMP + " BOOLEAN, " +
                     RecordTempEntry.COL_LOCATIONS + " TEXT) ";
 
-    /*
-     + string to delete temporary record table
-     */
     static final String SQL_DELETE_RECORD_TEMP_TABLE = "DROP TABLE IF EXISTS " + RecordTempEntry.TABLE_NAME;
 
-    /*
-    + string to create table where locations temporary where stored in
-    */
+    /* Strings to define temp location tables */
     static final String SQL_CREATE_LOCATION_TEMP_TABLE =
             "CREATE TABLE IF NOT EXISTS " + LocationTempEntry.TABLE_NAME + " ( " +
                     LocationTempEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -79,14 +61,9 @@ final class DbContract {
                     LocationTempEntry.COL_RECORD_ID + " INTEGER, " +
                     "FOREIGN KEY(" + LocationTempEntry.COL_RECORD_ID + ") REFERENCES " + RecordTempEntry.TABLE_NAME + "(" + RecordTempEntry.COL_ID + "))";
 
-    /*
-    + string to delete location temorary table
-    */
     static final String SQL_DELETE_LOCATION_TEMP_TABLE = "DROP TABLE IF EXISTS " + LocationTempEntry.TABLE_NAME;
 
-    /*
-     + string to create table where users where stored in
-     */
+    /* Strings to define user tables */
     static final String SQL_CREATE_USER_TABLE =
             "CREATE TABLE IF NOT EXISTS " + UserEntry.TABLE_NAME + " ( " +
                     UserEntry.COL_ID + " INTEGER PRIMARY KEY, " +
@@ -109,14 +86,9 @@ final class DbContract {
                     UserEntry.COL_ISSYNCHRONIZED + " BOOLEAN, " +
                     UserEntry.COL_IMAGE + " BLOB) ";
 
-    /*
-     + string to delete user table
-     */
     static final String SQL_DELETE_USER_TABLE = "DROP TABLE IF EXISTS " + UserEntry.TABLE_NAME;
 
-    /*
-     + class to declare columns for route table
-     */
+    /* Class to declare record table */
     static final class RouteEntry implements BaseColumns {
         private RouteEntry() {
         }
@@ -136,9 +108,7 @@ final class DbContract {
         static final String COL_ISTEMP = "temp";
     }
 
-    /*
-    + class to declare columns for route table
-    */
+    /* Class to declare temp record table */
     static final class RecordTempEntry implements BaseColumns {
         private RecordTempEntry() {
         }
@@ -158,9 +128,7 @@ final class DbContract {
         static final String COL_ISTEMP = "temp";
     }
 
-    /*
-    + class to declare columns for route table
-    */
+    /* Class to declare temp location table */
     static final class LocationTempEntry implements BaseColumns {
         private LocationTempEntry() {
         }
@@ -175,9 +143,7 @@ final class DbContract {
         static final String COL_RECORD_ID = "fk_record_id";
     }
 
-    /*
-     + class to declare columns for user table
-     */
+    /* Class to declare user table */
     static final class UserEntry implements BaseColumns {
         private UserEntry() {
         }
@@ -203,5 +169,4 @@ final class DbContract {
         static final String COL_ISSYNCHRONIZED = "isSynchronized";
         static final String COL_IMAGE = "image";
     }
-
 }

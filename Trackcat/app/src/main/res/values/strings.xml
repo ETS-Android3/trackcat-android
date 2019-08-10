@@ -113,6 +113,9 @@
     Sie können nicht mehr an seinen Liveübertragungen teilnehmen.</string>
     <string name="help_friends_live_view">Hier können Sie die Liveübertragung Ihres Freundes sehen.</string>
 
+    <!-- dashboard strings -->
+    <string name="changeToRecording">Wechsel auf Aufnahme</string>
+
     <!-- profile strings -->
     <string name="noInformation" tools:ignore="ExtraTranslation">keine Angabe</string>
 
