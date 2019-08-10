@@ -756,6 +756,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
             alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
+
+                    /* dissmiss doalog */
+                    dialog.dismiss();
                     TextView recordName = alertView != null ? alertView.findViewById(R.id.record_name) : null;
                     if (recordName != null && recordName.getText().toString().equals("")) {
                         model.setName(defaultName);
