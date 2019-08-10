@@ -511,7 +511,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 loadEditProfile();
                 return true;
             case R.id.nav_editPassword:
-                loadEditPassword();
+                loadEditPassword(true);
                 return true;
             case R.id.nav_deleteAccount:
                 loadDeleteAccount();
@@ -843,7 +843,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /* Laden des Einstellung-Fragments */
-    public void loadEditPassword() {
+    public void loadEditPassword(boolean addToStack) {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Passwort-Ändern-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.mainFrame, new EditPasswordFragment(),
@@ -851,7 +851,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragTransaction.commit();
 
         /* add to Stack */
-        fragTransaction.addToBackStack(getResources().getString(R.string.fEditPassword));
+        if (addToStack) {
+            fragTransaction.addToBackStack(getResources().getString(R.string.fEditPassword));
+        }
     }
 
     /* Laden des Friends-Fragments */
@@ -1009,7 +1011,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
         setConnection(connected);
 
-        Toast.makeText(this.getBaseContext(),"NETZ: " + connected,
+        Toast.makeText(this.getBaseContext(), "NETZ: " + connected,
                 Toast.LENGTH_SHORT).show();
 
         /* device have connection */
@@ -1041,9 +1043,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showNotAuthorizedModal(int type) {
         if (type == 5 | type == 6 | type == 7 | type == 8 | type == 9) {
             showAutorizeCounter++;
+        }else{
+            showAutorizeCounter=1;
         }
 
-        if ((type == 5 | type == 6 | type == 7 | type == 8 | type == 9) && showAutorizeCounter == 1) {
+        if (showAutorizeCounter == 1) {
             /* create AlertBox */
             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             alert.setTitle("Achtung");
@@ -1123,6 +1127,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
                                                     loadDeleteAccount();
                                                 }
+                                            } else if (type == 10) {
+                                                loadEditPassword(false);
                                             } else if (type == 3) {
                                                 loadDeleteAccount();
                                             } else if (type == 4) {

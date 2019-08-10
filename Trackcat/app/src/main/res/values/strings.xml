@@ -123,6 +123,7 @@
 
     <!-- change password strings -->
     <string name="tSuccessChangePassword">Passwort wurde erfolgreich geändert!</string>
+    <string name="tNoConnectionPassword">Passwort konnte nicht geändert werden, bitte überprüfen Sie Ihre Internetverbindung.</string>
     <string name="tErrorOldPassword">Authentifizierung fehlgeschlagen!</string>
     <string name="tChangePasswortUnknownError">Unbekannter Fehler beim Ändern des Passworts!</string>
 

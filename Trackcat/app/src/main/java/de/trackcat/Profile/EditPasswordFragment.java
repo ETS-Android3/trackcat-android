@@ -97,28 +97,29 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 try {
 
-                                    /* get jsonString from API */
-                                    String jsonString = response.body().string();
+                                    if (response.code() == 401) {
+                                        MainActivity.getInstance().showNotAuthorizedModal(10);
+                                    } else {
+                                        /* get jsonString from API */
+                                        String jsonString = response.body().string();
 
-                                    /* parse json */
-                                    JSONObject mainObject = new JSONObject(jsonString);
-                                    /*  if change password success*/
-                                    if (mainObject.getString("success").equals("0")) {
+                                        /* parse json */
+                                        JSONObject mainObject = new JSONObject(jsonString);
+                                        /*  if change password success*/
+                                        if (mainObject.getString("success").equals("0")) {
 
-                                        /* change password in local DB */
-                                        changePasswordInLokalDB(input_password2);
-                                    } else if (mainObject.getString("success").equals("1")) {
+                                            /* change password in local DB */
+                                            changePasswordInLokalDB(input_password2);
+                                        } else if (mainObject.getString("success").equals("1")) {
 
-                                        if (MainActivity.getHints()) {
-                                            Toast.makeText(getContext(), getResources().getString(R.string.tChangePasswortUnknownError), Toast.LENGTH_LONG).show();
+                                            if (MainActivity.getHints()) {
+                                                Toast.makeText(getContext(), getResources().getString(R.string.tChangePasswortUnknownError), Toast.LENGTH_LONG).show();
+                                            }
                                         }
                                     }
-
                                     /* old password not correct */
                                 } catch (Exception e) {
-                                    if (MainActivity.getHints()) {
-                                        Toast.makeText(getContext(), getResources().getString(R.string.tErrorOldPassword), Toast.LENGTH_LONG).show();
-                                    }
+
                                     /* set btn enable */
                                     setButtonEnable();
                                 }
@@ -128,17 +129,10 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-                                /* change password in local DB */
-                                if (input_currentPassword.equals(currentUser.getPassword())) {
-                                    changePasswordInLokalDB(input_password2);
-                                } else {
-                                    /* old password not correct */
-                                    if (MainActivity.getHints()) {
-                                        Toast.makeText(getContext(), getResources().getString(R.string.tErrorOldPassword), Toast.LENGTH_LONG).show();
-                                    }
-                                    /* set btn enable */
-                                    setButtonEnable();
-                                }
+                                Toast.makeText(getContext(), getResources().getString(R.string.tNoConnectionPassword), Toast.LENGTH_LONG).show();
+
+                                /* set btn enable */
+                                setButtonEnable();
 
                                 call.cancel();
                             }
