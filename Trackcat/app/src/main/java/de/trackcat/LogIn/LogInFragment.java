@@ -2,7 +2,9 @@ package de.trackcat.LogIn;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
@@ -19,6 +21,10 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
 import de.trackcat.Database.DAO.RouteDAO;
@@ -34,6 +40,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import static okhttp3.internal.Util.UTF_8;
 
 public class LogInFragment extends Fragment implements View.OnClickListener {
 
@@ -110,6 +118,31 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
             /* Read the inputs to send */
             String email = emailTextView.getText().toString();
             String password = passwordTextView.getText().toString();
+
+
+//            // TODO use for password hash
+//            try {
+//                MessageDigest digest = java.security.MessageDigest
+//                        .getInstance("SHA-256");
+//                digest.update(password.getBytes());
+//                byte messageDigest[] = digest.digest();
+//
+//                // Create Hex String
+//                StringBuilder hexString = new StringBuilder();
+//                for (byte aMessageDigest : messageDigest) {
+//                    String h = Integer.toHexString(0xFF & aMessageDigest);
+//                    while (h.length() < 2)
+//                        h = "0" + h;
+//                    hexString.append(h);
+//                }
+//                String sha3_256hex  = hexString.toString();
+//                Log.v("HASHTEST----------:  ", sha3_256hex);
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
+
+
+
 
             /* Wet wait field */
             final ProgressDialog progressDialog = new ProgressDialog(getContext(),
