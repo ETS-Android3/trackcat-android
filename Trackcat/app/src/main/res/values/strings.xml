@@ -109,7 +109,7 @@
     <string name="help_friendSystem">Hier können Sie Ihre Freunde verwalten.\n\nÜber die Suche können Sie andere Nutzer suchen und diesen durch Klicken gegebenenfalls eine Freundschafsanfrage sendnen.\n\n
         Unter dem Tab Freunde werden alle Ihre Freunde angezeigt und Sie können sich deren Profil anzeigen lassen, den Freund entfernen, oder wenn dieser Live ist seine Liveübertragung angucken.\n\nAuf dem nächsten Tab werden alle Freunde angezeigt, die immoment eine Aufnahme live teilen.\n\Unter den letzten beiden Tabs sehen sie zum einen Ihre erhaltenden Freundschaftsanfragen und können diese bestätigen oder entfernen und zum anderen Ihre gesendeten Anfragen, die Sie gegebenfalls zurückziehen können.</string>
     <string name="help_deleteAccount">Hier können Sie Ihren Account löschen. Dieser kann nicht wiederhergestellt werden.</string>
-    <string name="help_friends_profile">Hier können Sie das Profil Ihres Freudes sehen. Wenn Sie auf den Button "Freund entfernen" klicken, wird die Person aus Ihrer Freundesliste entfernt und
+    <string name="help_friends_profile">Hier können Sie das Profil Ihres Freundes sehen. Wenn Sie auf den Button "Freund entfernen" klicken, wird die Person aus Ihrer Freundesliste entfernt und
     Sie können nicht mehr an seinen Liveübertragungen teilnehmen.</string>
     <string name="help_friends_live_view">Hier können Sie die Liveübertragung Ihres Freundes sehen.</string>
 
