@@ -680,18 +680,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String tag = backEntry.getName();
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
 
-            for (int i = 0; i < this.getSupportFragmentManager().getBackStackEntryCount(); i++) {
-
-                FragmentManager.BackStackEntry b = getSupportFragmentManager().getBackStackEntryAt(i);
-                String t = b.getName();
-                Log.i(getResources().getString(R.string.app_name) + "-Fragment", "tag: " + t + " an der Stelle: " + i);
-            }
-
-
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
-            //  fragTransaction.remove(fragment);
             this.getSupportFragmentManager().popBackStack();
-            Log.i(getResources().getString(R.string.app_name) + "-Fragment", "load : " + tag);
 
             fragTransaction.replace(R.id.mainFrame, fragment, tag);
             fragTransaction.commit();
@@ -699,7 +689,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             /* close app with klick double back */
             if (exitApp) {
-                Log.d("GESCHLOSSEN", "EXIT APP:");
 
                 //  ClosingService.getInstance().onTaskRemoved(MainActivity.getInstance().getIntent());
                 if (android.os.Build.VERSION.SDK_INT >= 21) {
@@ -1044,8 +1033,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showNotAuthorizedModal(int type) {
         if (type == 5 | type == 6 | type == 7 | type == 8 | type == 9) {
             showAutorizeCounter++;
-        }else{
-            showAutorizeCounter=1;
+        } else {
+            showAutorizeCounter = 1;
         }
 
         if (showAutorizeCounter == 1) {
@@ -1068,7 +1057,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (GlobalFunctions.validatePassword(password, MainActivity.this)) {
 
                         /* Start a call */
-                        String passwordText= GlobalFunctions.hashPassword(""+password.getText());
+                        String passwordText = GlobalFunctions.hashPassword("" + password.getText());
                         Retrofit retrofit = APIConnector.getRetrofit();
                         APIClient apiInterface = retrofit.create(APIClient.class);
                         String base = user.getMail() + ":" + passwordText;
@@ -1093,6 +1082,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         /* open activity if login success*/
                                         if (mainObject.getString("success").equals("0")) {
 
+                                            Toast.makeText(instance, "Erfolgreich autorisiert!", Toast.LENGTH_LONG).show();
+
                                             /* get userObject from Json */
                                             JSONObject userObject = mainObject.getJSONObject("userData");
                                             userObject.put("password", passwordText);
@@ -1109,27 +1100,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 /* restart Fragement after synchronize Data failed */
                                             } else if (type == 2) {
 
-                                                if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard)) != null) {
-                                                    loadDashboard(false);
-                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) != null) {
+                                                /* get last element */
+                                                int index = getSupportFragmentManager().getBackStackEntryCount() - 1;
+                                                FragmentManager.BackStackEntry backEntry = getSupportFragmentManager().getBackStackEntryAt(index);
+                                                String tag = backEntry.getName();
+
+
+                                                if (tag == getResources().getString(R.string.fRecord)) {
                                                     loadRecord();
-                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
-                                                    loadRecordList(false);
-                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings)) != null) {
+                                                } else if (tag == getResources().getString(R.string.fSettings)) {
+                                                    loadSettings();
+                                                } else if (tag == getResources().getString(R.string.fRecordDetails)) {
                                                     //TODO
-                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordDetails)) != null) {
-                                                    //TODO
-                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fProfile)) != null) {
+                                                } else if (tag == getResources().getString(R.string.fProfile)) {
                                                     loadProfile(false);
-                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditProfile)) != null) {
+                                                } else if (tag == getResources().getString(R.string.fEditProfile)) {
                                                     loadEditProfile();
-                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fEditPassword)) != null) {
-                                                    //TODO
-                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem)) != null) {
+                                                } else if (tag == getResources().getString(R.string.fEditPassword)) {
+                                                    loadEditPassword(false);
+                                                } else if (tag == getResources().getString(R.string.fFriendSystem)) {
                                                     loadFriendSystem(1);
-                                                } else if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDeleteAccount)) != null) {
+                                                } else if (tag == getResources().getString(R.string.fDeleteAccount)) {
                                                     loadDeleteAccount();
                                                 }
+                                            } else if (type == 14) {
+                                                loadRecord();
+                                            } else if (type == 13) {
+                                                loadDeleteAccount();
+                                            } else if (type == 12) {
+                                                loadRecordList(false);
+                                            } else if (type == 11) {
+                                                loadDashboard(false);
                                             } else if (type == 10) {
                                                 loadEditPassword(false);
                                             } else if (type == 3) {
@@ -1451,68 +1452,76 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String jsonString = null;
 
                 try {
-                    jsonString = response.body().string();
-
-                    /* parse json */
-                    JSONObject mainObject = new JSONObject(jsonString);
-
-                    /* update records in local db */
-                    if (mainObject.getJSONArray("newerOnServer") != null && mainObject.getJSONArray("newerOnServer").length() > 0) {
-
-                        for (int i = 0; i < mainObject.getJSONArray("newerOnServer").length(); i++) {
-                            JSONArray newRecords = mainObject.getJSONArray("newerOnServer");
-                            int recordId = ((JSONObject) newRecords.get(i)).getInt("id");
-                            String name = ((JSONObject) newRecords.get(i)).getString("name");
-
-                            Route newRecord = recordDAO.read(recordId);
-                            newRecord.setName(name);
-                            newRecord.setTimeStamp(((JSONObject) newRecords.get(i)).getLong("timeStamp"));
-                            recordDAO.update(recordId, newRecord);
-                        }
-                    }
-                    /* save records from server ind db */
-                    if (mainObject.getJSONArray("onServer") != null && mainObject.getJSONArray("onServer").length() > 0) {
-
-                        JSONArray recordsArray = mainObject.getJSONArray("onServer");
-                        for (int i = 0; i < recordsArray.length(); i++) {
-                            Route record = new Route();
-                            record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
-                            record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
-                            record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
-                            record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
-                            record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
-                            record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
-                            record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
-                            record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
-                            record.setTemp(false);
-                            record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
-                            recordDAO.create(record);
-                        }
-                    }
-                    /* send records to server */
-                    if (mainObject.getJSONArray("missingId") != null && mainObject.getJSONArray("missingId").length() > 0) {
-                        Toast.makeText(MainActivity.getInstance(), "!!!!!!ES KOMMT VOR!!!!",
-                                Toast.LENGTH_LONG).show();
-                    }
-
-                    /*delete records, that was deleted on server */
-                    if (mainObject.getJSONArray("deletedOnServer") != null && mainObject.getJSONArray("deletedOnServer").length() > 0) {
-                        JSONArray deletedIdArray = mainObject.getJSONArray("deletedOnServer");
-                        for (int i = 0; i < deletedIdArray.length(); i++) {
-                            Route deletedRecord = recordDAO.read(((JSONObject) deletedIdArray.get(i)).getInt("id"));
-                            recordDAO.delete(deletedRecord);
-                        }
-                    }
-
-                    /*load view*/
-                    if (!loadNothing) {
+                    if (response.code() == 401) {
                         if (recordList) {
-                            loadRecordList(false);
+                            MainActivity.getInstance().showNotAuthorizedModal(12);
                         } else {
-                            loadDashboard(false);
+                            MainActivity.getInstance().showNotAuthorizedModal(11);
+                        }
+
+                    } else {
+                        jsonString = response.body().string();
+
+                        /* parse json */
+                        JSONObject mainObject = new JSONObject(jsonString);
+
+                        /* update records in local db */
+                        if (mainObject.getJSONArray("newerOnServer") != null && mainObject.getJSONArray("newerOnServer").length() > 0) {
+
+                            for (int i = 0; i < mainObject.getJSONArray("newerOnServer").length(); i++) {
+                                JSONArray newRecords = mainObject.getJSONArray("newerOnServer");
+                                int recordId = ((JSONObject) newRecords.get(i)).getInt("id");
+                                String name = ((JSONObject) newRecords.get(i)).getString("name");
+
+                                Route newRecord = recordDAO.read(recordId);
+                                newRecord.setName(name);
+                                newRecord.setTimeStamp(((JSONObject) newRecords.get(i)).getLong("timeStamp"));
+                                recordDAO.update(recordId, newRecord);
+                            }
+                        }
+                        /* save records from server ind db */
+                        if (mainObject.getJSONArray("onServer") != null && mainObject.getJSONArray("onServer").length() > 0) {
+
+                            JSONArray recordsArray = mainObject.getJSONArray("onServer");
+                            for (int i = 0; i < recordsArray.length(); i++) {
+                                Route record = new Route();
+                                record.setId(((JSONObject) recordsArray.get(i)).getInt("id"));
+                                record.setName(((JSONObject) recordsArray.get(i)).getString("name"));
+                                record.setTime(((JSONObject) recordsArray.get(i)).getLong("time"));
+                                record.setDate(((JSONObject) recordsArray.get(i)).getLong("date"));
+                                record.setType(((JSONObject) recordsArray.get(i)).getInt("type"));
+                                record.setRideTime(((JSONObject) recordsArray.get(i)).getInt("ridetime"));
+                                record.setDistance(((JSONObject) recordsArray.get(i)).getDouble("distance"));
+                                record.setTimeStamp(((JSONObject) recordsArray.get(i)).getLong("timestamp"));
+                                record.setTemp(false);
+                                record.setLocations(((JSONObject) recordsArray.get(i)).getString("locations"));
+                                recordDAO.create(record);
+                            }
+                        }
+                        /* send records to server */
+                        if (mainObject.getJSONArray("missingId") != null && mainObject.getJSONArray("missingId").length() > 0) {
+                            Toast.makeText(MainActivity.getInstance(), "!!!!!!ES KOMMT VOR!!!!",
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                        /*delete records, that was deleted on server */
+                        if (mainObject.getJSONArray("deletedOnServer") != null && mainObject.getJSONArray("deletedOnServer").length() > 0) {
+                            JSONArray deletedIdArray = mainObject.getJSONArray("deletedOnServer");
+                            for (int i = 0; i < deletedIdArray.length(); i++) {
+                                Route deletedRecord = recordDAO.read(((JSONObject) deletedIdArray.get(i)).getInt("id"));
+                                recordDAO.delete(deletedRecord);
+                            }
+                        }
+
+                        /*load view*/
+                        if (!loadNothing) {
+                            if (recordList) {
+                                loadRecordList(false);
+                            } else {
+                                loadDashboard(false);
+                            }
                         }
                     }
-
                 } catch (IOException e) {
                     e.printStackTrace();
 

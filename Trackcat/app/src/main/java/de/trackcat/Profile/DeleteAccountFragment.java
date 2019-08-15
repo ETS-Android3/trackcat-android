@@ -101,7 +101,7 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                                 try {
 
                                     if (response.code() == 401) {
-                                        MainActivity.getInstance().showNotAuthorizedModal(3);
+                                        MainActivity.getInstance().showNotAuthorizedModal(13);
                                     } else {
                                         /* get jsonString from API */
                                         String jsonString = response.body().string();
