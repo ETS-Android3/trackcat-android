@@ -194,9 +194,8 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         map.put("gender",""+gender);
         map.put("email", email);
         map.put("dateOfBirth", ""+GlobalFunctions.getSecondsFromString(dayOfBirth, "dd.MM.yyyy"));
-        map.put("password", password1);
+        map.put("password", GlobalFunctions.hashPassword(password1));
 
-        // TODO hashsalt Password
         /* start a call */
         Call<ResponseBody> call = apiInterface.registerUser(map);
         call.enqueue(new Callback<ResponseBody>() {

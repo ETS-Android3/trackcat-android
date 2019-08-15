@@ -117,32 +117,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
             /* Read the inputs to send */
             String email = emailTextView.getText().toString();
-            String password = passwordTextView.getText().toString();
-
-
-//            // TODO use for password hash
-//            try {
-//                MessageDigest digest = java.security.MessageDigest
-//                        .getInstance("SHA-256");
-//                digest.update(password.getBytes());
-//                byte messageDigest[] = digest.digest();
-//
-//                // Create Hex String
-//                StringBuilder hexString = new StringBuilder();
-//                for (byte aMessageDigest : messageDigest) {
-//                    String h = Integer.toHexString(0xFF & aMessageDigest);
-//                    while (h.length() < 2)
-//                        h = "0" + h;
-//                    hexString.append(h);
-//                }
-//                String sha3_256hex  = hexString.toString();
-//                Log.v("HASHTEST----------:  ", sha3_256hex);
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-
-
-
+            String password = GlobalFunctions.hashPassword(passwordTextView.getText().toString());
 
             /* Wet wait field */
             final ProgressDialog progressDialog = new ProgressDialog(getContext(),
@@ -152,7 +127,6 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
             progressDialog.setMessage(getResources().getString(R.string.login));
             progressDialog.show();
 
-            // TODO hashsalt Password
             /* Start a call */
             Retrofit retrofit = APIConnector.getRetrofit();
             APIClient apiInterface = retrofit.create(APIClient.class);
@@ -184,6 +158,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
 
                                 /* Get userObject from Json */
                                 JSONObject userObject = mainObject.getJSONObject("userData");
+                                userObject.put("password", password);
 
                                 /* Save logged user in db */
                                 userDAO.create(GlobalFunctions.createUser(userObject,false));

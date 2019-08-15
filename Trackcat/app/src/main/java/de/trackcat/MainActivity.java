@@ -1550,32 +1550,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
 
-
-
-            public String hashPassword(String password) {
-                // TODO use for password hash
-                String sha_256string = "";
-                try {
-                    MessageDigest digest = java.security.MessageDigest
-                            .getInstance("SHA-256");
-                    digest.update(password.getBytes());
-                    byte messageDigest[] = digest.digest();
-
-                    // Create Hex String
-                    StringBuilder hexString = new StringBuilder();
-                    for (byte aMessageDigest : messageDigest) {
-                        String h = Integer.toHexString(0xFF & aMessageDigest);
-                        while (h.length() < 2)
-                            h = "0" + h;
-                        hexString.append(h);
-                    }
-                    sha_256string  = hexString.toString();
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                return sha_256string;
-            }
         });
     }
 }
