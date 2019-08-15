@@ -81,7 +81,7 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
                         /* send inputs to server */
                         Retrofit retrofit = APIConnector.getRetrofit();
                         APIClient apiInterface = retrofit.create(APIClient.class);
-                        String base = currentUser.getMail() + ":" + input_currentPassword;
+                        String base = currentUser.getMail() + ":" + GlobalFunctions.hashPassword(input_currentPassword);
                         HashMap<String, String> map = new HashMap<>();
                         String password = GlobalFunctions.hashPassword(input_password2);
                         map.put("newPw",password);
