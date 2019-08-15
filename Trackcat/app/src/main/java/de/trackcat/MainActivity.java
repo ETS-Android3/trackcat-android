@@ -1068,9 +1068,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (GlobalFunctions.validatePassword(password, MainActivity.this)) {
 
                         /* Start a call */
+                        String passwordText= GlobalFunctions.hashPassword(""+password.getText());
                         Retrofit retrofit = APIConnector.getRetrofit();
                         APIClient apiInterface = retrofit.create(APIClient.class);
-                        String base = user.getMail() + ":" + password.getText();
+                        String base = user.getMail() + ":" + passwordText;
                         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
                         Call<ResponseBody> call = apiInterface.getUser(authString);
                         call.enqueue(new Callback<ResponseBody>() {
@@ -1094,6 +1095,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                             /* get userObject from Json */
                                             JSONObject userObject = mainObject.getJSONObject("userData");
+                                            userObject.put("password", passwordText);
 
                                             /* save logged user in db */
                                             userDAO.update(getActiveUser(), GlobalFunctions.createUser(userObject, true));

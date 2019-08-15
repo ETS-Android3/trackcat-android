@@ -83,7 +83,8 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
                         APIClient apiInterface = retrofit.create(APIClient.class);
                         String base = currentUser.getMail() + ":" + input_currentPassword;
                         HashMap<String, String> map = new HashMap<>();
-                        map.put("newPw", input_password2);
+                        String password = GlobalFunctions.hashPassword(input_password2);
+                        map.put("newPw",password);
                         map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
 
                         // TODO hashsalt Password
@@ -109,7 +110,7 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
                                         if (mainObject.getString("success").equals("0")) {
 
                                             /* change password in local DB */
-                                            changePasswordInLokalDB(input_password2);
+                                            changePasswordInLokalDB(password);
                                         } else if (mainObject.getString("success").equals("1")) {
 
                                             if (MainActivity.getHints()) {
