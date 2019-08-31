@@ -121,7 +121,7 @@ public class FriendQuestionsFragment extends Fragment {
                             friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
                             friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
                             friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
-                            friend.setEmail(((JSONObject) friends.get(i)).getString("email"));
+                           // friend.setEmail(((JSONObject) friends.get(i)).getString("email"));
                             friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
                             friend.setId(((JSONObject) friends.get(i)).getInt("id"));
                             friendList.add(friend);
@@ -138,7 +138,7 @@ public class FriendQuestionsFragment extends Fragment {
                         }
 
                         /* Add entrys to view */
-                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, false, false, false);
+                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, true, true, false, false);
                         ListView friendListView = view.findViewById(R.id.friend_question_list);
                         friendListView.setAdapter(adapter);
                         friendListView.setSelection(MainActivity.getFriendQuestionIndex());
