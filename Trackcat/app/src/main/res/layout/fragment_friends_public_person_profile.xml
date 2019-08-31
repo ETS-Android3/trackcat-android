@@ -114,23 +114,16 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/user_dayOfBirth"
+                            android:id="@+id/user_age"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=""
                             android:textSize="19dip" />
 
-                        <ImageView
-                            android:id="@+id/user_birthday"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:layout_marginLeft="10dp"
-                            android:src="@raw/birthday"
-                            android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- gender Label -->
+                <!-- amount distance Label -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -140,39 +133,22 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/label_gender"
+                        android:id="@+id/label_amount_distance_records"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:text="Geschlecht:"
+                        android:text="Gesamtstrecke:"
                         android:textSize="19dip"
                         android:textStyle="bold" />
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/user_amount_distance_records"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/user_gender"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=""
-                            android:textSize="19dip" />
-
-                        <ImageView
-                            android:id="@+id/user_gender_image"
-                            android:layout_marginLeft="5dp"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                           android:layout_marginRight="0dp"
-                            android:visibility="gone"
-                            android:src="@raw/male" />
-                    </LinearLayout>
+                        android:text=""
+                        android:textSize="19dip" />
                 </RelativeLayout>
-
-
 
                 <!-- registered since Label -->
                 <RelativeLayout

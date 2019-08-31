@@ -36,7 +36,7 @@ import retrofit2.Retrofit;
 public class PublicPersonProfileFragment extends Fragment {
 
     RelativeLayout loadProfile;
-    TextView name, dayOfBirth, gender, dayOfRegistration;
+    TextView name, age, totalDistance, dayOfRegistration;
     CircleImageView image, state;
     ImageView user_gender_image;
     UserDAO userDAO;
@@ -52,8 +52,8 @@ public class PublicPersonProfileFragment extends Fragment {
         image = view.findViewById(R.id.profile_image);
         state = view.findViewById(R.id.profile_state);
         name = view.findViewById(R.id.user_name);
-        dayOfBirth = view.findViewById(R.id.user_dayOfBirth);
-        gender = view.findViewById(R.id.user_gender);
+        age = view.findViewById(R.id.user_age);
+        totalDistance = view.findViewById(R.id.user_amount_distance_records);
         user_gender_image = view.findViewById(R.id.user_gender_image);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
 
@@ -93,28 +93,27 @@ public class PublicPersonProfileFragment extends Fragment {
 
                         /* Set values */
                         name.setText(mainObject.getString("firstName") + " " + mainObject.getString("lastName"));
-                        dayOfBirth.setText(GlobalFunctions.getDateFromSeconds(mainObject.getLong("dateOfBirth"), "dd.MM"));
+
+                        int ageNumber = mainObject.getInt("age");
+
+                        if (ageNumber==1){
+                            age.setText(""+ageNumber+" Jahr");
+                        }else{
+                            age.setText(""+ageNumber+" Jahre");
+                        }
+
                         dayOfRegistration.setText(GlobalFunctions.getDateFromSeconds(mainObject.getLong("dateOfRegistration"), "dd.MM.yyyy"));
 
-                        /* Set gender */
-                        if (mainObject.getInt("gender") != 2) {
-                            InputStream imageStream;
-                            if (mainObject.getInt("gender") == 0) {
-                                gender.setText("weiblich");
-                                gender.setTextColor(getResources().getColor(R.color.colorFemale));
-                                imageStream = getContext().getResources().openRawResource(R.raw.female);
-                            } else {
-                                gender.setText("männlich");
-                                imageStream = getContext().getResources().openRawResource(R.raw.male);
-                                gender.setTextColor(getResources().getColor(R.color.colorMale));
-                            }
-
-                            Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
-                            user_gender_image.setImageBitmap(bitmap);
-                            user_gender_image.setVisibility(View.VISIBLE);
+                        /* set total distance */
+                        double distance = Math.round(mainObject.getLong("totalDistance"));
+                        double levelDistance;
+                        if (distance >= 1000) {
+                            String d = "" + Math.round((distance / 1000L) * 100) / 100.0;
+                            totalDistance.setText(d.replace('.', ',') + " km");
+                            levelDistance = distance / 1000L;
                         } else {
-                            GlobalFunctions.setNoInformationStyle(gender);
-                            user_gender_image.setVisibility(View.GONE);
+                            levelDistance = distance / 1000;
+                            totalDistance.setText((int) distance + " m");
                         }
 
                         /* Set profile image */
@@ -126,13 +125,6 @@ public class PublicPersonProfileFragment extends Fragment {
                         image.setImageBitmap(bitmap);
 
                         /* Set level */
-                        double distance = Math.round(mainObject.getInt("totalDistance"));
-                        double levelDistance;
-                        if (distance >= 1000) {
-                            levelDistance = distance / 1000L;
-                        } else {
-                            levelDistance = distance / 1000;
-                        }
                         state.setImageBitmap(GlobalFunctions.findLevel(levelDistance));
 
                         /* Remove loadscreen */
