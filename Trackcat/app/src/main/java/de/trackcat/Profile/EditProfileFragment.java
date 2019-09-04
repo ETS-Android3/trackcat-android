@@ -328,14 +328,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 boolean validLastName = GlobalFunctions.validateName(lastName, MainActivity.getInstance());
                 if (validFirstName && validLastName) {
 
-                    /* parse imageView into bytes */
-                    ImageView imageView = view.findViewById(R.id.profile_image_upload);
-                    Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                    bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] imageBytes = stream.toByteArray();
-
                     /* parse values */
                     if (input_height.equals(getResources().getString(R.string.noInformation))) {
                         input_height = "0";
@@ -367,6 +359,15 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
                     if (imageChanged) {
+
+                        /* parse imageView into bytes */
+                        ImageView imageView = view.findViewById(R.id.profile_image_upload);
+                        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                        byte[] imageBytes = stream.toByteArray();
+
                         String image = GlobalFunctions.getBase64FromBytes(imageBytes);
                         currentUser.setImage(imageBytes);
                         map.put("image", image);

@@ -683,8 +683,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             this.getSupportFragmentManager().popBackStack();
 
-            fragTransaction.replace(R.id.mainFrame, fragment, tag);
-            fragTransaction.commit();
+            if(tag==getResources().getString(R.string.fProfile)){
+                this.getSupportFragmentManager().popBackStack();
+                loadProfile(false);
+            }else{
+                fragTransaction.replace(R.id.mainFrame, fragment, tag);
+                fragTransaction.commit();
+            }
+
         } else {
 
             /* close app with klick double back */
