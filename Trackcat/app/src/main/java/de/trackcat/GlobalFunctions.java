@@ -67,6 +67,16 @@ public class GlobalFunctions {
     }
 
     /* get string date from millis */
+    public static String getDateWithTimeFromMillis(long millis, String dateFormat) {
+
+        Date date = new java.util.Date(millis);
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat(dateFormat);
+        String formattedDate = sdf.format(date);
+
+        return formattedDate;
+    }
+
+    /* get string date from millis */
     public static String getDateWithTimeFromSeconds(long seconds, String dateFormat) {
 
         Date date = new java.util.Date(seconds * 1000);
