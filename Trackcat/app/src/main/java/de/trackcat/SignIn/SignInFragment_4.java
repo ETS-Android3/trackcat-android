@@ -193,7 +193,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         map.put("lastName", lastName);
         map.put("gender",""+gender);
         map.put("email", email);
-        map.put("dateOfBirth", ""+GlobalFunctions.getSecondsFromString(dayOfBirth, "dd.MM.yyyy"));
+        map.put("dateOfBirth", ""+GlobalFunctions.getMillisFromString(dayOfBirth, "dd.MM.yyyy"));
         map.put("password", GlobalFunctions.hashPassword(password1));
 
         /* start a call */
