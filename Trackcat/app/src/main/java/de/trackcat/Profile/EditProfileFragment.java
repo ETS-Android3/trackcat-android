@@ -265,7 +265,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         /*set dayOfBirth*/
         if (user_dayOfBirth != 0) {
-            String curDateString = GlobalFunctions.getDateFromSeconds(user_dayOfBirth, "dd.MM.yyyy");
+            String curDateString = GlobalFunctions.getDateFromMillis(user_dayOfBirth, "dd.MM.yyyy");
             dayOfBirth.setText(curDateString);
         } else {
             GlobalFunctions.setNoInformationStyle(dayOfBirth);

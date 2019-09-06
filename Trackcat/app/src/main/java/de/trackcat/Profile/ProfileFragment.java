@@ -178,7 +178,7 @@ public class ProfileFragment extends Fragment {
 
         /* set dayOfBirth and calculate age*/
         if (user_dayOfBirth != 0) {
-            String curDateString = GlobalFunctions.getDateFromSeconds(user_dayOfBirth, "dd.MM.yyyy");
+            String curDateString = GlobalFunctions.getDateFromMillis(user_dayOfBirth, "dd.MM.yyyy");
             age = calculateAge(curDateString);
             dayOfBirth.setText(curDateString + " (" + age + " Jahre)");
 
