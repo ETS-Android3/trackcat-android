@@ -233,7 +233,7 @@ public class GlobalFunctions {
         return bitmap;
     }
 
-    public static User createUser(JSONObject userObject, boolean updateDrawer) throws JSONException {
+    public static User createUser(JSONObject userObject, boolean updateDrawer, boolean savePassword) throws JSONException {
         User user = new User();
         user.setId(userObject.getInt("id"));
         user.setMail(userObject.getString("email"));
@@ -295,7 +295,9 @@ public class GlobalFunctions {
         } catch (Exception e) {
         }
 
-        user.setPassword(userObject.getString("password"));
+        if(savePassword) {
+            user.setPassword(userObject.getString("password"));
+        }
         user.setTimeStamp(userObject.getLong("timeStamp"));
         user.isSynchronised(true);
 

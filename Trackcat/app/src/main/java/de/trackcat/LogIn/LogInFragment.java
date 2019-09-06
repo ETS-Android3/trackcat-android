@@ -161,7 +161,7 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 userObject.put("password", password);
 
                                 /* Save logged user in db */
-                                userDAO.create(GlobalFunctions.createUser(userObject,false));
+                                userDAO.create(GlobalFunctions.createUser(userObject,false, true));
 
                                 /* Create routes */
                                 if(mainObject.getJSONArray("records").length()>0&& mainObject.getJSONArray("records")!=null) {

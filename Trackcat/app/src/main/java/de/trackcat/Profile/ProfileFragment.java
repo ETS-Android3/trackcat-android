@@ -142,7 +142,7 @@ public class ProfileFragment extends Fragment {
 
                         /* check if data is newer when localData */
                         if (userJSON.getLong("timeStamp") > currentUser.getTimeStamp()) {
-                            userDAO.update(currentUser.getId(), GlobalFunctions.createUser(userJSON, true));
+                            userDAO.update(currentUser.getId(), GlobalFunctions.createUser(userJSON, true, false));
                         }
 
                         setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), userJSON.getLong("amountRecords"), userJSON.getLong("totalDistance"), userJSON.getLong("totalTime"), image);
@@ -150,8 +150,16 @@ public class ProfileFragment extends Fragment {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+
+                    /* read values from local DB */
+                    setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin(), currentUser.getAmountRecord(), currentUser.getTotalDistance(), currentUser.getTotalTime(), currentUser.getImage());
+
                 } catch (JSONException e) {
                     e.printStackTrace();
+
+                    /* read values from local DB */
+                    setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin(), currentUser.getAmountRecord(), currentUser.getTotalDistance(), currentUser.getTotalTime(), currentUser.getImage());
+
                 }
             }
 
