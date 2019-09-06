@@ -131,7 +131,7 @@ public class GlobalFunctions {
 
     public static long getTimeStamp() {
 
-        Long tsLong = System.currentTimeMillis() / 1000;
+        Long tsLong = System.currentTimeMillis();
         return tsLong;
     }
 
