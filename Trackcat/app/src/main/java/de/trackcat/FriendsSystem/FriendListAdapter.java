@@ -56,6 +56,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
     CircleImageView image, state;
     boolean newFriend, friendQuestion, sendFriendQuestion, liveFriend, noMoreEntrys;
     UserDAO userDAO;
+    View testView = null;
 
     public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion, boolean sendFriendQuestion, boolean liveFriend, boolean noMoreEntrys) {
         super(context, R.layout.friend_list_item);
@@ -85,13 +86,22 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
             /* Last item */
             if (friends.size() % 10 == 0 && position == friends.size() - 1 && !liveFriend) {
-                view = inflater.inflate(R.layout.friend_list_last_item, parent, false);
+                if (convertView == null) {
+                    view = inflater.inflate(R.layout.friend_list_last_item, parent, false);
+                } else {
+                    view = convertView;
+                }
+
                 Button loadMore = view.findViewById(R.id.loadMore);
                 loadMore.setOnClickListener(this);
 
                 /* Item between */
             } else {
-                view = inflater.inflate(R.layout.friend_list_item, parent, false);
+                if (convertView == null) {
+                    view = inflater.inflate(R.layout.friend_list_item, parent, false);
+                } else {
+                    view = convertView;
+                }
             }
 
             /* Set variables */
@@ -236,18 +246,30 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
             /* Last item */
             if (friends.size() % 10 == 0 && position == friends.size() - 1 && !friendQuestion && !noMoreEntrys) {
-                view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
-                Button loadMore = view.findViewById(R.id.loadMore);
-                loadMore.setOnClickListener(this);
+
+                if (convertView == null) {
+                    view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
+                    Button loadMore = view.findViewById(R.id.loadMore);
+                    loadMore.setOnClickListener(this);
+                } else {
+                    view = convertView;
+                }
+
+
                 /* Items between */
             } else {
 
-                view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
+                if (convertView == null) {
+                    view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
 
-             //   if (friendQuestion) {
-             //       view = inflater.inflate(R.layout.friend_list_item, parent, false);
-            //    } else {
-            //        }
+                } else {
+                    view = convertView;
+                }
+
+                //   if (friendQuestion) {
+                //       view = inflater.inflate(R.layout.friend_list_item, parent, false);
+                //    } else {
+                //        }
             }
 
             /* Set name and register since OR email */
@@ -257,12 +279,12 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             registSince = view.findViewById(R.id.friend_regist_since);
             registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy"));
 
-          //  if (friendQuestion) {
-        //        email = view.findViewById(R.id.friend_email);
-       //         email.setText(friends.get(position).getEmail());
-        //    } else {
+            //  if (friendQuestion) {
+            //        email = view.findViewById(R.id.friend_email);
+            //         email.setText(friends.get(position).getEmail());
+            //    } else {
 
-         //   }
+            //   }
 
 
             /* Set level */
