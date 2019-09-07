@@ -65,7 +65,7 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         this.friendQuestion = friendQuestion;
         this.sendFriendQuestion = sendFriendQuestion;
         this.liveFriend = liveFriend;
-        this.noMoreEntrys=noMoreEntrys;
+        this.noMoreEntrys = noMoreEntrys;
 
         /* Create userDAO */
         userDAO = new UserDAO(MainActivity.getInstance());
@@ -235,29 +235,35 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         } else {
 
             /* Last item */
-            if (friends.size() % 10 == 0 && position == friends.size() - 1 && !friendQuestion && !sendFriendQuestion&& !noMoreEntrys) {
+            if (friends.size() % 10 == 0 && position == friends.size() - 1 && !friendQuestion && !noMoreEntrys) {
                 view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
                 Button loadMore = view.findViewById(R.id.loadMore);
                 loadMore.setOnClickListener(this);
                 /* Items between */
             } else {
-                if (friendQuestion && !sendFriendQuestion) {
-                    view = inflater.inflate(R.layout.friend_list_item, parent, false);
-                } else {
-                    view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
-                }
+
+                view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
+
+             //   if (friendQuestion) {
+             //       view = inflater.inflate(R.layout.friend_list_item, parent, false);
+            //    } else {
+            //        }
             }
 
             /* Set name and register since OR email */
             name = view.findViewById(R.id.friend_name);
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
-            if (!friendQuestion || sendFriendQuestion) {
-                registSince = view.findViewById(R.id.friend_regist_since);
-                registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy"));
-            } else {
-                email = view.findViewById(R.id.friend_email);
-                email.setText(friends.get(position).getEmail());
-            }
+
+            registSince = view.findViewById(R.id.friend_regist_since);
+            registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy"));
+
+          //  if (friendQuestion) {
+        //        email = view.findViewById(R.id.friend_email);
+       //         email.setText(friends.get(position).getEmail());
+        //    } else {
+
+         //   }
+
 
             /* Set level */
             state = view.findViewById(R.id.profile_state);
