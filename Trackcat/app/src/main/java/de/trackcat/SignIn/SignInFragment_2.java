@@ -155,7 +155,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
             case R.id.input_dayOfBirth:
                 int day, month, year;
                 /*if no inputs, choose current date*/
-                if (day_Of_Birth.getText().toString().equals(getResources().getString(R.string.noInformation))) {
+                if (day_Of_Birth.getText().toString().equals("")) {
                     final Calendar cldr = Calendar.getInstance();
                     day = cldr.get(Calendar.DAY_OF_MONTH);
                     month = cldr.get(Calendar.MONTH);

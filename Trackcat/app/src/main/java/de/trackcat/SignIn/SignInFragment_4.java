@@ -119,6 +119,8 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                 bundleSignIn_1_and_2_and_3_and_4.putString("lastName", lastName);
                 bundleSignIn_1_and_2_and_3_and_4.putInt("gender", gender);
                 bundleSignIn_1_and_2_and_3_and_4.putString("email", email);
+                bundleSignIn_1_and_2_and_3_and_4.putString("password1", password1);
+                bundleSignIn_1_and_2_and_3_and_4.putString("password2", password2);
                 bundleSignIn_1_and_2_and_3_and_4.putString("dayOfBirth", dayOfBirth);
                 bundleSignIn_1_and_2_and_3_and_4.putBoolean("generalTerms", generalTerm.isChecked());
                 bundleSignIn_1_and_2_and_3_and_4.putBoolean("dataProtection", dataProtection.isChecked());

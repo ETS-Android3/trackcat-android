@@ -49,7 +49,7 @@
                       android:layout_height="wrap_content"
                         android:inputType="none"
                       android:hint="Geburtstag"
-                      android:text="null"
+                      android:text=""
                       android:textSize="19dip" />
 
      >
@@ -70,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="E-Mail"
-                        android:text="max@mustermann.de"
+                        android:text=""
                         android:inputType="textEmailAddress"
                         android:maxLength="@integer/iEmail" />
                 </android.support.design.widget.TextInputLayout>

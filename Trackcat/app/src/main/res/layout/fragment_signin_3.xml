@@ -52,7 +52,7 @@
                         android:hint="Passwort"
                         android:inputType="textPassword"
                         android:maxLength="@integer/iPassword"
-                        android:text="Geheim-123" />
+                        android:text="" />
                 </android.support.design.widget.TextInputLayout>
 
                 <!-- Password2 Label -->
@@ -71,7 +71,7 @@
                         android:hint="Passwort wdh."
                         android:inputType="textPassword"
                         android:maxLength="@integer/iPassword"
-                        android:text="Geheim-123" />
+                        android:text="" />
                 </android.support.design.widget.TextInputLayout>
             </RelativeLayout>
 
