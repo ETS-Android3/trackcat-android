@@ -455,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setConnection(connected);
 
         /* Startseite festlegen - Erster Aufruf */
-        Log.d("HALLO", "restart: " + restarted);
+      //  Log.d("HALLO", "restart: " + restarted);
 
         /* load settings if them changed */
         if (restarted) {
@@ -1007,8 +1007,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
         setConnection(connected);
 
-        Toast.makeText(this.getBaseContext(), "NETZ: " + connected,
-                Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this.getBaseContext(), "NETZ: " + connected,
+        //        Toast.LENGTH_SHORT).show();
 
         /* device have connection */
         if (connected) {
