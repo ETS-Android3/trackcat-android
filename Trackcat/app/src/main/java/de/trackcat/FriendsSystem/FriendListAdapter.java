@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,11 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
     boolean newFriend, friendQuestion, sendFriendQuestion, liveFriend, noMoreEntrys;
     UserDAO userDAO;
     View testView = null;
+    private boolean showToast;
+
+    public void setShowToast(boolean showToast) {
+        this.showToast = showToast;
+    }
 
     public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion, boolean sendFriendQuestion, boolean liveFriend, boolean noMoreEntrys) {
         super(context, R.layout.friend_list_item);
@@ -244,33 +250,38 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             /* Stranger list */
         } else {
 
+            Log.d("TEST", "Element: "+position);
             /* Last item */
             if (friends.size() % 10 == 0 && position == friends.size() - 1 && !friendQuestion && !noMoreEntrys) {
 
-                if (convertView == null) {
+
+                FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), true, friends);
+               /* if (convertView == null) {
                     view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
-                    Button loadMore = view.findViewById(R.id.loadMore);
-                    loadMore.setOnClickListener(this);
+
+                    Log.d("TEST", "convert =null  letztes Element: "+position);
                 } else {
                     view = convertView;
+                    Log.d("TEST", " conver !=null letztes Element: "+position);
                 }
-
+               // Button loadMore = view.findViewById(R.id.loadMore);
+              //  loadMore.setOnClickListener(this);
 
                 /* Items between */
-            } else {
 
-                if (convertView == null) {
-                    view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
-
-                } else {
-                    view = convertView;
+                if (showToast) {
+                    Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendLoadMore), Toast.LENGTH_SHORT).show();
                 }
-
-                //   if (friendQuestion) {
-                //       view = inflater.inflate(R.layout.friend_list_item, parent, false);
-                //    } else {
-                //        }
             }
+
+
+
+        if (convertView == null) {
+            view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
+
+        } else {
+            view = convertView;
+        }
 
             /* Set name and register since OR email */
             name = view.findViewById(R.id.friend_name);

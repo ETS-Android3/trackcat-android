@@ -173,28 +173,32 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                             friendList.add(friend);
                         }
 
-                        /* Add entrys to view */
-                        if (loadMore && friends.length() == 0) {
-                            adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false, false, true);
-                        } else {
-                            adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false, false, false);
-                        }
-                        ListView friendListView = view.findViewById(R.id.friend_list);
-                        friendListView.setAdapter(adapter);
 
+                        ListView friendListView = view.findViewById(R.id.friend_list);
 
                         /* Load more if backpress */
                         if (page != maxPage) {
                             search(find, true, friendList);
                         } else {
 
+
+                            /* Add entrys to view */
+                            if (loadMore && friends.length() == 0) {
+                                adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false, false, true);
+                            } else {
+                                adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, true, false, false, false, false);
+                            }
+
+                            friendListView.setAdapter(adapter);
+
                             if (!backPress && loadMore) {
                                 friendListView.setSelection((page - 1) * 10);
+                                adapter.setShowToast(true);
                             } else {
                                 friendListView.setSelection(MainActivity.getSearchForeignPageIndex());
+                            adapter.setShowToast(false);
                             }
                         }
-
                         /* Delete progressbar */
                         progressBar.setVisibility(View.GONE);
 
