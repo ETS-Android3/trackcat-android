@@ -1,5 +1,6 @@
 package de.trackcat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -24,6 +25,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -337,8 +339,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startService(new Intent(getBaseContext(), ClosingService.class));
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-        /* Fragt nach noch nicht erteilten Permissions */
-        permissionManager.checkAndRequestPermissions(this);
+        // check Permissions --> if not okay logout user
+        if (ContextCompat.checkSelfPermission(this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this ,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            logout();
+        }
 
         getCurrentUserInformation();
         /* Aktuelles Themes aus Einstellungen laden */
@@ -351,13 +356,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /* Startseite definieren */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       /* if (isActiv) {
-            Toast.makeText(this, "Die App läuft bereits in einer anderen Instanz",
-                    Toast.LENGTH_LONG).show();
-            finish();
-        } else {
-            isActiv = true;
-        }*/
+
+
         /* Instanz für spätere Objekte speichern */
         instance = this;
         recordFragment = new RecordFragment();
