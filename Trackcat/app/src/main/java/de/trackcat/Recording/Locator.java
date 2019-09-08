@@ -8,7 +8,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,42 +17,34 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
-import android.widget.Toast;
-
 
 import de.trackcat.MainActivity;
 
 public class Locator extends Service {
 
-    // standard value for requesting permissions
+    /* Standard value for requesting permissions */
     private static final int MY_PERMISSIONS_REQUEST = 1;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-
-    /* called when foreground service is started */
+    /* Called when foreground service is started */
     @Override
     public void onCreate() {
         startForeground(12345678, getNotification());
-
         init();
     }
 
     public void init() {
-        /*
-         * initialize locationListener
-         * */
+
+        /* Initialize locationListener */
         try {
             locationManager = (LocationManager) MainActivity.getInstance().getSystemService(Context.LOCATION_SERVICE);
 
-
             locationListener = new LocationListener() {
                 public void onLocationChanged(Location location) {
-                    // called when a new location is found by the network location provider.
 
-                    // send message to View
+                    /* Send message to View */
                     Message msg = new Message();
                     msg.what = 2;
                     msg.obj = location;
@@ -67,21 +58,16 @@ public class Locator extends Service {
                 }
 
                 public void onProviderDisabled(String provider) {
-
                 }
             };
 
-
-            /* start locating */
+            /* Start locating */
             startTracking();
         } catch (Exception e) {
         }
-
     }
 
-    /*
-     * create notification for foreground service
-     * */
+    /* Create notification for foreground service */
     private Notification getNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -103,9 +89,7 @@ public class Locator extends Service {
         return null;
     }
 
-    /*
-     * starts GPS tracking
-     * */
+    /* Starts GPS tracking */
     protected void startTracking() {
 
         /*
@@ -116,7 +100,7 @@ public class Locator extends Service {
                 PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.getInstance(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST);
-            // for external storage
+            /* for external storage */
         } else if (ActivityCompat.checkSelfPermission(MainActivity.getInstance(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.getInstance(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -128,18 +112,18 @@ public class Locator extends Service {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime,
                     minDistance, locationListener); // via GPS
 
-            if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
             }
         }
     }
 
-    /*
-     * stops GPS tracking
-     * */
+    /* Stops GPS tracking */
     public void stopTracking() {
-        try{
-        locationManager.removeUpdates(locationListener);}catch(Exception e){}
+        try {
+            locationManager.removeUpdates(locationListener);
+        } catch (Exception e) {
+        }
     }
 
     @Nullable

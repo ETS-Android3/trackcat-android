@@ -86,7 +86,6 @@ import java.util.TimerTask;
 
 import static org.osmdroid.tileprovider.util.StorageUtils.getStorage;
 
-
 /*
  * Fragment for Track recording. includes GPS Locator and Statistics
  * Results displayed in this Fragment view
@@ -94,37 +93,27 @@ import static org.osmdroid.tileprovider.util.StorageUtils.getStorage;
 
 public class RecordFragment extends Fragment implements SensorEventListener {
 
-    /*
-     * Statistics
-     * */
+    /* Statistics */
     private Locator locatorGPS;
     private mCounter kmCounter;
     private Timer timer;
     private Timer rideTimer;
     private SpeedAverager kmhAverager;
 
-    /*
-     * Maps Attributes
-     * */
+    /* Maps Attributes */
     private MapView mMapView;
     private MapController mMapController;
     private Marker startMarker;
     private Polyline mPath;
 
-    /*
-     * All recorded GeoPoints
-     * */
+    /* All recorded GeoPoints */
     private ArrayList<GeoPoint> GPSData = new ArrayList<>();
 
-    /*
-     * Message Handler
-     * */
+    /* Message Handler */
     static Handler handler;
 
-
-    /*
-     * Statistics TextViews
-     * */
+    /* Statistics views */
+    private View view;
     private TextView kmh_TextView;
     private TextView time_TextView;
     private TextView average_speed_TextView;
@@ -135,17 +124,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         return isTracking;
     }
 
-    private View view;
-
-    /*
-     * Notification stuff
-     * */
+    /* Notification stuff */
     private NotificationManagerCompat notificationManager;
     private static final String CHANNEL_ID = "Trackcat_Notification_Channel_ID";
+    private String notificationContent = "";
 
-    /*
-     * Play/Pause Button + ProgressBar on hold
-     * */
+    /* Play/Pause Button + ProgressBar on hold */
     private ImageView playPause;
     private Vibrator vibe;
     private CountDownTimer countdownTimer;
@@ -153,13 +137,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     private int progressTime = 1000;
     private long startTime;
 
-    private String notificationContent = "";
 
-    /*
-     + declaring necessary variables for mapOrientation
-     + and assign initial values
-     */
-
+    /* Declaring necessary variables for mapOrientation and assign initial values */
     private boolean northUp = false;
     private int deviceOrientation = 0;
     private float lat = 0f;
@@ -172,25 +151,20 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor magnetometer;
 
-    /*
-     * Model of Route
-     * */
+    /* Model of Record */
     private Route model;
     private int newRecordId;
     private int liveRecordId;
     private boolean liveRecording;
 
-    /*
-     * Daos
-     * */
+    /*  Daos */
     private RecordTempDAO recordTempDAO;
     private LocationTempDAO locationTempDAO;
     private RouteDAO recordDAO;
     private UserDAO userDAO;
 
-    /* live record values */
+    /* Live record values */
     boolean recordingRuns;
-
     private java.util.Timer sendLiveTimer;
 
     @Override
@@ -201,13 +175,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             stopGPS();
         }
 
-        /*
-         + stop sensor listening when app will be paused
-         */
+        /* Stop sensor listening when app will be paused */
         sensorManager.unregisterListener(this);
-        /*
-         + stop compass overlay when app will be paused
-         */
+
+        /* Stop compass overlay when app will be paused */
         mCompassOverlay.disableCompass();
         mCompassOverlay.getOrientationProvider().stopOrientationProvider();
     }
@@ -215,13 +186,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     @Override
     public void onResume() {
         super.onResume();
-        /*
-         + start sensor listening when app will be resumed
-         */
+
+        /* Start sensor listening when app will be resumed */
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
-        /*
-         + start compass overlay when app will be resumed
-         */
+
+        /* Start compass overlay when app will be resumed */
         mCompassOverlay.enableCompass();
         mCompassOverlay.getOrientationProvider().startOrientationProvider(mCompassOverlay);
     }
@@ -229,13 +198,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        /*
-         + stop sensor listening when app will be closed
-         */
+        /* Stop sensor listening when app will be closed */
         sensorManager.unregisterListener(this);
-        /*
-         + stop compass overlay when app will be closed
-         */
+
+        /* Stop compass overlay when app will be closed */
         mCompassOverlay.onDetach(mMapView);
     }
 
@@ -251,12 +217,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         /* Fragt nach noch nicht erteilten Permissions */
         permissionManager.checkAndRequestPermissions(MainActivity.getInstance());
 
-        /* set DAOS */
+        /* Set DAOS */
         recordTempDAO = new RecordTempDAO(MainActivity.getInstance());
         locationTempDAO = new LocationTempDAO(MainActivity.getInstance());
         userDAO = new UserDAO(MainActivity.getInstance());
 
-        /* ----------------------------------------------------------------------------------handler
+        /* -----------------------------handler----------------------------------------
          * recieves messages from another thread
          *
          * handler recieves data from Timer Thread
@@ -266,9 +232,8 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             public void handleMessage(Message msg) {
                 try {
                     if (msg.what == 0) {
-                        /*
-                         * set Time in TextView
-                         * */
+
+                        /* Set Time in TextView */
                         String toSetTime = msg.obj + "";
 
                         String toSetDistance = Math.round(kmCounter.getAmount()) / 1000.0 + " km";
@@ -279,7 +244,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                             TextView distance_TextView = view.findViewById(R.id.distance_TextView);
                             distance_TextView.setText(toSetDistance);
-
 
                         } catch (NullPointerException e) {
                             Log.v(getResources().getString(R.string.app_name), e.toString());
@@ -293,9 +257,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             Log.v(getResources().getString(R.string.app_name), e.toString());
                         }
 
-                        /*
-                         * recalculate average Speed
-                         * */
+                        /* Recalculate average Speed */
                         try {
                             average_speed_TextView = view.findViewById(R.id.average_speed_TextView);
                             String toSet = Math.round((kmhAverager.getAvgSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
@@ -306,9 +268,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                         }
                     } else if (msg.what == 2) {
 
-                        /*
-                         * recieved Lcoation
-                         * */
+                        /* Received location  */
                         updateLocation((Location) msg.obj);
                     }
                 } catch (Exception e) {
@@ -324,12 +284,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             view = inflater.inflate(R.layout.fragment_record_main_api_less_21, container, false);
         }
 
-        /*
-         * set Map Attributes
-         */
+        /* Set Map Attributes */
         mMapView = view.findViewById(R.id.mapview);
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
-
 
         mMapView.setMultiTouchControls(true);
         mMapController = (MapController) mMapView.getController();
@@ -337,9 +294,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
         mMapView.setBuiltInZoomControls(false);
 
-        /*
-         * add Marker and Polyline
-         * */
+        /* Add Marker and Polyline */
         startMarker = new Marker(mMapView);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_logo_marker));
@@ -349,15 +304,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mMapView.getOverlays().add(mPath);
         mMapView.getOverlays().add(startMarker);
 
-
         /*
          + add compass element
          + !!! needs a device with the compass-functionality to work properly !!!
          */
 
-        /*
-         + Lock the device in current screen orientation
-         */
+        /* Lock the device in current screen orientation */
         if (!"Android-x86".equalsIgnoreCase(Build.BRAND)) {
             int orientation = Objects.requireNonNull(getActivity()).getRequestedOrientation();
             int rotation = ((WindowManager) Objects.requireNonNull(
@@ -381,39 +333,29 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
                     break;
             }
-
             getActivity().setRequestedOrientation(orientation);
         }
 
-        /*
-         + create new compass element
-         */
+        /* Create new compass element */
         mCompassOverlay = new CompassOverlay(Objects.requireNonNull(getContext()),
                 new InternalCompassOrientationProvider(Objects.requireNonNull(getActivity())),
                 mMapView);
 
-        /*
-         + add compass overlay to the mapView
-         */
+        /* Add compass overlay to the mapView */
         mMapView.getOverlays().add(mCompassOverlay);
 
-        /*
-         + Button for aligning the map to north
-         */
+        /* Button for aligning the map to north */
         view.findViewById(R.id.compBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!northUp) {
-                    /*
-                     + resets map orientation to north and sets repetition
-                     */
+
+                    /* Resets map orientation to north and sets repetition */
                     northUp = true;
                     mMapView.setVerticalMapRepetitionEnabled(true);
                     mMapView.setMapOrientation((float) 0.0);
                 } else {
-                    /*
-                     + unset map repetition
-                     */
+                    /* Unset map repetition */
                     northUp = false;
                     mMapView.setVerticalMapRepetitionEnabled(false);
                 }
@@ -430,54 +372,46 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
 
-        /*
-         * Initialize for Notification
-         */
+        /* Initialize for Notification */
         createNotificationChannel();
         notificationManager = NotificationManagerCompat.from(MainActivity.getInstance());
 
-        /*
-         * Play Button
-         * */
+        /* Play Button */
         playPause = view.findViewById(R.id.play_imageView);
 
-        // for haptic feedback
+        /* For haptic feedback */
         vibe = (Vibrator) MainActivity.getInstance().getSystemService(Context.VIBRATOR_SERVICE);
         progressBar = view.findViewById(R.id.progressBar);
         startTime = 0;
 
-        /*
-         * onTouchListener makes hold down possible for ending Tracking
-         * */
+        /*  OnTouchListener makes hold down possible for ending Tracking */
         playPause.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                /*
-                 * when Button is pushed
-                 * */
+                /* When Button is pushed */
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     vibe.vibrate(10);
-                    /* change state of Tracking */
+                    /* Change state of Tracking */
                     if (isTracking) {
                         stopTracking();
                     } else {
 
-                        /* start recording */
+                        /* Start recording */
                         if (!recordingRuns && MainActivity.getConnection()) {
 
-                            /* check if live sharing or not */
+                            /* Check if live sharing or not */
                             AlertDialog.Builder alertdialogbuilder = new AlertDialog.Builder(getContext());
                             alertdialogbuilder.setTitle(getContext().getResources().getString(R.string.recordsOptionsTitle));
-
                             alertdialogbuilder.setItems(getContext().getResources().getStringArray(R.array.recordsOptions), new DialogInterface.OnClickListener() {
 
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
 
+                                    /* Livetracking */
                                     if (id == 0) {
                                         Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Live-Übertragung gestartet.", Toast.LENGTH_LONG).show();
 
-                                        /* start a call */
+                                        /* Start a call */
                                         Retrofit retrofit = APIConnector.getRetrofit();
                                         APIClient apiInterface = retrofit.create(APIClient.class);
                                         User currentUser = userDAO.read(MainActivity.getActiveUser());
@@ -491,22 +425,20 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                                                 try {
-                                                    /* get jsonString from API */
+                                                    /* Get jsonString from API */
                                                     String jsonString = response.body().string();
 
-                                                    /* parse json */
+                                                    /* Parse json */
                                                     JSONObject mainObject = new JSONObject(jsonString);
 
-                                                    /* friendship question okay */
+                                                    /* Get liveRecordId */
                                                     liveRecordId = mainObject.getInt("liveRecordId");
 
-                                                    /* Set boolean on true */
+                                                    /* Set booleans on true */
                                                     liveRecording = true;
                                                     recordingRuns = true;
 
                                                     startTracking();
-
-
                                                 } catch (JSONException e1) {
                                                     e1.printStackTrace();
                                                 } catch (IOException e1) {
@@ -519,15 +451,14 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                                 call.cancel();
                                             }
                                         });
-
-
                                     }
+
+                                    /* Private tracking */
                                     if (id == 1) {
                                         Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Private Aufzeichnung gestartet.", Toast.LENGTH_LONG).show();
                                         liveRecording = false;
                                         recordingRuns = true;
                                         startTracking();
-
                                     }
                                 }
                             });
@@ -536,31 +467,27 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             dialog.show();
                             dialog.setCanceledOnTouchOutside(false);
                         } else if (kmCounter != null) {
-                            //    startTracking();
                             Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Aufzeichnung fortgesetzt.", Toast.LENGTH_LONG).show();
                             recordingRuns = true;
                             startTracking();
                         } else if (!recordingRuns && !MainActivity.getConnection()) {
-
                             startTracking();
                             Toast.makeText(MainActivity.getInstance().getApplicationContext(), "Private offline Aufzeichnung gestartet.", Toast.LENGTH_LONG).show();
-
                         }
-
                     }
 
-                    /* get location data */
+                    /* Get location data */
                     List<de.trackcat.Database.Models.Location> locations = new ArrayList<>();
                     if (recordingRuns) {
                         locations = locationTempDAO.readAll(newRecordId);
 
-
-
-                        /* if there is any data collectet Tracked Route is saveable */
+                        /* If there is any data collected tracked Route is saveable */
                         if (timer.getTime() > 0) {
-                            /* store starttime for holdDown */
+
+                            /* Store startTime for holdDown */
                             startTime = event.getEventTime();
-                            /* timer for Progressbar */
+
+                            /* Timer for Progressbar */
                             startTimer();
 
                             if (MainActivity.getHints()) {
@@ -570,29 +497,22 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             }
                         }
                     }
-                    /*
-                     * when Button is released
-                     * */
+                    /*  When Button is released */
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (event.getEventTime() - startTime < progressTime) {
-                        /*
-                         * stops hold down Progress if holding down was too short
-                         * */
+
+                        /* Stops hold down Progress if holding down was too short */
                         killTimer();
                         progressBar.setProgress(0);
                     } else if (startTime != 0) {
-
                         endTracking();
-
                     }
                 }
                 return true;
             }
         });
 
-        /*
-         * recreate status of Play/Pause Button
-         * */
+        /* Recreate status of Play/Pause Button */
         if (isTracking) {
             playPause.setImageResource(R.drawable.record_pausebtn);
         } else {
@@ -602,10 +522,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             }
         }
 
-
-        /*
-         * set ViewPager(km/h<->Time Swiper)
-         * */
+        /* Set ViewPager(km/h<->Time Swiper) */
         FragmentTransaction fragTransaction = getChildFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.pageViewerContainer, new PageViewer(), "PageViewer");
         fragTransaction.commit();
@@ -619,31 +536,26 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 locatorGPS.init();
             }
         }
-
-        //startTracking();
         if (timer != null) {
             timer.sendTime();
         }
-
         MainActivity.getInstance().setRecordFragment(this);
 
         return view;
     }
 
-    /*
-     * end Tracking and switch to statistics for dismiss or save
-     * */
+    /* End Tracking and switch to statistics for dismiss or save */
     @SuppressLint("SetTextI18n")
     private void endTracking() {
 
-        /* stop sending timer */
+        /* Stop sending timer */
         if (liveRecording) {
             sendLiveTimer.cancel();
         }
         stopTracking();
         notificationManager.cancel(MainActivity.getInstance().getNOTIFICATION_ID());
 
-        /* get location */
+        /* Get location */
         List<de.trackcat.Database.Models.Location> locations = locationTempDAO.readAll(newRecordId);
 
         if (locations.size() > 2) {
@@ -679,15 +591,15 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
             mapViewZoom = alertView.findViewById(R.id.mapview);
 
-            /* Typ festlegen */
+            /* Set type */
             typeIcon = alertView.findViewById(R.id.fabButton);
             typeIcon.setImageResource(SpeedAverager.getTypeIcon(type));
 
-            /* Placeholder festlegen */
+            /* Set placeholder */
             TextView recordName = alertView.findViewById(R.id.record_name);
             recordName.setText(defaultName);
 
-            /* Setzt die aufgezeichneten Kilometer */
+            /* Set km */
             TextView distance_TextView = alertView.findViewById(R.id.distance_TextView);
             double distance = Math.round(kmCounter.getAmount());
             if (distance >= 1000) {
@@ -697,11 +609,12 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 distance_TextView.setText((int) distance + " m");
             }
 
-            /* Setzt die Zeit */
+            /* Set time */
             TextView total_time_TextView = alertView.findViewById(R.id.total_time_TextView);
             Timer timerForCalc = new Timer();
             total_time_TextView.setText(timerForCalc.secToString(timer.getTime()));
 
+            /* Set change type option */
             FloatingActionButton typeBtn = alertView.findViewById(R.id.fabButton);
             typeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -718,21 +631,21 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             android.R.id.text1,
                             items) {
                         public View getView(int position, View convertView, ViewGroup parent) {
-                            //Use super class to create the View
+
+                            /* Use super class to create the View */
                             View v = super.getView(position, convertView, parent);
                             TextView tv = (TextView) v.findViewById(android.R.id.text1);
 
-                            //Put the image on the TextView
+                            /* Put the image on the TextView */
                             tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0);
 
-                            //Add margin between image and text (support various screen densities)
+                            /* Add margin between image and text (support various screen densities) */
                             int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
                             tv.setCompoundDrawablePadding(dp5);
 
                             return v;
                         }
                     };
-
 
                     new AlertDialog.Builder(MainActivity.getInstance())
                             .setTitle("Typ auswählen")
@@ -750,14 +663,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                     }
                                 }
                             }).show();
-
                 }
             });
 
             alert.setPositiveButton("Speichern", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
 
-                    /* dissmiss doalog */
+                    /* Dismiss dialog */
                     dialog.dismiss();
                     TextView recordName = alertView != null ? alertView.findViewById(R.id.record_name) : null;
                     if (recordName != null && recordName.getText().toString().equals("")) {
@@ -767,14 +679,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     }
 
                     model.setTimeStamp(GlobalFunctions.getTimeStamp());
-             /*   RouteDAO dao = new RouteDAO(MainActivity.getInstance());
-                dao.create(model);*/
-
                     recordTempDAO.update(newRecordId, model);
 
-                    /* send route full to server */
-
-                    /* get current user */
+                    /* Get current user */
                     UserDAO userDAO = new UserDAO(MainActivity.getInstance());
                     User currentUser = userDAO.read(MainActivity.getActiveUser());
 
@@ -794,7 +701,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     m.setTimeStamp(model.getTimeStamp());
                     m.setLocations(locationTempDAO.readAll(newRecordId));
 
-                    /* start a call */
+                    /* Start a call */
                     String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
                     Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, m);
 
@@ -803,13 +710,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                            /* get jsonString from API */
+                            /* Get jsonString from API */
                             String jsonString = null;
 
                             try {
                                 jsonString = response.body().string();
 
-                                /* parse json */
+                                /* Parse json */
                                 JSONObject mainObject = new JSONObject(jsonString);
 
                                 if (mainObject.getString("success").equals("0")) {
@@ -818,7 +725,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                     Toast.makeText(getActivity(), getResources().getString(R.string.saveRouteOnServer),
                                             Toast.LENGTH_LONG).show();
 
-                                    /* save in DB*/
+                                    /* Save in DB*/
                                     recordDAO = new RouteDAO(MainActivity.getInstance());
 
                                     if (mainObject.getJSONObject("record") != null) {
@@ -837,11 +744,11 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                         record.setLocations(recordJSON.getString("locations"));
                                         recordDAO.create(record);
 
-                                        /* delete old record */
+                                        /* Delete old record */
                                         int tempRecordId = mainObject.getInt("oldId");
                                         record.setId(tempRecordId);
 
-                                        /*remove from temp*/
+                                        /* Remove from temp */
                                         recordTempDAO.delete(record);
                                     }
                                 }
@@ -861,7 +768,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                         }
                     });
-
                 }
             });
 
@@ -869,7 +775,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
 
-                    /*remove from temp*/
+                    /* Remove from temp */
                     recordTempDAO.delete(model);
 
                     /* Send request to server if its live recording */
@@ -890,13 +796,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                                /* get jsonString from API */
+                                /* Get jsonString from API */
                                 String jsonString = null;
 
                                 try {
                                     jsonString = response.body().string();
 
-                                    /* parse json */
+                                    /* Parse json */
                                     JSONObject mainObject = new JSONObject(jsonString);
 
                                     if (mainObject.getString("success").equals("0")) {
@@ -907,7 +813,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                                 Toast.LENGTH_LONG).show();
                                     }
 
-                                    /* end tracking and delete temp record */
+                                    /* End tracking and delete temp record */
                                     MainActivity.getInstance().endTracking();
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -923,7 +829,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                                 Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecordError),
                                         Toast.LENGTH_LONG).show();
 
-                                /* end tracking and delete temp record */
+                                /* End tracking and delete temp record */
                                 MainActivity.getInstance().endTracking();
                             }
                         });
@@ -932,7 +838,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                         Toast.makeText(MainActivity.getInstance(), getResources().getString(R.string.abortLiveRecord),
                                 Toast.LENGTH_LONG).show();
 
-                        /* end tracking and delete temp record */
+                        /* End tracking and delete temp record */
                         MainActivity.getInstance().endTracking();
                     }
                 }
@@ -941,7 +847,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             final MapView zomable = mapViewZoom;
 
             final AlertDialog alertDialog = alert.create();
-
             alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface dialogInterface) {
@@ -949,7 +854,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     double maxLat = Double.MIN_VALUE;
                     double minLong = Double.MAX_VALUE;
                     double maxLong = Double.MIN_VALUE;
-
 
                     for (GeoPoint point : GPSData) {
                         if (point.getLatitude() < minLat)
@@ -981,7 +885,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
             alertDialog.show();
 
-            /* not enouth Locations */
+            /* Not enouth Locations */
         } else {
             AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
             alert.setTitle("Aufnahme verwerfen?");
@@ -993,7 +897,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                     GlobalFunctions.deleteAllTempRecord(ClosingService.getInstance(), MainActivity.getActiveUser());
 
-                    /* end tracking and delete temp record */
+                    /* End tracking and delete temp record */
                     MainActivity.getInstance().endTracking();
                 }
             });
@@ -1018,15 +922,14 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mMapView.setBuiltInZoomControls(false);
         mMapView.setMultiTouchControls(true);
 
-        /* get location */
+        /* Get location */
         List<de.trackcat.Database.Models.Location> locations = locationTempDAO.readAll(newRecordId);
 
-        /* Marker und Polyline zeichnen */
+        /* Draw Marker and Polyline */
         GeoPoint gPt = new GeoPoint(locations.get(0).getLatitude(), locations.get(0).getLongitude());
         Marker startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             startMarker.setIcon(MainActivity.getInstance().getResources().getDrawable(R.drawable.ic_map_record_start));
@@ -1050,17 +953,14 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         mPath.setColor(Color.RED);
         mPath.setWidth(4);
 
-        /* load map by big routes */
+        /* Load map by big routes */
         IConfigurationProvider provider = Configuration.getInstance();
         provider.setUserAgentValue(BuildConfig.APPLICATION_ID);
         provider.setOsmdroidBasePath(getStorage());
         provider.setOsmdroidTileCache(getStorage());
-
     }
 
-    /*
-     * start Timer for stop/save Tracking Progressbar
-     * */
+    /* Start Timer for stop/save Tracking Progressbar */
     private void startTimer() {
         countdownTimer = new CountDownTimer(progressTime, 10) {
             @Override
@@ -1078,9 +978,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         countdownTimer.start();
     }
 
-    /*
-     * update Timer progress in progressbar
-     * */
+    /* Update Timer progress in progressbar */
     private void updateProgress(long toGo) {
         if (toGo > 0) {
             double hunderedst = (double) progressTime / 100;
@@ -1091,52 +989,46 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         }
     }
 
-    /*
-     * stop/kill Timer progress
-     * */
+    /* Stop/kill Timer progress */
     private void killTimer() {
         countdownTimer.cancel();
         countdownTimer = null;
     }
 
-    /* starts GPS Tracker and recording Objects */
+    /* Starts GPS Tracker and recording Objects */
     public void startTracking() {
-        /* instantiate if null */
+
+        /* Instantiate if null */
         if (kmCounter == null) {
 
             if (liveRecording) {
                 sendLiveTimer = new java.util.Timer();
-                /* start Timer on 1 sec */
+                /* Start Timer on 1 sec */
                 sendLiveTimer.scheduleAtFixedRate(new sendLive(), 10000, 10000);
             }
 
-            // instatiate new ModelRoute ann add to DB
+            /* Instantiate new ModelRoute ann add to DB */
             model = new Route();
             newRecordId = recordTempDAO.create(model);
             model.setId(newRecordId);
 
-            // start Locator
-            //locatorGPS = new Locator(MainActivity.getInstance(), this);
-
-            // counts Distance
+            /* Counts Distance */
             kmCounter = new mCounter();
 
-            // timer
+            /* Timer */
             timer = new Timer(0);
 
-            // ride Time if kmh > 0
+            /* ride Time if kmh > 0 */
             rideTimer = new Timer(1);
 
-            // average Kmh
+            /* average Kmh */
             kmhAverager = new SpeedAverager(MainActivity.getInstance(), kmCounter, rideTimer, 1);
 
             isTracking = true;
         } else {
-            /* restart if already instantiated */
+            /* Restart if already instantiated */
             timer.startTimer();
             rideTimer.startTimer();
-            //locatorGPS.startTracking();
-
             isTracking = true;
         }
 
@@ -1144,31 +1036,28 @@ public class RecordFragment extends Fragment implements SensorEventListener {
         issueNotification(notificationContent);
     }
 
-    /*
-     * creates or updates Notification
-     * */
+    /* Creates or updates Notification */
     private void issueNotification(String content) {
-        /* returns to Record Page when Notification is clicked */
+
+        /* Returns to Record Page when Notification is clicked */
         Intent notificationIntent = new Intent(MainActivity.getInstance(), MainActivity.class);
         notificationIntent.putExtra("action", MainActivity.getInstance().getResources().getString(R.string.fRecord));
         PendingIntent intent = PendingIntent.getActivity(MainActivity.getInstance(), 1,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        /* calls Broadcastreciever when Button "pause" is clicked and pauses Tracking + opens Record page */
+        /* Calls Broadcastreciever when Button "pause" is clicked and pauses Tracking + opens Record page */
         Intent pauseTrackingIntent = new Intent(MainActivity.getInstance(), NotificationActionReciever.class);
         pauseTrackingIntent.setAction("ACTION_PAUSE");
         PendingIntent intentPause = PendingIntent.getBroadcast(MainActivity.getInstance().getApplicationContext(), 0,
                 pauseTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        /* calls Broadcastreciever when Button "play" is clicked and starts Tracking + opens Record page */
+        /* Calls Broadcastreciever when Button "play" is clicked and starts Tracking + opens Record page */
         Intent playTrackingIntent = new Intent(MainActivity.getInstance(), NotificationActionReciever.class);
         playTrackingIntent.setAction("ACTION_PLAY");
         PendingIntent intentPlay = PendingIntent.getBroadcast(MainActivity.getInstance().getApplicationContext(), 0,
                 playTrackingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        /*
-         * create Notification
-         * */
+        /* Create Notification */
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(MainActivity.getInstance(), CHANNEL_ID)
                 .setContentTitle("Laufende Aufzeichnung")
                 .setContentText(content)
@@ -1177,7 +1066,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 .setContentIntent(intent)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
-        /* Nur in neueren Versionen */
+        /* Only in newer versions */
         if (Build.VERSION.SDK_INT >= 21) {
             mBuilder.setSmallIcon(R.drawable.ic_icon)
                     .setLargeIcon(BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.mipmap.ic_launcher));
@@ -1191,16 +1080,15 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     intentPlay);
         }
 
-        // start Notification
+        /* Start Notification */
         notificationManager.notify(MainActivity.getInstance().getNOTIFICATION_ID(), mBuilder.build());
     }
 
 
-    /*
-     * create Channel for Notification
-     * */
+    /* Create Channel for Notification */
     private void createNotificationChannel() {
-        // create Notification Channel. needed from API 26
+
+        /* Create Notification Channel. needed from API 26 */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getResources().getString(R.string.app_name);
             String description = "Shows Tracking";
@@ -1208,7 +1096,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
 
-            // Register Channel to System
+            /* Register Channel to System */
             NotificationManager notificationManager = MainActivity.getInstance().getSystemService(NotificationManager.class);
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
@@ -1225,31 +1113,22 @@ public class RecordFragment extends Fragment implements SensorEventListener {
      */
 
     int locationCounter;
-    int locationGetRound = 0;
 
     void updateLocation(Location location) {
 
-
         GeoPoint gPt = new GeoPoint(location.getLatitude(), location.getLongitude());
-        /*
-         + assign current location values to  necessary variables for map orientation
-         */
+
+        /* Assign current location values to  necessary variables for map orientation */
         gpsBearing = location.getBearing();
         lat = (float) location.getLatitude();
         lon = (float) location.getLongitude();
         alt = (float) location.getAltitude();
         timeOfFix = location.getTime();
 
-
-
-        /*
-         * move Map
-         * */
+        /* Move Map */
         mMapController.setCenter(gPt);
 
-        /*
-         * set Marker for current Position
-         * */
+        /* Set Marker for current Position */
         startMarker.setPosition(gPt);
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
@@ -1284,7 +1163,7 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             if (isTracking) {
                 locationCounter++;
 
-                // add Location to Model
+                /* dd Location to Model */
                 de.trackcat.Database.Models.Location newLocation = new de.trackcat.Database.Models.Location();
                 newLocation.setAltitude(location.getAltitude());
                 newLocation.setLatitude(location.getLatitude());
@@ -1294,24 +1173,20 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 newLocation.setRecordId(newRecordId);
                 locationTempDAO.create(newLocation);
 
-
-                // add to List
+                /* dd to List */
                 GPSData.add(gPt);
 
-                // add Distance
+                /* add Distance */
                 kmCounter.addKm(location);
 
                 try {
-                    /*
-                     * set Polyline
-                     * */
+                    /* Set Polyline */
                     mPath.setPoints(GPSData);
                     mPath.setColor(Color.RED);
                     mPath.setWidth(4);
                 } catch (NullPointerException e) {
                     Log.v(getResources().getString(R.string.app_name), e.toString());
                 }
-
 
                 /*
                  + sets the desired map rotation based on location heading if movement is detected
@@ -1321,16 +1196,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     mMapView.setMapOrientation(-gpsBearing);
                 }
 
-                /*
-                 * updatde OSM Map
-                 * */
+                /* Update OSM Map */
                 mMapView.invalidate();
 
-                /*
-                 * add Location to Statistics
-                 * */
-
-                // count ridetime
+                /* Add Location to Statistics */
                 if (!rideTimer.getActive() && location.getSpeed() > 0) {
                     rideTimer.startTimer();
                 } else if (rideTimer.getActive() && location.getSpeed() == 0) {
@@ -1339,14 +1208,9 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
                 kmhAverager.calcAvgSpeed();
 
-                /*
-                 *
-                 * Set Values in Satistics
-                 *
-                 *
-                 * */
+                /* ---Set Values in Statistics--- */
 
-                /* set Speed value in TextView */
+                /* Set Speed value in TextView */
                 try {
                     kmh_TextView = view.findViewById(R.id.kmh_TextView);
                     String toSet = (Math.round(location.getSpeed() * 60 * 60) / 100) / 10.0 + " km/h";
@@ -1368,24 +1232,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                 } catch (NullPointerException e) {
                     Log.v(getResources().getString(R.string.app_name), e.toString());
                 }
-
-                /* send every ... loacation to server */
-
-                if (locationCounter % 10 == 0 && liveRecording) {
-
-
-                }
-
-
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
-    /*
-     * Stop/Pause Tracking
-     * */
+    /* Stop/Pause Tracking */
     public void stopTracking() {
         timer.stopTimer();
         rideTimer.stopTimer();
@@ -1403,17 +1256,13 @@ public class RecordFragment extends Fragment implements SensorEventListener {
 
         playPause.setImageResource(R.drawable.record_playbtn);
         issueNotification(notificationContent);
-
     }
 
     private void stopGPS() {
         if (locatorGPS != null) {
             locatorGPS.stopTracking();
-        } else {
-            //MainActivity.getInstance().stopService(new Intent(MainActivity.getInstance(), Locator.class));
         }
     }
-
 
     public void stopTimer() {
         timer.stopTimer();
@@ -1470,7 +1319,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             /* Ger last ___ locations */
             List<de.trackcat.Database.Models.Location> l = locationTempDAO.readAllGreaterThan(newRecordId, lastIndex);
 
-
             /* Get current user */
             UserDAO userDAO = new UserDAO(MainActivity.getInstance());
             User currentUser = userDAO.read(MainActivity.getActiveUser());
@@ -1501,10 +1349,10 @@ public class RecordFragment extends Fragment implements SensorEventListener {
                     try {
                         jsonString = response.body().string();
 
-                        /* parse json */
+                        /* Parse json */
                         JSONObject mainObject = new JSONObject(jsonString);
 
-                        /* set index up */
+                        /* Set index up */
                         if (mainObject.getString("success").equals("0")) {
                             if (l.size() > 0) {
                                 lastIndex = l.get(l.size() - 1).getId();

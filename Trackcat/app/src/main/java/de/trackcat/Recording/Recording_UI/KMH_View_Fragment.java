@@ -11,21 +11,19 @@ import de.trackcat.R;
 public class KMH_View_Fragment extends Fragment {
 
     public KMH_View_Fragment() {
-        // Required empty public constructor
     }
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
+        /* Inflate the layout for this fragment */
         return inflater.inflate(R.layout.fragment_record_kmh_view, container, false);
     }
-
 }

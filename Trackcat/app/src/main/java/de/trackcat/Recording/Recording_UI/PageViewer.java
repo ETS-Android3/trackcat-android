@@ -23,7 +23,6 @@ public class PageViewer extends Fragment {
     private List<Fragment> listFragments = new ArrayList<>();
 
     public PageViewer() {
-        // Required empty public constructor
     }
 
 
@@ -35,25 +34,25 @@ public class PageViewer extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
+        /* Inflate the layout for this fragment */
         View view = inflater.inflate(R.layout.fragment_page_viewer, container, false);
 
-        /* create Fragments for ViewPager */
+        /* Create Fragments for ViewPager */
         KMH_View_Fragment kmhFrag = new KMH_View_Fragment();
         TimeTotal_View_Fragment timeFrag = new TimeTotal_View_Fragment();
 
         listFragments.add(kmhFrag);
         listFragments.add(timeFrag);
 
-        // Instantiate a ViewPager and a PagerAdapter.
+        /* Instantiate a ViewPager and a PagerAdapter */
         ViewPager mPager = view.findViewById(R.id.pager);
         PagerAdapter mPagerAdapter = new PageViewer.ScreenSlidePagerAdapter(MainActivity.getInstance().getSupportFragmentManager());
-
         mPager.setAdapter(mPagerAdapter);
 
         LinearLayout mLinearLayout = view.findViewById(R.id.indicator);
 
-        /* create Indicator (little buttons) */
+        /* Create Indicator (little buttons) */
         if (Build.VERSION.SDK_INT > 21) {
             CurrentPageIndicator mIndicator = new CurrentPageIndicator(MainActivity.getInstance(), mLinearLayout, mPager, R.drawable.indicator_circle);
             mIndicator.setPageCount(listFragments.size());
@@ -72,7 +71,7 @@ public class PageViewer extends Fragment {
             super(fm);
         }
 
-        /* called on Swipe */
+        /* Called on Swipe */
         @Override
         public android.support.v4.app.Fragment getItem(int position) {
             return listFragments.get(position);

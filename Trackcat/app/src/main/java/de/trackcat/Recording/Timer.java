@@ -4,9 +4,7 @@ import android.os.Message;
 
 import java.util.TimerTask;
 
-/*
- * Timer counts the secsonds.
- * */
+/* Timer counts the seconds. */
 public class Timer {
     private long time = 0;
 
@@ -17,36 +15,30 @@ public class Timer {
     Timer() {
     }
 
-    /*
-     * Define Timer to add up Time and create String in HH:MM:SS format
-     * */
+    /* Define Timer to add up Time and create String in HH:MM:SS format */
     private class RideTimerTask extends TimerTask {
 
         @Override
         public void run() {
-            // add up Time
             time += 1;
             sendTime();
-
         }
     }
 
-    /*
-     * create and Send readable Message String
-     * */
+    /* Create and Send readable Message String  */
     void sendTime() {
-        // send message to View
+
+        /* Send message to View */
         Message msg = new Message();
         msg.what = type;
         msg.obj = secToString(time);
         RecordFragment.handler.sendMessage(msg);
     }
 
-    /*
-     * build Readable String from Seconds
-     * */
+    /* Build Readable String from Seconds */
     String secToString(double secs) {
-        // create readable String
+
+        /* create readable String */
         int hours = (int) Math.floor((secs / 60) / 60);
 
         double timeCalc = secs - hours * 60 * 60;
@@ -80,15 +72,12 @@ public class Timer {
         }
     }
 
-    // return counted Time
+    /* Return counted Time */
     public long getTime() {
         return time;
     }
 
-
-    /*
-     * stops Timer
-     * */
+    /* Stops Timer */
     void stopTimer() {
         if (isRunning) {
             timer.cancel();
@@ -97,20 +86,18 @@ public class Timer {
         }
     }
 
-    /*
-     * starts Timer
-     * */
+    /* Starts Timer */
     void startTimer() {
         if (!isRunning) {
-            /* initialise Timer */
+            /* Initialise Timer */
             timer = new java.util.Timer();
-            /* start Timer on 1 sec */
+            /* Start Timer on 1 sec */
             timer.scheduleAtFixedRate(new RideTimerTask(), 1000, 1000);
             isRunning = true;
         }
     }
 
-    // return state of Timer
+    /* Return state of Timer */
     boolean getActive() {
         return isRunning;
     }
