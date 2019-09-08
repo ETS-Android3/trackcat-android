@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+
+// BroadcastReciever for checking if Connectivity changed
 public class ConnectivityChecker extends BroadcastReceiver {
 
     public static boolean connected = false;
