@@ -74,7 +74,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -94,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static MainActivity instance;
     private RecordFragment recordFragment;
     private NotificationManagerCompat notificationManager;
-    // public Boolean firstRun = false;
     private static boolean hints;
     private static boolean darkTheme;
     private static String searchFriendTerm;
@@ -108,32 +106,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private UserDAO userDAO;
     private static int activeUser;
     public static Boolean isActiv = false;
-    //  private static boolean isRestart = false;
     private static Menu menuInstance;
     private ProgressDialog progressDialog;
     private static boolean connected, restarted;
 
-    /* Zufälliger Integer-Wert für die Wahl des Header Bildes */
+    /* Random value for header image */
     public static int randomImg = (int) (Math.random() * ((13 - 0) + 1)) + 0;
 
     /* Restart activity for Theme Switching */
     public static void restart() {
-       /* Bundle temp_bundle = new Bundle();
-        getInstance().onSaveInstanceState(temp_bundle);
-        Intent intent = new Intent(getInstance(), MainActivity.class);
-        intent.putExtra("bundle", temp_bundle);
-
-        //    isRestart = true;
-
-        getInstance().startActivity(intent);
-        getInstance().finish();*/
-
         Intent intent = getInstance().getIntent();
         getInstance().finish();
         getInstance().startActivity(intent);
         restarted = true;
     }
 
+    /* Getter and Setter */
     public PermissionManager getPermissionManager() {
         return permissionManager;
     }
@@ -254,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-        /* Entferne die Benachrichtigung, wenn App läuft */
+        /* Remove notification, if app destroy */
         notificationManager.cancel(getNOTIFICATION_ID());
         try {
             progressDialog.dismiss();
@@ -265,27 +253,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             recordFragment = null;
 
         } catch (NullPointerException e) {
-
         }
         this.stopService(new Intent(this, Locator.class));
 
         isActiv = false;
-        Log.d("GESCHLOSSEN", "in onDestroy");
-        /* delete open records */
-        //  deleteAllTempRecord();
-
-        //   if (!isRestart) {
-        // android.os.Process.killProcess(android.os.Process.myPid());
-        // }
-        // isRestart = false;
 
         try {
             stopTracking();
         } catch (NullPointerException e) {
-
         }
-
-
         super.onDestroy();
     }
 
@@ -299,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    /* function to get active user information */
+    /* Function to get active user information */
     public void getCurrentUserInformation() {
         userDAO = new UserDAO(this);
         User currentUser = userDAO.readCurrentUser();
@@ -312,11 +288,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Register ConnectivityChecker ---> alert on connectivity change
+        /* Register ConnectivityChecker ---> alert on connectivity change */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
             ConnectivityChecker cc = new ConnectivityChecker();
-
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
             this.registerReceiver(cc, filter);
         }
@@ -339,43 +313,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startService(new Intent(getBaseContext(), ClosingService.class));
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-        // check Permissions --> if not okay logout user
-        if (ContextCompat.checkSelfPermission(this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this ,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        /* Check Permissions --> if not okay logout user */
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             logout();
         }
 
+        /* Get current user information */
         getCurrentUserInformation();
-        /* Aktuelles Themes aus Einstellungen laden */
+
+        /* Load theme */
         setTheme(getDarkTheme() ? R.style.AppTheme_Dark : R.style.AppTheme);
 
         if (getIntent().hasExtra("bundle") && savedInstanceState == null) {
             savedInstanceState = getIntent().getExtras().getBundle("bundle");
         }
 
-        /* Startseite definieren */
+        /* Define startpage */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        /* Instanz für spätere Objekte speichern */
+        /* Save instances for later */
         instance = this;
         recordFragment = new RecordFragment();
         mainDrawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar);
         showHelp = findViewById(R.id.showHelp);
 
-        /*On Click Listener definieren*/
+        /* OnClick Listener */
         showHelp.setOnClickListener(this);
 
-        /* Actionbar definieren und MenuListener festlegen */
+        /* Define actionbar and MenuListener */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
 
-        /* show menu, if you click on profile */
+        /* Show menu, if you click on profile */
         profileEmail = headerView.findViewById(R.id.profile_email);
         profileName = headerView.findViewById(R.id.profile_name);
         profileImage = headerView.findViewById(R.id.profile_image);
@@ -383,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         profileName.setOnClickListener(this);
         profileImage.setOnClickListener(this);
 
-        /* Header anhand des aktuellen Monats wählen*/
+        /* Choose header */
         LinearLayout header_img = headerView.findViewById(R.id.header_img);
         int month = Calendar.getInstance().getTime().getMonth() + 1;
         switch (randomImg) {
@@ -425,6 +400,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         getProfileColor();
+
+        /* Set drawer information */
         User currentUser = userDAO.read(activeUser);
         setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
         synchronizeUser(currentUser);
@@ -436,9 +413,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
         notificationManager = NotificationManagerCompat.from(this);
-        //  firstRun = true;
 
-        /* check start connectivity */
+        /* Check start connectivity */
         boolean connected = false;
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -451,10 +427,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         setConnection(connected);
 
-        /* Startseite festlegen - Erster Aufruf */
-        //  Log.d("HALLO", "restart: " + restarted);
-
-        /* load settings if them changed */
+        /* Load settings if them changed */
         if (restarted) {
             loadSettings();
         } else {
@@ -462,13 +435,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    /* set profile information */
+    /* Set profile information */
     public void setDrawerInfromation(byte[] imgRessource, String first_name, String last_name, String email) {
 
         profileName.setText(first_name + " " + last_name);
         profileEmail.setText(email);
 
-        /* set image */
+        /* Set image */
         Bitmap bitmap = BitmapFactory.decodeResource(getBaseContext().getResources(), R.raw.default_profile);
         if (imgRessource != null && imgRessource.length > 0) {
             bitmap = BitmapFactory.decodeByteArray(imgRessource, 0, imgRessource.length);
@@ -476,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         profileImage.setImageBitmap(bitmap);
     }
 
-    /* Anpassen der TextFarbe zum Hintergrundbild */
+    /* Backgroundcolor for header image */
     public void getProfileColor() {
         int month = Calendar.getInstance().getTime().getMonth() + 1;
         int defaultColor = Color.WHITE;
@@ -488,14 +461,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 defaultColor = Color.BLACK;
                 break;
         }
-
         profileEmail.setTextColor(defaultColor);
         profileName.setTextColor(defaultColor);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         menuInstance = menu;
         return true;
     }
@@ -522,7 +493,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
 
-        /* Aktion je nach Auswahl des Items */
+        /* Menu options */
         switch (menuItem.getItemId()) {
             case R.id.nav_dashboard:
 
@@ -538,7 +509,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 Fragment fragmentRecordList = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist));
                 if (fragmentRecordList == null || (fragmentRecordList != null && !fragmentRecordList.isVisible())) {
-
                     menuInstance.clear();
                     synchronizeRecords(true, false);
                     clearValuesAfterChangeMenu();
@@ -547,7 +517,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_record:
                 Fragment fragmentRecord = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord));
                 if (fragmentRecord == null || (fragmentRecord != null && !fragmentRecord.isVisible())) {
-
                     menuInstance.clear();
                     loadRecord();
                     clearValuesAfterChangeMenu();
@@ -558,7 +527,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 Fragment fragmentSettings = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fSettings));
                 if (fragmentSettings == null || (fragmentSettings != null && !fragmentSettings.isVisible())) {
-
                     menuInstance.clear();
                     loadSettings();
                     clearValuesAfterChangeMenu();
@@ -567,7 +535,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_friends:
                 Fragment fragmentFriends = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriendSystem));
                 if (fragmentFriends == null || (fragmentFriends != null && !fragmentFriends.isVisible())) {
-
                     menuInstance.clear();
                     loadFriendSystem(1);
                     clearValuesAfterChangeMenu();
@@ -576,7 +543,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logout:
 
                 logout();
-
                 break;
         }
         menuItem.setChecked(true);
@@ -584,6 +550,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /* Function to clear values */
     public void clearValuesAfterChangeMenu() {
         setSearchForeignPage(0);
         setSearchForeignTerm(null);
@@ -599,27 +566,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /* Function to logout */
     public void logout() {
-        /* set wait field */
+        /* Set wait field */
         progressDialog = new ProgressDialog(MainActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Abmeldung...");
         progressDialog.show();
-        /* set waiting handler */
+
+        /* Set waiting handler */
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-
                         finish();
 
-                        /* remove user from local db */
+                        /* Remove user from local db */
                         List<User> deletedUsers = userDAO.readAll();
                         for (User user : deletedUsers) {
                             userDAO.delete(user);
                         }
 
-                        /* open login fragment */
+                        /* Open login fragment */
                         Intent intent = new Intent(MainActivity.this, StartActivity.class);
                         intent.putExtra("isLogout", true);
 
@@ -630,14 +598,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /* Stops/pauses Tracking opens App and switch to RecordFragment */
     public void stopTracking() {
-        //  startActivity(getIntent());
         try {
             loadRecord();
         } catch (RuntimeException e) {
             Log.v("Fehler beim Stoppen: ", e.toString());
         }
         recordFragment.stopTracking();
-
     }
 
     public int getNOTIFICATION_ID() {
@@ -645,16 +611,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void startTracking() {
-        //startActivity(getIntent());
         recordFragment.startTracking();
         try {
             loadRecord();
         } catch (RuntimeException e) {
-
         }
     }
 
-    /* Startet RecordFragment nach Ende der Aufzeichnung */
+    /* Started RecordFragment after finish tracking */
     public void endTracking() {
         recordFragment = new RecordFragment();
         loadRecord();
@@ -670,7 +634,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
 
-        /* go page back */
+        /* Go page back */
         if (this.getSupportFragmentManager().getBackStackEntryCount() > 1) {
             int index = this.getSupportFragmentManager().getBackStackEntryCount() - 2;
             FragmentManager.BackStackEntry backEntry = getSupportFragmentManager().getBackStackEntryAt(index);
@@ -690,10 +654,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else {
 
-            /* close app with klick double back */
+            /* Close app with click double back */
             if (exitApp) {
 
-                //  ClosingService.getInstance().onTaskRemoved(MainActivity.getInstance().getIntent());
                 if (android.os.Build.VERSION.SDK_INT >= 21) {
                     finishAndRemoveTask();
                 } else {
@@ -701,8 +664,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     recordTempDAO.deleteAllNotFinished();
                     finish();
                 }
-
-                //  System.exit(0);
             }
             exitApp = true;
             if (hints) {
@@ -721,8 +682,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
-    /* Laden des Dashboard-Fragments */
+    /* Load Dashboard-Fragments */
     public void loadDashboard(boolean addToStack) {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Dashboard-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
@@ -730,19 +690,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getResources().getString(R.string.fDashboard));
         fragTransaction.commit();
 
-        /* add to Stack */
+        /* Add to Stack */
         if (addToStack) {
             fragTransaction.addToBackStack(getResources().getString(R.string.fDashboard));
         }
-
     }
 
-    /* Laden des Aufnahme-Fragments */
+    /* Load Record-Fragments */
     public void loadRecord() {
-        /* Fragt nach noch nicht erteilten Permissions */
 
-        Log.v("loadRecord", "loading Record");
-
+        /* Check permission - additionally security */
         permissionManager.checkAndRequestPermissions(MainActivity.getInstance());
 
         String permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -751,10 +708,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String permissionGPS = android.Manifest.permission.ACCESS_FINE_LOCATION;
         int resGPS = getInstance().checkCallingOrSelfPermission(permissionGPS);
 
-        if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED) {//&& getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecord)) == null) {
-
-            Log.v("loadRecord", "placing Record");
-
+        if (res == PackageManager.PERMISSION_GRANTED && resGPS == PackageManager.PERMISSION_GRANTED) {
 
             Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Aufnahme-Fragment wird geladen.");
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
@@ -762,13 +716,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     getResources().getString(R.string.fRecord));
             fragTransaction.commit();
 
-            /* add to Stack */
+            /* Add to Stack */
             fragTransaction.addToBackStack(getResources().getString(R.string.fRecord));
-
         }
     }
 
-    /* Laden des Listen-Fragments */
+    /* Load list-fragments */
     public void loadRecordList(boolean addToStack) {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Listen-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
@@ -776,18 +729,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getResources().getString(R.string.fRecordlist));
         fragTransaction.commit();
 
-        /* add to Stack */
+        /* Add to Stack */
         if (addToStack) {
             fragTransaction.addToBackStack(getResources().getString(R.string.fRecordlist));
         }
     }
 
-    /* Laden des Profil-Fragments */
+    /* Load profile-fragments */
     public void loadProfile(boolean loadMenu) {
 
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Profil-Fragment wird geladen.");
 
-        /* set Bundle */
+        /* Set Bundle */
         Bundle bundleSpeed = new Bundle();
         bundleSpeed.putBoolean("loadMenu", loadMenu);
 
@@ -798,7 +751,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getResources().getString(R.string.fProfile));
         fragTransaction.commit();
 
-        /* set menu checked on false */
+        /* Set menu checked on false */
         Menu menu = navigationView.getMenu();
         menu.findItem(R.id.nav_dashboard).setChecked(false);
         menu.findItem(R.id.nav_record).setChecked(false);
@@ -806,11 +759,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         menu.findItem(R.id.nav_settings).setChecked(false);
         menu.findItem(R.id.nav_friends).setChecked(false);
 
-        /* add to Stack */
+        /* Add to Stack */
         fragTransaction.addToBackStack(getResources().getString(R.string.fProfile));
     }
 
-    /* Laden des Einstellung-Fragments */
+    /* Load setting-fragments */
     public void loadSettings() {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Einstellung-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
@@ -818,11 +771,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getResources().getString(R.string.fSettings));
         fragTransaction.commit();
 
-        /* add to Stack */
+        /* Add to Stack */
         fragTransaction.addToBackStack(getResources().getString(R.string.fSettings));
     }
 
-    /* Laden des Einstellung-Fragments */
+    /* Load editProfile-fragment */
     public void loadEditProfile() {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Profil-Bearbeiten-Fragment wird geladen.");
 
@@ -831,11 +784,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getResources().getString(R.string.fEditProfile));
         fragTransaction.commit();
 
-        /* add to Stack */
+        /* Add to Stack */
         fragTransaction.addToBackStack(getResources().getString(R.string.fEditProfile));
     }
 
-    /* Laden des Einstellung-Fragments */
+    /* Load editPassword-fragment */
     public void loadEditPassword(boolean addToStack) {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Passwort-Ändern-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
@@ -843,21 +796,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getResources().getString(R.string.fEditPassword));
         fragTransaction.commit();
 
-        /* add to Stack */
+        /* Add to Stack */
         if (addToStack) {
             fragTransaction.addToBackStack(getResources().getString(R.string.fEditPassword));
         }
     }
 
-    /* Laden des Friends-Fragments */
+    /* Load friends-fragments */
     public void loadFriendSystem(int activeSite) {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Freunde-Fragment wird geladen.");
         Bundle bundle = new Bundle();
         bundle.putInt("activeSite", activeSite);
-        /* add searchTerm to bundle if its loaded site */
-        if (activeSite == 0) {
-            //   bundle.putString("searchTerm", searchTerm);
-        }
+
         FriendsViewerFragment firendsFragment = new FriendsViewerFragment();
         firendsFragment.setArguments(bundle);
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
@@ -865,11 +815,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getResources().getString(R.string.fFriendSystem));
         fragTransaction.commit();
 
-        /* add to Stack */
+        /* Add to Stack */
         fragTransaction.addToBackStack(getResources().getString(R.string.fFriendSystem));
     }
 
-    /* Laden des Friends-Fragments */
+    /* Load deleteFriend-fragments */
     public void loadDeleteAccount() {
         Log.i(getResources().getString(R.string.app_name) + "-Fragment", "Das Account-Löschen-Fragment wird geladen.");
         FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
@@ -877,11 +827,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getResources().getString(R.string.fDeleteAccount));
         fragTransaction.commit();
 
-        /* add to Stack */
+        /* Add to Stack */
         fragTransaction.addToBackStack(getResources().getString(R.string.fDeleteAccount));
     }
 
-    // set the RecordFragment wich is in use
+    /* Set the RecordFragment wich is in use */
     public void setRecordFragment(RecordFragment recordFragment) {
         this.recordFragment = recordFragment;
     }
@@ -891,7 +841,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (v.getId()) {
             case R.id.showHelp:
 
-                Log.d("HEEEY", "" + getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fFriends)));
+                /* Show help */
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.getInstance());
                 alert.setTitle("Hilfe");
 
@@ -910,6 +860,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             alert.setMessage(getResources().getString(R.string.help_record));
                         }
                     }
+
                     if (getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist)) != null) {
                         fragment = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist));
                         if (fragment.isVisible()) {
@@ -992,29 +943,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (fragmentProfile == null || (fragmentProfile != null && !fragmentProfile.isVisible())) {
                     menuInstance.clear();
                     loadProfile(true);
-
                 }
                 mainDrawer.closeDrawer(GravityCompat.START);
                 break;
         }
     }
 
-    /* function checkt if device have network connection */
+    /* Function check if device have network connection */
     public void networkChange(boolean connected) {
         Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
         setConnection(connected);
 
-        // Toast.makeText(this.getBaseContext(), "NETZ: " + connected,
-        //        Toast.LENGTH_SHORT).show();
-
-        /* device have connection */
+        /* Device have connection */
         if (connected) {
 
             User currentUser = userDAO.read(activeUser);
             synchronizeUser(currentUser);
             synchronizeOfflineRoutes(currentUser);
 
-            /*  synchronize records */
+            /* Synchronize records */
             Fragment fragmentDashboard = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard));
             Fragment fragmentRecordList = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist));
 
@@ -1030,9 +977,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /* Function to show not autorized modal */
     int showAutorizeCounter = 0;
 
-    /* Function to show not autorized modal */
     public void showNotAuthorizedModal(int type) {
         if (type == 5 | type == 6 | type == 7 | type == 8 | type == 9) {
             showAutorizeCounter++;
@@ -1041,7 +988,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (showAutorizeCounter == 1) {
-            /* create AlertBox */
+
+            /* Create AlertBox */
             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             alert.setTitle("Achtung");
             LayoutInflater layoutInflater = (LayoutInflater) Objects.requireNonNull(MainActivity.this).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -1077,37 +1025,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         Toast.makeText(instance, "Ihre Eingabe war nicht korrekt!", Toast.LENGTH_LONG).show();
                                     } else {
 
-                                        /* get jsonString from API */
+                                        /* Get jsonString from API */
                                         String jsonString = response.body().string();
 
-                                        /* parse json */
+                                        /* Parse json */
                                         JSONObject mainObject = new JSONObject(jsonString);
-                                        /* open activity if login success*/
+
+                                        /* Open activity if login success*/
                                         if (mainObject.getString("success").equals("0")) {
 
                                             Toast.makeText(instance, "Erfolgreich autorisiert!", Toast.LENGTH_LONG).show();
 
-                                            /* get userObject from Json */
+                                            /* Get userObject from Json */
                                             JSONObject userObject = mainObject.getJSONObject("userData");
                                             userObject.put("password", passwordText);
 
-                                            /* save logged user in db */
+                                            /* Save logged user in db */
                                             userDAO.update(getActiveUser(), GlobalFunctions.createUser(userObject, true, true));
 
-                                            /* restart ProfileFragment */
+                                            /* Restart ProfileFragment */
                                             if (type == 0) {
                                                 loadProfile(false);
-                                                /* restart EditProfileFragment */
+
+                                                /* Restart EditProfileFragment */
                                             } else if (type == 1) {
                                                 loadEditProfile();
-                                                /* restart Fragement after synchronize Data failed */
+
+                                                /* restart Fragment after synchronize Data failed */
                                             } else if (type == 2) {
 
-                                                /* get last element */
+                                                /* Get last element */
                                                 int index = getSupportFragmentManager().getBackStackEntryCount() - 1;
                                                 FragmentManager.BackStackEntry backEntry = getSupportFragmentManager().getBackStackEntryAt(index);
                                                 String tag = backEntry.getName();
-
 
                                                 if (tag == getResources().getString(R.string.fRecord)) {
                                                     loadRecord();
@@ -1140,11 +1090,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 loadDeleteAccount();
                                             } else if (type == 4) {
                                                 loadRecordList(false);
-                                                /* friendPage */
+                                                /* FriendPage */
                                             } else if (type == 5) {
                                                 loadFriendSystem(1);
                                                 showAutorizeCounter = 0;
-                                                /* friendQuestionPage */
+                                                /* FriendQuestionPage */
                                             } else if (type == 6) {
                                                 loadFriendSystem(3);
                                                 showAutorizeCounter = 0;
@@ -1191,6 +1141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /* Function to synchronize user */
     private void synchronizeUser(User currentUser) {
 
         /* send user timestamp to bb */
@@ -1214,30 +1165,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (response.code() == 401) {
                         MainActivity.getInstance().showNotAuthorizedModal(2);
                     } else {
-                        /* get jsonString from API */
+                        /* Get jsonString from API */
                         String jsonString = response.body().string();
 
-                        /* parse json */
+                        /* Parse json */
                         JSONObject mainObject = new JSONObject(jsonString);
 
-                        /* user on server is new */
+                        /* User on server is new */
                         if (mainObject.getString("state").equals("0")) {
 
-                            /* get userObject from Json */
+                            /* Get userObject from Json */
                             JSONObject userObject = mainObject.getJSONObject("user");
                             userObject.put("password", currentUser.getPassword());
 
-                            /* save user in db */
+                            /* Save user in db */
                             userDAO.update(currentUser.getId(), GlobalFunctions.createUser(userObject, true, true));
 
-                            /* set drawe profile information */
+                            /* Set drawe profile information */
                             setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
 
-
-                            /* user on device is new */
+                            /* User on device is new */
                         } else if (mainObject.getString("state").equals("1")) {
 
-                            /* change values in global DB*/
+                            /* Change values in global DB*/
                             HashMap<String, String> map = new HashMap<>();
                             map.put("image", GlobalFunctions.getBase64FromBytes(currentUser.getImage()));
                             map.put("email", currentUser.getMail());
@@ -1252,33 +1202,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Retrofit retrofit = APIConnector.getRetrofit();
                             APIClient apiInterface = retrofit.create(APIClient.class);
 
-                            /* start a call */
+                            /* Start a call */
                             String base = currentUser.getMail() + ":" + currentUser.getPassword();
                             String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-
-
                             Call<ResponseBody> call2 = apiInterface.updateUser(authString, map);
-
                             call2.enqueue(new Callback<ResponseBody>() {
 
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                                     try {
-                                        /* get jsonString from API */
+                                        /* Get jsonString from API */
                                         String jsonString = response.body().string();
 
-                                        /* parse json */
+                                        /* Parse json */
                                         JSONObject successJSON = new JSONObject(jsonString);
 
                                         if (successJSON.getString("success").equals("0")) {
 
-                                            /* save is Synchronized value as true */
+                                            /* Save is Synchronized value as true */
                                             currentUser.isSynchronised(true);
                                             userDAO.update(currentUser.getId(), currentUser);
-
                                         }
-
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     } catch (JSONException e) {
@@ -1295,7 +1240,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                 } catch (Exception e) {
-                    Log.d(getResources().getString(R.string.app_name) + "-SynchroniseData", "Server Error: " + response.raw().message());
+                    Log.d(getResources().getString(R.string.app_name) + "-SynchronizeData", "Server Error: " + response.raw().message());
                     e.printStackTrace();
                 }
             }
@@ -1307,6 +1252,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    /* Function to synchronize offline records */
     private void synchronizeOfflineRoutes(User currentUser) {
         /* send user timestamp to bb */
         HashMap<String, String> map = new HashMap<>();
@@ -1316,11 +1262,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
-        /* start a call */
+        /* Start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
-        /* get all temp routes */
+        /* Get all temp routes */
         RecordTempDAO recordTempDAO = new RecordTempDAO(this);
         List<Route> recordList = recordTempDAO.readAll();
         LocationTempDAO locationTempDAO = new LocationTempDAO((this));
@@ -1339,26 +1285,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             m.setTimeStamp(recordList.get(i).getTimeStamp());
             m.setLocations(locationTempDAO.readAll(recordList.get(i).getId()));
 
-
             Call<ResponseBody> call = apiInterface.uploadFullTrack(authString, m);
-
             call.enqueue(new Callback<ResponseBody>() {
 
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                    /* get jsonString from API */
+                    /* Get jsonString from API */
                     String jsonString = null;
 
                     try {
                         jsonString = response.body().string();
 
-                        /* parse json */
+                        /* Parse json */
                         JSONObject mainObject = new JSONObject(jsonString);
 
                         if (mainObject.getString("success").equals("0")) {
 
-                            /* save in DB*/
+                            /* Save in DB*/
                             if (mainObject.getJSONObject("record") != null) {
                                 JSONObject recordJSON = mainObject.getJSONObject("record");
 
@@ -1375,14 +1319,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 record.setLocations(recordJSON.getString("locations"));
                                 recordDAO.create(record);
 
-                                /* delete old record */
+                                /* Delete old record */
                                 int tempRecordId = mainObject.getInt("oldId");
                                 record.setId(tempRecordId);
 
-                                /*remove from temp*/
+                                /* Remove from temp*/
                                 recordTempDAO.delete(record);
 
-                                /* refresh page */
+                                /* Refresh page */
                                 Fragment fragmentDashboard = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fDashboard));
                                 Fragment fragmentRecordList = getSupportFragmentManager().findFragmentByTag(getResources().getString(R.string.fRecordlist));
 
@@ -1390,7 +1334,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     loadDashboard(false);
 
                                 } else if (fragmentRecordList != null && fragmentRecordList.isVisible()) {
-
                                     loadRecordList(false);
                                 }
                             }
@@ -1410,10 +1353,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    /* function to synchronize all records */
+    /* Function to synchronize all records */
     public void synchronizeRecords(boolean recordList, boolean loadNothing) {
 
-        /*load view*/
+        /* Load view */
         if (!loadNothing) {
             if (recordList) {
                 loadRecordList(true);
@@ -1422,11 +1365,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        /* get all records routes */
+        /* Get all records routes */
         RouteDAO recordDAO = new RouteDAO(this);
         List<Route> records = recordDAO.readAll();
 
-        /* add maps to result */
+        /* Add maps to result */
         ArrayList<HashMap<String, String>> result = new ArrayList<>();
         for (int i = 0; i < records.size(); i++) {
 
@@ -1440,19 +1383,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
-        /* start a call */
+        /* Start a call */
         User currentUser = userDAO.read(activeUser);
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-
         Call<ResponseBody> call = apiInterface.synchronizeRecords(authString, result);
-
         call.enqueue(new Callback<ResponseBody>() {
 
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                /* get jsonString from API */
+                /* Get jsonString from API */
                 String jsonString = null;
 
                 try {
@@ -1466,10 +1407,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } else {
                         jsonString = response.body().string();
 
-                        /* parse json */
+                        /* Parse json */
                         JSONObject mainObject = new JSONObject(jsonString);
 
-                        /* update records in local db */
+                        /* Update records in local db */
                         if (mainObject.getJSONArray("newerOnServer") != null && mainObject.getJSONArray("newerOnServer").length() > 0) {
 
                             for (int i = 0; i < mainObject.getJSONArray("newerOnServer").length(); i++) {
@@ -1483,7 +1424,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 recordDAO.update(recordId, newRecord);
                             }
                         }
-                        /* save records from server ind db */
+                        /* Save records from server ind db */
                         if (mainObject.getJSONArray("onServer") != null && mainObject.getJSONArray("onServer").length() > 0) {
 
                             JSONArray recordsArray = mainObject.getJSONArray("onServer");
@@ -1502,13 +1443,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 recordDAO.create(record);
                             }
                         }
-                        /* send records to server */
-                        if (mainObject.getJSONArray("missingId") != null && mainObject.getJSONArray("missingId").length() > 0) {
-                            Toast.makeText(MainActivity.getInstance(), "!!!!!!ES KOMMT VOR!!!!",
-                                    Toast.LENGTH_LONG).show();
-                        }
 
-                        /*delete records, that was deleted on server */
+                        /* Delete records, that was deleted on server */
                         if (mainObject.getJSONArray("deletedOnServer") != null && mainObject.getJSONArray("deletedOnServer").length() > 0) {
                             JSONArray deletedIdArray = mainObject.getJSONArray("deletedOnServer");
                             for (int i = 0; i < deletedIdArray.length(); i++) {
@@ -1517,7 +1453,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
                         }
 
-                        /*load view*/
+                        /* Load view */
                         if (!loadNothing) {
                             if (recordList) {
                                 loadRecordList(false);
@@ -1529,7 +1465,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } catch (IOException e) {
                     e.printStackTrace();
 
-                    /*load view*/
+                    /* Load view */
                     if (!loadNothing) {
                         if (recordList) {
                             loadRecordList(false);
@@ -1540,7 +1476,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } catch (JSONException e) {
                     e.printStackTrace();
 
-                    /*load view*/
+                    /* Load view */
                     if (!loadNothing) {
                         if (recordList) {
                             loadRecordList(false);
@@ -1555,7 +1491,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
 
-                /*load view*/
+                /* Load view */
                 if (!loadNothing) {
                     if (recordList) {
                         loadRecordList(false);
@@ -1564,7 +1500,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
             }
-
         });
     }
 }

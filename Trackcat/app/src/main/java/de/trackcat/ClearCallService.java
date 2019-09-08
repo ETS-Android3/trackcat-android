@@ -8,7 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.PersistableBundle;
 
-public class ClearCallService  extends JobService {
+public class ClearCallService extends JobService {
     private static final int JOB_ID = 1;
 
     public static void schedule(Context context, int currentUser) {
@@ -34,17 +34,12 @@ public class ClearCallService  extends JobService {
 
     @Override
     public boolean onStartJob(final JobParameters params) {
-        /* executing a task synchronously */
 
         GlobalFunctions.deleteAllTempRecord(ClosingService.getInstance(), params.getExtras().getInt("currentUser"));
 
         if (true) {
-            // To finish a periodic JobService,
-            // you must cancel it, so it will not be scheduled more.
             ClearCallService.cancel(this);
         }
-
-        // false when it is synchronous.
         return false;
     }
 

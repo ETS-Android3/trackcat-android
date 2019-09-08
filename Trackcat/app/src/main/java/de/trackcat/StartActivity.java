@@ -2,8 +2,6 @@ package de.trackcat;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,16 +10,13 @@ import android.util.Log;
 
 import com.karan.churi.PermissionManager.PermissionManager;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import de.trackcat.Database.DAO.UserDAO;
 import de.trackcat.Database.Models.User;
-import de.trackcat.LogIn.LoadScreenFragment;
 import de.trackcat.LogIn.LogInFragment;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -47,65 +42,60 @@ public class StartActivity extends AppCompatActivity {
         return instance;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /* Fragt nach noch nicht erteilten Permissions */
+        /* Check permission */
         permissionManager.checkAndRequestPermissions(this);
 
         setContentView(R.layout.activity_start);
 
-        /* show loadscreen if necessary */
+        /* Show loadScreen if necessary */
         try {
-
             if (getIntent().getExtras().getBoolean("isLogout")) {
                 delay = 0;
             }
         } catch (Exception e) {
-
         }
 
-        /* set instance */
+        /* Set instance */
         instance = this;
 
-        /* set dao and check if user in db */
+        /* Set dao and check if user in db */
         userDAO = new UserDAO(this);
         userCount = userDAO.userInDB();
 
-        /* get active user */
+        /* Get active user */
         if (userCount > 0) {
 
             List<User> userList = userDAO.readAll();
             User currentUser = userList.get(0);
 
-            /* read profile values from global db */
+            /* Read profile values from global db */
             HashMap<String, String> map = new HashMap<>();
             map.put("id", "" + currentUser.getId());
 
             Retrofit retrofit = APIConnector.getRetrofit();
             APIClient apiInterface = retrofit.create(APIClient.class);
 
-            /* start a call */
+            /* Start a call */
             String base = currentUser.getMail() + ":" + currentUser.getPassword();
             String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-
             Call<ResponseBody> call = apiInterface.getUserById(authString, map);
-
             call.enqueue(new Callback<ResponseBody>() {
 
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     try {
 
-
                         if (response.code() == 401) {
                             fastLogIn = false;
                         } else {
-                            /* get jsonString from API */
+                            /* Get jsonString from API */
                             String jsonString = response.body().string();
-                            /* parse json */
+
+                            /* Parse json */
                             JSONObject userJSON = new JSONObject(jsonString);
                             Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
                             fastLogIn = true;
@@ -132,24 +122,25 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void showLoginPage() {
+
         /* LogIn Screen */
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        /* show login page if no user is logged in */
+                        /* Show login page if no user is logged in */
                         if (userCount == 0 || !fastLogIn) {
                             fragTransaction = getSupportFragmentManager().beginTransaction();
                             fragTransaction.replace(R.id.mainFrame, new LogInFragment(),
                                     getResources().getString(R.string.fLogIn));
                             fragTransaction.commitAllowingStateLoss();
 
-                            /* delete user */
+                            /* Delete user */
                             List<User> deletedUsers = userDAO.readAll();
                             for (User user : deletedUsers) {
                                 userDAO.delete(user);
                             }
 
-                            /* logged user in, if one entry in table */
+                            /* Logged user in, if one entry in table */
                         } else {
                             Intent intent = new Intent(getBaseContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -161,7 +152,6 @@ public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d("tag", "starrrrrrrrrrrrrrrrrrrrrrrrtttttttttttttttttdeeeeeeeeeeeeeeeeeeeeesssssssssssssssstttttttttttttttttttrrrrrrrrrrrrrroooooooyyyyyyyyyyy");
         try {
             progressDialog.dismiss();
         } catch (Exception e) {

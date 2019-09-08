@@ -8,9 +8,7 @@ public class NotificationActionReciever extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        /*
-         * Recieves Message when pause Button in Notification is clicked
-         * */
+        /* Receives Message when pause Button in Notification is clicked */
         String msg = intent.getAction();
         if (msg != null) {
             if (msg.equalsIgnoreCase("ACTION_PAUSE")) {

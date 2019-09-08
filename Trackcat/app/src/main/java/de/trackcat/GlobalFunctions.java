@@ -1,19 +1,11 @@
 package de.trackcat;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.util.Base64;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,14 +13,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,16 +29,12 @@ import de.trackcat.Database.Models.Route;
 import de.trackcat.Database.Models.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static java.security.AccessController.getContext;
-
 public class GlobalFunctions {
 
-
-    /* get string date from millis */
+    /* Get string date from millis */
     public static String getDateFromMillis(long millis, String dateFormat) {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
@@ -57,7 +43,7 @@ public class GlobalFunctions {
         return formatter.format(calendar.getTime());
     }
 
-    /* get string date from millis */
+    /* Get string date from millis */
     public static String getDateFromSeconds(long seconds, String dateFormat) {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 
@@ -66,7 +52,7 @@ public class GlobalFunctions {
         return formatter.format(calendar.getTime());
     }
 
-    /* get string date from millis */
+    /* Get string date from millis */
     public static String getDateWithTimeFromMillis(long millis, String dateFormat) {
 
         Date date = new java.util.Date(millis);
@@ -76,7 +62,7 @@ public class GlobalFunctions {
         return formattedDate;
     }
 
-    /* get string date from millis */
+    /* Get string date from millis */
     public static String getDateWithTimeFromSeconds(long seconds, String dateFormat) {
 
         Date date = new java.util.Date(seconds * 1000);
@@ -86,7 +72,7 @@ public class GlobalFunctions {
         return formattedDate;
     }
 
-    /* get millis from string date */
+    /* Get millis from string date */
     public static long getSecondsFromString(String str_date, String dateFormat) throws ParseException {
 
         DateFormat formatter = new SimpleDateFormat(dateFormat);
@@ -94,7 +80,7 @@ public class GlobalFunctions {
         return date.getTime() / 1000;
     }
 
-    /* get millis from string date */
+    /* Get millis from string date */
     public static long getMillisFromString(String str_date, String dateFormat) throws ParseException {
 
         DateFormat formatter = new SimpleDateFormat(dateFormat);
@@ -103,45 +89,44 @@ public class GlobalFunctions {
     }
 
 
-    /* function to parse an byte to an Base64 String */
+    /* Function to parse an byte to an Base64 String */
     public static String getBase64FromBytes(byte[] bytes) {
         String data = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
         return data;
     }
 
-    /* function to parse an byte to an Base64 String */
+    /* Function to parse an byte to an Base64 String */
     public static byte[] getBytesFromBase64(String base64) {
         byte[] data = android.util.Base64.decode(base64, android.util.Base64.DEFAULT);
         return data;
     }
 
-    /* function to set style of editText */
+    /* Function to set style of editText */
     public static void setNoInformationStyle(TextView t) {
         t.setTextColor(Color.LTGRAY);
         t.setText(MainActivity.getInstance().getResources().getString(R.string.noInformation));
         t.setTypeface(null, Typeface.ITALIC);
     }
 
-    /* function to set style of editText */
+    /* Function to set style of editText */
     public static void resetNoInformationStyle(TextView t, int oldColor) {
-
         t.setTextColor(oldColor);
         t.setTypeface(null, Typeface.NORMAL);
     }
 
+    /* Function to get timeStamp */
     public static long getTimeStamp() {
-
         Long tsLong = System.currentTimeMillis();
         return tsLong;
     }
 
-
+    /* Function to validate password */
     public static boolean validatePassword(TextView passwordTextView, Activity activity) {
 
         boolean valid = true;
         String password = passwordTextView.getText().toString();
 
-        /* validate password */
+        /* Validate password */
         Pattern pattern2 = Pattern.compile(activity.getResources().getString(R.string.rPassword));
         Matcher matcher2 = pattern2.matcher(password);
 
@@ -155,12 +140,13 @@ public class GlobalFunctions {
         return valid;
     }
 
+    /* Function to validate name */
     public static boolean validateName(TextView nameTextView, Activity activity) {
 
         boolean valid = true;
         String input_name = nameTextView.getText().toString();
 
-        /* validate name */
+        /* Validate name */
         Pattern pattern3 = Pattern.compile(activity.getResources().getString(R.string.rName));
         Matcher matcher3 = pattern3.matcher(input_name);
         if (!matcher3.matches()) {
@@ -173,13 +159,13 @@ public class GlobalFunctions {
         return valid;
     }
 
+    /* Function to validate email */
     public static boolean validateEMail(TextView emailTextView, Activity activity) {
-        boolean valid = true;
 
-        /* read inputs */
+        boolean valid = true;
         String input_email = emailTextView.getText().toString();
 
-        /* validate email */
+        /* Validate email */
         Pattern pattern = Pattern.compile(activity.getResources().getString(R.string.rEmail));
         Matcher matcher = pattern.matcher(input_email);
 
@@ -194,13 +180,13 @@ public class GlobalFunctions {
         return valid;
     }
 
+    /* Function to validate two Passwords */
     public static boolean validateTwoPassword(TextView password1TextView, TextView password2TextView, Activity activity) {
-        boolean valid = true;
 
-        /* read inputs */
+        boolean valid = true;
         String input_password1 = password1TextView.getText().toString();
 
-        /* validate password */
+        /* Validate password */
         Pattern pattern2 = Pattern.compile(activity.getResources().getString(R.string.rPassword));
         Matcher matcher2 = pattern2.matcher(input_password1);
 
@@ -216,6 +202,7 @@ public class GlobalFunctions {
         return valid;
     }
 
+    /* Function to find level */
     public static Bitmap findLevel(double distance) {
         int result = 0;
         Bitmap bitmap = null;
@@ -233,6 +220,7 @@ public class GlobalFunctions {
         return bitmap;
     }
 
+    /* Function to create user */
     public static User createUser(JSONObject userObject, boolean updateDrawer, boolean savePassword) throws JSONException {
         User user = new User();
         user.setId(userObject.getInt("id"));
@@ -295,13 +283,13 @@ public class GlobalFunctions {
         } catch (Exception e) {
         }
 
-        if(savePassword) {
+        if (savePassword) {
             user.setPassword(userObject.getString("password"));
         }
         user.setTimeStamp(userObject.getLong("timeStamp"));
         user.isSynchronised(true);
 
-        /* update drawer */
+        /* Update drawer */
         if (updateDrawer) {
             MainActivity.getInstance().setDrawerInfromation(user.getImage(), user.getFirstName(), user.getLastName(), user.getMail());
         }
@@ -309,6 +297,7 @@ public class GlobalFunctions {
         return user;
     }
 
+    /* Function to create records */
     public static void createRecords(JSONArray recordsArray, Activity activity) throws JSONException {
         RouteDAO recordDao = new RouteDAO(activity);
         for (int i = 0; i < recordsArray.length(); i++) {
@@ -327,19 +316,16 @@ public class GlobalFunctions {
         }
     }
 
+    /* Function to delete all temp records (uses when app crashed or removed from taskmanager) */
     public static void deleteAllTempRecord(ClosingService activity, int currentUserId) {
 
-
-
-        /* delete temp from device */
+        /* Delete temp from device */
         RecordTempDAO recordTempDAO = new RecordTempDAO(activity);
         recordTempDAO.deleteAllNotFinished();
 
-        /* delete possible live tracking from server */
+        /* Delete possible live tracking from server */
         UserDAO userDAO = new UserDAO(activity);
         User currentUser = userDAO.read(currentUserId);
-        Log.d("GESCHLOSSEN", "Alles  aus SQLite gelöscht");
-
 
         /* Start a call */
         Retrofit retrofit = APIConnector.getRetrofit();
@@ -347,7 +333,6 @@ public class GlobalFunctions {
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
         Call<ResponseBody> call = apiInterface.abortLiveRecord(authString);
-        Log.d("GESCHLOSSEN", "base: " + base);
 
         Thread thread = new Thread(new Runnable() {
 
@@ -356,38 +341,19 @@ public class GlobalFunctions {
                 try {
                     try {
                         Response<ResponseBody> execute = call.execute();
-                        Log.d("GESCHLOSSEN", "RESPONSE SERVER:"+ execute.toString());
 
                     } catch (Exception e) {
-                        Log.d("GESCHLOSSEN","RESPONSE SERVER ERROR:"+ e.toString());
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-
         thread.start();
-
-
-//        call.enqueue(new Callback<ResponseBody>() {
-//
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                Log.d("GESCHLOSSEN","Antwort");
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                Log.d("GESCHLOSSEN","AntwortFail");
-//                call.cancel();
-//            }
-//        });
     }
 
+    /* Function to hash password */
     public static String hashPassword(String password) {
-        // TODO use for password hash
         String sha_256string = "";
         try {
             MessageDigest digest = java.security.MessageDigest
@@ -395,7 +361,7 @@ public class GlobalFunctions {
             digest.update(password.getBytes());
             byte messageDigest[] = digest.digest();
 
-            // Create Hex String
+            /* Create Hex String */
             StringBuilder hexString = new StringBuilder();
             for (byte aMessageDigest : messageDigest) {
                 String h = Integer.toHexString(0xFF & aMessageDigest);
@@ -403,9 +369,9 @@ public class GlobalFunctions {
                     h = "0" + h;
                 hexString.append(h);
             }
-            sha_256string  = hexString.toString();
+            sha_256string = hexString.toString();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return sha_256string;
