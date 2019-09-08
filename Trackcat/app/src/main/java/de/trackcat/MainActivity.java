@@ -310,17 +310,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        // Register ConnectivityChecker ---> alert on connectivity change
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             ConnectivityChecker cc = new ConnectivityChecker();
 
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-            // filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
             this.registerReceiver(cc, filter);
         }
-
-
-
 
         /* Turn off power saving and battery optimization */
         try {
@@ -455,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setConnection(connected);
 
         /* Startseite festlegen - Erster Aufruf */
-      //  Log.d("HALLO", "restart: " + restarted);
+        //  Log.d("HALLO", "restart: " + restarted);
 
         /* load settings if them changed */
         if (restarted) {
@@ -683,10 +680,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FragmentTransaction fragTransaction = getSupportFragmentManager().beginTransaction();
             this.getSupportFragmentManager().popBackStack();
 
-            if(tag==getResources().getString(R.string.fProfile)){
+            if (tag == getResources().getString(R.string.fProfile)) {
                 this.getSupportFragmentManager().popBackStack();
                 loadProfile(false);
-            }else{
+            } else {
                 fragTransaction.replace(R.id.mainFrame, fragment, tag);
                 fragTransaction.commit();
             }
@@ -1007,7 +1004,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.v(getResources().getString(R.string.app_name) + "-ConnectedListener", String.valueOf(connected));
         setConnection(connected);
 
-       // Toast.makeText(this.getBaseContext(), "NETZ: " + connected,
+        // Toast.makeText(this.getBaseContext(), "NETZ: " + connected,
         //        Toast.LENGTH_SHORT).show();
 
         /* device have connection */
