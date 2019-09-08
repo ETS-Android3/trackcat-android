@@ -323,6 +323,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
     private void createMap() {
 
         /* Set map */
+        mMapView.getOverlays().clear();
         mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
         mMapView.setBuiltInZoomControls(false);
         mMapView.setMultiTouchControls(true);
