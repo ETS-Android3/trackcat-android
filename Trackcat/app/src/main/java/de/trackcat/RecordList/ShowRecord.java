@@ -44,13 +44,6 @@ public class ShowRecord {
             temp.setVisibility(View.INVISIBLE);
         }
 
-        /* Import status */
-        if (records.get(position).isImported()) {
-            importState.setVisibility(View.VISIBLE);
-        } else {
-            importState.setVisibility(View.INVISIBLE);
-        }
-
         /* Show name */
         recordName.setText(records.get(position).getName());
 

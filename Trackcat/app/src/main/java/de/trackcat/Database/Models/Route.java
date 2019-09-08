@@ -9,14 +9,12 @@ public class Route {
      + modifications via getter and setter
      */
     private int id;
-    private int userId;
     private int type;
     private String name;
     private long date;
     private long time;
     private long rideTime;
     private long timeStamp;
-    private boolean isImported;
     private double distance;
     private boolean isTemp;
     private String locations;
@@ -30,7 +28,6 @@ public class Route {
      * Constructor to save route information from database read.
      *
      * @param id        of type integer
-     * @param userId    of type integer
      * @param name      of type string
      * @param time      of type long
      * @param rideTime  of type long
@@ -41,10 +38,10 @@ public class Route {
      * @param isTemp  of type int
      * @param locations  of type string
      */
-    public Route(int id, int userId, String name, long time, long rideTime, double distance,
-                 int type, long date, long timeStamp,int isImported, int isTemp, String locations) {
+    public Route(int id, String name, long time, long rideTime, double distance,
+                 int type, long date, long timeStamp, int isTemp, String locations) {
         this.id = id;
-        this.userId = userId;
+
         this.name = name;
         this.time = time;
         this.rideTime = rideTime;
@@ -52,7 +49,6 @@ public class Route {
         this.timeStamp= timeStamp;
         this.date = date;
         this.type = type;
-        this.setImportedDB(isImported);
         this.setTempDB(isTemp);
         this.locations = locations;
     }
@@ -61,7 +57,6 @@ public class Route {
      * Constructor to save route information from database read.
      *
      * @param id        of type integer
-     * @param userId    of type integer
      * @param name      of type string
      * @param time      of type long
      * @param rideTime  of type long
@@ -71,10 +66,9 @@ public class Route {
      * @param timeStamp  of type long
      * @param isTemp  of type int
      */
-    public Route(int id, int userId, String name, long time, long rideTime, double distance,
-                 int type, long date, long timeStamp,int isImported, int isTemp) {
+    public Route(int id, String name, long time, long rideTime, double distance,
+                 int type, long date, long timeStamp, int isTemp) {
         this.id = id;
-        this.userId = userId;
         this.name = name;
         this.time = time;
         this.rideTime = rideTime;
@@ -82,7 +76,6 @@ public class Route {
         this.timeStamp= timeStamp;
         this.date = date;
         this.type = type;
-        this.setImportedDB(isImported);
         this.setTempDB(isTemp);
     }
 
@@ -102,24 +95,6 @@ public class Route {
      */
     public void setId(int id) {
         this.id = id;
-    }
-
-    /**
-     * Getter for the user id.
-     *
-     * @return value of type integer
-     */
-    public int getUserId() {
-        return this.userId;
-    }
-
-    /**
-     * Setter for the user id.
-     *
-     * @param userId of type integer
-     */
-    public void setUserID(int userId) {
-        this.userId = userId;
     }
 
     /**
@@ -247,70 +222,6 @@ public class Route {
      */
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
-    }
-
-    /**
-     * Getter for import flag.
-     *
-     * @return value of type boolean
-     *
-     * <p>
-     * Returns true if the route is imported or false if it isn't.
-     * </p>
-     */
-    public boolean isImported() {
-        return isImported;
-    }
-
-    /**
-     * Setter for import flag.
-     *
-     * @param isImported of type integer
-     *
-     *                   <p>
-     *                   Hand over true to define that the route is imported or false to define that it isn't.
-     *                   </p>
-     */
-    public void setImported(boolean isImported) {
-        this.isImported = isImported;
-    }
-
-    /**
-     * Getter to define if route is imported or not for database storage purposes.
-     *
-     * @return value of type integer
-     *
-     * <p>
-     * Integer value is necessary due to SQLite Database constraint.
-     * SQLite does not implement boolean values natively as true or false but only as integer.
-     * </p>
-     * <p>
-     * Returns "1" if the route is imported or "0" if it isn't.
-     * </p>
-     */
-    public int isImportedDB() {
-        if (isImported) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Getter to define if route is imported or not for database storage purposes.
-     *
-     * @param isImported value of type integer
-     *
-     *                   <p>
-     *                   Integer value is necessary due to SQLite Database constraint.
-     *                   SQLite does not implement boolean values natively as true or false but only as integer.
-     *                   </p>
-     *                   <p>
-     *                   Hand over "1" to define that the route is imported or "0" to define that it isn't.
-     *                   </p>
-     */
-    public void setImportedDB(int isImported) {
-        this.isImported = isImported == 1;
     }
 
     /**

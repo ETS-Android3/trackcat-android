@@ -564,7 +564,6 @@ public class RecordFragment extends Fragment implements SensorEventListener {
             model.setDistance(kmCounter.getAmount());
             int type = SpeedAverager.getRouteType(kmhAverager.getAvgSpeed());
             model.setType(type);
-            model.setUserID(MainActivity.getActiveUser());
             model.setDate(System.currentTimeMillis());
             model.setTemp(true);
             Date currentTime = Calendar.getInstance().getTime();

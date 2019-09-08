@@ -17,7 +17,6 @@ final class DbContract {
     static final String SQL_CREATE_ROUTE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + RouteEntry.TABLE_NAME + " ( " +
                     RouteEntry.COL_ID + " INTEGER PRIMARY KEY, " +
-                    RouteEntry.COL_USER + " INTEGER, " +
                     RouteEntry.COL_NAME + " TEXT, " +
                     RouteEntry.COL_TIME + " LONG, " +
                     RouteEntry.COL_DATE + " LONG, " +
@@ -26,7 +25,6 @@ final class DbContract {
                     RouteEntry.COL_DISTANCE + " DOUBLE, " +
                     RouteEntry.COL_TIMESTAMP + " LONG, " +
                     RouteEntry.COL_ISTEMP + " BOOLEAN, " +
-                    RouteEntry.COL_ISIMPORTED + " BOOLEAN, " +
                     RouteEntry.COL_LOCATIONS + " TEXT) ";
 
     static final String SQL_DELETE_ROUTE_TABLE = "DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME;
@@ -35,7 +33,6 @@ final class DbContract {
     static final String SQL_CREATE_RECORD_TEMP_TABLE =
             "CREATE TABLE IF NOT EXISTS " + RecordTempEntry.TABLE_NAME + " ( " +
                     RecordTempEntry.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    RecordTempEntry.COL_USER + " INTEGER, " +
                     RecordTempEntry.COL_NAME + " TEXT, " +
                     RecordTempEntry.COL_TIME + " LONG, " +
                     RecordTempEntry.COL_DATE + " LONG, " +
@@ -43,7 +40,6 @@ final class DbContract {
                     RecordTempEntry.COL_RIDETIME + " LONG, " +
                     RecordTempEntry.COL_DISTANCE + " DOUBLE, " +
                     RecordTempEntry.COL_TIMESTAMP + " LONG, " +
-                    RecordTempEntry.COL_ISIMPORTED + " BOOLEAN, " +
                     RecordTempEntry.COL_ISTEMP + " BOOLEAN, " +
                     RecordTempEntry.COL_LOCATIONS + " TEXT) ";
 
@@ -94,7 +90,6 @@ final class DbContract {
 
         static final String TABLE_NAME = "record_table";
         static final String COL_ID = "id";
-        static final String COL_USER = "fk_user_id";
         static final String COL_NAME = "name";
         static final String COL_TIME = "time";
         static final String COL_DATE = "date";
@@ -103,7 +98,6 @@ final class DbContract {
         static final String COL_DISTANCE = "distance";
         static final String COL_LOCATIONS = "locations";
         static final String COL_TIMESTAMP = "timestamp";
-        static final String COL_ISIMPORTED = "imported";
         static final String COL_ISTEMP = "temp";
     }
 
@@ -114,7 +108,6 @@ final class DbContract {
 
         static final String TABLE_NAME = "record_temp_table";
         static final String COL_ID = "id";
-        static final String COL_USER = "fk_user_id";
         static final String COL_NAME = "name";
         static final String COL_TIME = "time";
         static final String COL_DATE = "date";
@@ -123,7 +116,6 @@ final class DbContract {
         static final String COL_DISTANCE = "distance";
         static final String COL_LOCATIONS = "locations";
         static final String COL_TIMESTAMP = "timestamp";
-        static final String COL_ISIMPORTED = "imported";
         static final String COL_ISTEMP = "temp";
     }
 
