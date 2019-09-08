@@ -83,7 +83,6 @@ final class DbContract {
                     UserEntry.COL_TOTALTIME + " LONG, " +
                     UserEntry.COL_TOTALDISTANCE + " LONG, " +
                     UserEntry.COL_TIMESTAMP + " LONG, " +
-                    UserEntry.COL_ISSYNCHRONIZED + " BOOLEAN, " +
                     UserEntry.COL_IMAGE + " BLOB) ";
 
     static final String SQL_DELETE_USER_TABLE = "DROP TABLE IF EXISTS " + UserEntry.TABLE_NAME;
@@ -166,7 +165,6 @@ final class DbContract {
         static final String COL_TOTALTIME = "totalTime";
         static final String COL_TOTALDISTANCE = "totalDistance";
         static final String COL_TIMESTAMP = "timeStamp";
-        static final String COL_ISSYNCHRONIZED = "isSynchronized";
         static final String COL_IMAGE = "image";
     }
 }

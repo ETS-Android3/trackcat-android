@@ -25,7 +25,6 @@ public class User {
     private long totalTime;
     private long totalDistance;
     private long timeStamp;
-    private boolean isSynchronized;
     private byte[] image;
 
     /**
@@ -49,11 +48,10 @@ public class User {
      * @param dateOfRegistration of type long
      * @param lastLogin          of type long
      * @param timeStamp          of type long
-     * @param isSynchronized     of type integer
      */
     public User(int id, String firstName, String lastName, int hintsActive,
                 int themeActive, String eMail, String password, float weight, float size, int gender, long dateOfBirth,
-                long dateOfRegistration, long lastLogin, long amountRecord, long totalTime, long totalDistance, long timeStamp, byte[] image, int isSynchronized) {
+                long dateOfRegistration, long lastLogin, long amountRecord, long totalTime, long totalDistance, long timeStamp, byte[] image) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -70,7 +68,6 @@ public class User {
         this.totalDistance = totalDistance;
         this.timeStamp = timeStamp;
         this.image = image;
-        this.setIsSynchronizedDB(isSynchronized);
         this.setDarkThemeActiveDB(themeActive);
         this.setHintsActiveDB(hintsActive);
     }
@@ -233,63 +230,6 @@ public class User {
      */
     public void setGender(int gender) {
         this.gender = gender;
-    }
-
-
-    /**
-     * Getter for isSynchronized.
-     *
-     * @return value of type boolean
-     */
-    public boolean getSynchronized() {
-        return isSynchronized;
-    }
-
-    /**
-     * Getter to define isSynchronized.
-     *
-     * @return value of type integer
-     *
-     * <p>
-     * Integer value is necessary due to SQLite Database constraint. SQLite does not implement
-     * boolean values natively as true or false but only as integer.
-     * </p>
-     * <p>
-     * Returns "1" if the user is currently the active one or "0" if it isn't.
-     * </p>
-     */
-    public int isSynchronizedDB() {
-        if (isSynchronized)
-            return 1;
-        else
-            return 0;
-    }
-
-    /**
-     * Setter for the gender.
-     *
-     * @param isSynchronized of type boolean
-     */
-    public void isSynchronised(boolean isSynchronized) {
-        this.isSynchronized = isSynchronized;
-    }
-
-    /**
-     * Setter to define gender.
-     *
-     * @param isSynchronized of type integer
-     *
-     *                       <p>
-     *                       Integer value is necessary due to SQLite Database constraint. SQLite does not implement
-     *                       boolean values natively as true or false but only as integer.
-     *                       </p>
-     *                       <p>
-     *                       Hand over "1" to define that the user is currently the active one or "0"
-     *                       to define that it isn't.
-     *                       </p>
-     */
-    public void setIsSynchronizedDB(int isSynchronized) {
-        this.isSynchronized = isSynchronized == 1;
     }
 
     /**

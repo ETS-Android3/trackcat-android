@@ -287,7 +287,6 @@ public class GlobalFunctions {
             user.setPassword(userObject.getString("password"));
         }
         user.setTimeStamp(userObject.getLong("timeStamp"));
-        user.isSynchronised(true);
 
         /* Update drawer */
         if (updateDrawer) {

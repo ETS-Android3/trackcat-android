@@ -147,7 +147,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         /* Update user in local db */
         currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
-        currentUser.isSynchronised(false);
         dao.update(MainActivity.getActiveUser(), currentUser);
 
         /* Change values in global DB*/
@@ -176,7 +175,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                     if (successJSON.getString("success").equals("0")) {
 
                         /* Save is Synchronized value as true */
-                        currentUser.isSynchronised(true);
                         dao.update(currentUser.getId(), currentUser);
                     }
 

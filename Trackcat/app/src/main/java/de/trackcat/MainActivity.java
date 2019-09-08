@@ -1221,7 +1221,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         if (successJSON.getString("success").equals("0")) {
 
                                             /* Save is Synchronized value as true */
-                                            currentUser.isSynchronised(true);
                                             userDAO.update(currentUser.getId(), currentUser);
                                         }
                                     } catch (IOException e) {

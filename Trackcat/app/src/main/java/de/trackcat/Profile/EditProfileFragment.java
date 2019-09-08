@@ -411,7 +411,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                         /* Change values in local DB */
                         currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
-                        currentUser.isSynchronised(false);
                         userDAO.update(currentUser.getId(), currentUser);
 
                         /* Change values in global DB*/
@@ -442,7 +441,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                         if (successJSON.getString("success").equals("0")) {
 
                                             /* Save is Synchronized value as true */
-                                            currentUser.isSynchronised(true);
                                             userDAO.update(currentUser.getId(), currentUser);
 
                                             /* Set btn enable */
