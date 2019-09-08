@@ -201,20 +201,24 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
                             friendList.add(friend);
                         }
 
-                        /* Add entrys to view */
-                        adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false, false, false);
                         ListView friendListView = view.findViewById(R.id.friend_list);
-                        friendListView.setAdapter(adapter);
 
                         /* Load more if backpress */
                         if (page != maxPage) {
                             showFriends(find, true, friendList);
                         } else {
 
+                            /* Add entrys to view */
+                            adapter = new FriendListAdapter(MainActivity.getInstance(), friendList, false, false, false, false, false);
+
+                            friendListView.setAdapter(adapter);
+
                             if (!backPress && loadMore) {
                                 friendListView.setSelection((page - 1) * 10);
+                                adapter.setShowToast(true);
                             } else {
                                 friendListView.setSelection(MainActivity.getSearchFriendPageIndex());
+                                adapter.setShowToast(false);
                             }
                         }
 

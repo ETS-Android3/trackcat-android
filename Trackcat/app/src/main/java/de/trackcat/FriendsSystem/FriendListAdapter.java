@@ -92,7 +92,10 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
             /* Last item */
             if (friends.size() % 10 == 0 && position == friends.size() - 1 && !liveFriend) {
-                if (convertView == null) {
+
+                FriendsFragment.showFriends(MainActivity.getSearchFriendTerm(), true, friends);
+
+           /*     if (convertView == null) {
                     view = inflater.inflate(R.layout.friend_list_last_item, parent, false);
                 } else {
                     view = convertView;
@@ -102,12 +105,18 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                 loadMore.setOnClickListener(this);
 
                 /* Item between */
-            } else {
-                if (convertView == null) {
-                    view = inflater.inflate(R.layout.friend_list_item, parent, false);
-                } else {
-                    view = convertView;
+          //  } else {
+
+                if (showToast) {
+                    Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendLoadMore), Toast.LENGTH_SHORT).show();
                 }
+
+            }
+
+            if (convertView == null) {
+                view = inflater.inflate(R.layout.friend_list_item, parent, false);
+            } else {
+                view = convertView;
             }
 
             /* Set variables */
