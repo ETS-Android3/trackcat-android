@@ -84,7 +84,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     CircleImageView imageUpload;
     RelativeLayout loadEditProfile;
 
-    /* checkChange Variables */
+    /* CheckChange Variables */
     boolean imageChanged, changedUser;
     float old_size, old_weight;
     long old_dateOfBirth;
@@ -97,7 +97,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
 
-        /* read variables */
+        /* Read variables */
         firstName = view.findViewById(R.id.input_firstName);
         lastName = view.findViewById(R.id.input_lastName);
         gender = view.findViewById(R.id.input_gender);
@@ -110,42 +110,42 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         imageUpload = view.findViewById(R.id.profile_image_upload);
         loadEditProfile = view.findViewById(R.id.loadScreen);
 
-        /* check changed values */
+        /* Check changed values */
         imageChanged = false;
         changedUser = false;
 
-        /* set onClick Listener */
+        /* Set onClick Listener */
         btnSave.setOnClickListener(this);
         dayOfBirth.setOnClickListener(this);
         size.setOnClickListener(this);
         weight.setOnClickListener(this);
         imageUpload.setOnClickListener(this);
 
-        /* load user */
+        /* Load user */
         loadUser();
 
         return view;
     }
 
-    /* function to load userdata */
+    /* Function to load userdata */
     private void loadUser() {
 
-        /* set button enable= false and show loadscreen */
+        /* Set button enable= false and show loadscreen */
         setButtonDisable();
         loadEditProfile.setVisibility(View.VISIBLE);
 
-        /* get current user */
+        /* Get current user */
         userDAO = new UserDAO(MainActivity.getInstance());
         currentUser = userDAO.read(MainActivity.getActiveUser());
 
-        /* read profile values from global db */
+        /* Read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
         map.put("id", "" + currentUser.getId());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
-        /* start a call */
+        /* Start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
         Call<ResponseBody> call = apiInterface.getUserById(authString, map);
@@ -159,14 +159,14 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     if (response.code() == 401) {
                         MainActivity.getInstance().showNotAuthorizedModal(1);
                     } else {
-                        /* get jsonString from API */
+                        /* Get jsonString from API */
                         String jsonString = response.body().string();
 
-                        /* parse json */
+                        /* Parse json */
                         JSONObject userJSON = new JSONObject(jsonString);
                         Log.d(getResources().getString(R.string.app_name) + "-EditProfileInformation", "Edit-Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
 
-                        /* check values an show  */
+                        /* Check values an show  */
                         byte[] image = null;
 
                         try {
@@ -208,7 +208,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
 
-                /* read values from local DB */
+                /* Read values from local DB */
                 old_firstName = currentUser.getFirstName();
                 old_lastName = currentUser.getLastName();
                 old_dateOfBirth = currentUser.getDateOfBirth();
@@ -217,23 +217,21 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 old_gender = currentUser.getGender();
                 setProfileValues(old_firstName, old_lastName, old_dateOfBirth, old_size, old_weight, old_gender, currentUser.getImage());
                 Log.d(getResources().getString(R.string.app_name) + "-EditProfileInformation", "ERROR: " + t.getMessage());
-
             }
         });
     }
 
-
-    /* function to set profile values */
+    /* Function to set profile values */
     private void setProfileValues(String user_firstName, String user_lastName, long user_dayOfBirth, float user_size, float user_weight, int user_gender, byte[] user_image) {
 
-        /* set Drawer Menu */
+        /* Set Drawer Menu */
         MainActivity.getInstance().setDrawerInfromation(user_image, user_firstName, user_lastName, currentUser.getMail());
 
-        /* set first and lastname */
+        /* Set first and lastName */
         firstName.setText(user_firstName);
         lastName.setText(user_lastName);
 
-        /* set weight */
+        /* Set weight */
         if (user_weight != 0) {
             String string1 = ("" + user_weight).replace('.', ',');
             weight.setText("" + string1);
@@ -243,7 +241,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             label_unit_weight.setVisibility(View.GONE);
         }
 
-        /* set size */
+        /* Set size */
         if (user_size != 0) {
             String string2 = ("" + user_size).replace('.', ',');
             size.setText("" + string2);
@@ -253,7 +251,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             label_unit_size.setVisibility(View.GONE);
         }
 
-        /* set gender */
+        /* Set gender */
         switch (user_gender) {
             case 0:
                 gender.check(R.id.radioFemale);
@@ -263,7 +261,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 break;
         }
 
-        /*set dayOfBirth*/
+        /* Set dayOfBirth */
         if (user_dayOfBirth != 0) {
             String curDateString = GlobalFunctions.getDateFromMillis(user_dayOfBirth, "dd.MM.yyyy");
             dayOfBirth.setText(curDateString);
@@ -271,7 +269,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             GlobalFunctions.setNoInformationStyle(dayOfBirth);
         }
 
-        /* set profile image */
+        /* Set profile image */
         byte[] imgRessource = user_image;
         Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.default_profile);
         if (imgRessource != null && imgRessource.length > 0) {
@@ -279,15 +277,15 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         }
         imageUpload.setImageBitmap(bitmap);
 
-        /* remove loadscreen */
+        /* Remove loadScreen */
         loadEditProfile.setVisibility(View.GONE);
 
-        /* set btn enable */
+        /* Set btn enable */
         setButtonEnable();
 
-        /* show toast if user was changed */
+        /* Show toast if user was changed */
         if (changedUser) {
-            /* UI-Meldung */
+            /* UI-Message */
             if (MainActivity.getHints()) {
                 Toast.makeText(getContext(), getResources().getString(R.string.saveProfileSuccess), Toast.LENGTH_LONG).show();
             }
@@ -301,14 +299,14 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             case R.id.btn_save:
                 setButtonDisable();
 
-                /* Inputfelder auslesen */
+                /* Read inputs */
                 String input_firstName = firstName.getText().toString();
                 String input_lastName = lastName.getText().toString();
                 String input_weight = weight.getText().toString();
                 String input_height = size.getText().toString();
                 String input_dayOfBirth = dayOfBirth.getText().toString();
 
-                /* get selected gender */
+                /* Get selected gender */
                 int input_gender_id = gender.getCheckedRadioButtonId();
                 int gender;
                 switch (input_gender_id) {
@@ -323,12 +321,12 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         break;
                 }
 
-                /* check if all fields are filled and  validate inputs*/
+                /* Check if all fields are filled and  validate inputs*/
                 boolean validFirstName = GlobalFunctions.validateName(firstName, MainActivity.getInstance());
                 boolean validLastName = GlobalFunctions.validateName(lastName, MainActivity.getInstance());
                 if (validFirstName && validLastName) {
 
-                    /* parse values */
+                    /* Parse values */
                     if (input_height.equals(getResources().getString(R.string.noInformation))) {
                         input_height = "0";
                     } else {
@@ -352,7 +350,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         }
                     }
 
-                    /* check if values have changed */
+                    /* Check if values have changed */
                     boolean changes = false;
                     HashMap<String, String> map = new HashMap<>();
                     String base = currentUser.getMail() + ":" + currentUser.getPassword();
@@ -360,7 +358,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                     if (imageChanged) {
 
-                        /* parse imageView into bytes */
+                        /* Parse imageView into bytes */
                         ImageView imageView = view.findViewById(R.id.profile_image_upload);
                         Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
                         bitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
@@ -410,18 +408,19 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     }
 
                     if (changes) {
-                        /* change values in local DB */
+
+                        /* Change values in local DB */
                         currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
                         currentUser.isSynchronised(false);
                         userDAO.update(currentUser.getId(), currentUser);
 
-                        /* change values in global DB*/
+                        /* Change values in global DB*/
                         map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
 
                         Retrofit retrofit = APIConnector.getRetrofit();
                         APIClient apiInterface = retrofit.create(APIClient.class);
 
-                        /* start a call */
+                        /* Start a call */
                         Call<ResponseBody> call = apiInterface.updateUser(authString, map);
 
                         call.enqueue(new Callback<ResponseBody>() {
@@ -434,32 +433,32 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                                     if (response.code() == 401) {
                                         MainActivity.getInstance().showNotAuthorizedModal(1);
                                     } else {
-                                        /* get jsonString from API */
+                                        /* Get jsonString from API */
                                         String jsonString = response.body().string();
 
-                                        /* parse json */
+                                        /* Parse json */
                                         JSONObject successJSON = new JSONObject(jsonString);
 
                                         if (successJSON.getString("success").equals("0")) {
 
-                                            /* save is Synchronized value as true */
+                                            /* Save is Synchronized value as true */
                                             currentUser.isSynchronised(true);
                                             userDAO.update(currentUser.getId(), currentUser);
 
-                                            /* set btn enable */
+                                            /* Set btn enable */
                                             setButtonEnable();
 
-                                            /* load user */
+                                            /* Load user */
                                             loadUser();
 
-                                            /* set change variable */
+                                            /* Set change variable */
                                             changedUser = true;
                                         } else if (successJSON.getString("success").equals("1")) {
 
-                                            /* set btn enable */
+                                            /* Set btn enable */
                                             setButtonEnable();
 
-                                            /* set Toast */
+                                            /* Set Toast */
                                             if (MainActivity.getHints()) {
                                                 Toast.makeText(getContext(), getResources().getString(R.string.editProfilUnknownError), Toast.LENGTH_LONG).show();
                                             }
@@ -476,32 +475,33 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-                                /* set btn enable */
+                                /* Set btn enable */
                                 setButtonEnable();
 
-                                /* load user */
+                                /* Load user */
                                 loadUser();
 
-                                /* set change variable */
+                                /* Set change variable */
                                 changedUser = true;
 
                                 call.cancel();
                             }
                         });
 
-                        /* update drawer */
+                        /* Update drawer */
                         MainActivity.getInstance().setDrawerInfromation(currentUser.getImage(), currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail());
 
                     } else {
-                        /* UI-Meldung */
+                        /* UI-Message */
                         if (MainActivity.getHints()) {
                             Toast.makeText(getContext(), getResources().getString(R.string.editProfileNoChanges), Toast.LENGTH_LONG).show();
                         }
-                        /* set btn enable */
+
+                        /* Set btn enable */
                         setButtonEnable();
                     }
                 } else {
-                    /* set btn enable */
+                    /* Set btn enable */
                     setButtonEnable();
                     if (MainActivity.getHints()) {
                         Toast.makeText(getContext(), getResources().getString(R.string.tFillAllFields), Toast.LENGTH_LONG).show();
@@ -511,40 +511,40 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.profile_image_upload:
 
-                /* create intents */
-                Intent pickPhoto = new Intent();//Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                /* Create intents */
+                Intent pickPhoto = new Intent();
                 pickPhoto.setAction(Intent.ACTION_GET_CONTENT);
                 pickPhoto.setType("image/*");
                 Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                /*  Add them to a list */
+                /* Add them to a list */
                 List<Intent> intentList = new ArrayList<>();
                 intentList.add(pickPhoto);
                 intentList.add(takePicture);
 
-                /* create chooser */
+                /* Create chooser */
                 Intent chooserIntent = null;
                 chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),
                         getContext().getString(R.string.selectImage));
                 chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
 
-                /* startActivityForResult */
+                /* StartActivityForResult */
                 startActivityForResult(chooserIntent, READ_REQUEST_CODE);
 
                 break;
             case R.id.input_dayOfBirth:
                 int day, month, year;
-                /*if no inputs, choose current date*/
+                /* If no inputs, choose current date */
                 if (dayOfBirth.getText().toString().equals(getResources().getString(R.string.noInformation))) {
                     final Calendar cldr = Calendar.getInstance();
                     day = cldr.get(Calendar.DAY_OF_MONTH);
                     month = cldr.get(Calendar.MONTH);
                     year = cldr.get(Calendar.YEAR);
                 } else {
-                    /* get old values */
+                    /* Get old values */
                     String[] dayOfBirthValues = dayOfBirth.getText().toString().split("\\.");
 
-                    /* set datepicker an set value in field */
+                    /* Set datePicker an set value in field */
                     day = Integer.parseInt(dayOfBirthValues[0]);
                     month = Integer.parseInt(dayOfBirthValues[1]) - 1;
                     year = Integer.parseInt(dayOfBirthValues[2]);
@@ -554,13 +554,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                /* get current date */
+                                /* Get current date */
                                 final Calendar cldr = Calendar.getInstance();
                                 int currentDay = cldr.get(Calendar.DAY_OF_MONTH);
                                 int currentMonth = cldr.get(Calendar.MONTH) + 1;
                                 int currentYear = cldr.get(Calendar.YEAR);
 
-                                /* check if dayOfBirth in future */
+                                /* Check if dayOfBirth in future */
                                 if (year > currentYear) {
                                     if (MainActivity.getHints()) {
                                         Toast.makeText(getContext(), getResources().getString(R.string.birthdayInFuture), Toast.LENGTH_SHORT).show();
@@ -592,22 +592,23 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.input_size:
 
-                /* create AlertBox */
+                /* Create AlertBox */
                 alert = new AlertDialog.Builder(getContext());
                 alert.setTitle("Größe festlegen");
                 layoutInflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 alertView = layoutInflater != null ? layoutInflater.inflate(R.layout.fragment_numberpicker, null, true) : null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     String[] heightValues;
-                    /*if no inputs, choose 0,0*/
+
+                    /* If no inputs, choose 0,0 */
                     if (size.getText().toString().equals(getResources().getString(R.string.noInformation))) {
                         heightValues = new String[]{"0", "0"};
                     } else {
-                        /* get old values */
+                        /* Get old values */
                         heightValues = size.getText().toString().split(",");
                     }
 
-                    /* set max, min and unit */
+                    /* Set max, min and unit */
                     alert.setView(alertView);
                     NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                     numberPickerInteger.setMinValue(0);
@@ -650,7 +651,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
             case R.id.input_weight:
 
-                /* create AlertBox */
+                /* Create AlertBox */
                 alert = new AlertDialog.Builder(getContext());
                 alert.setTitle("Gewicht festlegen");
                 layoutInflater = (LayoutInflater) Objects.requireNonNull(getContext()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -658,15 +659,15 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     String[] weightValues;
 
-                    /*if no inputs, choose 0,0*/
+                    /* If no inputs, choose 0,0 */
                     if (weight.getText().toString().equals(getResources().getString(R.string.noInformation))) {
                         weightValues = new String[]{"0", "0"};
                     } else {
-                        /* get old values */
+                        /* Get old values */
                         weightValues = weight.getText().toString().split(",");
                     }
 
-                    /* set max, min and unit */
+                    /* Set max, min and unit */
                     alert.setView(alertView);
                     NumberPicker numberPickerInteger = alertView.findViewById(R.id.numberPickerInteger);
                     numberPickerInteger.setMinValue(0);
@@ -718,7 +719,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 if (MainActivity.getHints()) {
                     Toast.makeText(getContext(), getResources().getString(R.string.ucrop_selectImage), Toast.LENGTH_SHORT).show();
 
-                    /* crop image */
+                    /* Crop image */
                     beginCrop(resultData.getData());
                 }
 
@@ -731,7 +732,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             }
         } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
 
-            /* set image in imageView */
+            /* Set image in imageView */
             imageUpload.setImageURI(null);
             imageUpload.setImageURI(UCrop.getOutput(resultData));
         }
@@ -739,31 +740,31 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
     private void beginCrop(Uri source) {
 
-        /* set destination */
+        /* Set destination */
         Uri destination = Uri.fromFile(new File(getContext().getCacheDir(), "cropped"));
 
-        /* get Theme colors */
+        /* Get Theme colors */
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
 
-        /* color Primary */
+        /* Color Primary */
         theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true);
         TypedArray arr = getActivity().obtainStyledAttributes(typedValue.data, new int[]{android.R.attr.colorPrimary});
         int primaryColor = arr.getColor(0, -1);
 
-        /* color Secondary */
+        /* Color Secondary */
         theme.resolveAttribute(android.R.attr.statusBarColor, typedValue, true);
         TypedArray arr2 = getActivity().obtainStyledAttributes(typedValue.data, new int[]{android.R.attr.statusBarColor});
         int secondaryColor = arr2.getColor(0, -1);
 
-        /* text color primary */
+        /* Text color primary */
         theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
         TypedArray arr3 =
                 getActivity().obtainStyledAttributes(typedValue.data, new int[]{
                         android.R.attr.textColorPrimary});
         int textColorPrimary = arr3.getColor(0, -1);
 
-        /* set crop options */
+        /* Set crop options */
         UCrop.Options options = new UCrop.Options();
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
         options.setAllowedGestures(UCropActivity.SCALE, UCropActivity.NONE, UCropActivity.NONE);
@@ -772,7 +773,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         options.setStatusBarColor(secondaryColor);
         options.setShowCropGrid(true);
 
-        /* crop image */
+        /* Crop image */
         UCrop.of(source, destination)
                 .withAspectRatio(1, 1)
                 .withOptions(options)
@@ -781,7 +782,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 .start(getActivity(), this, UCrop.REQUEST_CROP);
     }
 
-    /* functions to enable/disable button */
+    /* Functions to enable/disable button */
     private void setButtonEnable() {
         btnSave.setEnabled(true);
         btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));

@@ -40,7 +40,7 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
 
         View view = inflater.inflate(R.layout.fragment_edit_password, container, false);
 
-        /* get fields */
+        /* Get fields */
         currentPassword = view.findViewById(R.id.input_currentPassword);
         password1 = view.findViewById(R.id.input_password1);
         password2 = view.findViewById(R.id.input_password2);
@@ -48,7 +48,7 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
 
         btnSave.setOnClickListener(this);
 
-        /* get current User from DB*/
+        /* Get current User from DB*/
         userDAO = new UserDAO(MainActivity.getInstance());
 
         return view;
@@ -59,36 +59,35 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
             case R.id.btn_save:
 
-                /* change button */
+                /* Change button */
                 setButtonDisable();
 
-                /* Inputfelder auslesen */
+                /* Read inputs */
                 String input_currentPassword = currentPassword.getText().toString();
                 String input_password1 = password1.getText().toString();
                 String input_password2 = password2.getText().toString();
 
-                /* validate password */
+                /* Validate password */
                 boolean checkCurrentPassword = GlobalFunctions.validatePassword(currentPassword, MainActivity.getInstance());
                 boolean checkPassword1 = GlobalFunctions.validatePassword(password1, MainActivity.getInstance());
                 boolean checkPassword2 = GlobalFunctions.validatePassword(password2, MainActivity.getInstance());
                 if (checkCurrentPassword && checkPassword1 && checkPassword2) {
 
-                    /* check if passwords are equals */
+                    /* Check if passwords are equals */
                     if (input_password1.equals(input_password2)) {
 
                         currentUser = userDAO.read(MainActivity.getActiveUser());
 
-                        /* send inputs to server */
+                        /* Send inputs to server */
                         Retrofit retrofit = APIConnector.getRetrofit();
                         APIClient apiInterface = retrofit.create(APIClient.class);
                         String base = currentUser.getMail() + ":" + GlobalFunctions.hashPassword(input_currentPassword);
                         HashMap<String, String> map = new HashMap<>();
                         String password = GlobalFunctions.hashPassword(input_password2);
-                        map.put("newPw",password);
+                        map.put("newPw", password);
                         map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
 
-                        // TODO hashsalt Password
-                        /* start a call */
+                        /* Start a call */
                         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
                         Call<ResponseBody> call = apiInterface.changeUserPassword(authString, map);
 
@@ -101,15 +100,15 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
                                     if (response.code() == 401) {
                                         MainActivity.getInstance().showNotAuthorizedModal(10);
                                     } else {
-                                        /* get jsonString from API */
+                                        /* Get jsonString from API */
                                         String jsonString = response.body().string();
 
-                                        /* parse json */
+                                        /* Parse json */
                                         JSONObject mainObject = new JSONObject(jsonString);
-                                        /*  if change password success*/
+                                        /*  If change password success*/
                                         if (mainObject.getString("success").equals("0")) {
 
-                                            /* change password in local DB */
+                                            /* Change password in local DB */
                                             changePasswordInLokalDB(password);
                                         } else if (mainObject.getString("success").equals("1")) {
 
@@ -118,15 +117,14 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
                                             }
                                         }
                                     }
-                                    /* old password not correct */
                                 } catch (Exception e) {
 
-                                    /* set btn enable */
+                                    /* Set btn enable */
                                     setButtonEnable();
                                 }
                             }
 
-                            /* no internet connection */
+                            /* No internet connection */
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
@@ -134,7 +132,6 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
 
                                 /* set btn enable */
                                 setButtonEnable();
-
                                 call.cancel();
                             }
                         });
@@ -143,34 +140,34 @@ public class EditPasswordFragment extends Fragment implements View.OnClickListen
                         if (MainActivity.getHints()) {
                             Toast.makeText(getContext(), getResources().getString(R.string.tErrorPasswordNotIdentical), Toast.LENGTH_LONG).show();
                         }
-                        /* set btn enable */
+                        /* Set btn enable */
                         setButtonEnable();
                     }
                 } else {
 
-                    /* set btn enable */
+                    /* Set btn enable */
                     setButtonEnable();
                 }
                 break;
         }
     }
 
-    /* function to change password in DB */
+    /* Function to change password in DB */
     private void changePasswordInLokalDB(String password) {
         currentUser.setPassword(password);
         currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
         userDAO.update(currentUser.getId(), currentUser);
 
-        /* set btn enable */
+        /* Set btn enable */
         setButtonEnable();
 
-        /* UI-Meldung */
+        /* UI-Message */
         if (MainActivity.getHints()) {
             Toast.makeText(getContext(), getResources().getString(R.string.tSuccessChangePassword), Toast.LENGTH_LONG).show();
         }
     }
 
-    /* functions to enable/disable button */
+    /* Functions to enable/disable button */
     private void setButtonEnable() {
         btnSave.setEnabled(true);
         btnSave.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));

@@ -41,7 +41,7 @@ import retrofit2.Retrofit;
 
 public class ProfileFragment extends Fragment {
 
-    /* variables */
+    /* Variables */
     TextView name, email, dayOfBirth, gender, weight, size, bmi, lastLogIn, dayOfRegistration, amountRecords, totalTime, totalDistance;
     CircleImageView image, state;
     ImageView birthday, user_gender_image;
@@ -55,16 +55,16 @@ public class ProfileFragment extends Fragment {
         boolean loadMenu = getArguments().getBoolean("loadMenu");
 
         if (loadMenu) {
-            /* Inlate Menu */
+            /* Inflate Menu */
             MenuInflater menuInflater = MainActivity.getInstance().getMenuInflater();
             menuInflater.inflate(R.menu.profile_settings, MainActivity.getMenuInstance());
         }
 
-        /* get current user */
+        /* Get current user */
         UserDAO userDAO = new UserDAO(MainActivity.getInstance());
         User currentUser = userDAO.read(MainActivity.getActiveUser());
 
-        /* get profil fields */
+        /* Get profile fields */
         name = view.findViewById(R.id.user_name);
         email = view.findViewById(R.id.user_email);
         dayOfBirth = view.findViewById(R.id.user_dayOfBirth);
@@ -83,14 +83,14 @@ public class ProfileFragment extends Fragment {
         user_gender_image = view.findViewById(R.id.user_gender_image);
         loadProfile = view.findViewById(R.id.loadScreen);
 
-        /* read profile values from global db */
+        /* Read profile values from global db */
         HashMap<String, String> map = new HashMap<>();
         map.put("id", "" + currentUser.getId());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
-        /* start a call */
+        /* Start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
         Call<ResponseBody> call = apiInterface.getUserById(authString, map);
@@ -104,16 +104,16 @@ public class ProfileFragment extends Fragment {
                     if (response.code() == 401) {
                         MainActivity.getInstance().showNotAuthorizedModal(0);
                     } else {
-                        /* get jsonString from API */
+                        /* Get jsonString from API */
                         String jsonString = response.body().string();
 
-                        /* parse json */
+                        /* Parse json */
                         JSONObject userJSON = new JSONObject(jsonString);
                         try {
                             Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "Profilinformation erhalten von: " + userJSON.getString("firstName") + " " + userJSON.getString("lastName"));
                         } catch (Exception e) {
                         }
-                        /* check values an show  */
+                        /* Check values an show  */
                         float size, weight;
                         long dateOfBirth;
                         byte[] image = null;
@@ -146,7 +146,6 @@ public class ProfileFragment extends Fragment {
                         }
 
                         setProfileValues(userJSON.getString("firstName"), userJSON.getString("lastName"), userJSON.getString("email"), dateOfBirth, size, weight, userJSON.getInt("gender"), userJSON.getLong("dateOfRegistration"), userJSON.getLong("lastLogin"), userJSON.getLong("amountRecords"), userJSON.getLong("totalDistance"), userJSON.getLong("totalTime"), image);
-
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -159,7 +158,6 @@ public class ProfileFragment extends Fragment {
 
                     /* read values from local DB */
                     setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin(), currentUser.getAmountRecord(), currentUser.getTotalDistance(), currentUser.getTotalTime(), currentUser.getImage());
-
                 }
             }
 
@@ -167,7 +165,7 @@ public class ProfileFragment extends Fragment {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 call.cancel();
 
-                /* read values from local DB */
+                /* Read values from local DB */
                 setProfileValues(currentUser.getFirstName(), currentUser.getLastName(), currentUser.getMail(), currentUser.getDateOfBirth(), currentUser.getSize(), currentUser.getWeight(), currentUser.getGender(), currentUser.getDateOfRegistration(), currentUser.getLastLogin(), currentUser.getAmountRecord(), currentUser.getTotalDistance(), currentUser.getTotalTime(), currentUser.getImage());
                 Log.d(getResources().getString(R.string.app_name) + "-ProfileInformation", "ERROR: " + t.getMessage());
             }
@@ -180,17 +178,17 @@ public class ProfileFragment extends Fragment {
     private void setProfileValues(String user_firstName, String user_lastName, String user_email, long user_dayOfBirth, float user_size, float user_weight, int user_gender, long user_dateOfRegistration, long user_lastLogin, long user_amountRecords, long user_totalDistance, long user_totalTime, byte[] user_image) {
         int age = 0;
 
-        /*set name and email*/
+        /* Set name and email */
         name.setText(user_firstName + " " + user_lastName);
         email.setText(user_email);
 
-        /* set dayOfBirth and calculate age*/
+        /* Set dayOfBirth and calculate age*/
         if (user_dayOfBirth != 0) {
             String curDateString = GlobalFunctions.getDateFromMillis(user_dayOfBirth, "dd.MM.yyyy");
             age = calculateAge(curDateString);
             dayOfBirth.setText(curDateString + " (" + age + " Jahre)");
 
-            /* if user have birthday */
+            /* If user have birthday */
             if (todayDayOfBirth) {
                 birthday.setVisibility(View.VISIBLE);
             }
@@ -198,29 +196,29 @@ public class ProfileFragment extends Fragment {
             GlobalFunctions.setNoInformationStyle(dayOfBirth);
         }
 
-        /* set size */
+        /* Set size */
         if (user_size != 0) {
             size.setText("" + user_size + " cm");
         } else {
             GlobalFunctions.setNoInformationStyle(size);
         }
 
-        /* set weight */
+        /* Set weight */
         if (user_weight != 0) {
             weight.setText("" + user_weight + " kg");
         } else {
             GlobalFunctions.setNoInformationStyle(weight);
         }
 
-        /* set gender */
+        /* Set gender */
         if (user_gender != 2) {
             InputStream imageStream;
             if (user_gender == 0) {
-                gender.setText("weiblich");
+                gender.setText(getResources().getString(R.string.genderFemale));
                 gender.setTextColor(getResources().getColor(R.color.colorFemale));
                 imageStream = this.getResources().openRawResource(R.raw.female);
             } else {
-                gender.setText("männlich");
+                gender.setText(getResources().getString(R.string.genderMale));
                 imageStream = this.getResources().openRawResource(R.raw.male);
                 gender.setTextColor(getResources().getColor(R.color.colorMale));
             }
@@ -232,7 +230,7 @@ public class ProfileFragment extends Fragment {
             user_gender_image.setVisibility(View.GONE);
         }
 
-        /* calculate bmi */
+        /* Calculate bmi */
         if (user_size != 0 && user_weight != 0 && user_gender != 2 && user_dayOfBirth != 0) {
 
             float userSize = user_size;
@@ -337,7 +335,7 @@ public class ProfileFragment extends Fragment {
                         }
                     }
 
-                    /*adults*/
+                    /* Adults */
                     else if (age == 16) {
                         if (userBmi < 19) {
                             bmiClass = "Untergewicht";
@@ -415,10 +413,10 @@ public class ProfileFragment extends Fragment {
                         }
                     }
 
-                    /* if user is male */
+                    /* If user is male */
                 } else {
 
-                    /*children*/
+                    /* Children */
                     if (age == 8) {
                         if (userBmi < 14.2) {
                             bmiClass = "Untergewicht";
@@ -508,7 +506,7 @@ public class ProfileFragment extends Fragment {
                         }
                     }
 
-                    /*adults*/
+                    /* Adults */
                     else if (age >= 16 && age <= 24) {
                         if (userBmi < 19) {
                             bmiClass = "Untergewicht";
@@ -581,18 +579,18 @@ public class ProfileFragment extends Fragment {
             GlobalFunctions.setNoInformationStyle(bmi);
         }
 
-        /* set dateOfRegistration*/
+        /* Set dateOfRegistration*/
         String curdayIfRegistrationString = GlobalFunctions.getDateWithTimeFromMillis(user_dateOfRegistration, "dd.MM.yyyy HH:mm");
         dayOfRegistration.setText(curdayIfRegistrationString);
 
-        /* set lastLogin*/
+        /* Set lastLogin*/
         String curLastLoginString = GlobalFunctions.getDateWithTimeFromMillis(user_lastLogin, "dd.MM.yyyy HH:mm");
         lastLogIn.setText(curLastLoginString);
 
-        /*set amount records*/
+        /*Set amount records*/
         amountRecords.setText("" + user_amountRecords);
 
-        /* set total distance */
+        /* Set total distance */
         double distance = Math.round(user_totalDistance);
         double levelDistance;
         if (distance >= 1000) {
@@ -604,17 +602,17 @@ public class ProfileFragment extends Fragment {
             totalDistance.setText((int) distance + " m");
         }
 
-        /* set total time */
+        /* Set total time */
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         TimeZone tz = TimeZone.getTimeZone("UTC");
         df.setTimeZone(tz);
         String time = df.format(new Date(user_totalTime * 1000));
         totalTime.setText(time);
 
-        /* set state */
+        /* Set state */
         state.setImageBitmap(GlobalFunctions.findLevel(levelDistance));
 
-        /* set profile image */
+        /* Set profile image */
         byte[] imgRessource = user_image;
         Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.getInstance().getResources(), R.raw.default_profile);
         if (imgRessource != null && imgRessource.length > 0) {
@@ -622,13 +620,13 @@ public class ProfileFragment extends Fragment {
         }
         image.setImageBitmap(bitmap);
 
-        /* remove loadscreen */
+        /* Remove loadScreen */
         loadProfile.setVisibility(View.GONE);
     }
 
     boolean todayDayOfBirth = false;
 
-    /* function to calculate age */
+    /* Function to calculate age */
     private int calculateAge(String dayOfBirth) {
 
         String[] dobValues = dayOfBirth.split("\\.");
@@ -636,7 +634,7 @@ public class ProfileFragment extends Fragment {
         dob.set(Integer.parseInt(dobValues[2]), Integer.parseInt(dobValues[1]), Integer.parseInt(dobValues[0]));
         Calendar currentTime = Calendar.getInstance();
 
-        /* calculate age */
+        /* Calculate age */
         int age = currentTime.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
 
         int day1 = currentTime.get(Calendar.DAY_OF_MONTH);

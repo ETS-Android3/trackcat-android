@@ -2,9 +2,7 @@ package de.trackcat.LogIn;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
@@ -21,15 +19,9 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import de.trackcat.APIClient;
 import de.trackcat.APIConnector;
-import de.trackcat.Database.DAO.RouteDAO;
 import de.trackcat.Database.DAO.UserDAO;
-import de.trackcat.Database.Models.Route;
 import de.trackcat.GlobalFunctions;
 import de.trackcat.MainActivity;
 import de.trackcat.R;
@@ -41,11 +33,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static okhttp3.internal.Util.UTF_8;
-
 public class LogInFragment extends Fragment implements View.OnClickListener {
 
-    /* variables */
+    /* Variables */
     private FragmentTransaction fragTransaction;
     private UserDAO userDAO;
     private EditText emailTextView, passwordTextView;
@@ -70,13 +60,11 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
         btnLogin.setOnClickListener(this);
         signInLink.setOnClickListener(this);
 
-        /* set link */
+        /* Set link */
         resetPassword.setClickable(true);
         resetPassword.setMovementMethod(LinkMovementMethod.getInstance());
         String text1 = "Passwort vergessen? Setzen Sie es <a href='" + getString(R.string.link_resetPassword) + "'>hier</a>  zurück.";
         resetPassword.setText(Html.fromHtml(text1));
-
-
 
         /* Set user dao */
         userDAO = new UserDAO(StartActivity.getInstance());
@@ -161,10 +149,10 @@ public class LogInFragment extends Fragment implements View.OnClickListener {
                                 userObject.put("password", password);
 
                                 /* Save logged user in db */
-                                userDAO.create(GlobalFunctions.createUser(userObject,false, true));
+                                userDAO.create(GlobalFunctions.createUser(userObject, false, true));
 
-                                /* Create routes */
-                                if(mainObject.getJSONArray("records").length()>0&& mainObject.getJSONArray("records")!=null) {
+                                /* Create records */
+                                if (mainObject.getJSONArray("records").length() > 0 && mainObject.getJSONArray("records") != null) {
                                     JSONArray recordsArray = mainObject.getJSONArray("records");
                                     GlobalFunctions.createRecords(recordsArray, StartActivity.getInstance());
                                 }

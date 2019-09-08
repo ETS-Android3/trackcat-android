@@ -41,10 +41,11 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
 
         View view = inflater.inflate(R.layout.fragment_delete_account, container, false);
 
-        /* get fields */
+        /* Get fields */
         btnSave = view.findViewById(R.id.btn_delete_account);
         accept = view.findViewById(R.id.checkBoxAccept);
 
+        /* Set onclick listener */
         btnSave.setOnClickListener(this);
         accept.setOnClickListener(this);
 
@@ -56,9 +57,8 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
         switch (v.getId()) {
             case R.id.checkBoxAccept:
 
-                /* change button */
+                /* Change button */
                 if (btnSave.isEnabled()) {
-
                     btnSave.setEnabled(false);
                     btnSave.setBackgroundColor(getResources().getColor(R.color.colorAccentDisable));
                 } else {
@@ -69,27 +69,26 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                 break;
             case R.id.btn_delete_account:
 
-                /* create AlertBox */
+                /* Create AlertBox */
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
                 alert.setTitle(getResources().getString(R.string.deleteAccountModalWindowTitle));
                 alert.setMessage(getResources().getString(R.string.deleteAccountModalWindow));
 
-
                 alert.setPositiveButton("Account löschen", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-                        /* get current user */
+                        /* Get current user */
                         UserDAO userDAO = new UserDAO(MainActivity.getInstance());
                         User currentUser = userDAO.read(MainActivity.getActiveUser());
 
-                        /* read profile values from global db */
+                        /* Read profile values from global db */
                         HashMap<String, String> map = new HashMap<>();
                         map.put("id", "" + currentUser.getId());
 
                         Retrofit retrofit = APIConnector.getRetrofit();
                         APIClient apiInterface = retrofit.create(APIClient.class);
 
-                        /* start a call */
+                        /* Start a call */
                         String base = currentUser.getMail() + ":" + currentUser.getPassword();
                         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
                         Call<ResponseBody> call = apiInterface.deleteUser(authString, map);
@@ -103,17 +102,18 @@ public class DeleteAccountFragment extends Fragment implements View.OnClickListe
                                     if (response.code() == 401) {
                                         MainActivity.getInstance().showNotAuthorizedModal(13);
                                     } else {
-                                        /* get jsonString from API */
+
+                                        /* Get jsonString from API */
                                         String jsonString = response.body().string();
 
-                                        /* parse json */
+                                        /* Parse json */
                                         JSONObject mainObject = new JSONObject(jsonString);
                                         if (mainObject.getString("success").equals("0")) {
                                             MainActivity.getInstance().logout();
                                             if (MainActivity.getHints()) {
                                                 Toast.makeText(getContext(), getResources().getString(R.string.deleteAccountSuccess), Toast.LENGTH_LONG).show();
                                             }
-                                        }else if (mainObject.getString("success").equals("1")) {
+                                        } else if (mainObject.getString("success").equals("1")) {
                                             MainActivity.getInstance().logout();
                                             if (MainActivity.getHints()) {
                                                 Toast.makeText(getContext(), getResources().getString(R.string.deleteAccountUnknownError), Toast.LENGTH_LONG).show();
