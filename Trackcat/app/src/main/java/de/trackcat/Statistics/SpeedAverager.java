@@ -4,9 +4,7 @@ import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.Recording.Timer;
 
-/*
- * This class calculates the average Speed in M/S via the selected Timer
- * */
+/* This class calculates the average Speed in M/S via the selected Timer */
 public class SpeedAverager {
 
     final private static int WALKER_MAX_SPEED = 14;
@@ -20,9 +18,7 @@ public class SpeedAverager {
     private int type;
 
 
-    /*
-     * Init the Averager with the selected Timer
-     * */
+    /* Init the Averager with the selected Timer */
     public SpeedAverager(MainActivity creator, mCounter mCounter, Timer timerSet, int typeSet) {
         this.creator = creator;
         timerClass = timerSet;
@@ -30,7 +26,7 @@ public class SpeedAverager {
         type = typeSet;
     }
 
-    // calc avg Speed by selected Timer
+    /* Calc avg Speed by selected Timer */
     public void calcAvgSpeed() {
         double mAmount = mCounter.getAmount();
         double time = timerClass.getTime();
@@ -38,14 +34,14 @@ public class SpeedAverager {
         avgSpeed = (mAmount / time);
     }
 
-    // switch Timer
+    /* Switch Timer */
     public void switchTimer(Timer timerClassSet, int typeSet) {
         timerClass = timerClassSet;
         type = typeSet;
         calcAvgSpeed();
     }
 
-    /* return current Type of Timer */
+    /* Return current Type of Timer */
     public int getType() {
         return type;
     }
@@ -54,7 +50,7 @@ public class SpeedAverager {
         return avgSpeed;
     }
 
-    /* Liefert den entsprechenden Typene einer Durchschnittsgeschwindigkeit */
+    /* Return correct type to averagespeed */
     public static int getRouteType(double avg) {
         int type;
         /* Läufer */
@@ -72,21 +68,21 @@ public class SpeedAverager {
         return type;
     }
 
-    /* Liefert die entsprechende Icon ID zu einem Typen */
+    /* Return icon-id to type */
     public static int getTypeIcon(int type) {
         int drawableInt = 0;
 
-            switch (type) {
-                case 0:
-                    drawableInt = R.drawable.activity_running_record;
-                    break;
-                case 1:
-                    drawableInt = R.drawable.activity_biking_record;
-                    break;
-                case 2:
-                    drawableInt = R.drawable.activity_caring_record;
-                    break;
-            }
+        switch (type) {
+            case 0:
+                drawableInt = R.drawable.activity_running_record;
+                break;
+            case 1:
+                drawableInt = R.drawable.activity_biking_record;
+                break;
+            case 2:
+                drawableInt = R.drawable.activity_caring_record;
+                break;
+        }
 
         return drawableInt;
     }

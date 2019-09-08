@@ -13,13 +13,13 @@ import android.widget.Toast;
 
 import de.trackcat.GlobalFunctions;
 import de.trackcat.LogIn.LogInFragment;
-import de.trackcat.MainActivity;
 import de.trackcat.R;
 import de.trackcat.StartActivity;
 
 public class SignInFragment_3 extends Fragment implements View.OnClickListener {
 
     private FragmentTransaction fragTransaction;
+
     /* UI references */
     EditText password1, password2;
     ImageView btnBack, btnNext;
@@ -44,13 +44,13 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
         messageBox = view.findViewById(R.id.messageBox);
         messageBoxInfo = view.findViewById(R.id.messageBoxInfo);
 
-        /* get bundle */
+        /* Get bundle */
         if (getArguments() != null) {
             firstName = getArguments().getString("firstName");
             lastName = getArguments().getString("lastName");
-            gender= getArguments().getInt("gender");
+            gender = getArguments().getInt("gender");
             email = getArguments().getString("email");
-            dayOfBirth= getArguments().getString("dayOfBirth");
+            dayOfBirth = getArguments().getString("dayOfBirth");
             generalTerm = getArguments().getBoolean("generalTerms");
             dataProtection = getArguments().getBoolean("dataProtection");
 
@@ -62,11 +62,11 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
             }
         }
 
-        /* step view */
+        /* Step view */
         stepView = view.findViewById(R.id.step_view);
         stepView.go(2, false);
 
-        /* set on click-Listener */
+        /* Set on click-Listener */
         btnBack.setOnClickListener(this);
         btnNext.setOnClickListener(this);
         logInInLink.setOnClickListener(this);
@@ -74,14 +74,14 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    /* onClick Listener */
+    /* OnClick Listener */
     @Override
     public void onClick(View v) {
         Bundle bundleSignIn_1_and_2_and_3 = new Bundle();
         switch (v.getId()) {
             case R.id.btn_back:
 
-                /*create bundle*/
+                /* Create bundle */
                 bundleSignIn_1_and_2_and_3.putString("firstName", firstName);
                 bundleSignIn_1_and_2_and_3.putString("lastName", lastName);
                 bundleSignIn_1_and_2_and_3.putInt("gender", gender);
@@ -95,7 +95,7 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
                 SignInFragment_2 signInFragment_2 = new SignInFragment_2();
                 signInFragment_2.setArguments(bundleSignIn_1_and_2_and_3);
 
-                /* show next page */
+                /* Show next page */
                 fragTransaction = getFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, signInFragment_2,
                         getResources().getString(R.string.fSignIn_2));
@@ -104,13 +104,13 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
 
             case R.id.btn_next:
 
-                /* read inputs */
+                /* Read inputs */
                 String input_password1 = password1.getText().toString();
                 String input_password2 = password2.getText().toString();
                 if (input_password1.equals(input_password2)) {
                     if (GlobalFunctions.validateTwoPassword(password1, password2, StartActivity.getInstance())) {
 
-                        /*create bundle*/
+                        /* Create bundle */
                         bundleSignIn_1_and_2_and_3.putString("firstName", firstName);
                         bundleSignIn_1_and_2_and_3.putString("lastName", lastName);
                         bundleSignIn_1_and_2_and_3.putInt("gender", gender);
@@ -124,7 +124,7 @@ public class SignInFragment_3 extends Fragment implements View.OnClickListener {
                         SignInFragment_4 signInFragment_4 = new SignInFragment_4();
                         signInFragment_4.setArguments(bundleSignIn_1_and_2_and_3);
 
-                        /* show next page */
+                        /* Show next page */
                         fragTransaction = getFragmentManager().beginTransaction();
                         fragTransaction.replace(R.id.mainFrame, signInFragment_4,
                                 getResources().getString(R.string.fSignIn_4));

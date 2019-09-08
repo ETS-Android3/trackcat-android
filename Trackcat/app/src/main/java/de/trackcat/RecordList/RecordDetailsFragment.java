@@ -15,14 +15,14 @@ public class RecordDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        /* Auslesen der Daten aus dem Bundle */
+        /* Read data from bundle */
         double[] altitudeArray = getArguments().getDoubleArray("altitudeArray");
         double[] speedArray = getArguments().getDoubleArray("speedArray");
-        String locationsAsString= getArguments().getString("locations");
+        String locationsAsString = getArguments().getString("locations");
         int id = getArguments().getInt("id");
         boolean temp = getArguments().getBoolean("temp");
 
-        /* Neues Fragment erstellen */
+        /* Create new fragment */
         Bundle bundle = new Bundle();
         bundle.putDoubleArray("altitudeArray", altitudeArray);
         bundle.putDoubleArray("speedArray", speedArray);

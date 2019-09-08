@@ -2,7 +2,6 @@ package de.trackcat.Settings;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -13,16 +12,10 @@ import android.support.v14.preference.SwitchPreference;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.*;
 import android.util.Base64;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import de.trackcat.APIClient;
@@ -46,23 +39,24 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onCreatePreferences(Bundle bundle, String s) {
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        /* Einstellungen aus XML Datei laden */
+
+        /* Load settings from xml */
         addPreferencesFromResource(R.xml.fragment_settings);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        /* Benutzerspezifischen Einstellungen laden */
+        /* Load user settings */
         CheckBoxPreference help_messages = (CheckBoxPreference) findPreference("help_messages");
         help_messages.setChecked(MainActivity.getHints());
         SwitchPreference theme = (SwitchPreference) findPreference("dark_theme");
         theme.setChecked(MainActivity.getDarkTheme());
 
-        /* Deaktiviere Themewechsel bei laufender Aufzeichnung */
+        /* deactivate themechange by run tracking */
         if (RecordFragment.isTracking()) {
             theme.setEnabled(false);
             theme.setSummary("Während Aufzeichnung nicht möglich!");
         }
 
-        /* Aktuelle Version in Einstellungen anzeigen */
+        /* Show current version */
         Preference version = findPreference("current_version");
         version.setSummary("unknown");
         try {
@@ -73,7 +67,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         }
         version.setOnPreferenceClickListener(this);
 
-        /* Feedback senden */
+        /* Send feedback */
         Preference feedback = findPreference("send_feedback");
         feedback.setOnPreferenceClickListener(this);
     }
@@ -81,7 +75,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onResume() {
         super.onResume();
-        //unregister the preferenceChange listener
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
     }
@@ -94,14 +87,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         UserDAO dao = new UserDAO(getActivity());
         User currentUser = dao.read(MainActivity.getActiveUser());
 
-        /* change data in global db */
+        /* Change data in global db */
         HashMap<String, String> map = new HashMap<>();
 
-        /* Wechsel beim Anzeigen der Hilfreichen Tipps */
+        /* Help */
         if (preference.getKey().equals("help_messages")) {
             if (((CheckBoxPreference) preference).isChecked()) {
                 Toast.makeText(getActivity(), "Hilfreiche Tipps aktiviert!", Toast.LENGTH_LONG).show();
-                /* Nutzer aktualisieren */
+
+                /* Update user */
                 currentUser.setHintsActive(true);
                 MainActivity.setHints(true);
                 map.put("hints", "1");
@@ -110,14 +104,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 if (MainActivity.getHints()) {
                     Toast.makeText(getActivity(), "Hilfreiche Tipps deaktiviert!", Toast.LENGTH_LONG).show();
                 }
-                /* Nutzer aktualisieren */
+                /* Update user */
                 currentUser.setHintsActive(false);
                 MainActivity.setHints(false);
                 map.put("hints", "0");
 
             }
         }
-        /* Wechsel des Themes */
+        /* Change themes */
         else if (preference.getKey().equals("dark_theme")) {
 
             MainActivity.isActiv = false;
@@ -127,7 +121,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                     Toast.makeText(getActivity(), "DarkTheme aktiviert!", Toast.LENGTH_LONG).show();
                 }
 
-                /* Nutzer aktualisieren */
+                /* Update user */
                 currentUser.setDarkThemeActive(true);
                 MainActivity.setDarkTheme(true);
                 map.put("darkTheme", "1");
@@ -137,12 +131,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                     Toast.makeText(getActivity(), "LightTheme aktiviert!", Toast.LENGTH_LONG).show();
                 }
 
-                /* Nutzer aktualisieren */
+                /* Update user */
                 currentUser.setDarkThemeActive(false);
                 MainActivity.setDarkTheme(false);
                 map.put("darkTheme", "0");
             }
-            // Restart Activity
+            /* Restart Activity */
             MainActivity.restart();
 
         } else {
@@ -151,18 +145,18 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
         }
 
-        /* update user in local db */
+        /* Update user in local db */
         currentUser.setTimeStamp(GlobalFunctions.getTimeStamp());
         currentUser.isSynchronised(false);
         dao.update(MainActivity.getActiveUser(), currentUser);
 
-        /* change values in global DB*/
+        /* Change values in global DB*/
         map.put("timeStamp", "" + GlobalFunctions.getTimeStamp());
 
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
-        /* start a call */
+        /* Start a call */
         String base = currentUser.getMail() + ":" + currentUser.getPassword();
         String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
         Call<ResponseBody> call = apiInterface.updateUser(authString, map);
@@ -173,21 +167,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 try {
-                    /* get jsonString from API */
+                    /* Get jsonString from API */
                     String jsonString = response.body().string();
 
-                    /* parse json */
+                    /* Parse json */
                     JSONObject successJSON = new JSONObject(jsonString);
 
                     if (successJSON.getString("success").equals("0")) {
 
-                        /* save is Synchronized value as true */
+                        /* Save is Synchronized value as true */
                         currentUser.isSynchronised(true);
                         dao.update(currentUser.getId(), currentUser);
                     }
 
                 } catch (Exception e) {
-
                 }
             }
 
@@ -201,14 +194,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onPause() {
         super.onPause();
-        //unregister the preference change listener
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-       if (preference.getKey().equals("current_version")) {
+        if (preference.getKey().equals("current_version")) {
             AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
 
             String version = "\"unknown\"";
@@ -218,7 +210,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-            alert.setTitle(getResources().getString(R.string.app_name)+" v" + version);
+            alert.setTitle(getResources().getString(R.string.app_name) + " v" + version);
 
 
             alert.setMessage("vom 01.09.2019\n\nEntwickler:\nTimo Kramer, Marie Fock, Finn Lenz, Yannik Petersen, Kristoff Klan, Jenö Petsch");

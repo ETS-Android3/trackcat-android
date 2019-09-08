@@ -34,8 +34,6 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
     int gender;
     private com.shuhart.stepview.StepView stepView;
     DatePickerDialog picker;
-    AlertDialog.Builder alert;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,19 +41,19 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
 
         View view = inflater.inflate(R.layout.fragment_signin_2, container, false);
 
-        /* get references */
+        /* Get references */
         btnBack = view.findViewById(R.id.btn_back);
         btnNext = view.findViewById(R.id.btn_next);
         logInInLink = view.findViewById(R.id.link_login);
         email = view.findViewById(R.id.input_email);
-        day_Of_Birth=view.findViewById(R.id.input_dayOfBirth);
+        day_Of_Birth = view.findViewById(R.id.input_dayOfBirth);
         day_Of_Birth.setKeyListener(null);
 
-        /* get bundle */
+        /* Get bundle */
         if (getArguments() != null) {
             firstName = getArguments().getString("firstName");
             lastName = getArguments().getString("lastName");
-            gender= getArguments().getInt("gender");
+            gender = getArguments().getInt("gender");
             password1 = getArguments().getString("password1");
             password2 = getArguments().getString("password2");
             generalTerm = getArguments().getBoolean("generalTerms");
@@ -67,8 +65,8 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                 day_Of_Birth.setText(getArguments().getString("dayOfBirth"));
             }
         }
-        /* get current date */
-        if(day_Of_Birth.getText().toString().equals("null")){
+        /* Get current date */
+        if (day_Of_Birth.getText().toString().equals("null")) {
             final Calendar cldr = Calendar.getInstance();
             int currentDay = cldr.get(Calendar.DAY_OF_MONTH);
             int currentMonth = cldr.get(Calendar.MONTH) + 1;
@@ -76,7 +74,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
             day_Of_Birth.setText(currentDay + "." + currentMonth + "." + currentYear);
         }
 
-        /* stepview */
+        /* Stepview */
         stepView = view.findViewById(R.id.step_view);
         stepView.go(1, false);
         btnBack.setOnClickListener(this);
@@ -87,17 +85,17 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    /* onClick Listener */
+    /* OnClick Listener */
     @Override
     public void onClick(View v) {
         Bundle bundleSignIn_1_and_2;
         switch (v.getId()) {
 
             case R.id.btn_back:
-                /* read inputs */
+                /* Read inputs */
                 String input_email_back = email.getText().toString();
-                String input_dayOfBirth_back= day_Of_Birth.getText().toString();
-                /*create bundle*/
+                String input_dayOfBirth_back = day_Of_Birth.getText().toString();
+                /* Create bundle */
                 bundleSignIn_1_and_2 = new Bundle();
                 bundleSignIn_1_and_2.putString("firstName", firstName);
                 bundleSignIn_1_and_2.putString("lastName", lastName);
@@ -112,18 +110,18 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                 SignInFragment_1 signInFragment_1 = new SignInFragment_1();
                 signInFragment_1.setArguments(bundleSignIn_1_and_2);
 
-                /* show next page */
+                /* Show next page */
                 fragTransaction = getFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, signInFragment_1,
                         getResources().getString(R.string.fSignIn_1));
                 fragTransaction.commit();
                 break;
             case R.id.btn_next:
-                /* read inputs */
+                /* Read inputs */
                 String input_email_next = email.getText().toString();
-                String input_dayOfBirth_next= day_Of_Birth.getText().toString();
+                String input_dayOfBirth_next = day_Of_Birth.getText().toString();
                 if (GlobalFunctions.validateEMail(email, StartActivity.getInstance())) {
-                    /*create bundle*/
+                    /* Create bundle */
                     bundleSignIn_1_and_2 = new Bundle();
                     bundleSignIn_1_and_2.putString("firstName", firstName);
                     bundleSignIn_1_and_2.putString("lastName", lastName);
@@ -138,7 +136,7 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                     SignInFragment_3 signInFragment_3 = new SignInFragment_3();
                     signInFragment_3.setArguments(bundleSignIn_1_and_2);
 
-                    /* show next page */
+                    /* Show next page */
                     fragTransaction = getFragmentManager().beginTransaction();
                     fragTransaction.replace(R.id.mainFrame, signInFragment_3,
                             getResources().getString(R.string.fSignIn_3));
@@ -154,17 +152,17 @@ public class SignInFragment_2 extends Fragment implements View.OnClickListener {
                 break;
             case R.id.input_dayOfBirth:
                 int day, month, year;
-                /*if no inputs, choose current date*/
+                /* If no inputs, choose current date */
                 if (day_Of_Birth.getText().toString().equals("")) {
                     final Calendar cldr = Calendar.getInstance();
                     day = cldr.get(Calendar.DAY_OF_MONTH);
                     month = cldr.get(Calendar.MONTH);
                     year = cldr.get(Calendar.YEAR);
                 } else {
-                    /* get old values */
+                    /* Get old values */
                     String[] dayOfBirthValues = day_Of_Birth.getText().toString().split("\\.");
 
-                    /* set datepicker an set value in field */
+                    /* Set datePicker an set value in field */
                     day = Integer.parseInt(dayOfBirthValues[0]);
                     month = Integer.parseInt(dayOfBirthValues[1]) - 1;
                     year = Integer.parseInt(dayOfBirthValues[2]);

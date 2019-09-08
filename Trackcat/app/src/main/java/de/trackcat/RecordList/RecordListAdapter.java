@@ -11,7 +11,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import de.trackcat.Database.Models.Route;
-import de.trackcat.MainActivity;
 import de.trackcat.R;
 
 public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.MyViewHolder> {
@@ -49,7 +48,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        ShowRecord.show(records, position, holder.id, holder.type, holder.importedState, holder.temp,holder.name, holder.distance, holder.time, holder.itemView, holder.date);
+        ShowRecord.show(records, position, holder.id, holder.type, holder.importedState, holder.temp, holder.name, holder.distance, holder.time, holder.itemView, holder.date);
     }
 
     @Override
@@ -67,7 +66,7 @@ public class RecordListAdapter extends RecyclerView.Adapter<RecordListAdapter.My
         notifyItemInserted(position);
     }
 
-    /* SwipeRefresh - alle Einträge entfernen */
+    /* SwipeRefresh - remove all entrys */
     public void clear() {
         records.clear();
         notifyDataSetChanged();

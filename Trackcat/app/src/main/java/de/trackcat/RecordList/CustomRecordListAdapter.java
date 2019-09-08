@@ -13,7 +13,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import de.trackcat.Database.Models.Route;
-import de.trackcat.MainActivity;
 import de.trackcat.R;
 
 public class CustomRecordListAdapter extends ArrayAdapter<String> {
@@ -35,7 +34,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        /* Variablen erstellen */
+        /* Variables */
         View view = inflater.inflate(R.layout.summary_list_item, parent, false);
         LinearLayout recordItem = view.findViewById(R.id.record_one_item);
         TextView recordId = recordItem.findViewById(R.id.record_id);
@@ -47,7 +46,7 @@ public class CustomRecordListAdapter extends ArrayAdapter<String> {
         TextView recordTime = recordItem.findViewById(R.id.record_time);
         TextView recordDate = recordItem.findViewById(R.id.record_date);
 
-        ShowRecord.show(records, position, recordId, recordType, importState,temp, recordName, recordDistance, recordTime, recordItem, recordDate);
+        ShowRecord.show(records, position, recordId, recordType, importState, temp, recordName, recordDistance, recordTime, recordItem, recordDate);
         return view;
     }
 }

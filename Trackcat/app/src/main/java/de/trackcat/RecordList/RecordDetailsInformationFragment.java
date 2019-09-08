@@ -3,30 +3,20 @@ package de.trackcat.RecordList;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.DynamicDrawableSpan;
-import android.text.style.IconMarginSpan;
 import android.text.style.ImageSpan;
 import android.util.Base64;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -115,7 +105,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         String locationsAsString = getArguments().getString("locations");
         view = inflater.inflate(R.layout.fragment_record_details_information, container, false);
 
-        /* Auslesen der Werte aus der Datenbank */
+        /* Read values from db */
         locations = Arrays.asList(new Gson().fromJson(locationsAsString, Location[].class));
         dao = new RouteDAO(MainActivity.getInstance());
         tempDAO = new RecordTempDAO(MainActivity.getInstance());
@@ -125,7 +115,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
             record = dao.read(id);
         }
 
-        /* Auslesen der Locations und Ermitteln der Höhe und der maximalen Geschwindigkeit */
+        /* Read location and calculate altimeter and speed */
         for (int i = 0; i < locations.size(); i++) {
             Location location = locations.get(i);
 
@@ -135,73 +125,72 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
             if (i > 0) {
                 double difference = location.getAltitude() - locations.get(i - 1).getAltitude();
 
-                /* Berechnung der Höhenmeter */
+                /* Calculate altimeter*/
                 if (difference > 0) {
                     altitudeUp += Math.abs(difference);
                 } else if (difference < 0) {
                     altitudeDown += Math.abs(difference);
                 }
 
-                /* Maximalgeschwindigkeit ausrechnen */
+                /* calculate max. speed */
                 if (location.getSpeed() > maxSpeed) {
                     maxSpeed = location.getSpeed();
                 }
             }
-
         }
 
-        /* DateFormat setzen */
+        /* Set DateFormat */
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         TimeZone tz = TimeZone.getTimeZone("UTC");
         df.setTimeZone(tz);
 
-        /* Name setzen */
+        /* Set name */
         recordName = view.findViewById(R.id.record_name);
         String toSet = record.getName();
         setCklickableSpan(toSet);
 
-        /* Average Speed setzen */
+        /* Set Average Speed */
         TextView averageSpeed = view.findViewById(R.id.average_speed_value);
         toSet = Math.round(((record.getDistance() / record.getRideTime()) * 60 * 60) / 100) / 10.0 + " km/h";
         averageSpeed.setText(toSet);
 
-        /* Distanz setzen */
+        /* Set Distance */
         TextView distance = view.findViewById(R.id.distance_value);
         toSet = Math.round(record.getDistance()) / 1000.0 + " km";
         distance.setText(toSet);
 
-        /* Positive Altimeter setzen */
+        /* Set pos. Altimeter */
         TextView positiveAltimeter = view.findViewById(R.id.altimeter_pos_value);
         toSet = Math.round(altitudeUp) + " m";
         positiveAltimeter.setText(toSet);
 
-        /* Negative Altimeter setzen */
+        /* Set neg. Altimeter */
         TextView negativeAltimeter = view.findViewById(R.id.altimeter_neg_value);
         toSet = Math.round(altitudeDown) + " m";
         negativeAltimeter.setText(toSet);
 
-        /* TotalTime setzen */
+        /* Set totalTime */
         TextView totalTime = view.findViewById(R.id.total_time_value);
         String time = df.format(new Date(record.getTime() * 1000));
         totalTime.setText(time);
 
-        /* RideTime setzen */
+        /* Set RideTime */
         TextView pauseTime = view.findViewById(R.id.pause_time_value);
         time = df.format(new Date((record.getTime() - record.getRideTime()) * 1000));
         pauseTime.setText(time);
 
-        /* MaxSpeed setzen */
+        /* Set MaxSpeed */
         TextView maxSpeed = view.findViewById(R.id.max_speed_value);
         toSet = (Math.round(this.maxSpeed * 60 * 60) / 100) / 10.0 + " km/h";
         maxSpeed.setText(toSet);
 
-        /* Datum setzen */
+        /* Set date */
         TextView recordDate = view.findViewById(R.id.date_value);
         long curDate = record.getDate();
         String curDateString = getDate(curDate, "dd.MM.yyyy");
         recordDate.setText(curDateString);
 
-        /* Route anzeigen */
+        /* Draw Route */
         drawRoute();
 
         /* fullScreen map */
@@ -211,7 +200,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         /* map Parent */
         mapParent = view.findViewById(R.id.mapParent);
         informationParent = view.findViewById(R.id.informationParent);
-
 
         view.setTag(view.getVisibility());
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -262,7 +250,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         MapController mMapController = (MapController) mMapView.getController();
         mMapController.setZoom(19);
 
-        /* Poliline und Marker erstellen */
+        /* Create Poliline and Marker */
         GeoPoint gPt = new GeoPoint(locations.get(0).getLatitude(), locations.get(0).getLongitude());
         Marker startMarker = new Marker(mMapView);
         startMarker.setPosition(gPt);
@@ -289,7 +277,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         mPath.setColor(Color.RED);
         mPath.setWidth(4);
 
-        /* load map by big routes */
+        /* Load map by big routes */
         IConfigurationProvider provider = Configuration.getInstance();
         provider.setUserAgentValue(BuildConfig.APPLICATION_ID);
         provider.setOsmdroidBasePath(getStorage());
@@ -306,12 +294,10 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
             public void draw(Canvas canvas, CharSequence text, int start,
                              int end, float x, int top, int y, int bottom,
                              Paint paint) {
-                //  Drawable b = ContextCompat.getDrawable(getContext(), R.drawable.ic_edit);
                 Drawable b = getDrawable();
                 canvas.save();
 
                 int transY = bottom - b.getBounds().bottom;
-                // this is the key
                 transY -= paint.getFontMetricsInt().descent / 2;
 
                 canvas.translate(x, transY);
@@ -349,7 +335,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
             public void onClick(DialogInterface dialog, int whichButton) {
                 String newName = edit_record_name.getText().toString();
 
-                /* Aktualisieren der Route */
+                /* Update Route */
                 Route newRecord = record;
                 newRecord.setName(newName);
                 newRecord.setTimeStamp(GlobalFunctions.getTimeStamp());
@@ -361,12 +347,11 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                 } else {
                     dao.update(record.getId(), newRecord);
 
-
-                    /* get current user */
+                    /* Get current user */
                     UserDAO userDAO = new UserDAO(MainActivity.getInstance());
                     User currentUser = userDAO.read(MainActivity.getActiveUser());
 
-                    /* read profile values from global db */
+                    /* Read profile values from global db */
                     HashMap<String, String> map = new HashMap<>();
                     map.put("recordId", "" + record.getId());
                     map.put("recordName", "" + newName);
@@ -375,7 +360,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                     Retrofit retrofit = APIConnector.getRetrofit();
                     APIClient apiInterface = retrofit.create(APIClient.class);
 
-                    /* start a call */
+                    /* Start a call */
                     String base = currentUser.getMail() + ":" + currentUser.getPassword();
                     String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
                     Call<ResponseBody> call = apiInterface.updateRecordName(authString, map);
@@ -389,10 +374,10 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
                                 if (response.code() == 401) {
                                     MainActivity.getInstance().showNotAuthorizedModal(4);
                                 } else {
-                                    /* get jsonString from API */
+                                    /* Get jsonString from API */
                                     String jsonString = response.body().string();
 
-                                    /* parse json */
+                                    /* Parse json */
                                     JSONObject mainObject = new JSONObject(jsonString);
                                     if (mainObject.getString("success").equals("0")) {
 
@@ -426,7 +411,6 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         alert.setNegativeButton("Verwerfen", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
             }
         });
         alert.show();
@@ -435,13 +419,10 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            //  case R.id.editRoute:
 
-
-            //     break;
             case R.id.zoomRecord:
 
-                /* zoom in detail map */
+                /* Zoom in detail map */
                 if (informationParent.getVisibility() == View.GONE) {
 
                     float px = TypedValue.applyDimension(
@@ -463,7 +444,7 @@ public class RecordDetailsInformationFragment extends Fragment implements View.O
         }
     }
 
-    /* Das Datum wird von Millisekunden als Formatiertes Datum zurückgegeben */
+    /* get Date from Millis */
     private static String getDate(long millis, String dateFormat) {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 

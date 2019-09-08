@@ -66,12 +66,12 @@ public class RecordListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_record_list, container, false);
 
-        /* create daos */
+        /* Create daos */
         recordDAO = new RouteDAO(MainActivity.getInstance());
         recordTempDAO = new RecordTempDAO(MainActivity.getInstance());
         locationTempDAO = new LocationTempDAO(MainActivity.getInstance());
 
-        /* get temp routes and add to routeList */
+        /* Get temp routes and add to routeList */
         records = recordDAO.readAll();
         List<Route> tempRecords = recordTempDAO.readAll();
 
@@ -79,12 +79,12 @@ public class RecordListFragment extends Fragment {
             records.add(route);
         }
 
-        /* Elemente aus View holen und Adapter definieren */
+        /* Define adapter */
         recyclerView = view.findViewById(R.id.recycler_view);
         mainLayout = view.findViewById(R.id.main_layout);
         mAdapter = new RecordListAdapter(this.getContext(), records);
 
-        /* RecyclerView mit Inhalten aus Adapter füllen */
+        /* Fill RecyclerView with stuff from adapter */
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -94,10 +94,10 @@ public class RecordListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(mAdapter);
 
-        /* set swipe view */
+        /* Set swipe view */
         setUpItemTouchHelper();
 
-        /* Aktualisieren der Seite durch SwipeRefresh */
+        /* Update page with SwipeRefresh */
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -108,7 +108,7 @@ public class RecordListFragment extends Fragment {
             }
         });
 
-        /* Farbschema SwipeRefresh festlegen */
+        /* Define colors - SwipeRefresh */
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
@@ -117,13 +117,13 @@ public class RecordListFragment extends Fragment {
         return view;
     }
 
-    /* function to restore item */
+    /* Function to restore item */
     private void restoreItem(Route deletedItem, int deletedIndex) {
         mAdapter.restoreItem(deletedItem, deletedIndex);
         recordDAO.create(deletedItem);
     }
 
-    /* function  to swipe*/
+    /* Function to swipe*/
     private void setUpItemTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
@@ -137,20 +137,18 @@ public class RecordListFragment extends Fragment {
 
                 int position = viewHolder.getAdapterPosition();
 
-                /* Entfernten Item-Namen zwischenspeichern */
+                /* Store deleted item */
                 String name = records.get(position).getName();
-
-                /* Speichern für Rückgängig machen sichern */
                 final Route deletedItem = records.get(position);
                 final int deletedIndex = position;
 
-                /* Item aus Recycler View und Datenbank entfernen */
+                /* Delete item from recycler view */
                 mAdapter.removeItem(position);
                 if (!deletedItem.isTemp()) {
                     recordDAO.delete(deletedItem);
                 }
 
-                /* Snackbar mit 'Rückgängig' Funnktion anzeigen */
+                /* Snackbar with 'Rückgängig' function */
                 Snackbar snackbar = Snackbar.make(mainLayout, "Aufzeichnung \"" + name + "\" wurde entfernt!", Snackbar.LENGTH_LONG);
                 TextView snackbarText = snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                 snackbarText.setTextColor(Color.WHITE);
@@ -171,18 +169,18 @@ public class RecordListFragment extends Fragment {
 
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
-                        /* check if route resotred or not */
+                        /* Check if route resotred or not */
                         if (!restore && !deletedItem.isTemp()) {
                             Retrofit retrofit = APIConnector.getRetrofit();
                             APIClient apiInterface = retrofit.create(APIClient.class);
 
-                            /* start a call */
+                            /* Start a call */
                             UserDAO userDAO = new UserDAO(MainActivity.getInstance());
                             User currentUser = userDAO.read(MainActivity.getActiveUser());
                             String base = currentUser.getMail() + ":" + currentUser.getPassword();
                             String authString = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
 
-                            /* get record id */
+                            /* Get record id */
                             HashMap<String, String> map = new HashMap<>();
                             map.put("recordId", "" + deletedItem.getId());
 
@@ -193,13 +191,13 @@ public class RecordListFragment extends Fragment {
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                                    /* get jsonString from API */
+                                    /* Get jsonString from API */
                                     String jsonString = null;
 
                                     try {
                                         jsonString = response.body().string();
 
-                                        /* parse json */
+                                        /* Parse json */
                                         JSONObject mainObject = new JSONObject(jsonString);
                                         if (mainObject.getString("success").equals("0")) {
                                             Toast.makeText(MainActivity.getInstance(), "Aufnahme '" + deletedItem.getName() + "' erfolgreich gelöscht.",
@@ -207,24 +205,23 @@ public class RecordListFragment extends Fragment {
                                         } else {
                                             Toast.makeText(MainActivity.getInstance(), "Aufnahme '" + deletedItem.getName() + "' konnte nicht gelöscht werden.",
                                                     Toast.LENGTH_LONG).show();
-                                            /* restore item */
+                                            /* Restore item */
                                             restoreItem(deletedItem, deletedIndex);
                                         }
 
 
                                     } catch (IOException e) {
                                         e.printStackTrace();
-                                        /* restore item */
+                                        /* Restore item */
                                         Toast.makeText(MainActivity.getInstance(), "Aufnahme '" + deletedItem.getName() + "' konnte nicht gelöscht werden.",
                                                 Toast.LENGTH_LONG).show();
                                         restoreItem(deletedItem, deletedIndex);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
-                                        /* restore item */
+                                        /* Restore item */
                                         Toast.makeText(MainActivity.getInstance(), "Aufnahme '" + deletedItem.getName() + "' konnte nicht gelöscht werden.",
                                                 Toast.LENGTH_LONG).show();
                                         restoreItem(deletedItem, deletedIndex);
-
                                     }
                                 }
 
@@ -233,7 +230,7 @@ public class RecordListFragment extends Fragment {
                                     call.cancel();
                                     Toast.makeText(MainActivity.getInstance(), "Aufnahme '" + deletedItem.getName() + "' konnte nicht gelöscht werden.\nBitte überprüfen Sie Ihre Internetverbindung!",
                                             Toast.LENGTH_LONG).show();
-                                    /* restore item */
+                                    /* Restore item */
                                     restoreItem(deletedItem, deletedIndex);
                                 }
                             });
@@ -250,7 +247,7 @@ public class RecordListFragment extends Fragment {
 
                 View itemView = viewHolder.itemView;
 
-                /* set icon and color */
+                /* Set icon and color */
                 final GradientDrawable background = new GradientDrawable();
                 background.setCornerRadius(15);
                 background.setColor(Color.RED);
@@ -261,12 +258,12 @@ public class RecordListFragment extends Fragment {
                 int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
                 int iconBottom = iconTop + icon.getIntrinsicHeight();
 
-                /* swipe left */
+                /* Swipe left */
                 if (dX > 0) {
-                    /* swipe right */
+                    /* Swipe right */
                 } else if (dX < 0) {
 
-                    /* set icon  and background position */
+                    /* Set icon and background position */
                     int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
                     int iconRight = itemView.getRight() - iconMargin;
                     icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
@@ -275,7 +272,7 @@ public class RecordListFragment extends Fragment {
                             itemView.getTop(), itemView.getRight(), itemView.getBottom());
                 }
 
-                /* draw elements */
+                /* Draw elements */
                 background.draw(c);
                 icon.draw(c);
             }

@@ -25,7 +25,6 @@ public class RecordListDetailsPageViewer extends Fragment {
     private List<Fragment> listFragments = new ArrayList<>();
 
     public RecordListDetailsPageViewer() {
-        // Required empty public constructor
     }
 
 
@@ -37,12 +36,12 @@ public class RecordListDetailsPageViewer extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        /* Layout inflaten */
+        /* Inflate layout */
         View view = inflater.inflate(R.layout.fragment_page_viewer_charts, container, false);
 
-        /* Anzeige der allgemeinen Informationen */
+        /* Show general information */
         int id = getArguments().getInt("id");
-        String locationsAsString= getArguments().getString("locations");
+        String locationsAsString = getArguments().getString("locations");
         boolean temp = getArguments().getBoolean("temp");
         Bundle bundleInformation = new Bundle();
         bundleInformation.putInt("id", id);
@@ -53,7 +52,7 @@ public class RecordListDetailsPageViewer extends Fragment {
         recordDetailsInformationFragment.setArguments(bundleInformation);
         listFragments.add(recordDetailsInformationFragment);
 
-        /* Anzeige der Charts */
+        /* Show charts */
         double[] speedValues = getArguments().getDoubleArray("speedArray");
         double[] altitudeValues = getArguments().getDoubleArray("altitudeArray");
 
@@ -64,7 +63,7 @@ public class RecordListDetailsPageViewer extends Fragment {
         recordDetailsCharts.setArguments(bundleCharts);
         listFragments.add(recordDetailsCharts);
 
-        /* Instanziieren des ViewPagers */
+        /* Instantiate ViewPagers */
         ViewPager mPager = view.findViewById(R.id.pager);
         PagerAdapter mPagerAdapter = new RecordListDetailsPageViewer.ScreenSlidePagerAdapter(MainActivity.getInstance().getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
@@ -87,7 +86,7 @@ public class RecordListDetailsPageViewer extends Fragment {
             super(fm);
         }
 
-        /* called on Swipe */
+        /* Called on Swipe */
         @Override
         public android.support.v4.app.Fragment getItem(int position) {
             return listFragments.get(position);

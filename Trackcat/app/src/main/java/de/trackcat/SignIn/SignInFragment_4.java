@@ -50,7 +50,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        /* get views */
+        /* Get views */
         View view = inflater.inflate(R.layout.fragment_signin_4, container, false);
         generalTerm = view.findViewById(R.id.checkBox_generalTerm);
         link_termsOfService = view.findViewById(R.id.link_termsOfService);
@@ -62,13 +62,13 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         messageBox = view.findViewById(R.id.messageBox);
         messageBoxInfo = view.findViewById(R.id.messageBoxInfo);
 
-        /* get bundle */
+        /* Get bundle */
         if (getArguments() != null) {
             firstName = getArguments().getString("firstName");
             lastName = getArguments().getString("lastName");
-            gender= getArguments().getInt("gender");
+            gender = getArguments().getInt("gender");
             email = getArguments().getString("email");
-            dayOfBirth= getArguments().getString("dayOfBirth");
+            dayOfBirth = getArguments().getString("dayOfBirth");
             password1 = getArguments().getString("password1");
             password2 = getArguments().getString("password2");
             generalTerm.setChecked(getArguments().getBoolean("generalTerms"));
@@ -77,23 +77,23 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
             checkDataProtection = getArguments().getBoolean("dataProtection");
         }
 
-        /* step view */
+        /* Step view */
         stepView = view.findViewById(R.id.step_view);
         stepView.go(3, false);
 
-        /* set on click-Listener */
+        /* Set on click-Listener */
         btnBack.setOnClickListener(this);
         btnSignIn.setOnClickListener(this);
         logInInLink.setOnClickListener(this);
         generalTerm.setOnClickListener(this);
         dataProtection.setOnClickListener(this);
 
-        /* set button enable if necessary */
+        /* Set button enable if necessary */
         if (checkGeneralTerm && checkDataProtection) {
             setButtonEnable();
         }
 
-        /* set link */
+        /* Set link */
         link_termsOfService.setClickable(true);
         link_termsOfService.setMovementMethod(LinkMovementMethod.getInstance());
         String text1 = "<a href='" + getString(R.string.link_termsOfService) + "'> AGBs</a>  gelesen und akzeptiert";
@@ -107,13 +107,13 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    /* onClick Listener */
+    /* OnClick Listener */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_back:
 
-                /*create bundle*/
+                /* Create bundle */
                 Bundle bundleSignIn_1_and_2_and_3_and_4 = new Bundle();
                 bundleSignIn_1_and_2_and_3_and_4.putString("firstName", firstName);
                 bundleSignIn_1_and_2_and_3_and_4.putString("lastName", lastName);
@@ -128,7 +128,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                 SignInFragment_3 signInFragment_3 = new SignInFragment_3();
                 signInFragment_3.setArguments(bundleSignIn_1_and_2_and_3_and_4);
 
-                /* show next page */
+                /* Show next page */
                 fragTransaction = getFragmentManager().beginTransaction();
                 fragTransaction.replace(R.id.mainFrame, signInFragment_3,
                         getResources().getString(R.string.fSignIn_3));
@@ -152,7 +152,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
                 checkGeneralTerm = generalTerm.isChecked();
 
-                /* change button */
+                /* Change button */
                 if (checkGeneralTerm && checkDataProtection) {
                     setButtonEnable();
                 } else {
@@ -163,7 +163,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
 
                 checkDataProtection = dataProtection.isChecked();
 
-                /* change button */
+                /* Change button */
                 if (checkGeneralTerm && checkDataProtection) {
                     setButtonEnable();
                 } else {
@@ -173,32 +173,32 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         }
     }
 
-    /* function for signIn */
+    /* Function for signIn */
     public void signin() throws ParseException {
 
-        /* set button enabled */
+        /* Set button enabled */
         setButtonDisable();
 
-        /* set progressbar */
+        /* Set progressbar */
         final ProgressDialog progressDialog = new ProgressDialog(getContext(),
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getResources().getString(R.string.createAccount));
         progressDialog.show();
 
-        /* send inputs to server */
+        /* Send inputs to server */
         Retrofit retrofit = APIConnector.getRetrofit();
         APIClient apiInterface = retrofit.create(APIClient.class);
 
         HashMap<String, String> map = new HashMap<>();
         map.put("firstName", firstName);
         map.put("lastName", lastName);
-        map.put("gender",""+gender);
+        map.put("gender", "" + gender);
         map.put("email", email);
-        map.put("dateOfBirth", ""+GlobalFunctions.getMillisFromString(dayOfBirth, "dd.MM.yyyy"));
+        map.put("dateOfBirth", "" + GlobalFunctions.getMillisFromString(dayOfBirth, "dd.MM.yyyy"));
         map.put("password", GlobalFunctions.hashPassword(password1));
 
-        /* start a call */
+        /* Start a call */
         Call<ResponseBody> call = apiInterface.registerUser(map);
         call.enqueue(new Callback<ResponseBody>() {
 
@@ -211,10 +211,10 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                     JSONObject json = new JSONObject(jsonString);
                     Log.d(getResources().getString(R.string.app_name) + "-SigninConnection", jsonString);
 
-                    /* open activity if login success*/
+                    /* Open activity if login success*/
                     if (json.getString("success").equals("0")) {
 
-                        /* load LogInFragment */
+                        /* Load LogInFragment */
                         Bundle bundle = new Bundle();
                         bundle.putBoolean("singIn", true);
                         LogInFragment login = new LogInFragment();
@@ -224,16 +224,16 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                         fragTransaction.replace(R.id.mainFrame, login,
                                 getResources().getString(R.string.fLogIn));
                         fragTransaction.commit();
-                        /* error by regist */
+                        /* Error by regist */
                     } else if (json.getString("success").equals("1")) {
 
-                        /* show server error message to user */
+                        /* Show server error message to user */
                         Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Unbekannter Fehler");
                         setErrorMessage("Unbekannter Fehler", getResources().getString(R.string.eSignInUnknownError));
 
                     } else if (json.getString("success").equals("3")) {
 
-                        /* show server error message to user */
+                        /* Show server error message to user */
                         Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "E-Mail Existiert bereits");
                         setErrorMessage("Fehler", getResources().getString(R.string.eEMailExists));
 
@@ -241,7 +241,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                 } catch (Exception e) {
 
                     progressDialog.dismiss();
-                    /* show server error message to user */
+                    /* Show server error message to user */
                     Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + response.raw().message());
                     setErrorMessage(response.raw().message(), getResources().getString(R.string.eServer));
                 }
@@ -252,14 +252,14 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
                 call.cancel();
                 progressDialog.dismiss();
 
-                /* show server error message to user */
+                /* Show server error message to user */
                 Log.d(getResources().getString(R.string.app_name) + "-SiginConnection", "Server Error: " + t.getMessage());
                 setErrorMessage(t.getMessage(), getResources().getString(R.string.eCheckConnection));
             }
         });
     }
 
-    /* function to set Error */
+    /* Function to set Error */
     private void setErrorMessage(String messageBoxText, String messageInfoText) {
 
         messageBoxInfo.setVisibility(View.VISIBLE);
@@ -277,7 +277,7 @@ public class SignInFragment_4 extends Fragment implements View.OnClickListener {
         setButtonEnable();
     }
 
-    /* functions to enable/disable button */
+    /* Functions to enable/disable button */
     private void setButtonEnable() {
         btnSignIn.setEnabled(true);
         btnSignIn.setBackgroundColor(getResources().getColor(R.color.colorGreenAccent));

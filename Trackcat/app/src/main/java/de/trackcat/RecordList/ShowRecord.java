@@ -29,22 +29,22 @@ import de.trackcat.Statistics.SpeedAverager;
 
 public class ShowRecord {
 
-    public static void show(List<Route> records, int position, TextView recordId, ImageView recordType, ImageView importState, ImageView temp,TextView recordName, TextView recordDostance, TextView recordTime, View recordItem, TextView recordDate) {
+    public static void show(List<Route> records, int position, TextView recordId, ImageView recordType, ImageView importState, ImageView temp, TextView recordName, TextView recordDostance, TextView recordTime, View recordItem, TextView recordDate) {
 
-        /* show ID */
+        /* Show ID */
         recordId.setText("" + (position + 1));
 
-        /* symbolize type */
+        /* Symbolize type */
         recordType.setImageResource(SpeedAverager.getTypeIcon(records.get(position).getType()));
 
-        /* temp status */
+        /* Temp status */
         if (records.get(position).isTemp()) {
             temp.setVisibility(View.VISIBLE);
         } else {
             temp.setVisibility(View.INVISIBLE);
         }
 
-        /* import status */
+        /* Import status */
         if (records.get(position).isImported()) {
             importState.setVisibility(View.VISIBLE);
         } else {
@@ -58,7 +58,7 @@ public class ShowRecord {
         TextView recordDistance = recordItem.findViewById(R.id.record_distance);
         double distance = Math.round(records.get(position).getDistance());
         if (distance >= 1000) {
-            String d = "" + Math.round((distance / 1000L)*100)/100.0;
+            String d = "" + Math.round((distance / 1000L) * 100) / 100.0;
             recordDistance.setText(d.replace('.', ',') + " km |");
         } else {
             recordDistance.setText((int) distance + " m |");
@@ -80,24 +80,24 @@ public class ShowRecord {
         recordItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* get Location Data */
+                /* Get Location Data */
                 List<Location> locations = new ArrayList<>();
-                if (records.get(position).isTemp()){
+                if (records.get(position).isTemp()) {
                     LocationTempDAO locationTempDAO = new LocationTempDAO(MainActivity.getInstance());
                     locations = locationTempDAO.readAll(records.get(position).getId());
 
-                }else{
+                } else {
                     JSONArray locationArray = null;
                     try {
                         locationArray = new JSONArray(records.get(position).getLocations());
 
-                        for ( int i=0;i< locationArray.length();i++) {
-                            Location location= new Location();
+                        for (int i = 0; i < locationArray.length(); i++) {
+                            Location location = new Location();
                             location.setLatitude(((JSONObject) locationArray.get(i)).getDouble("latitude"));
                             location.setLongitude(((JSONObject) locationArray.get(i)).getDouble("longitude"));
                             location.setAltitude(((JSONObject) locationArray.get(i)).getDouble("altitude"));
                             location.setTime(((JSONObject) locationArray.get(i)).getLong("time"));
-                            location.setSpeed((float)((JSONObject) locationArray.get(i)).getDouble("speed"));
+                            location.setSpeed((float) ((JSONObject) locationArray.get(i)).getDouble("speed"));
                             locations.add(location);
                         }
                     } catch (JSONException e) {
@@ -109,8 +109,7 @@ public class ShowRecord {
                 int run;
                 int step;
 
-                /* defines Steps and amount of values depending on available locations */
-
+                /* Defines Steps and amount of values depending on available locations */
                 if (locations != null && locations.size() > 100) {
                     size = (locations.size() / 10);
                     run = locations.size();
@@ -150,7 +149,7 @@ public class ShowRecord {
                 fragTransaction.replace(R.id.mainFrame, recordDetailsFragment, MainActivity.getInstance().getResources().getString(R.string.fRecordDetails));
                 fragTransaction.commit();
 
-                /* add to Stack */
+                /* Add to Stack */
                 fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fRecordDetails));
 
                 if (MainActivity.getHints()) {
@@ -160,7 +159,7 @@ public class ShowRecord {
         });
     }
 
-    /* Das Datum wird von Millisekunden als Formatiertes Datum zurückgegeben */
+    /*Get date from millie */
     private static String getDate(long millis, String dateFormat) {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 

@@ -18,11 +18,11 @@ public class RecordDetailsChartsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        /* Auslesen der Daten aus dem Bundle */
+        /* Read data from bundle */
         double[] speedValues = getArguments().getDoubleArray("speedArray");
         double[] altitudeValues = getArguments().getDoubleArray("altitudeArray");
 
-        /* Höhenmeterchart */
+        /* Altimeterchart */
         Bundle bundleAltitude = new Bundle();
         bundleAltitude.putDoubleArray("array", altitudeValues);
         bundleAltitude.putString("title", "Höhenmeter");
@@ -40,7 +40,7 @@ public class RecordDetailsChartsFragment extends Fragment {
         LineChartFragment lineFragSpeed = new LineChartFragment();
         lineFragSpeed.setArguments(bundleSpeed);
 
-        /* Charts in Container einfügen */
+        /* Add charts to container */
         fragTransaction = getChildFragmentManager().beginTransaction();
         fragTransaction.replace(R.id.speedContainer, lineFragSpeed, getResources().getString(R.string.fRecordDetailsChartSpeed));
         fragTransaction.replace(R.id.altitudeContainer, lineFragAltitude, getResources().getString(R.string.fRecordDetailsChartAltitude));
