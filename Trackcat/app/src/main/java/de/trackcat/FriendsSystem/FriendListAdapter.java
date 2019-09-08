@@ -14,8 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +47,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FriendListAdapter extends ArrayAdapter<String> implements View.OnClickListener {
+public class FriendListAdapter extends ArrayAdapter<String> {
 
     private List<CustomFriend> friends;
     public TextView name, email, registSince;
@@ -57,13 +55,14 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
     CircleImageView image, state;
     boolean newFriend, friendQuestion, sendFriendQuestion, liveFriend, noMoreEntrys;
     UserDAO userDAO;
-    View testView = null;
     private boolean showToast;
 
+    /* setter for show loadmore toast */
     public void setShowToast(boolean showToast) {
         this.showToast = showToast;
     }
 
+    /* Konstruktor */
     public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion, boolean sendFriendQuestion, boolean liveFriend, boolean noMoreEntrys) {
         super(context, R.layout.friend_list_item);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -90,29 +89,18 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         /* Friend list */
         if (!newFriend) {
 
-            /* Last item */
+            /* Load more by last item */
             if (friends.size() % 10 == 0 && position == friends.size() - 1 && !liveFriend) {
 
                 FriendsFragment.showFriends(MainActivity.getSearchFriendTerm(), true, friends);
 
-           /*     if (convertView == null) {
-                    view = inflater.inflate(R.layout.friend_list_last_item, parent, false);
-                } else {
-                    view = convertView;
-                }
-
-                Button loadMore = view.findViewById(R.id.loadMore);
-                loadMore.setOnClickListener(this);
-
-                /* Item between */
-          //  } else {
-
+                /* Show toast */
                 if (showToast) {
                     Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendLoadMore), Toast.LENGTH_SHORT).show();
                 }
-
             }
 
+            /* Load view */
             if (convertView == null) {
                 view = inflater.inflate(R.layout.friend_list_item, parent, false);
             } else {
@@ -147,12 +135,13 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             }
             image.setImageBitmap(bitmap);
 
+            /* Set life border */
             if (friends.get(position).getIsLive() == 1) {
                 image.setBorderColor(MainActivity.getInstance().getResources().getColor(R.color.live));
                 image.setBorderWidth(9);
             }
 
-            /* Shows details of routes */
+            /* Shows options */
             view.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -199,8 +188,6 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                         /* add to Stack */
                                         fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fFriendLiveViewList));
 
-
-
                                         /* Live friend from profile */
                                     } else {
                                         fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
@@ -209,7 +196,6 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
                                         /* add to Stack */
                                         fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
                                     }
-
                                     fragTransaction.commit();
                                 }
 
@@ -259,53 +245,31 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
             /* Stranger list */
         } else {
 
-            Log.d("TEST", "Element: "+position);
-            /* Last item */
+            /* load more by last item */
             if (friends.size() % 10 == 0 && position == friends.size() - 1 && !friendQuestion && !noMoreEntrys) {
 
-
                 FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), true, friends);
-               /* if (convertView == null) {
-                    view = inflater.inflate(R.layout.new_friend_list_last_item, parent, false);
 
-                    Log.d("TEST", "convert =null  letztes Element: "+position);
-                } else {
-                    view = convertView;
-                    Log.d("TEST", " conver !=null letztes Element: "+position);
-                }
-               // Button loadMore = view.findViewById(R.id.loadMore);
-              //  loadMore.setOnClickListener(this);
-
-                /* Items between */
-
+                /* show toast */
                 if (showToast) {
                     Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendLoadMore), Toast.LENGTH_SHORT).show();
                 }
             }
 
+            /* Load view */
+            if (convertView == null) {
+                view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
 
+            } else {
+                view = convertView;
+            }
 
-        if (convertView == null) {
-            view = inflater.inflate(R.layout.new_friend_list_item, parent, false);
-
-        } else {
-            view = convertView;
-        }
-
-            /* Set name and register since OR email */
+            /* Set name and register since */
             name = view.findViewById(R.id.friend_name);
             name.setText(friends.get(position).getFirstName() + " " + friends.get(position).getLastName());
 
             registSince = view.findViewById(R.id.friend_regist_since);
             registSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(friends.get(position).getDateOfRegistration(), "dd.MM.yyyy"));
-
-            //  if (friendQuestion) {
-            //        email = view.findViewById(R.id.friend_email);
-            //         email.setText(friends.get(position).getEmail());
-            //    } else {
-
-            //   }
-
 
             /* Set level */
             state = view.findViewById(R.id.profile_state);
@@ -355,7 +319,6 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
                                     /* add to Stack */
                                     fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
-
                                 }
 
                                 /* AddFriend */
@@ -390,7 +353,6 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
 
                                         /* add to Stack */
                                         fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileSendQuestion));
-
                                     }
 
                                     /* Delete friend */
@@ -638,24 +600,5 @@ public class FriendListAdapter extends ArrayAdapter<String> implements View.OnCl
         });
 
         alert.show();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-            /* Load more event */
-            case R.id.loadMore:
-
-                /* Check if is a newFriend list or a friend list */
-                if (newFriend) {
-                    FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), true, friends);
-                } else {
-                    FriendsFragment.showFriends(MainActivity.getSearchFriendTerm(), true, friends);
-                }
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendLoadMore), Toast.LENGTH_SHORT).show();
-
-                break;
-        }
     }
 }
