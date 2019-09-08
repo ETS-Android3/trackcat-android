@@ -7,7 +7,6 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,7 +100,6 @@ public class FriendsFragment extends Fragment implements View.OnKeyListener, Vie
             maxPage = 1;
         }
         page = 1;
-
 
         /* Get searchedTerm */
         searchTerm = MainActivity.getSearchFriendTerm();

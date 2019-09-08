@@ -1,5 +1,6 @@
 package de.trackcat.CustomElements;
 
+
 import java.util.List;
 
 import de.trackcat.Database.Models.Location;
@@ -94,7 +95,6 @@ public class RecordModelForServer {
         this.type = type;
     }
 
-
     public long getTimeStamp() {
         return timeStamp;
     }
@@ -102,5 +102,4 @@ public class RecordModelForServer {
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }
-
 }

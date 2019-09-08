@@ -173,14 +173,12 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                             friendList.add(friend);
                         }
 
-
                         ListView friendListView = view.findViewById(R.id.friend_list);
 
                         /* Load more if backpress */
                         if (page != maxPage) {
                             search(find, true, friendList);
                         } else {
-
 
                             /* Add entrys to view */
                             if (loadMore && friends.length() == 0) {
@@ -196,7 +194,7 @@ public class FindFriendsFragment extends Fragment implements View.OnKeyListener 
                                 adapter.setShowToast(true);
                             } else {
                                 friendListView.setSelection(MainActivity.getSearchForeignPageIndex());
-                            adapter.setShowToast(false);
+                                adapter.setShowToast(false);
                             }
                         }
                         /* Delete progressbar */

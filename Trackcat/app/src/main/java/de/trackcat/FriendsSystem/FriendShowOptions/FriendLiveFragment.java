@@ -111,13 +111,13 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         int friendId = getArguments().getInt("friendId");
         index = 0;
 
-        /* Set controll variables */
+        /* Set control variables */
         runCounter = 1;
         userScroll = false;
         showAll = true;
         recordId = 0;
 
-        /* DateFormat setzen */
+        /* Set dateFormat */
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
         TimeZone tz = TimeZone.getTimeZone("UTC");
         df.setTimeZone(tz);
@@ -181,7 +181,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                 /* Parse json */
                                 JSONObject mainObject = new JSONObject(jsonString);
 
-                                /* check if liverecord exists */
+                                /* Check if liveRecord exists */
                                 if (mainObject.has("id")) {
 
                                     /* Start new live record */
@@ -283,7 +283,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
                                     }
                                 } else {
 
-                                    /* stop runnable */
+                                    /* Stop runnable */
                                     handler.removeCallbacksAndMessages(null);
                                     if (MainActivity.getHints()) {
                                         Toast.makeText(MainActivity.getInstance().getApplicationContext(), MainActivity.getInstance().getResources().getString(R.string.friendNoLive), Toast.LENGTH_SHORT).show();
@@ -436,6 +436,7 @@ public class FriendLiveFragment extends Fragment implements OnClickListener {
         mMapView.invalidate();
     }
 
+    /* Function to restartHandler */
     public static void resetHandler() {
         handler.removeCallbacksAndMessages(null);
     }

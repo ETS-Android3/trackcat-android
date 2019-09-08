@@ -3,6 +3,7 @@ package de.trackcat.FriendsSystem;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public void addFragment(Fragment fragment, String title) {
         mFragmentList.add(fragment);
         mFragmentTitleList.add(title);
-
     }
 
     @Override
@@ -36,9 +36,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public int getItemPosition(Object object){
+    public int getItemPosition(Object object) {
         return super.getItemPosition(object);
 
     }
-
 }

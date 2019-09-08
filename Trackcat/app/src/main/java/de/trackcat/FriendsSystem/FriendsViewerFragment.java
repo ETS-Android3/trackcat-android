@@ -33,24 +33,24 @@ public class FriendsViewerFragment extends Fragment {
             searchTerm = getArguments().getString("searchTerm");
         }
 
-        /* create tabView Pager */
+        /* Create tabView Pager */
         ViewPager viewPager = view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(3);
         setupViewPager(viewPager);
         tabLayout = view.findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
 
-
-        tabLayout.setIcon(0,R.drawable.ic_search);
-        tabLayout.setIcon(1,R.drawable.ic_friends);
-        tabLayout.setIcon(2,R.drawable.ic_live_friends);
-        tabLayout.setIcon(3,R.drawable.ic_friend_questions);
-        tabLayout.setIcon(4,R.drawable.ic_send_friend_questions);
-
+        /* Add tab icons */
+        tabLayout.setIcon(0, R.drawable.ic_search);
+        tabLayout.setIcon(1, R.drawable.ic_friends);
+        tabLayout.setIcon(2, R.drawable.ic_live_friends);
+        tabLayout.setIcon(3, R.drawable.ic_friend_questions);
+        tabLayout.setIcon(4, R.drawable.ic_send_friend_questions);
 
         return view;
     }
 
+    /* Function to setup page viewer */
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         FriendsFragment friendsFragment = new FriendsFragment();
@@ -64,13 +64,11 @@ public class FriendsViewerFragment extends Fragment {
         adapter.addFragment(friendQuestionsFragment, "");
         adapter.addFragment(friendSendQuestionsFragment, "");
 
-
-
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(activeSite);
     }
 
-    /* function to change BadgeText */
+    /* Function to change BadgeText */
     public void setBadgeText(int index, String text) {
         tabLayout.setBadgeText(index, text);
     }

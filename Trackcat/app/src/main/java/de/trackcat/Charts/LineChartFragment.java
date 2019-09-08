@@ -27,11 +27,9 @@ public class LineChartFragment extends Fragment {
     private String rangeTitle;
     private String title;
     private LineAndPointFormatter series1Format;
-    ;
 
     public LineChartFragment() {
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,9 +72,9 @@ public class LineChartFragment extends Fragment {
                 maxValue = values[i];
             }
         }
-        String description=title;
-        if(title=="Höhenmeter"){
-            description= title+" (WGS-84)";
+        String description = title;
+        if (title == "Höhenmeter") {
+            description = title + " (WGS-84)";
         }
 
         /* Incrementing Steps are created dynamically */
@@ -104,7 +102,6 @@ public class LineChartFragment extends Fragment {
         plot.setRangeLowerBoundary(LOWER_BOUNDARY_Y, BoundaryMode.FIXED);
         plot.setRangeUpperBoundary(maxValue, BoundaryMode.FIXED);
         plot.setRangeStep(StepMode.INCREMENT_BY_VAL, incrementStepsY);
-
 
         return view;
     }

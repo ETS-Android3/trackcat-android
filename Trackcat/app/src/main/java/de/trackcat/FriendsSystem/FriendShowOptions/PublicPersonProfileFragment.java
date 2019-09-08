@@ -16,7 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -47,7 +46,7 @@ public class PublicPersonProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_friends_public_person_profile, container, false);
 
-        /* Get profil fields */
+        /* Get profile fields */
         loadProfile = view.findViewById(R.id.loadScreen);
         image = view.findViewById(R.id.profile_image);
         state = view.findViewById(R.id.profile_state);
@@ -64,7 +63,7 @@ public class PublicPersonProfileFragment extends Fragment {
         int friendId = getArguments().getInt("friendId");
         int authorizationType = getArguments().getInt("authorizationType");
 
-        /* Create hashmap */
+        /* Create hashMap */
         HashMap<String, String> map = new HashMap<>();
         map.put("strangerId", "" + friendId);
 
@@ -96,10 +95,10 @@ public class PublicPersonProfileFragment extends Fragment {
 
                         int ageNumber = mainObject.getInt("age");
 
-                        if (ageNumber==1){
-                            age.setText(""+ageNumber+" Jahr");
-                        }else{
-                            age.setText(""+ageNumber+" Jahre");
+                        if (ageNumber == 1) {
+                            age.setText("" + ageNumber + " Jahr");
+                        } else {
+                            age.setText("" + ageNumber + " Jahre");
                         }
 
                         dayOfRegistration.setText(GlobalFunctions.getDateFromSeconds(mainObject.getLong("dateOfRegistration"), "dd.MM.yyyy"));
@@ -127,7 +126,7 @@ public class PublicPersonProfileFragment extends Fragment {
                         /* Set level */
                         state.setImageBitmap(GlobalFunctions.findLevel(levelDistance));
 
-                        /* Remove loadscreen */
+                        /* Remove loadScreen */
                         loadProfile.setVisibility(View.GONE);
                     }
                 } catch (JSONException e1) {

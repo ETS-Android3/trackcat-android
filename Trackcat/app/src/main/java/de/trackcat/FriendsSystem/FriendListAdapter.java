@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +61,7 @@ public class FriendListAdapter extends ArrayAdapter<String> {
         this.showToast = showToast;
     }
 
-    /* Konstruktor */
+    /* Constructor */
     public FriendListAdapter(Activity context, List<CustomFriend> friends, boolean type, boolean friendQuestion, boolean sendFriendQuestion, boolean liveFriend, boolean noMoreEntrys) {
         super(context, R.layout.friend_list_item);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -168,7 +167,7 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                             MainActivity.getInstance().getResources().getString(R.string.fFriendLiveProfile));
                                     fragTransaction.commit();
 
-                                    /* add to Stack */
+                                    /* Add to Stack */
                                     fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fFriendLiveProfile));
                                 }
 
@@ -185,7 +184,7 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                         fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
                                                 MainActivity.getInstance().getResources().getString(R.string.fFriendLiveViewList));
 
-                                        /* add to Stack */
+                                        /* Add to Stack */
                                         fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fFriendLiveViewList));
 
                                         /* Live friend from profile */
@@ -193,7 +192,7 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                         fragTransaction.replace(R.id.mainFrame, friendLiveFragment,
                                                 MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
 
-                                        /* add to Stack */
+                                        /* Add to Stack */
                                         fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fFriendLiveView));
                                     }
                                     fragTransaction.commit();
@@ -227,7 +226,7 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                     /* Set id for backPress */
                                     MainActivity.setSearchFriendPageIndex(position);
 
-                                    /* add to Stack */
+                                    /* Add to Stack */
                                     fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fFriendProfile));
                                 }
 
@@ -245,12 +244,12 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             /* Stranger list */
         } else {
 
-            /* load more by last item */
+            /* Load more by last item */
             if (friends.size() % 10 == 0 && position == friends.size() - 1 && !friendQuestion && !noMoreEntrys) {
 
                 FindFriendsFragment.search(MainActivity.getSearchForeignTerm(), true, friends);
 
-                /* show toast */
+                /* Show toast */
                 if (showToast) {
                     Toast.makeText(getContext(), getContext().getResources().getString(R.string.friendLoadMore), Toast.LENGTH_SHORT).show();
                 }
@@ -317,7 +316,7 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                     fragTransaction.commit();
                                     MainActivity.setSearchForeignPageIndex(position);
 
-                                    /* add to Stack */
+                                    /* Add to Stack */
                                     fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfile));
                                 }
 
@@ -351,7 +350,7 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                         /* Set index */
                                         MainActivity.setSendFriendQuestionIndex(position);
 
-                                        /* add to Stack */
+                                        /* Add to Stack */
                                         fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileSendQuestion));
                                     }
 
@@ -383,9 +382,8 @@ public class FriendListAdapter extends ArrayAdapter<String> {
                                         /* Set index */
                                         MainActivity.setFriendQuestionIndex(position);
 
-                                        /* add to Stack */
+                                        /* Add to Stack */
                                         fragTransaction.addToBackStack(MainActivity.getInstance().getResources().getString(R.string.fPublicPersonProfileQuestion));
-
                                     }
 
                                     /* AddFriend */
@@ -494,7 +492,6 @@ public class FriendListAdapter extends ArrayAdapter<String> {
             }
         });
     }
-
 
     /* Function to add a friend */
     private void deleteFriend(int friendId) {

@@ -118,6 +118,8 @@
 
     <!-- profile strings -->
     <string name="noInformation" tools:ignore="ExtraTranslation">keine Angabe</string>
+    <string name="genderFemale" >weiblich</string>
+    <string name="genderMale">männlich</string>
 
     <!-- edit profile strings -->
     <string name="saveProfileSuccess">Profil erfolgreich gespeichert.</string>

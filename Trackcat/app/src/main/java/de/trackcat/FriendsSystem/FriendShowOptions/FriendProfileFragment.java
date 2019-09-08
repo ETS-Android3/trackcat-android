@@ -50,7 +50,7 @@ public class FriendProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_friends_profile, container, false);
 
-        /* Get friend profil fields */
+        /* Get friend profile fields */
         loadProfile = view.findViewById(R.id.loadScreen);
         image = view.findViewById(R.id.profile_image);
         state = view.findViewById(R.id.profile_state);
@@ -66,7 +66,7 @@ public class FriendProfileFragment extends Fragment {
         lastLogIn = view.findViewById(R.id.user_lastLogIn);
         dayOfRegistration = view.findViewById(R.id.user_dayOfRegistration);
 
-        /* Set loadscreen invisible */
+        /* Set loadScreen invisible */
         loadProfile.setVisibility(View.GONE);
 
         /* Create userDAO*/
@@ -74,7 +74,7 @@ public class FriendProfileFragment extends Fragment {
 
         /* Get friend id from bundle*/
         int friendId = getArguments().getInt("friendId");
-        int type= getArguments().getInt("authorizationType");
+        int type = getArguments().getInt("authorizationType");
 
         /* Create hashmap */
         HashMap<String, String> map = new HashMap<>();
@@ -111,11 +111,11 @@ public class FriendProfileFragment extends Fragment {
                         if (mainObject.getInt("gender") != 2) {
                             InputStream imageStream;
                             if (mainObject.getInt("gender") == 0) {
-                                gender.setText("weiblich");
+                                gender.setText(getResources().getString(R.string.genderFemale));
                                 gender.setTextColor(getResources().getColor(R.color.colorFemale));
                                 imageStream = getContext().getResources().openRawResource(R.raw.female);
                             } else {
-                                gender.setText("männlich");
+                                gender.setText(getResources().getString(R.string.genderMale));
                                 imageStream = getContext().getResources().openRawResource(R.raw.male);
                                 gender.setTextColor(getResources().getColor(R.color.colorMale));
                             }
@@ -175,7 +175,7 @@ public class FriendProfileFragment extends Fragment {
                         /* Set friendship since */
                         friendshipSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(mainObject.getLong("dateOfFriendship"), "dd.MM.yyyy HH:mm"));
 
-                        /* Remove loadscreen */
+                        /* Remove loadScreen */
                         loadProfile.setVisibility(View.GONE);
                     }
                 } catch (JSONException e1) {

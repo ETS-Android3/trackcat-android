@@ -31,7 +31,6 @@ public class PageViewerCharts extends Fragment {
     public PageViewerCharts() {
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +73,7 @@ public class PageViewerCharts extends Fragment {
                 double curTime = records.get(i).getTime();
                 int dayOfWeek = getWeekDay(curDate);
 
-                /* Dependinng on the Current day of Week,
+                /* Depending on the Current day of Week,
                    this will shift the data in the array to the correct index for the corresponding Labels */
                 if (curDay == 1) {
                     dayOfWeek = dayOfWeek + 6;
@@ -177,7 +176,6 @@ public class PageViewerCharts extends Fragment {
             mIndicator.setPageCount(listFragments.size());
             mIndicator.show();
         }
-
         return view;
     }
 

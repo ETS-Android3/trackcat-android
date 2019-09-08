@@ -1,18 +1,13 @@
 package de.trackcat.FriendsSystem.Tabs;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +18,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import de.trackcat.APIClient;
@@ -42,10 +36,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class SharingFriendsFragment extends Fragment implements View.OnClickListener {
+public class SharingFriendsFragment extends Fragment {
 
     /* Variables */
-    EditText findFriend;
     private static TextView noEntrys;
     private UserDAO userDAO;
     private static View view;
@@ -53,9 +46,6 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
     private static FriendListAdapter adapter;
     private static SwipeRefreshLayout swipeContainer;
     private static FriendsViewerFragment parentFrag;
-
-    private static boolean backPress;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,7 +65,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(adapter!=null) {
+                if (adapter != null) {
                     noEntrys.setVisibility(View.GONE);
                     adapter.clear();
                     loadPage();
@@ -83,7 +73,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
             }
         });
 
-        /* start refreshing by loading */
+        /* Start refreshing by loading */
         swipeContainer.setColorSchemeColors(Color.RED, Color.BLUE, Color.YELLOW);
         swipeContainer.setRefreshing(true);
         swipeContainer.bringToFront();
@@ -99,10 +89,8 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
         showLiveFriends();
     }
 
-
     /* Function to show all friends */
     public static void showLiveFriends() {
-
 
         /* Start a call */
         Retrofit retrofit = APIConnector.getRetrofit();
@@ -117,7 +105,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
 
                 try {
                     if (response.code() == 401) {
-                          MainActivity.getInstance().showNotAuthorizedModal(9);
+                        MainActivity.getInstance().showNotAuthorizedModal(9);
                     } else {
 
                         /* Get jsonString from API */
@@ -177,16 +165,7 @@ public class SharingFriendsFragment extends Fragment implements View.OnClickList
                 noEntrys.setText(MainActivity.getInstance().getResources().getString(R.string.friendNoConnection));
 
                 swipeContainer.setRefreshing(false);
-
             }
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-
-        }
     }
 }

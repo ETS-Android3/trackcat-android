@@ -70,5 +70,4 @@ public class XLabelFormat extends Format {
     public Object parseObject(String arg0, ParsePosition arg1) {
         return java.util.Arrays.asList(xLabels).indexOf(arg0);
     }
-
 }

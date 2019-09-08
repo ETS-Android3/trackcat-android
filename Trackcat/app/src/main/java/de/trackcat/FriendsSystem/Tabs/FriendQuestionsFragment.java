@@ -68,7 +68,6 @@ public class FriendQuestionsFragment extends Fragment {
                     adapter.clear();
                     loadPage();
                 }
-
             }
         });
 
@@ -121,7 +120,7 @@ public class FriendQuestionsFragment extends Fragment {
                             friend.setLastName(((JSONObject) friends.get(i)).getString("lastName"));
                             friend.setDateOfRegistration(((JSONObject) friends.get(i)).getLong("dateOfRegistration"));
                             friend.setImage(GlobalFunctions.getBytesFromBase64(((JSONObject) friends.get(i)).getString("image")));
-                           // friend.setEmail(((JSONObject) friends.get(i)).getString("email"));
+                            // friend.setEmail(((JSONObject) friends.get(i)).getString("email"));
                             friend.setTotalDistance(((JSONObject) friends.get(i)).getLong("totalDistance"));
                             friend.setId(((JSONObject) friends.get(i)).getInt("id"));
                             friendList.add(friend);

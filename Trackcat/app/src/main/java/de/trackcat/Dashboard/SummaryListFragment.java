@@ -3,7 +3,6 @@ package de.trackcat.Dashboard;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -79,7 +78,7 @@ public class SummaryListFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
 
-        /* Inztanziate menu */
+        /* Instantiate menu */
         NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
 
