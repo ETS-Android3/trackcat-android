@@ -716,10 +716,10 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 imageChanged = true;
                 if (MainActivity.getHints()) {
                     Toast.makeText(getContext(), getResources().getString(R.string.ucrop_selectImage), Toast.LENGTH_SHORT).show();
-
-                    /* Crop image */
-                    beginCrop(resultData.getData());
                 }
+                
+                /* Crop image */
+                beginCrop(resultData.getData());
 
                 try {
                     InputStream stream = getContext().getContentResolver().openInputStream(resultData.getData());
