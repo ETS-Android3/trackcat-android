@@ -518,7 +518,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 /* Add them to a list */
                 List<Intent> intentList = new ArrayList<>();
                 intentList.add(pickPhoto);
-                intentList.add(takePicture);
+                //not working on api >23
+                // intentList.add(takePicture);
 
                 /* Create chooser */
                 Intent chooserIntent = null;
