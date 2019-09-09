@@ -101,7 +101,7 @@ public class PublicPersonProfileFragment extends Fragment {
                             age.setText("" + ageNumber + " Jahre");
                         }
 
-                        dayOfRegistration.setText(GlobalFunctions.getDateFromSeconds(mainObject.getLong("dateOfRegistration"), "dd.MM.yyyy"));
+                        dayOfRegistration.setText(GlobalFunctions.getDateFromMillis(mainObject.getLong("dateOfRegistration"), "dd.MM.yyyy"));
 
                         /* set total distance */
                         double distance = Math.round(mainObject.getLong("totalDistance"));

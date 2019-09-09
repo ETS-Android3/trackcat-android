@@ -105,7 +105,7 @@ public class FriendProfileFragment extends Fragment {
 
                         /* Set values */
                         name.setText(mainObject.getString("firstName") + " " + mainObject.getString("lastName"));
-                        dayOfBirth.setText(GlobalFunctions.getDateFromSeconds(mainObject.getLong("dateOfBirth"), "dd.MM.yyyy"));
+                        dayOfBirth.setText(GlobalFunctions.getDateFromMillis(mainObject.getLong("dateOfBirth"), "dd.MM.yyyy"));
 
                         /* Set gender */
                         if (mainObject.getInt("gender") != 2) {
@@ -137,11 +137,11 @@ public class FriendProfileFragment extends Fragment {
                         image.setImageBitmap(bitmap);
 
                         /* Set dateOfRegistration*/
-                        String curdayIfRegistrationString = GlobalFunctions.getDateWithTimeFromSeconds(mainObject.getLong("dateOfRegistration"), "dd.MM.yyyy HH:mm");
+                        String curdayIfRegistrationString = GlobalFunctions.getDateWithTimeFromMillis(mainObject.getLong("dateOfRegistration"), "dd.MM.yyyy HH:mm");
                         dayOfRegistration.setText(curdayIfRegistrationString);
 
                         /* Set lastLogin*/
-                        String curLastLoginString = GlobalFunctions.getDateWithTimeFromSeconds(mainObject.getLong("lastLogin"), "dd.MM.yyyy HH:mm");
+                        String curLastLoginString = GlobalFunctions.getDateWithTimeFromMillis(mainObject.getLong("lastLogin"), "dd.MM.yyyy HH:mm");
                         lastLogIn.setText(curLastLoginString);
 
                         /* Set amount records*/
@@ -173,7 +173,7 @@ public class FriendProfileFragment extends Fragment {
                         email.setText("" + mainObject.getString("email"));
 
                         /* Set friendship since */
-                        friendshipSince.setText(GlobalFunctions.getDateWithTimeFromSeconds(mainObject.getLong("dateOfFriendship"), "dd.MM.yyyy HH:mm"));
+                        friendshipSince.setText(GlobalFunctions.getDateWithTimeFromMillis(mainObject.getLong("dateOfFriendship"), "dd.MM.yyyy HH:mm"));
 
                         /* Remove loadScreen */
                         loadProfile.setVisibility(View.GONE);
