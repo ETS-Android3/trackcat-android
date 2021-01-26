@@ -231,7 +231,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         }
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"info@trackcat.de"});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"info@timoskramkiste.de"});
         intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback: Trackcat");
         intent.putExtra(Intent.EXTRA_TEXT, body);
         context.startActivity(Intent.createChooser(intent, "Wählen Sie Ihren E-Mail Client"));
