@@ -19,7 +19,7 @@ retrofit = new Retrofit.Builder()
     .build();
 ```
 
-After the server's API interface is set correctly, the application can be compiled and used.
+After the server's API interface is set correctly, the application can be compiled and used. 
 
 NOTE: The application can be launched without the server running, but logging in, registering, or interacting beyond the login window is not possible without working server connection.
 
